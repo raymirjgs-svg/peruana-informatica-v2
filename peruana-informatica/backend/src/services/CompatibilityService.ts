@@ -24,10 +24,37 @@ class CompatibilityService {
     selectedProducts: number[]
   ): Promise<CompatibilityResult> {
     try {
+      // 1. Determine active price column strictly
+      const { Setting } = require('../models/Setting'); // Lazy load to avoid circular deps if any
+      const { Op } = require('sequelize');
+
+      const setting = await Setting.findByPk('cotizador_price_type');
+      let activePriceCol = setting ? setting.value : 'pre_web';
+
+      // Fallback
+      if (activePriceCol === 'pre_cot') activePriceCol = 'pre_web';
+
+      let priceField = 'price'; // Default pre_cli
+      if (activePriceCol === 'pre_web') priceField = 'price_web';
+      if (activePriceCol === 'pre_dis') priceField = 'price_dis';
+      if (activePriceCol === 'pre_cli') priceField = 'price';
+
+      // 2. Base Condition: Active, Correct Type, and STRICTLY Price > 0
+      const baseWhere: any = {
+        component_type: targetComponentType,
+        is_active: true,
+        [priceField]: {
+          [Op.and]: [
+            { [Op.ne]: null },
+            { [Op.gt]: 0 }
+          ]
+        }
+      };
+
       if (selectedProducts.length === 0) {
-        // No products selected, return all products of target type
+        // No products selected, return all products of target type with price > 0
         const allProducts = await Product.findAll({
-          where: { component_type: targetComponentType },
+          where: baseWhere,
           attributes: ['cod_producto']
         });
         return {
@@ -71,7 +98,7 @@ class CompatibilityService {
       if (compatibilityRules.length === 0) {
         // No rules defined, return all products
         const allProducts = await Product.findAll({
-          where: { component_type: targetComponentType },
+          where: baseWhere,
           attributes: ['cod_producto']
         });
         return {
@@ -97,7 +124,7 @@ class CompatibilityService {
       if (requiredTargetValueIds.length === 0) {
         // No matching rules, return all products
         const allProducts = await Product.findAll({
-          where: { component_type: targetComponentType },
+          where: baseWhere,
           attributes: ['cod_producto']
         });
         return {
@@ -105,9 +132,9 @@ class CompatibilityService {
         };
       }
 
-      // Find products that have ALL required target attributes
+      // Find products that have ALL required target attributes AND price condition
       const compatibleProducts = await Product.findAll({
-        where: { component_type: targetComponentType },
+        where: baseWhere,
         include: [
           {
             model: ProductAttribute,

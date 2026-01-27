@@ -71,7 +71,14 @@ app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" }, // Allow images to be loaded by frontend
 }));
 
-const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:3000', 'http://127.0.0.1:3000'];
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || process.env.CORS_ORIGIN || '').split(',')
+  .map(o => o.trim())
+  .filter(o => o !== '') || ['http://localhost:3000', 'http://127.0.0.1:3000'];
+
+// Si después del split está vacío, usar valores por defecto
+if (allowedOrigins.length === 0) {
+  allowedOrigins.push('http://localhost:3000', 'http://127.0.0.1:3000');
+}
 
 app.use(cors({
   origin: (origin, callback) => {

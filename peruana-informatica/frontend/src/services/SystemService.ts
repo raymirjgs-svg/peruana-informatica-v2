@@ -10,6 +10,15 @@ interface SystemHealth {
         latency: number;
         message?: string;
     };
+    geminiApi: {
+        status: 'ok' | 'error' | 'unknown';
+        latency: number;
+        message?: string;
+    };
+    googleAuth: {
+        status: 'ok' | 'error' | 'unknown';
+        message?: string;
+    };
     system: {
         uptime: number;
         memoryUsage: {
@@ -32,8 +41,8 @@ interface ApiResponse<T> {
 }
 
 class SystemService {
-    private static readonly BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
-    private static readonly API_BASE = `${SystemService.BASE_URL}/api`;
+    private static readonly BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:3001";
+    private static readonly API_BASE = `${SystemService.BASE_URL.replace(/\/$/, '')}/api`;
 
     private static getAuthHeaders(): Record<string, string> {
         const username = process.env.NEXT_PUBLIC_ADMIN_USERNAME || "admin";

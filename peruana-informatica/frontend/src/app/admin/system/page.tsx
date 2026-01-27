@@ -138,6 +138,81 @@ export default function SystemStatusPage() {
                                 </div>
                             </div>
 
+                            {/* Gemini API Card */}
+                            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                                <div className="flex justify-between items-start mb-4">
+                                    <div className="flex items-center gap-3">
+                                        <div className="p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg">
+                                            <Activity className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
+                                        </div>
+                                        <div>
+                                            <h3 className="font-semibold text-lg text-gray-800 dark:text-white">Google Gemini (Blog)</h3>
+                                            <p className="text-sm text-gray-500 dark:text-gray-400">Generación de contenido IA</p>
+                                        </div>
+                                    </div>
+                                    <span className={`px-3 py-1 rounded-full text-xs font-semibold uppercase ${getStatusColor(health.geminiApi.status)}`}>
+                                        {health.geminiApi.status === 'ok' ? 'Activo' : 'Inactivo'}
+                                    </span>
+                                </div>
+
+                                <div className="space-y-3">
+                                    <div className="flex justify-between text-sm py-2 border-b border-gray-100 dark:border-gray-700">
+                                        <span className="text-gray-500 dark:text-gray-400">Estado API</span>
+                                        <span className="font-medium text-gray-800 dark:text-white">{health.geminiApi.status === 'ok' ? 'Funcional' : 'No configurado'}</span>
+                                    </div>
+                                    <div className="flex flex-col gap-2">
+                                        {health.geminiApi.message && (
+                                            <div className="p-2 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 text-xs rounded-md">
+                                                {health.geminiApi.message}
+                                            </div>
+                                        )}
+                                        <a
+                                            href="https://aistudio.google.com/app/apikey"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-xs text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 flex items-center gap-1 font-medium underline"
+                                        >
+                                            Obtener o Renovar API Key en Google AI Studio
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Google Auth Card */}
+                            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                                <div className="flex justify-between items-start mb-4">
+                                    <div className="flex items-center gap-3">
+                                        <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded-lg">
+                                            <Globe className="h-6 w-6 text-red-600 dark:text-red-400" />
+                                        </div>
+                                        <div>
+                                            <h3 className="font-semibold text-lg text-gray-800 dark:text-white">Google Login</h3>
+                                            <p className="text-sm text-gray-500 dark:text-gray-400">Autenticación OAuth 2.0</p>
+                                        </div>
+                                    </div>
+                                    <span className={`px-3 py-1 rounded-full text-xs font-semibold uppercase ${getStatusColor(health.googleAuth.status)}`}>
+                                        {health.googleAuth.status === 'ok' ? 'Configurado' : 'Pendiente'}
+                                    </span>
+                                </div>
+
+                                <div className="space-y-3">
+                                    <div className="flex justify-between text-sm py-2 border-b border-gray-100 dark:border-gray-700">
+                                        <span className="text-gray-500 dark:text-gray-400">Configuración</span>
+                                        <span className="font-medium text-gray-800 dark:text-white">{health.googleAuth.message}</span>
+                                    </div>
+                                    <div className="flex flex-col gap-2">
+                                        <a
+                                            href="https://console.cloud.google.com/apis/credentials"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-xs text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 flex items-center gap-1 font-medium underline"
+                                        >
+                                            Gestionar Credenciales en Google Cloud Console
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
                             {/* External API Card */}
                             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
                                 <div className="flex justify-between items-start mb-4">

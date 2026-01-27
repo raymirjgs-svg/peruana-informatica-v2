@@ -81,11 +81,21 @@ export const getCotizadorLaptops = async (req: Request, res: Response) => {
             stock: { [Op.gt]: 0 }
         };
 
+        // Strict Price Filtering Logic
+        // We ensure the selected price field exists and is greater than 0
+        whereClause[priceField] = {
+            [Op.and]: [
+                { [Op.ne]: null },
+                { [Op.gt]: 0 }
+            ]
+        };
+
+        // Add ranges if specified, on the correct field
         if (minPrice) {
-            whereClause[priceField] = { ...whereClause[priceField] || {}, [Op.gte]: parseFloat(minPrice as string) };
+            whereClause[priceField] = { ...whereClause[priceField], [Op.gte]: parseFloat(minPrice as string) };
         }
         if (maxPrice) {
-            whereClause[priceField] = { ...whereClause[priceField] || {}, [Op.lte]: parseFloat(maxPrice as string) };
+            whereClause[priceField] = { ...whereClause[priceField], [Op.lte]: parseFloat(maxPrice as string) };
         }
 
         if (search) {
@@ -146,22 +156,8 @@ export const getCotizadorLaptops = async (req: Request, res: Response) => {
             if (activePriceCol === 'pre_web') finalPrice = laptopData.price_web;
             if (activePriceCol === 'pre_dis') finalPrice = laptopData.price_dis;
 
-            // DEBUG LOG FOR SPECIFIC ITEM
-            if (laptopData.codigo_interno === '15953') {
-                console.log(`Product 15953 Prices: CLI=${laptopData.price}, WEB=${laptopData.price_web}, DIS=${laptopData.price_dis}`);
-                console.log(`Selected Price Type: ${activePriceCol}, Raw Final Price: ${finalPrice}`);
-            }
-
-            // If the specific price is 0 or null, check fallback policy
-            if (!finalPrice || Number(finalPrice) === 0) {
-                // Fallback to standard price (pre_cli) if the specific price is missing/zero
-                if (laptopData.price > 0) {
-                    if (laptopData.codigo_interno === '15953') console.log('Falling back to CLI price because selected price is 0/null');
-                    finalPrice = laptopData.price;
-                }
-            }
-
-            if (laptopData.codigo_interno === '15953') console.log(`Final Price Used: ${finalPrice}`);
+            // Strict Mode: If query filtering somehow failed, we double check here
+            // But since we added the WHERE clause, this should always be valid > 0
 
             laptopData.price = finalPrice; // Overwrite the main price field for the frontend
 

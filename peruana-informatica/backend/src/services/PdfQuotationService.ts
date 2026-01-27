@@ -23,124 +23,241 @@ export class PdfQuotationService {
       format: 'a4'
     });
 
-    // Configurar colores
-    doc.setFillColor(239, 246, 255); // Fondo azul claro para cabecera
+    // --- HELPER FUNCTION: Number to Words (Spanish) ---
+    const numberToWords = (num: number): string => {
+      const unidades = ['', 'UN', 'DOS', 'TRES', 'CUATRO', 'CINCO', 'SEIS', 'SIETE', 'OCHO', 'NUEVE'];
+      const decenas = ['', 'DIEZ', 'VEINTE', 'TREINTA', 'CUARENTA', 'CINCUENTA', 'SESENTA', 'SETENTA', 'OCHENTA', 'NOVENTA'];
+      const centenas = ['', 'CIENTO', 'DOSCIENTOS', 'TRESCIENTOS', 'CUATROCIENTOS', 'QUINIENTOS', 'SEISCIENTOS', 'SETECIENTOS', 'OCHOCIENTOS', 'NOVECIENTOS'];
 
-    // Título del documento
-    doc.setFontSize(18);
-    doc.setTextColor(0, 0, 0); // Negro
-    doc.setFont('helvetica', 'bold');
-    doc.text('COTIZACIÓN', 105, 20, { align: 'center' });
+      const convertGroup = (n: number): string => {
+        if (n === 0) return '';
+        if (n === 100) return 'CIEN';
 
-    // Información de la empresa (en rectángulo destacado)
-    doc.setDrawColor(0, 64, 128); // Azul oscuro
-    doc.setFillColor(239, 246, 255); // Azul muy claro
-    doc.rect(15, 25, 180, 40, 'F'); // Rellenar rectángulo
-    doc.line(15, 25, 195, 25); // Borde superior
-    doc.line(15, 65, 195, 65); // Borde inferior
-    doc.line(15, 25, 15, 65); // Borde izquierdo
-    doc.line(195, 25, 195, 65); // Borde derecho
+        let str = '';
+        const c = Math.floor(n / 100);
+        const d = Math.floor((n % 100) / 10);
+        const u = n % 10;
 
-    doc.setFontSize(10);
-    doc.setTextColor(0, 64, 128); // Azul oscuro
-    doc.setFont('helvetica', 'normal');
-    doc.text('Peruana Informática', 20, 35);
-    doc.text('RUC: 20123456789', 20, 40);
-    doc.text('Av. Ejemplo 123, Lima', 20, 45);
-    doc.text('Teléfono: (01) 123-4567', 20, 50);
-    doc.text('Email: info@peruana-informatica.com', 20, 55);
-    doc.text(`Código: ${quotation.code}`, 150, 35);
-    doc.text(`Fecha: ${new Date(quotation.created_at).toLocaleDateString()}`, 150, 40);
-    doc.text(`Válido hasta: ${new Date(quotation.valid_until).toLocaleDateString()}`, 150, 45);
+        if (c > 0) str += centenas[c] + ' ';
 
-    // Línea divisoria
-    doc.setDrawColor(0, 0, 0);
-    doc.setFillColor(255, 255, 255); // Blanco
-    doc.line(20, 70, 190, 70);
+        if (d === 1) {
+          if (u === 0) str += 'DIEZ';
+          else if (u === 1) str += 'ONCE';
+          else if (u === 2) str += 'DOCE';
+          else if (u === 3) str += 'TRECE';
+          else if (u === 4) str += 'CATORCE';
+          else if (u === 5) str += 'QUINCE';
+          else str += 'DIECI' + unidades[u];
+        } else if (d > 1) {
+          str += decenas[d];
+          if (u > 0) str += ' Y ' + unidades[u];
+        } else {
+          if (u > 0) str += unidades[u];
+        }
+        return str.trim();
+      };
 
-    // Información del cliente
-    doc.setFontSize(12);
-    doc.setTextColor(0, 64, 128); // Azul oscuro
-    doc.setFont('helvetica', 'bold');
-    doc.text('DATOS DEL CLIENTE', 20, 80);
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(10);
-    doc.setTextColor(0, 0, 0); // Negro
-    doc.text(`Nombre: ${quotation.client_name}`, 20, 88);
-    doc.text(`Email: ${quotation.client_email}`, 20, 93);
-    if (quotation.client_phone) doc.text(`Teléfono: ${quotation.client_phone}`, 20, 98);
-    if (quotation.client_company) doc.text(`Empresa: ${quotation.client_company}`, 20, 103);
-    if (quotation.client_ruc) doc.text(`RUC: ${quotation.client_ruc}`, 20, 108);
-    if (quotation.client_address) doc.text(`Dirección: ${quotation.client_address}`, 20, 113);
+      const integerPart = Math.floor(num);
+      const decimalPart = Math.round((num - integerPart) * 100);
 
-    // Cabecera de tabla de productos
-    doc.setFontSize(12);
-    doc.setTextColor(0, 64, 128); // Azul oscuro
-    doc.text('DETALLE DE PRODUCTOS', 20, 125);
-
-    // Tabla de productos
-    const startY = 130;
-    autoTable(doc, {
-      head: [['PRODUCTO', 'CANT.', 'PRECIO UNITARIO', 'SUBTOTAL']],
-      body: quotation.items.map((item: any) => [
-        item.product_name || item.product?.name || 'Producto desconocido',
-        String(item.quantity),
-        `S/. ${(typeof item.product_price === 'string' ? parseFloat(item.product_price) : item.product_price).toFixed(2)}`,
-        `S/. ${(typeof item.subtotal === 'string' ? parseFloat(item.subtotal) : item.subtotal).toFixed(2)}`
-      ]),
-      startY: startY,
-      margin: { left: 20, right: 20 },
-      styles: {
-        fontSize: 9,
-        cellPadding: 3
-      },
-      headStyles: {
-        fillColor: [0, 64, 128], // Azul oscuro
-        textColor: 255,
-        fontSize: 9
-      },
-      bodyStyles: {
-        fillColor: [255, 255, 255],
-        textColor: 0
+      let output = '';
+      if (integerPart === 0) output = 'CERO';
+      else if (integerPart >= 1000) {
+        const thousands = Math.floor(integerPart / 1000);
+        const remainder = integerPart % 1000;
+        if (thousands === 1) output += 'MIL ';
+        else output += convertGroup(thousands) + ' MIL ';
+        if (remainder > 0) output += convertGroup(remainder);
+      } else {
+        output += convertGroup(integerPart);
       }
-    });
 
-    // Calcular la posición final de la tabla
-    const finalY = (doc as any).lastAutoTable.finalY || startY;
+      return `${output} CON ${decimalPart.toString().padStart(2, '0')}/100 SOLES`;
+    };
 
-    // Subtotales y totales
-    const subtotal = typeof quotation.subtotal === 'string' ? parseFloat(quotation.subtotal) : quotation.subtotal;
-    const igv = typeof quotation.igv === 'string' ? parseFloat(quotation.igv) : quotation.igv;
-    const total = typeof quotation.total === 'string' ? parseFloat(quotation.total) : quotation.total;
+    // --- HEADER ---
 
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'normal');
-    doc.setTextColor(0, 0, 0); // Negro
-    doc.text(`Subtotal: S/. ${subtotal.toFixed(2)}`, 140, finalY + 10);
-    doc.text(`IGV (18%): S/. ${igv.toFixed(2)}`, 140, finalY + 15);
+    // Logo (Simulated or Placeholder) - Left
+    // doc.addImage(...) if we had one. For now, we leave the space or draw a box.
+    doc.setFillColor(200, 200, 200);
+    // doc.rect(10, 10, 25, 25, 'F'); // Placeholder for logo
+    doc.setFontSize(30);
+    doc.setTextColor(200, 0, 0);
+    doc.setFont('helvetica', 'bold');
+    doc.text('P', 15, 28); // "P" Logo placeholder
+
+    // Company Info - Center
+    doc.setTextColor(0, 0, 0);
     doc.setFontSize(14);
     doc.setFont('helvetica', 'bold');
-    doc.text(`TOTAL: S/. ${total.toFixed(2)}`, 140, finalY + 25);
+    doc.text('PERUANA DE INFORMATICA SAC', 40, 15);
 
-    // Notas
+    doc.setFontSize(7);
     doc.setFont('helvetica', 'normal');
-    doc.setFontSize(9);
-    doc.setTextColor(0, 64, 128); // Azul oscuro
-    doc.text('NOTAS:', 20, finalY + 40);
-    doc.setTextColor(0, 0, 0); // Negro
-    doc.text('• La cotización tiene una vigencia de 7 días hábiles.', 20, finalY + 45);
-    doc.text('• Precios sujetos a cambio sin previo aviso.', 20, finalY + 50);
-    doc.text('• Los productos se entregarán previo pago.', 20, finalY + 55);
+    const startXHeader = 40;
+    doc.text('Direccion : CAL.OCTAVIO MUÑOZ NAJAR NRO. 223B URB. CERCADO', startXHeader, 20);
+    doc.text('Sucursal  : CALLE OCTAVIO MUÑOZ NAJAR N°223-B', startXHeader, 24);
+    doc.text('Visite    : www.peruanadeinformatica.com.pe', startXHeader, 28);
+    doc.text('Email     : ventas@peruanadeinformatica.com.pe', startXHeader, 32);
+    doc.text('Telefonos : Cel. 973822146', startXHeader, 36);
 
-    // Pie de página
-    doc.setDrawColor(0, 64, 128); // Azul oscuro
-    doc.line(20, 275, 190, 275);
+    // RUC Box - Right
+    doc.setDrawColor(200, 200, 200);
+    doc.rect(130, 8, 70, 28); // Box Frame
+
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.text('RUC 20454836066', 165, 14, { align: 'center' });
+
+    doc.setFillColor(240, 240, 240); // Optional background for title
+    doc.rect(130, 16, 70, 8, 'F'); // Background strip
+    doc.setTextColor(0, 0, 0);
+    doc.text('COTIZACION', 165, 21, { align: 'center' });
+
+    doc.setFontSize(12);
+    doc.text(`${quotation.code}`, 165, 30, { align: 'center' });
     doc.setFontSize(8);
-    doc.setTextColor(0, 64, 128); // Azul oscuro
-    doc.text('Gracias por su preferencia', 105, 280, { align: 'center' });
-    doc.text('Peruana Informática © 2025', 105, 285, { align: 'center' });
+    doc.setFont('helvetica', 'normal');
+    doc.text('Cod. 131977', 165, 34, { align: 'center' });
 
-    // Devolver el PDF como buffer
+
+    // --- CLIENT INFO ---
+    const clientY = 45;
+
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Señor(es) :', 10, clientY);
+    doc.setFont('helvetica', 'normal');
+    doc.text(quotation.client_name || '-', 30, clientY);
+
+    doc.setFont('helvetica', 'bold');
+    doc.text('Dirección :', 10, clientY + 5);
+    doc.setFont('helvetica', 'normal');
+    doc.text(quotation.client_address || '-', 30, clientY + 5);
+
+    // Row with multiple fields
+    const rowY = clientY + 10;
+
+    doc.setFont('helvetica', 'bold');
+    doc.text('RUC :', 10, rowY);
+    doc.setFont('helvetica', 'normal');
+    doc.text(quotation.client_ruc || '-', 20, rowY);
+
+    doc.setFont('helvetica', 'bold');
+    doc.text('Forma de pago :', 50, rowY);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Contado', 75, rowY); // Hardcoded as per sample, or dynamic if available
+
+    doc.setFont('helvetica', 'bold');
+    doc.text('Validez :', 110, rowY);
+    doc.setFont('helvetica', 'normal');
+    // Calculate validity days approx or hardcode
+    const days = Math.ceil((new Date(quotation.valid_until).getTime() - new Date(quotation.created_at).getTime()) / (1000 * 3600 * 24));
+    doc.text(`${days} día(s)`, 125, rowY);
+
+    doc.setFont('helvetica', 'bold');
+    doc.text('Fecha Emision :', 145, rowY);
+    doc.setFont('helvetica', 'normal');
+    const dateStr = new Date(quotation.created_at).toLocaleString('es-PE', { hour12: false });
+    doc.text(dateStr, 168, rowY);
+
+
+    // --- TABLE ---
+    const tableY = rowY + 5;
+
+    autoTable(doc, {
+      startY: tableY,
+      head: [['CANTIDAD', 'UND', 'CODIGO', 'DESCRIPCIÓN', 'P. UNITARIO', 'TOTAL']],
+      body: quotation.items.map((item: any) => {
+        // Format description possibly with specs
+        let description = item.product_name || item.product?.name || 'Producto desconocido';
+        // Clean description needed?
+
+        return [
+          item.quantity.toFixed(3), // 1.000
+          'UND', // Hardcoded unit
+          item.product?.codigo_interno || item.product?.cod_producto || '-',
+          description,
+          (Number(item.product_price) || 0).toFixed(2),
+          (Number(item.subtotal) || 0).toFixed(2)
+        ];
+      }),
+      styles: {
+        fontSize: 7,
+        cellPadding: 2,
+        valign: 'middle',
+        lineWidth: 0.1,
+        lineColor: [200, 200, 200]
+      },
+      headStyles: {
+        fillColor: [220, 220, 220], // Light gray
+        textColor: 0, // Black text
+        fontStyle: 'bold',
+        halign: 'center'
+      },
+      columnStyles: {
+        0: { halign: 'center', cellWidth: 15 }, // Cantidad
+        1: { halign: 'center', cellWidth: 10 }, // Und
+        2: { halign: 'center', cellWidth: 15 }, // Codigo
+        3: { halign: 'left' }, // Descripcion (Auto width)
+        4: { halign: 'right', cellWidth: 20 }, // Unitario
+        5: { halign: 'right', cellWidth: 20 }  // Total
+      },
+      theme: 'plain' // Removes default striping, we want simple borders
+    });
+
+    const finalY = (doc as any).lastAutoTable.finalY + 5;
+
+
+    // --- FOOTER & TOTALS ---
+
+    // Amount in words
+    const totalAmount = typeof quotation.total === 'string' ? parseFloat(quotation.total) : quotation.total;
+    const amountText = numberToWords(totalAmount);
+
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`SON: ${amountText}`, 10, finalY);
+
+    const boxY = finalY + 5;
+
+    // Totals Box (Right)
+    const totalsX = 140;
+    const totalsWidth = 60;
+    const totalsLineH = 5;
+
+    // Calculate totals
+    const opGravada = totalAmount / 1.18;
+    const igv = totalAmount - opGravada;
+
+    doc.setDrawColor(200, 200, 200);
+    // doc.rect(totalsX, boxY, totalsWidth, 20); // Box frame
+
+    doc.text('Op. Gravada', totalsX + 2, boxY + totalsLineH);
+    doc.text('S/', totalsX + 35, boxY + totalsLineH);
+    doc.text(opGravada.toFixed(2), 195, boxY + totalsLineH, { align: 'right' });
+
+    doc.text('IGV (18%)', totalsX + 2, boxY + totalsLineH * 2);
+    doc.text('S/', totalsX + 35, boxY + totalsLineH * 2);
+    doc.text(igv.toFixed(2), 195, boxY + totalsLineH * 2, { align: 'right' });
+
+    doc.setFont('helvetica', 'bold');
+    doc.text('Importe Total', totalsX + 2, boxY + totalsLineH * 3);
+    doc.text('S/', totalsX + 35, boxY + totalsLineH * 3);
+    doc.text(totalAmount.toFixed(2), 195, boxY + totalsLineH * 3, { align: 'right' });
+
+
+    // Notes / Conditions (Left)
+    doc.setFontSize(7);
+    doc.setFont('helvetica', 'normal');
+    doc.text('CONDICIONES DE VENTA: IGV Incluido - Sin otro Particular, quedamos de ustedes', 10, boxY + 20);
+
+    // Sales Assitant
+    doc.setFontSize(8);
+    doc.text('VENDEDOR(A): SISTEMA WEB', 130, boxY + 30);
+    doc.setFontSize(7);
+    doc.text('Observacion: Sujeta a variación de precios', 130, boxY + 34);
+
     return Buffer.from(doc.output('arraybuffer'));
   }
 }

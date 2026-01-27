@@ -13,9 +13,9 @@ const pageSchema = z.object({
     title: z.string().min(3, 'El título debe tener al menos 3 caracteres'),
     slug: z.string().min(3, 'El enlace permanente es requerido').regex(/^[a-z0-9-]+$/, 'Solo minúsculas, números y guiones'),
     content: z.string().min(10, 'El contenido es muy corto'),
-    is_published: z.boolean().default(false),
-    meta_title: z.string().optional(),
-    meta_description: z.string().optional(),
+    is_published: z.boolean(),
+    meta_title: z.string().optional().or(z.literal('')),
+    meta_description: z.string().optional().or(z.literal('')),
 });
 
 type PageFormData = z.infer<typeof pageSchema>;

@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+dotenv.config();
 import path from "path";
 import helmet from "helmet";
 import swaggerUi from "swagger-ui-express";
@@ -56,7 +57,6 @@ import { initRedis } from "./config/redis";
 import { logger } from "./config/logger";
 import { requestLogger, errorLogger } from "./middleware/logger";
 
-dotenv.config();
 
 // Initialize Redis (graceful degradation if unavailable)
 initRedis();
@@ -169,6 +169,8 @@ app.use("/api/admin/wishlists", require("./routes/admin/wishlistRoutes").default
 app.use("/api/admin/analytics", require("./routes/admin/analyticsRoutes").default); // Rutas admin de analytics
 app.use("/api/admin/system", adminSystemRoutes); // Rutas de monitoreo del sistema
 app.use("/api/admin", require("./routes/admin/roleRoutes").default); // Rutas admin de roles y permisos
+app.use("/api/admin/discounts", require("./routes/admin/discountRoutes").default); // Rutas admin de descuentos
+
 
 // Rutas API Externa
 app.use("/api/external", externalApiRoutes);
@@ -183,6 +185,7 @@ app.use("/api/sync", syncRoutes); // Rutas de sincronización con API Externa
 app.use("/api/auth", authRoutes); // Rutas de autenticación de clientes
 app.use("/api/cart", cartRoutes); // Rutas de carrito
 app.use("/api/payment", paymentRoutes); // Rutas de pago
+app.use("/api/promo-banners", require("./routes/promoBannerRoutes").default); // Rutas públicas de banners
 
 // Ruta temporal para sincronizar tablas de pedidos y cotizador
 app.get('/api/debug/sync-orders', async (req, res) => {
@@ -192,12 +195,16 @@ app.get('/api/debug/sync-orders', async (req, res) => {
     const { Product } = require('./models/Product');
     const { Setting } = require('./models/Setting');
     const { Page } = require('./models/Page');
+    const { PromoBanner } = require('./models/PromoBanner');
+    const { Review } = require('./models/Review');
 
     await Order.sync({ alter: true });
     await OrderItem.sync({ alter: true });
     await Product.sync({ alter: true }); // Add price columns
     await Setting.sync({ alter: true }); // Create settings table
     await Page.sync({ alter: true }); // Create pages table
+    await PromoBanner.sync({ alter: true }); // Create promo banners table
+    await Review.sync({ alter: true }); // Create review table
 
     // Init default setting
     const setting = await Setting.findByPk('cotizador_price_type');

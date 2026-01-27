@@ -5,20 +5,17 @@ import { checkPermission } from '../../middleware/permissions';
 
 const router = Router();
 
-// All routes require authentication
-router.use(authenticateToken);
-
 // Roles
-router.get('/roles', checkPermission('manage-roles'), roleController.getAllRoles.bind(roleController));
-router.get('/roles/:id', checkPermission('manage-roles'), roleController.getRoleById.bind(roleController));
-router.post('/roles', checkPermission('manage-roles'), roleController.createRole.bind(roleController));
-router.put('/roles/:id', checkPermission('manage-roles'), roleController.updateRole.bind(roleController));
-router.delete('/roles/:id', checkPermission('manage-roles'), roleController.deleteRole.bind(roleController));
+router.get('/roles', authenticateToken, checkPermission('manage-roles'), roleController.getAllRoles.bind(roleController));
+router.get('/roles/:id', authenticateToken, checkPermission('manage-roles'), roleController.getRoleById.bind(roleController));
+router.post('/roles', authenticateToken, checkPermission('manage-roles'), roleController.createRole.bind(roleController));
+router.put('/roles/:id', authenticateToken, checkPermission('manage-roles'), roleController.updateRole.bind(roleController));
+router.delete('/roles/:id', authenticateToken, checkPermission('manage-roles'), roleController.deleteRole.bind(roleController));
 
 // Permissions
-router.get('/permissions', checkPermission('manage-roles'), roleController.getAllPermissions.bind(roleController));
+router.get('/permissions', authenticateToken, checkPermission('manage-roles'), roleController.getAllPermissions.bind(roleController));
 
 // Assign role to user
-router.post('/assign-role', checkPermission('manage-users'), roleController.assignRoleToUser.bind(roleController));
+router.post('/assign-role', authenticateToken, checkPermission('manage-users'), roleController.assignRoleToUser.bind(roleController));
 
 export default router;

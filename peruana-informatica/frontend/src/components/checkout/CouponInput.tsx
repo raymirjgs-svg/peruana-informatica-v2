@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Tag, X, Check } from 'lucide-react';
 import { couponService, type Coupon } from '@/services/CouponService';
 import { toast } from 'sonner';
@@ -14,6 +14,15 @@ export function CouponInput({ subtotal, onCouponApplied }: CouponInputProps) {
     const [couponCode, setCouponCode] = useState('');
     const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
     const [isValidating, setIsValidating] = useState(false);
+
+    // Re-validate coupon rules when subtotal changes
+    useEffect(() => {
+        if (appliedCoupon && appliedCoupon.min_purchase && subtotal < appliedCoupon.min_purchase) {
+            toast.error(`El cupón requiere una compra mínima de S/. ${appliedCoupon.min_purchase}`);
+            setAppliedCoupon(null);
+            onCouponApplied(null);
+        }
+    }, [subtotal, appliedCoupon, onCouponApplied]);
 
     const handleApplyCoupon = async () => {
         if (!couponCode.trim()) {
@@ -52,6 +61,13 @@ export function CouponInput({ subtotal, onCouponApplied }: CouponInputProps) {
         toast.info('Cupón removido');
     };
 
+    // Calculate current discount for display purposes
+    const currentDiscountAmount = appliedCoupon
+        ? (appliedCoupon.type === 'percentage'
+            ? (subtotal * appliedCoupon.value) / 100
+            : appliedCoupon.value)
+        : 0;
+
     return (
         <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
             <div className="flex items-center gap-2 mb-3">
@@ -80,7 +96,7 @@ export function CouponInput({ subtotal, onCouponApplied }: CouponInputProps) {
                                     }
                                 </p>
                                 <p className="text-xs text-green-600 dark:text-green-400 mt-1">
-                                    Ahorras: S/. {appliedCoupon.discount_amount.toFixed(2)}
+                                    Ahorras: S/. {currentDiscountAmount.toFixed(2)}
                                 </p>
                             </div>
                         </div>

@@ -69,7 +69,8 @@ const menuItems: MenuItem[] = [
       { name: "Reseñas", href: "/admin/reviews", icon: <MessageCircle className="h-4 w-4" /> },
       { name: "Favoritos", href: "/admin/wishlists", icon: <Heart className="h-4 w-4" /> },
       { name: "Cupones", href: "/admin/coupons", icon: <Ticket className="h-4 w-4" /> },
-      { name: "Descuentos", href: "/admin/discounts", icon: <Percent className="h-4 w-4" /> }
+      { name: "Descuentos", href: "/admin/discounts", icon: <Percent className="h-4 w-4" /> },
+      { name: "Publicidad Pop-ups", href: "/admin/promo-banners", icon: <ImageIcon className="h-4 w-4" /> }
     ]
   },
   {

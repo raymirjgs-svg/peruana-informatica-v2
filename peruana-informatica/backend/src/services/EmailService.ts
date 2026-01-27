@@ -57,7 +57,6 @@ export class EmailService {
         });
     }
 
-    // ... sendInvoiceToClient implementation kept or updated similarly if needed
     async sendInvoiceToClient(order: any, invoiceFilename: string) {
         const fs = require('fs');
         const path = require('path');
@@ -87,4 +86,16 @@ export class EmailService {
             }]
         });
     }
+
+    async sendEmail({ to, subject, html }: { to: string; subject: string; html: string }) {
+        await this.transporter.sendMail({
+            from: `"Peruana Informática" <${process.env.SMTP_USER}>`,
+            to,
+            subject,
+            html
+        });
+    }
 }
+
+export const emailService = new EmailService();
+export default emailService;

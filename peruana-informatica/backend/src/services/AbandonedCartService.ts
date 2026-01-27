@@ -32,7 +32,7 @@ export class AbandonedCartService {
                 }]
             });
 
-            return abandonedCarts.filter(cart =>
+            return (abandonedCarts as any[]).filter(cart =>
                 cart.items && cart.items.length > 0
             );
         } catch (error) {
@@ -49,7 +49,7 @@ export class AbandonedCartService {
             const carts = await this.findAbandonedCarts();
             let sentCount = 0;
 
-            for (const cart of carts) {
+            for (const cart of (carts as any[])) {
                 // Only send if we have customer email (from user or session)
                 const customerEmail = cart.user_id ?
                     (await cart.getUser?.())?.email :

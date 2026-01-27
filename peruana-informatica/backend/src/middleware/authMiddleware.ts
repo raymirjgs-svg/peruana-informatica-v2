@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-development-only';
+const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
 
 export const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers['authorization'];
@@ -19,4 +19,15 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
         req.user = user;
         next();
     });
+};
+
+export const requireAdmin = (req: Request, res: Response, next: NextFunction) => {
+    // @ts-ignore
+    const userRole = req.user?.role;
+    // Allow admin, super-admin, etc.
+    if (['admin', 'super-admin'].includes(userRole)) {
+        next();
+    } else {
+        return res.status(403).json({ error: 'Role unauthorized' });
+    }
 };

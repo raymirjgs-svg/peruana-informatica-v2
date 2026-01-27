@@ -177,8 +177,8 @@ async function bulkAssignProducts() {
         let skipped = 0;
 
         for (const product of productsWithoutCategory) {
-            const productName = (product as any).nombre?.toLowerCase() || '';
-            const productDesc = (product as any).descripcion?.toLowerCase() || '';
+            const productName = (product as any).name?.toLowerCase() || '';
+            const productDesc = (product as any).description?.toLowerCase() || '';
             const searchText = `${productName} ${productDesc}`;
 
             // Buscar regla que coincida
@@ -188,7 +188,7 @@ async function bulkAssignProducts() {
 
             if (!matchedRule) {
                 skipped++;
-                console.log(`⏭️  SKIP: ${(product as any).nombre}`);
+                console.log(`⏭️  SKIP: ${(product as any).name}`);
                 continue;
             }
 
@@ -196,8 +196,11 @@ async function bulkAssignProducts() {
             let category = null;
             if (matchedRule.category) {
                 [category] = await Category.findOrCreate({
-                    where: { nombre: matchedRule.category },
-                    defaults: { nombre: matchedRule.category }
+                    where: { name: matchedRule.category },
+                    defaults: {
+                        name: matchedRule.category,
+                        slug: Category.generateSlug(matchedRule.category)
+                    }
                 });
             }
 
@@ -206,13 +209,14 @@ async function bulkAssignProducts() {
             if (matchedRule.subCategory && category) {
                 [subCategory] = await SubCategory.findOrCreate({
                     where: {
-                        nombre: matchedRule.subCategory,
+                        name: matchedRule.subCategory,
                         category_id: category.id
                     },
                     defaults: {
-                        nombre: matchedRule.subCategory,
-                        category_id: category.id
-                    }
+                        name: matchedRule.subCategory,
+                        category_id: category.id,
+                        slug: SubCategory.generateSlug(matchedRule.subCategory)
+                    } as any
                 });
             }
 
@@ -229,7 +233,7 @@ async function bulkAssignProducts() {
             }
 
             assigned++;
-            console.log(`✅ ASIGNADO: ${(product as any).nombre} → ${matchedRule.category} > ${matchedRule.subCategory}`);
+            console.log(`✅ ASIGNADO: ${(product as any).name} → ${matchedRule.category} > ${matchedRule.subCategory}`);
         }
 
         console.log(`\n📊 Resumen:`);

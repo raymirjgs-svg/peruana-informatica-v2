@@ -653,8 +653,7 @@ export default function BlogAdminPage() {
               <Button
                 onClick={loadDemoData}
                 disabled={loadingDemo}
-                variant="secondary"
-                className="bg-gray-100 hover:bg-gray-200"
+                className="bg-gray-100 hover:bg-gray-200 text-gray-700"
               >
                 {loadingDemo ? "Cargando..." : "📦 Cargar Posts Demo"}
               </Button>
@@ -705,7 +704,7 @@ export default function BlogAdminPage() {
                   <div className="flex gap-2 ml-4">
                     <Button
                       size="sm"
-                      variant="secondary"
+                      className="bg-gray-100 hover:bg-gray-200 text-gray-700"
                       onClick={() => openEditPostModal(post)}
                     >
                       Editar
@@ -713,7 +712,7 @@ export default function BlogAdminPage() {
                     {post.status === "draft" && (
                       <Button
                         size="sm"
-                        variant="success"
+                        className="bg-green-600 hover:bg-green-700 text-white"
                         onClick={() => updatePostStatus(post.id, "published")}
                       >
                         Publicar
@@ -722,7 +721,7 @@ export default function BlogAdminPage() {
                     {post.status === "published" && (
                       <Button
                         size="sm"
-                        variant="secondary"
+                        className="bg-gray-500 hover:bg-gray-600 text-white"
                         onClick={() => updatePostStatus(post.id, "draft")}
                       >
                         Despublicar
@@ -730,7 +729,7 @@ export default function BlogAdminPage() {
                     )}
                     <Button
                       size="sm"
-                      variant="danger"
+                      className="bg-red-600 hover:bg-red-700 text-white"
                       onClick={() => deletePost(post.id)}
                     >
                       Eliminar
@@ -751,7 +750,7 @@ export default function BlogAdminPage() {
                   <Button
                     onClick={loadDemoData}
                     disabled={loadingDemo}
-                    variant="secondary"
+                    className="bg-gray-100 hover:bg-gray-200 text-gray-700"
                   >
                     {loadingDemo ? "Cargando..." : "📦 Cargar Posts Demo"}
                   </Button>

@@ -36,6 +36,12 @@ interface SeoAnalysis {
     pagesByType: { [key: string]: number };
     recommendations: string[];
   };
+  pagesWithIssues?: {
+    id: number;
+    page_type: string;
+    page_identifier?: string;
+    issues: string[];
+  }[];
   lastUpdated: string;
 }
 
@@ -304,6 +310,35 @@ class SeoService {
       return result;
     } catch (error) {
       console.error("Error fetching SEO analysis:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * Generar sugerencias SEO con IA
+   */
+  static async suggestMetadata(data: {
+    page_type: string;
+    page_identifier?: string;
+    current_title?: string;
+    current_description?: string;
+  }): Promise<ApiResponse<any>> {
+    try {
+      const response = await fetch(`${this.API_BASE}/seo/suggest`, {
+        method: "POST",
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || "Error al obtener sugerencias de la IA");
+      }
+
+      return result;
+    } catch (error) {
+      console.error("Error getting AI suggestions:", error);
       throw error;
     }
   }

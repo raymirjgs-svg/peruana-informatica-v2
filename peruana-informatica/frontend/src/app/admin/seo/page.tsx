@@ -30,6 +30,7 @@ export default function SEOPage() {
     is_active: true,
   });
   const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
+  const [isAiLoading, setIsAiLoading] = useState(false);
 
   // Cargar datos iniciales
   const loadData = useCallback(async () => {
@@ -180,6 +181,43 @@ export default function SEOPage() {
     setIsModalOpen(true);
   };
 
+  // Sugerir metadatos con IA
+  const handleAiSuggest = async () => {
+    if (!formData.page_type) {
+      alert("Por favor selecciona un tipo de página primero");
+      return;
+    }
+
+    try {
+      setIsAiLoading(true);
+      const result = await SeoService.suggestMetadata({
+        page_type: formData.page_type,
+        page_identifier: formData.page_identifier,
+        current_title: formData.meta_title,
+        current_description: formData.meta_description,
+      });
+
+      if (result.success && result.data) {
+        const sugg = result.data;
+        setFormData((prev) => ({
+          ...prev,
+          meta_title: sugg.meta_title || prev.meta_title,
+          meta_description: sugg.meta_description || prev.meta_description,
+          meta_keywords: sugg.meta_keywords || prev.meta_keywords,
+          og_title: sugg.og_title || prev.og_title,
+          og_description: sugg.og_description || prev.og_description,
+          twitter_title: sugg.twitter_title || prev.twitter_title,
+          twitter_description:
+            sugg.twitter_description || prev.twitter_description,
+        }));
+      }
+    } catch (err: any) {
+      alert(err.message || "Error al obtener sugerencias de la IA");
+    } finally {
+      setIsAiLoading(false);
+    }
+  };
+
   useEffect(() => {
     loadData();
   }, [loadData]);
@@ -264,24 +302,65 @@ export default function SEOPage() {
         )}
 
         {/* Recomendaciones */}
-        {analysis && analysis.analysis.recommendations.length > 0 && (
-          <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-6 mb-6">
-            <h3 className="font-semibold text-yellow-800 mb-4">
-              ⚠️ Recomendaciones
-            </h3>
-            <ul className="space-y-2">
-              {analysis.analysis.recommendations.map((rec, index) => (
-                <li
-                  key={index}
-                  className="flex items-center text-sm text-yellow-700"
-                >
-                  <span className="text-yellow-600 mr-2">•</span>
-                  {rec}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+        {analysis &&
+          (analysis.analysis.recommendations.length > 0 ||
+            (analysis.pagesWithIssues && analysis.pagesWithIssues.length > 0)) && (
+            <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-6 mb-6">
+              <h3 className="font-semibold text-yellow-800 mb-4">
+                ⚠️ Recomendaciones para llegar al 100%
+              </h3>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h4 className="text-sm font-bold text-yellow-900 mb-2">
+                    General
+                  </h4>
+                  <ul className="space-y-2">
+                    {analysis.analysis.recommendations.map((rec, index) => (
+                      <li
+                        key={index}
+                        className="flex items-start text-sm text-yellow-700"
+                      >
+                        <span className="text-yellow-600 mr-2 mt-1">•</span>
+                        {rec}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {analysis.pagesWithIssues &&
+                  analysis.pagesWithIssues.length > 0 && (
+                    <div>
+                      <h4 className="text-sm font-bold text-yellow-900 mb-2">
+                        Páginas específicas
+                      </h4>
+                      <div className="space-y-3 max-h-60 overflow-y-auto pr-2">
+                        {analysis.pagesWithIssues.map((p) => (
+                          <div
+                            key={p.id}
+                            className="bg-white/50 p-3 rounded border border-yellow-100"
+                          >
+                            <div className="font-semibold text-xs text-gray-800">
+                              {p.page_type}: {p.page_identifier || "Global"}
+                            </div>
+                            <ul className="mt-1">
+                              {p.issues.map((issue: string, i: number) => (
+                                <li
+                                  key={i}
+                                  className="text-[11px] text-red-600 flex items-center"
+                                >
+                                  <span className="mr-1">⚠</span> {issue}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+              </div>
+            </div>
+          )}
 
         {/* Configuraciones SEO */}
         <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
@@ -410,6 +489,25 @@ export default function SEOPage() {
                     ? "Editar Configuración SEO"
                     : "Nueva Configuración SEO"}
                 </h2>
+                <div className="flex gap-2">
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={handleAiSuggest}
+                    disabled={isAiLoading}
+                  >
+                    {isAiLoading ? (
+                      <span className="flex items-center gap-2">
+                        <span className="animate-spin h-3 w-3 border-b-2 border-gray-600 rounded-full"></span>
+                        Pensando...
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-2">
+                        ✨ Sugerir con IA
+                      </span>
+                    )}
+                  </Button>
+                </div>
               </div>
 
               <div className="p-6 space-y-6">

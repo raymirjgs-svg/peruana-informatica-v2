@@ -32,3 +32,12 @@ export const updateSetting = async (req: Request, res: Response) => {
         res.status(500).json({ error: 'Error updating setting' });
     }
 };
+
+export const getCheckoutMode = async (req: Request, res: Response) => {
+    try {
+        const setting = await Setting.findByPk('checkout_mode');
+        res.json({ mode: setting?.value || 'direct' });
+    } catch (error) {
+        res.status(500).json({ error: 'Error fetching checkout mode' });
+    }
+};

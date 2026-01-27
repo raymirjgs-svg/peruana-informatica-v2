@@ -399,6 +399,31 @@ Devuelve el contenido mejorado en formato Markdown, manteniendo la estructura pe
       );
     }
   }
+
+  /**
+   * Generar una respuesta JSON genérica basada en un prompt
+   */
+  async generateJson(prompt: string): Promise<any> {
+    if (!this.isReady()) {
+      throw new Error("Gemini service not configured");
+    }
+
+    try {
+      const result = await this.model.generateContent(prompt);
+      const response = await result.response;
+      let text = response.text().trim();
+
+      // Limpiar bloques de código markdown
+      if (text.startsWith("```")) {
+        text = text.replace(/```json\n?/g, "").replace(/```\n?/g, "");
+      }
+
+      return JSON.parse(text);
+    } catch (error: any) {
+      console.error("❌ Error generating JSON with Gemini:", error);
+      throw error;
+    }
+  }
 }
 
 // Instancia singleton

@@ -31,7 +31,25 @@ export default function CartPage() {
   // Estados del flujo
   const [step, setStep] = useState<'cart' | 'customer' | 'payment' | 'success'>('cart');
   const [orderId, setOrderId] = useState<number | null>(null);
-  const [orderTotal, setOrderTotal] = useState<number>(0); // Guardar total del pedido
+  const [orderTotal, setOrderTotal] = useState<number>(0);
+  const [checkoutMode, setCheckoutMode] = useState<'direct' | 'approval'>('direct');
+
+  // Fetch Checkout Mode
+  useEffect(() => {
+    const fetchCheckoutMode = async () => {
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+        const res = await fetch(`${apiUrl}/api/settings/checkout-mode`);
+        if (res.ok) {
+          const data = await res.json();
+          setCheckoutMode(data.mode);
+        }
+      } catch (error) {
+        console.error('Error fetching checkout mode:', error);
+      }
+    };
+    fetchCheckoutMode();
+  }, []);
 
   // Datos del cliente
   const [customerData, setCustomerData] = useState({
@@ -215,7 +233,13 @@ export default function CartPage() {
       if (response.ok) {
         setOrderId(data.order_id);
         setOrderTotal(totalPrice); // Guardar el total antes de vaciar
-        setStep('payment');
+
+        // Si el estado es pendiente de aprobación, vamos directo a éxito
+        if (data.status === 'pending_approval' || checkoutMode === 'approval') {
+          setStep('success');
+        } else {
+          setStep('payment');
+        }
         clearCart();
       } else {
         setError(data.error || 'No se pudo crear el pedido');
@@ -317,17 +341,29 @@ export default function CartPage() {
               <div className="absolute inset-0 bg-white/10 backdrop-blur-sm"></div>
               <div className="relative">
                 <div className="w-24 h-24 bg-white rounded-full mx-auto flex items-center justify-center shadow-xl mb-4 animate-bounce">
-                  <CheckCircle className="w-14 h-14 text-green-500" />
+                  {checkoutMode === 'approval' ? (
+                    <div className="text-yellow-500">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    </div>
+                  ) : (
+                    <CheckCircle className="w-14 h-14 text-green-500" />
+                  )}
                 </div>
-                <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">¡Pedido Registrado!</h1>
-                <p className="text-green-100 text-lg">Gracias por tu compra</p>
+                <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
+                  {checkoutMode === 'approval' ? 'Solicitud en Revisión' : '¡Pedido Registrado!'}
+                </h1>
+                <p className="text-green-100 text-lg">
+                  {checkoutMode === 'approval'
+                    ? 'Tu pedido requiere aprobación del administrador'
+                    : 'Gracias por tu compra'}
+                </p>
               </div>
             </div>
 
             {/* Número de pedido destacado */}
             <div className="px-8 -mt-6 relative z-10">
-              <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-6 text-center shadow-lg">
-                <p className="text-blue-100 text-sm uppercase tracking-wide mb-1">Número de Pedido</p>
+              <div className={`rounded-2xl p-6 text-center shadow-lg ${checkoutMode === 'approval' ? 'bg-gradient-to-r from-amber-500 to-orange-500' : 'bg-gradient-to-r from-blue-600 to-indigo-600'}`}>
+                <p className="text-white/80 text-sm uppercase tracking-wide mb-1">Número de Pedido</p>
                 <p className="text-4xl font-bold text-white">#{orderId}</p>
               </div>
             </div>
@@ -1191,7 +1227,7 @@ export default function CartPage() {
                   </>
                 ) : (
                   <>
-                    Continuar al Pago
+                    {checkoutMode === 'approval' ? 'Enviar Solicitud' : 'Continuar al Pago'}
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>

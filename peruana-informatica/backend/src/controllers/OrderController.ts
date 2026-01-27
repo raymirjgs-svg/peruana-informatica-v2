@@ -5,6 +5,8 @@ import { Product } from '../models/Product';
 import { sequelize } from '../database/connection';
 import { EmailService } from '../services/EmailService';
 
+import { Setting } from '../models/Setting';
+
 export const createOrder = async (req: Request, res: Response) => {
     const t = await sequelize.transaction();
 
@@ -43,6 +45,11 @@ export const createOrder = async (req: Request, res: Response) => {
             });
         }
 
+        // Determine Checkout Mode
+        const checkoutModeSetting = await Setting.findByPk('checkout_mode');
+        const checkoutMode = checkoutModeSetting?.value || 'direct';
+        const initialStatus = checkoutMode === 'approval' ? 'pending_approval' : 'pending';
+
         // 2. Create Order
         const order = await Order.create({
             customer_name,
@@ -50,7 +57,7 @@ export const createOrder = async (req: Request, res: Response) => {
             customer_phone,
             customer_document,
             total_amount: totalAmount,
-            status: 'pending'
+            status: initialStatus
         }, { transaction: t });
 
         // 3. Create OrderItems
@@ -69,13 +76,13 @@ export const createOrder = async (req: Request, res: Response) => {
         // Enviar emails de notificación
         try {
             const emailService = new EmailService();
-            
+
             // Email al cliente
             await emailService.sendOrderConfirmationToClient(order, processedItems);
-            
+
             // Email al operador/admin
             await emailService.sendNewOrderNotificationToAdmin(order, processedItems);
-            
+
             console.log(`✅ Emails enviados para pedido #${order.id}`);
         } catch (emailError) {
             console.error('⚠️ Error enviando emails:', emailError);
@@ -85,7 +92,8 @@ export const createOrder = async (req: Request, res: Response) => {
         return res.status(201).json({
             success: true,
             message: 'Pedido creado correctamente',
-            order_id: order.id
+            order_id: order.id,
+            status: order.status
         });
 
     } catch (error) {

@@ -6,7 +6,7 @@ import { PeruanaInformaticaService } from './PeruanaInformaticaService';
 export class SyncService {
     private static isSyncing = false;
     private static lastSyncTime = 0;
-    private static SYNC_INTERVAL_MS = 30 * 60 * 1000; // 30 minutes cooldown (API is slower than local JSON)
+    private static SYNC_INTERVAL_MS = 30 * 60 * 1000; // 30 minutes cooldown
 
     static async syncProducts() {
         // Prevent concurrent syncs and respect cooldown
@@ -58,6 +58,11 @@ export class SyncService {
                         const newPriceCot = syncData.pre_cot;
                         const newPriceDis = syncData.pre_dis;
                         const newStock = syncData.stock;
+
+                        if (product.codigo_interno === '15953') {
+                            console.log(`[SYNC DEBUG 15953] DB: Cli=${product.price}, Web=${product.price_web}, Dis=${product.price_dis}`);
+                            console.log(`[SYNC DEBUG 15953] API: Cli=${newPrice}, Web=${newPriceWeb}, Dis=${newPriceDis}`);
+                        }
 
                         if (
                             Number(product.price) !== newPrice ||

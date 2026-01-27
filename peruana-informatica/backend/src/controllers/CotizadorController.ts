@@ -7,10 +7,10 @@ import { Op, Sequelize } from 'sequelize';
 // Helper to determine active price column
 const getActivePriceColumn = async () => {
     const setting = await Setting.findByPk('cotizador_price_type');
-    return setting ? setting.value : 'pre_cot';
+    return setting ? setting.value : 'pre_web';
 };
 
-// Helper function to extract component specs (copied from LaptopController logic)
+// Helper function to extract component specs
 const extractComponentSpecs = (product: any) => {
     const description = product.description || '';
     const cleanDescription = description.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
@@ -54,11 +54,21 @@ const extractComponentSpecs = (product: any) => {
 export const getCotizadorLaptops = async (req: Request, res: Response) => {
     try {
         const { subcategory, minPrice, maxPrice, search } = req.query;
-        const activePriceCol = await getActivePriceColumn(); // e.g., 'pre_cot', 'pre_cli'
+        let activePriceCol = await getActivePriceColumn(); // e.g., 'pre_web', 'pre_cli', 'pre_dis'
 
-        // Map column name to model field if needed (Sequelize maps pre_cli to price, others are exact)
-        // But here we need to READ the correct column.
-        // Product model has: price (pre_cli), price_dis (pre_dis), price_cot (pre_cot), price_web (pre_web)
+        console.log('--- COTIZADOR DEBUG ---');
+        console.log('Active Price Column Setting:', activePriceCol);
+
+        // Handle legacy or fallback
+        if (activePriceCol === 'pre_cot') activePriceCol = 'pre_web';
+
+        // Map setting value to actual DB column name
+        let priceField = 'price'; // Default to pre_cli (price property)
+        if (activePriceCol === 'pre_web') priceField = 'price_web';
+        if (activePriceCol === 'pre_dis') priceField = 'price_dis';
+        if (activePriceCol === 'pre_cli') priceField = 'price';
+
+        console.log('Mapped Price Field for Sorting:', priceField);
 
         // Build filter conditions
         let whereClause: any = {
@@ -70,21 +80,6 @@ export const getCotizadorLaptops = async (req: Request, res: Response) => {
             is_active: true,
             stock: { [Op.gt]: 0 }
         };
-
-        // Price filters must apply to the ACTIVE price column
-        // We can't easily filter by a dynamic column name in Sequelize 'where' unless we use literal or if we know the mapped name.
-        // Since we added price_dis, price_cot, price_web to the model, we can use them.
-
-        // Mapping:
-        // pre_cli -> price
-        // pre_dis -> price_dis
-        // pre_cot -> price_cot
-        // pre_web -> price_web
-
-        let priceField = 'price'; // Default (pre_cli)
-        if (activePriceCol === 'pre_dis') priceField = 'price_dis';
-        if (activePriceCol === 'pre_cot') priceField = 'price_cot';
-        if (activePriceCol === 'pre_web') priceField = 'price_web';
 
         if (minPrice) {
             whereClause[priceField] = { ...whereClause[priceField] || {}, [Op.gte]: parseFloat(minPrice as string) };
@@ -100,7 +95,7 @@ export const getCotizadorLaptops = async (req: Request, res: Response) => {
             ];
         }
 
-        // Subcategory Logic (simplified from LaptopController)
+        // Subcategory Logic
         let includeConditions: any = [
             {
                 model: SubCategory,
@@ -146,21 +141,27 @@ export const getCotizadorLaptops = async (req: Request, res: Response) => {
             const laptopData: any = laptop.toJSON();
 
             // Swap price with the selected price type
-            let finalPrice = laptopData.price; // Default
-            if (activePriceCol === 'pre_dis') finalPrice = laptopData.price_dis;
-            if (activePriceCol === 'pre_cot') finalPrice = laptopData.price_cot;
+            let finalPrice = laptopData.price; // Default (pre_cli)
+
             if (activePriceCol === 'pre_web') finalPrice = laptopData.price_web;
+            if (activePriceCol === 'pre_dis') finalPrice = laptopData.price_dis;
 
-            // If the specific price is 0 or null, fallback to standard price (pre_cli)?
-            // The user said "quiero elegir cualquiera de esos precios". If it's 0, it might be an error or free product.
-            // Let's assume strict selection, but if null/0, maybe fallback to price?
-            // "SyncService" sets them to 0 if missing.
-
-            if (!finalPrice || finalPrice == 0) {
-                // Option: fallback to pre_cli (laptopData.price) if desired, but user might want strict usage.
-                // For now, let's keep it as is, or fallback if 0/null.
-                if (laptopData.price > 0) finalPrice = laptopData.price;
+            // DEBUG LOG FOR SPECIFIC ITEM
+            if (laptopData.codigo_interno === '15953') {
+                console.log(`Product 15953 Prices: CLI=${laptopData.price}, WEB=${laptopData.price_web}, DIS=${laptopData.price_dis}`);
+                console.log(`Selected Price Type: ${activePriceCol}, Raw Final Price: ${finalPrice}`);
             }
+
+            // If the specific price is 0 or null, check fallback policy
+            if (!finalPrice || Number(finalPrice) === 0) {
+                // Fallback to standard price (pre_cli) if the specific price is missing/zero
+                if (laptopData.price > 0) {
+                    if (laptopData.codigo_interno === '15953') console.log('Falling back to CLI price because selected price is 0/null');
+                    finalPrice = laptopData.price;
+                }
+            }
+
+            if (laptopData.codigo_interno === '15953') console.log(`Final Price Used: ${finalPrice}`);
 
             laptopData.price = finalPrice; // Overwrite the main price field for the frontend
 

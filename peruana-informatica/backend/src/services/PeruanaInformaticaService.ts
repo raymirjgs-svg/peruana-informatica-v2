@@ -107,8 +107,22 @@ export class PeruanaInformaticaService {
     }
 
     /**
-     * Actualiza el token en el archivo .env
+     * Checks connection health to the external API
      */
+    static async checkHealth(): Promise<{ status: 'ok' | 'error'; latency: number; message?: string }> {
+        const start = Date.now();
+        try {
+            // Simple network reachability check to the API base URL
+            // We expect 200, 404, or 403, but getting a response means network is up.
+            await axios.get(this.baseUrl, { validateStatus: () => true, timeout: 5000 });
+
+            const latency = Date.now() - start;
+            return { status: 'ok', latency };
+        } catch (error: any) {
+            const latency = Date.now() - start;
+            return { status: 'error', latency, message: error.message };
+        }
+    }
     private static async updateEnvToken(newToken: string): Promise<void> {
         try {
             const envPath = path.join(process.cwd(), '.env');

@@ -27,6 +27,7 @@ import {
   X,
   MessageCircle,
   Heart,
+  Activity,
 } from 'lucide-react';
 
 interface MenuItem {
@@ -88,6 +89,7 @@ const menuItems: MenuItem[] = [
       { name: "Clientes", href: "/admin/customers", icon: <Users className="h-4 w-4" /> },
       { name: "Usuarios", href: "/admin/users", icon: <Users className="h-4 w-4" /> },
       { name: "Configuración", href: "/admin/settings", icon: <Settings className="h-4 w-4" /> },
+      { name: "Monitor de Sistema", href: "/admin/system", icon: <Activity className="h-4 w-4" /> },
       { name: "Contactos", href: "/admin/contacts", icon: <Mail className="h-4 w-4" /> },
       { name: "SEO", href: "/admin/seo", icon: <Search className="h-4 w-4" /> }
     ]

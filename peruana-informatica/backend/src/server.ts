@@ -28,6 +28,7 @@ import pdfQuotationRoutes from "./routes/pdfQuotationRoutes";  // Ruta para PDF 
 import orderRoutes from "./routes/orderRoutes"; // Nuevas rutas de pedidos
 import adminOrderRoutes from "./routes/admin/orderRoutes"; // Nuevas rutas de pedidos ADMIN
 import adminSettingRoutes from "./routes/admin/settingRoutes"; // Rutas de configuración
+import adminSystemRoutes from "./routes/admin/systemRoutes"; // Rutas de sistema
 import cotizadorRoutes from "./routes/cotizadorRoutes"; // Rutas de Cotizador
 import paymentRoutes from "./routes/paymentRoutes"; // Rutas de pagos
 import adminPaymentRoutes from "./routes/admin/paymentRoutes"; // Rutas admin de pagos
@@ -36,6 +37,7 @@ import externalApiRoutes from "./routes/externalApiRoutes"; // Rutas para API Ex
 import syncRoutes from "./routes/syncRoutes"; // Rutas para sincronización con API Externa
 import clientRoutes from "./routes/clientRoutes"; // Rutas para clientes (consulta y descarga)
 import companySettingsRoutes from "./routes/companySettingsRoutes"; // Rutas públicas de configuración de empresa
+import globalSettingsRoutes from "./routes/globalSettingsRoutes"; // Rutas públicas de configuración global
 import adminCompanySettingsRoutes from "./routes/admin/companySettingsRoutes"; // Rutas admin de configuración de empresa
 import authRoutes from "./routes/authRoutes"; // Rutas de autenticación de clientes
 import customerRoutes from "./routes/customerRoutes"; // Rutas de perfil de clientes
@@ -69,45 +71,24 @@ app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" }, // Allow images to be loaded by frontend
 }));
 
-// Middleware CORS - debe ser el primer middleware
-// Middleware CORS - debe ser el primer middleware
 const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:3000', 'http://127.0.0.1:3000'];
 
 app.use(cors({
-  origin: allowedOrigins,
+  origin: (origin, callback) => {
+    // allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin', 'Cache-Control', 'Pragma', 'Expires'],
   exposedHeaders: ['X-Session-Token'],
   optionsSuccessStatus: 204
 }));
-
-// Middleware para agregar headers CORS adicionales (fallback)
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  if (origin && allowedOrigins.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', origin);
-  } else {
-    // Default fallback to first allowed origin or localhost
-    res.header('Access-Control-Allow-Origin', allowedOrigins[0] || 'http://localhost:3000');
-  }
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization,X-Requested-With,Accept,Origin,Cache-Control,Pragma,Expires');
-  res.header('Access-Control-Expose-Headers', 'X-Session-Token');
-
-  // Log CORS headers for debugging
-  console.log('🔧 CORS headers added for:', req.method, req.url);
-
-  // Handle preflight requests
-  if (req.method === 'OPTIONS') {
-    res.header('Access-Control-Max-Age', '86400'); // 24 hours
-    res.sendStatus(204);
-    return;
-  }
-
-  next();
-});
 
 // Middleware de seguridad
 app.use(securityHeaders);
@@ -144,6 +125,7 @@ app.use("/api/payments", paymentRoutes); // Rutas de pagos
 app.use("/api/cotizador", cotizadorRoutes);
 app.use("/api/client", clientRoutes); // Rutas para clientes (consulta y descarga)
 app.use("/api/company-settings", companySettingsRoutes); // Rutas públicas de configuración de empresa
+app.use("/api/settings", globalSettingsRoutes); // Rutas públicas de configuración global
 app.use("/api/auth", authRoutes); // Rutas de autenticación de clientes
 app.use("/api/customers", customerRoutes); // Rutas de perfil de clientes
 app.use("/api/reviews", require("./routes/reviewRoutes").default); // Rutas de reseñas
@@ -178,6 +160,7 @@ app.use("/api/admin/promo-banners", require("./routes/admin/promoBannerRoutes").
 app.use("/api/admin/pages", require("./routes/admin/pageRoutes").default); // Rutas admin de páginas
 app.use("/api/admin/wishlists", require("./routes/admin/wishlistRoutes").default); // Rutas admin de wishlists
 app.use("/api/admin/analytics", require("./routes/admin/analyticsRoutes").default); // Rutas admin de analytics
+app.use("/api/admin/system", adminSystemRoutes); // Rutas de monitoreo del sistema
 app.use("/api/admin", require("./routes/admin/roleRoutes").default); // Rutas admin de roles y permisos
 
 // Rutas API Externa
@@ -279,6 +262,7 @@ const startServer = async () => {
     // Inicializar asociaciones
     const { initAssociations } = require("./models/associations");
     initAssociations();
+
 
     // Global Error Handlers
     process.on('uncaughtException', (error) => {

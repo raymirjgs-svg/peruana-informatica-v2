@@ -70,4 +70,10 @@ router.put("/:id", authenticateAdmin, SeoController.update);
  */
 router.delete("/:id", authenticateAdmin, SeoController.delete);
 
+/**
+ * POST /api/seo/suggest
+ * Generar sugerencias SEO con IA (Gemini)
+ */
+router.post("/suggest", authenticateAdmin, SeoController.suggestMetadata);
+
 export { router as seoRoutes };

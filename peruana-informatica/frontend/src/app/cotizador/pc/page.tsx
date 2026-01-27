@@ -18,12 +18,14 @@ interface Product {
   stock: number;
   codigo_interno: string;
   component_type?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   component_specs?: any;
   socket_type?: string;
   ram_type?: string;
   form_factor?: string;
   has_integrated_graphics?: boolean;
   tdp_watts?: number;
+  [key: string]: string | number | boolean | undefined | object;
 }
 
 interface PCBuild {

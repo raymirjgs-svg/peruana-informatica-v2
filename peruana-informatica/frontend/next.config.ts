@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   // Exportar como sitio estático para hosting compartido
-  // output: "export",
+  output: "standalone",
 
   // Deshabilitar optimización de imágenes para exportación estática
   // Si necesitas imágenes optimizadas, usa un servicio externo como Cloudinary

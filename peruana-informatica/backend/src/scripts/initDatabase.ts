@@ -7,10 +7,36 @@ import { Carousel } from '../models/Carousel';
 async function initDatabase() {
   try {
     console.log('🔄 Inicializando base de datos...');
-    
+
     // Sincronizar modelos (aplicar cambios de columnas sin borrar datos)
+    // Importar asociaciones para registrar todos los modelos
+    const { initAssociations } = require('../models/associations');
+    initAssociations();
+
+    // Importar modelos adicionales que no están en asociaciones
+    const { CompanySettings } = require('../models/CompanySettings');
+    const { PromoBanner } = require('../models/PromoBanner');
+    const { Setting } = require('../models/Setting');
+    const { Page } = require('../models/Page');
+
+    await CompanySettings.sync({ alter: true });
+    console.log('✅ Tabla company_settings sincronizada');
+
     await sequelize.sync({ alter: true });
     console.log('✅ Modelos sincronizados');
+
+    // Configuración de la empresa por defecto
+    await CompanySettings.findOrCreate({
+      where: { id: 1 },
+      defaults: {
+        company_name: 'Peruana Informática',
+        company_ruc: '20123456789',
+        company_address: 'Av. Principal 123, Lima - Perú',
+        company_phone: '(01) 123-4567',
+        company_email: 'ventas@peruanainformatica.com'
+      }
+    });
+    console.log('✅ Configuración de empresa inicializada');
 
     // Crear categorías por defecto
     const categories = await Category.findOrCreate({

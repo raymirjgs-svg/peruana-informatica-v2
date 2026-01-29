@@ -1,0 +1,54 @@
+services:
+  db:
+    image: mysql:8
+    restart: always
+    container_name: peruana-db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-rootpassword}
+      MYSQL_DATABASE: ${DB_NAME:-peruana_db}
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  backend:
+    image: peruana-backend:latest
+    restart: always
+    container_name: peruana-backend
+    environment:
+      - PORT=3001
+      - DB_HOST=db
+      - REDIS_HOST=redis
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - redis
+
+  frontend:
+    image: peruana-frontend:latest
+    restart: always
+    container_name: peruana-frontend
+    env_file:
+      - .env
+    depends_on:
+      - backend
+
+  redis:
+    image: redis:alpine
+    restart: always
+    container_name: peruana-redis
+
+  nginx:
+    image: nginx:alpine
+    restart: always
+    container_name: peruana-nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - frontend
+      - backend
+
+volumes:
+  mysql_data:
+  redis_data:

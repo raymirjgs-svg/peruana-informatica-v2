@@ -1,0 +1,48 @@
+# Stage 1: Dependencies and Build
+FROM node:20-alpine AS builder
+WORKDIR /app
+
+# Install dependencies needed for node-gyp if any (optional for simple apps)
+RUN apk add --no-cache libc6-compat
+
+# Copy dependency files
+COPY package*.json ./
+RUN npm ci
+
+# Copy source code
+COPY . .
+
+# Build with standalone output (configured in next.config.ts)
+ENV NEXT_PUBLIC_API_URL=http://149.50.144.210:3001
+# Note: In production we often want the public IP or domain. 
+# The user can override this via ARG or ENV if needed, 
+# but for static generation it might bake it in. 
+# Re-using the ARG logic from the original file if possible, or using an env var at runtime.
+# Next.js standalone supports reading process.env at runtime for server-side props.
+
+RUN npm run build
+
+# Stage 2: Production Runner
+FROM node:20-alpine AS runner
+WORKDIR /app
+
+ENV NODE_ENV=production
+
+# Don't run as root
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+# Copy necessary files from builder
+COPY --from=builder /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+USER nextjs
+
+EXPOSE 3000
+
+ENV PORT=3000
+# set hostname to localhost
+ENV HOSTNAME="0.0.0.0"
+
+CMD ["node", "server.js"]

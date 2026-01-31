@@ -22,6 +22,11 @@ services:
     depends_on:
       - db
       - redis
+    volumes:
+      - ./backend_data/public:/app/public
+      - ./backend_data/uploads:/app/uploads
+    expose:
+      - "3001"
 
   frontend:
     image: peruana-frontend:latest
@@ -36,6 +41,8 @@ services:
     image: redis:alpine
     restart: always
     container_name: peruana-redis
+    volumes:
+      - redis_data:/data
 
   nginx:
     image: nginx:alpine

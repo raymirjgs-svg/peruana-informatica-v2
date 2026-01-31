@@ -98,7 +98,7 @@ Peruana Informática es una plataforma e-commerce que permite:
 
 ```bash
 # Backend
-cd backend
+cd peruana-informatica/backend
 npm install
 
 # Frontend
@@ -146,11 +146,11 @@ NEXT_PUBLIC_API_URL=http://localhost:3001
 
 ```bash
 # Terminal 1 - Backend
-cd backend
+cd peruana-informatica/backend
 npm run dev
 
 # Terminal 2 - Frontend
-cd frontend
+cd ../frontend
 npm run dev
 ```
 
@@ -164,39 +164,20 @@ npm run dev
 ## 📁 Estructura del Proyecto
 
 ```
-peruana-informatica/
-├── backend/                    # API REST
-│   ├── src/
-│   │   ├── controllers/        # Lógica de negocio
-│   │   │   ├── admin/          # Controladores admin
-│   │   │   └── *.ts            # Controladores públicos
-│   │   ├── models/             # Modelos Sequelize
-│   │   ├── routes/             # Definición de rutas
-│   │   │   ├── admin/          # Rutas protegidas
-│   │   │   └── *.ts            # Rutas públicas
-│   │   ├── services/           # Servicios externos
-│   │   │   ├── EmailService.ts # Envío de emails
-│   │   │   ├── GeminiService.ts# IA para contenido
-│   │   │   └── ERPService.ts   # Sincronización ERP
-│   │   ├── middleware/         # Middlewares
-│   │   └── server.ts           # Punto de entrada
-│   └── .env                    # Variables de entorno
-│
-├── frontend/                   # Aplicación Next.js
-│   ├── src/
-│   │   ├── app/                # Rutas (App Router)
-│   │   │   ├── admin/          # Panel administración
-│   │   │   ├── blog/           # Blog público
-│   │   │   ├── cart/           # Carrito y checkout
-│   │   │   ├── products/       # Catálogo productos
-│   │   │   └── page.tsx        # Página principal
-│   │   ├── components/         # Componentes React
-│   │   ├── store/              # Estado global (Zustand)
-│   │   ├── lib/                # Utilidades
-│   │   └── types/              # Tipos TypeScript
-│   └── .env.local              # Variables de entorno
-│
-└── docs/                       # Documentación adicional
+peruana-informatica_v2/
+├── docs/                       # Documentación Técnica y de Despliegue
+│   ├── technical/              # API, Auth, Negocio
+│   ├── deployment/             # Guías de despliegue
+│   └── archive/                # Histórico
+├── scripts/                    # Scripts de utilidad
+├── peruana-informatica/        # Código Fuente
+│   ├── backend/                # API REST
+│   │   ├── src/
+│   │   └── .env
+│   └── frontend/               # Aplicación Next.js
+│       ├── src/
+│       └── .env.local
+└── README.md                   # Documentación Principal
 ```
 
 ---
@@ -234,13 +215,14 @@ peruana-informatica/
 
 ## 📚 Guías Detalladas
 
-- [📦 Sistema de Productos](./docs/PRODUCTOS.md)
-- [🛒 Flujo de Compras](./docs/COMPRAS.md)
-- [📧 Configuración de Emails](./docs/EMAILS.md)
-- [🤖 IA con Gemini](./docs/IA.md)
-- [🔄 Sincronización ERP](./docs/ERP.md)
-- [🔐 Autenticación](./docs/AUTH.md)
-- [📊 API Reference](./docs/API.md)
+- [📦 Sistema de Productos](./docs/technical/PRODUCTOS.md)
+- [🛒 Flujo de Compras](./docs/technical/COMPRAS.md)
+- [📧 Configuración de Emails](./docs/technical/EMAILS.md)
+- [🤖 IA con Gemini](./docs/technical/IA.md)
+- [🔄 Sincronización ERP](./docs/technical/ERP.md)
+- [🔐 Autenticación](./docs/technical/AUTH.md)
+- [📊 API Reference](./docs/technical/API.md)
+- [🚀 Guía de Despliegue](./docs/deployment/DEPLOY.md)
 
 ---
 

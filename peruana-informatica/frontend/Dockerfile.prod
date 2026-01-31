@@ -12,14 +12,11 @@ RUN npm ci
 # Copy source code
 COPY . .
 
-# Build with standalone output (configured in next.config.ts)
-ENV NEXT_PUBLIC_API_URL=http://149.50.144.210:3001
-# Note: In production we often want the public IP or domain. 
-# The user can override this via ARG or ENV if needed, 
-# but for static generation it might bake it in. 
-# Re-using the ARG logic from the original file if possible, or using an env var at runtime.
-# Next.js standalone supports reading process.env at runtime for server-side props.
+# Set build-time environment variables
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 
+# Build with standalone output (configured in next.config.ts)
 RUN npm run build
 
 # Stage 2: Production Runner
@@ -27,6 +24,7 @@ FROM node:20-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 
 # Don't run as root
 RUN addgroup --system --gid 1001 nodejs

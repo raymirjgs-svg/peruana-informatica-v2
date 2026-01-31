@@ -1,10 +1,14 @@
 # deploy.ps1 - Automated Deployment Script
 
 # --- Configuration ---
-$ServerIP = "149.50.144.210"
+$ServerIP = "200.58.98.122"
+$ServerPort = "5313"
 $User = "root"
 $RemotePath = "/root/peruana-informatica"
 $LocalPath = "$PSScriptRoot\peruana-informatica"
+
+# Safe string construction
+$DestBase = "{0}@{1}" -f $User, $ServerIP
 
 # --- 1. Build Images ---
 Write-Host "1. Building Docker Images..." -ForegroundColor Cyan
@@ -33,13 +37,12 @@ if ($LASTEXITCODE -ne 0) { Write-Error "Docker save failed"; exit 1 }
 Write-Host "   Compressing (gzip)..."
 # Check if tar supports gzip (Windows 10+ standard tar usually does)
 tar -czf $CompressedFile $ImageFile
-# If tar fails or doesn't produce the file, fall back or error out. 
-# Assuming standard Windows tar.exe works.
 
 if (-not (Test-Path $CompressedFile)) { 
     Write-Warning "Compression failed or skipped. Using uncompressed tar."
     $CompressedFile = $ImageFile 
-} else {
+}
+else {
     # Remove the uncompressed tar to save space
     Remove-Item $ImageFile
 }
@@ -48,26 +51,37 @@ $FileSize = (Get-Item $CompressedFile).Length / 1MB
 Write-Host "   Ready to transfer: $([math]::Round($FileSize, 2)) MB" -ForegroundColor Green
 
 # --- 3. Transfer Files ---
-Write-Host "3. Transferring Files to Server ($ServerIP)..." -ForegroundColor Cyan
+# FIX: Use format operator to avoid 'VariableReferenceWithDrive' error
+Write-Host ("3. Transferring Files to Server ({0}:{1})..." -f $ServerIP, $ServerPort) -ForegroundColor Cyan
+Write-Host "⚠️  TE PEDIRÁ LA CONTRASEÑA VARIAS VECES (una por archivo)." -ForegroundColor Yellow
 
 # Create remote directory
-ssh $User@$ServerIP "mkdir -p $RemotePath/nginx/conf.d"
+ssh -p $ServerPort $DestBase "mkdir -p $RemotePath/nginx/conf.d"
 
 # Copy Images
 Write-Host "   Uploading images..."
-scp $CompressedFile "$User@$ServerIP`:$RemotePath/app-images.tar.gz"
+$ScpTargetImages = "{0}:{1}/app-images.tar.gz" -f $DestBase, $RemotePath
+scp -P $ServerPort $CompressedFile $ScpTargetImages
 
 # Copy Docker Compose Production
 Write-Host "   Uploading docker-compose..."
-scp "$LocalPath\docker-compose.prod.yml" "$User@$ServerIP`:$RemotePath/docker-compose.yml"
+$ScpTargetCompose = "{0}:{1}/docker-compose.yml" -f $DestBase, $RemotePath
+scp -P $ServerPort "$LocalPath\docker-compose.prod.yml" $ScpTargetCompose
+
+# Copy Backend Data (Images)
+if (Test-Path "$PSScriptRoot\backend_data") {
+    Write-Host "   Uploading backend data (images)..."
+    # Ensure remote directory exists
+    ssh -p $ServerPort $DestBase "mkdir -p $RemotePath/backend_data"
+    # Upload contents
+    $ScpTargetBackend = "{0}:{1}/backend_data/" -f $DestBase, $RemotePath
+    scp -P $ServerPort -r "$PSScriptRoot\backend_data\*" $ScpTargetBackend
+}
 
 # Copy Nginx Config
 Write-Host "   Uploading Nginx config..."
-scp -r "$LocalPath\nginx\conf.d\*" "$User@$ServerIP`:$RemotePath/nginx/conf.d/"
-
-# Copy .env (Optional - usually better to manage secrets on server, but for sync setup:)
-# scp "$LocalPath\.env" "$User@$ServerIP`:$RemotePath/.env"
-# Uncomment above if you want to overwrite server .env
+$ScpTargetNginx = "{0}:{1}/nginx/conf.d/" -f $DestBase, $RemotePath
+scp -P $ServerPort -r "$LocalPath\nginx\conf.d\*" $ScpTargetNginx
 
 # --- 4. Remote Execution ---
 Write-Host "4. Deploying on Server..." -ForegroundColor Cyan
@@ -75,7 +89,7 @@ Write-Host "4. Deploying on Server..." -ForegroundColor Cyan
 $RemoteCommands = @(
     "cd $RemotePath",
     "echo '   > Extracting images...'",
-    "tar -xzf app-images.tar.gz",  # Or gunzip if tar doesn't handle compression automatically, but tar -xzf is standard
+    "tar -xzf app-images.tar.gz",
     "echo '   > Loading images...'",
     "docker load -i app-images.tar", 
     "rm app-images.tar app-images.tar.gz",
@@ -84,6 +98,6 @@ $RemoteCommands = @(
     "docker image prune -f" # Clean up dangling images
 )
 
-ssh $User@$ServerIP ($RemoteCommands -join " && ")
+ssh -p $ServerPort $DestBase ($RemoteCommands -join " && ")
 
 Write-Host "Deployment Complete!" -ForegroundColor Green

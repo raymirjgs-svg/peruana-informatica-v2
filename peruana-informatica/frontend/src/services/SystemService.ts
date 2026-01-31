@@ -40,9 +40,11 @@ interface ApiResponse<T> {
     error?: string;
 }
 
+import { API_CONFIG } from '@/config/api';
+
 class SystemService {
-    private static readonly BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:3001";
-    private static readonly API_BASE = `${SystemService.BASE_URL.replace(/\/$/, '')}/api`;
+    private static readonly BASE_URL = API_CONFIG.BASE_URL;
+    private static readonly API_BASE = API_CONFIG.API_BASE_URL;
 
     private static getAuthHeaders(): Record<string, string> {
         const username = process.env.NEXT_PUBLIC_ADMIN_USERNAME || "admin";

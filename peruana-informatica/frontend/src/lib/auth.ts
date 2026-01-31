@@ -33,7 +33,7 @@ export const authOptions: NextAuthOptions = {
 
                 try {
                     // Always query backend on port 3001
-                    const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+                    const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://200.58.98.122";
 
                     const res = await fetch(`${apiBase}/api/admin/login`, {
                         method: "POST",
@@ -70,7 +70,7 @@ export const authOptions: NextAuthOptions = {
         async signIn({ user, account, profile }) {
             if (account?.provider === "google") {
                 try {
-                    const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+                    const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://200.58.98.122";
 
                     // Send Google data to backend to find/create user
                     const res = await fetch(`${apiBase}/api/auth/social-login`, {

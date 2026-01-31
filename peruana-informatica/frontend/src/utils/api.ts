@@ -1,5 +1,7 @@
 // src/utils/api.ts
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002'; // TEMPORAL: puerto 3002 por proceso zombie en 3001
+import { API_CONFIG } from '@/config/api';
+
+const API_BASE_URL = API_CONFIG.API_BASE_URL;
 
 interface ApiError {
   error: string;

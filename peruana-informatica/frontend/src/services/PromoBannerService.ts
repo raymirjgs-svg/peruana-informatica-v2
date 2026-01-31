@@ -1,6 +1,6 @@
 import { PromoBanner } from './CouponService';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://200.58.98.122';
 
 class PromoBannerService {
     async getAllBanners(token: string): Promise<PromoBanner[]> {

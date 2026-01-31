@@ -1,0 +1,66 @@
+services:
+  # Base de datos MySQL encapsulada
+  db:
+    image: mysql:8
+    restart: always
+    container_name: peruana-local-db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: peruana_informatica
+    ports:
+      - "3307:3306" # Accede desde tu PC usando puerto 3307 (para no chocar con XAMPP)
+    volumes:
+      - mysql_local_data:/var/lib/mysql
+
+  # Caché Redis encapsulada
+  redis:
+    image: redis:alpine
+    restart: always
+    container_name: peruana-local-redis
+    ports:
+      - "6379:6379"
+
+  # Backend Node.js
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: always
+    container_name: peruana-local-backend
+    env_file:
+      - .env.local.docker
+    depends_on:
+      - db
+      - redis
+    ports:
+      - "3001:3001" # Acceso directo a la API si lo necesitas
+    volumes:
+      - ./backend/public/uploads:/app/public/uploads # Persistir subidas localmente
+
+  # Frontend Next.js
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: always
+    container_name: peruana-local-frontend
+    env_file:
+      - .env.local.docker
+    depends_on:
+      - backend
+
+  # Nginx (Servidor Web) - El punto de entrada único
+  nginx:
+    image: nginx:alpine
+    restart: always
+    container_name: peruana-local-nginx
+    ports:
+      - "80:80" # Tu web estará en http://localhost
+    volumes:
+      - ../nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - frontend
+      - backend
+
+volumes:
+  mysql_local_data:

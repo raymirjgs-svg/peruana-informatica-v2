@@ -17,7 +17,7 @@ export interface CompanySettings {
 }
 
 export class SettingsService {
-    private static readonly BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+    private static readonly BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://200.58.98.122';
     private static readonly API_BASE = `${SettingsService.BASE_URL}/api`;
 
     static async getPublicSettings(): Promise<CompanySettings> {

@@ -62,7 +62,7 @@ import { requestLogger, errorLogger } from "./middleware/logger";
 initRedis();
 
 const app = express();
-const PORT = process.env.PORT || 3002;
+const PORT = process.env.PORT || 3001;
 
 // Security Headers
 app.use(helmet({

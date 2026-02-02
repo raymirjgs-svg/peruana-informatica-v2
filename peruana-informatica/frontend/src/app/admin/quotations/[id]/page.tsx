@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { AdminLayout } from '@/components/admin/AdminLayout';
+import { API_CONFIG } from '@/config/api';
 
 type PriceType = 'normal' | 'mayorista' | 'especial';
 
@@ -49,7 +50,7 @@ export default function QuotationDetail({ params }: { params: { id: string } }) 
   useEffect(() => {
     const fetchQuotation = async () => {
       try {
-        const response = await fetch(`http://localhost:3001/api/quotations/${params.id}`);
+        const response = await fetch(`${API_CONFIG.API_BASE_URL}/quotations/${params.id}`);
         if (!response.ok) throw new Error('Error al cargar la cotización');
         const data = await response.json();
         setQuotation(data);
@@ -161,7 +162,7 @@ export default function QuotationDetail({ params }: { params: { id: string } }) 
 
     setSaving(true);
     try {
-      const response = await fetch(`http://localhost:3001/api/quotations/${params.id}`, {
+      const response = await fetch(`${API_CONFIG.API_BASE_URL}/quotations/${params.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -178,7 +179,7 @@ export default function QuotationDetail({ params }: { params: { id: string } }) 
       });
 
       if (!response.ok) throw new Error('Error al guardar los cambios');
-      
+
       // Show success message
       alert('Cambios guardados exitosamente');
       router.refresh();
@@ -192,15 +193,15 @@ export default function QuotationDetail({ params }: { params: { id: string } }) 
 
   const handleSendEmail = async () => {
     if (!quotation) return;
-    
+
     if (confirm('¿Está seguro de enviar esta cotización por correo electrónico?')) {
       try {
-        const response = await fetch(`http://localhost:3001/api/quotations/${params.id}/send-email`, {
+        const response = await fetch(`${API_CONFIG.API_BASE_URL}/quotations/${params.id}/send-email`, {
           method: 'POST',
         });
 
         if (!response.ok) throw new Error('Error al enviar el correo');
-        
+
         alert('Correo enviado exitosamente');
         // Update status to 'sent'
         setStatus('sent');
@@ -238,15 +239,15 @@ export default function QuotationDetail({ params }: { params: { id: string } }) 
             </p>
           </div>
           <div className="flex space-x-2">
-            <Link 
+            <Link
               href={`/admin/quotations`}
               className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
             >
               Volver
             </Link>
-            <a 
-              href={`http://localhost:3001/api/quotations/${quotation.code}/pdf`} 
-              target="_blank" 
+            <a
+              href={`${API_CONFIG.API_BASE_URL}/quotations/${quotation.code}/pdf`}
+              target="_blank"
               rel="noopener noreferrer"
               className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
             >
@@ -429,7 +430,7 @@ export default function QuotationDetail({ params }: { params: { id: string } }) 
         </div>
 
         <div className="flex justify-end space-x-3">
-          <Link 
+          <Link
             href={`/admin/quotations`}
             className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
           >

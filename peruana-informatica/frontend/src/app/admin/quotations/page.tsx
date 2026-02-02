@@ -2,15 +2,16 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { AdminLayout } from '@/components/admin/AdminLayout';
-import { 
-  FileText, 
-  Download, 
-  User, 
-  Mail, 
-  Phone, 
-  Building2, 
-  Calendar, 
-  TrendingUp, 
+import { API_CONFIG } from '@/config/api';
+import {
+  FileText,
+  Download,
+  User,
+  Mail,
+  Phone,
+  Building2,
+  Calendar,
+  TrendingUp,
   DollarSign,
   Filter,
   Search,
@@ -68,7 +69,7 @@ export default function AdminQuotations() {
 
   const fetchQuotations = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/quotations');
+      const response = await fetch(`${API_CONFIG.API_BASE_URL}/quotations`);
       if (!response.ok) throw new Error('Error');
       const data = await response.json();
       const items = Array.isArray(data) ? data : (data.quotations || data.data || []);
@@ -108,7 +109,7 @@ export default function AdminQuotations() {
     // Search filter
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
-      filtered = filtered.filter(q => 
+      filtered = filtered.filter(q =>
         q.code.toLowerCase().includes(term) ||
         q.client_name.toLowerCase().includes(term) ||
         q.client_email.toLowerCase().includes(term) ||
@@ -142,7 +143,7 @@ export default function AdminQuotations() {
 
   const getStatusBadge = (status: string, validUntil?: string) => {
     const isExpired = validUntil && new Date(validUntil) < new Date();
-    
+
     if (isExpired) {
       return <span className="px-3 py-1 rounded-full text-xs font-semibold bg-gray-500 text-white">Expirada</span>;
     }
@@ -276,41 +277,37 @@ export default function AdminQuotations() {
               <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-700 rounded-xl p-1">
                 <button
                   onClick={() => setDateFilter('all')}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                    dateFilter === 'all' 
-                      ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow' 
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${dateFilter === 'all'
+                      ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow'
                       : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
-                  }`}
+                    }`}
                 >
                   Todas
                 </button>
                 <button
                   onClick={() => setDateFilter('today')}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                    dateFilter === 'today' 
-                      ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow' 
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${dateFilter === 'today'
+                      ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow'
                       : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
-                  }`}
+                    }`}
                 >
                   Hoy
                 </button>
                 <button
                   onClick={() => setDateFilter('week')}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                    dateFilter === 'week' 
-                      ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow' 
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${dateFilter === 'week'
+                      ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow'
                       : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
-                  }`}
+                    }`}
                 >
                   Semana
                 </button>
                 <button
                   onClick={() => setDateFilter('month')}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                    dateFilter === 'month' 
-                      ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow' 
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${dateFilter === 'month'
+                      ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow'
                       : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
-                  }`}
+                    }`}
                 >
                   Mes
                 </button>
@@ -324,7 +321,7 @@ export default function AdminQuotations() {
               Mostrando <span className="font-semibold text-gray-900 dark:text-white">{filteredQuotations.length}</span> de {quotations.length} cotizaciones
             </span>
             {(searchTerm || dateFilter !== 'all') && (
-              <button 
+              <button
                 onClick={() => { setSearchTerm(''); setDateFilter('all'); }}
                 className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
               >
@@ -337,12 +334,12 @@ export default function AdminQuotations() {
         {/* Lista de Cotizaciones */}
         <div className="space-y-4">
           {filteredQuotations.map((quotation) => (
-            <div 
-              key={quotation.id || quotation.code} 
+            <div
+              key={quotation.id || quotation.code}
               className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden"
             >
               {/* Header de la cotización */}
-              <div 
+              <div
                 className="p-5 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors"
                 onClick={() => setExpandedId(expandedId === quotation.id ? null : quotation.id)}
               >
@@ -378,7 +375,7 @@ export default function AdminQuotations() {
                     </div>
                     <div className="flex items-center gap-2">
                       <a
-                        href={`http://localhost:3001/api/quotations/${quotation.code}/pdf`}
+                        href={`${API_CONFIG.API_BASE_URL}/quotations/${quotation.code}/pdf`}
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={(e) => e.stopPropagation()}
@@ -457,11 +454,10 @@ export default function AdminQuotations() {
                         {quotation.valid_until && (
                           <p className="flex items-center gap-2">
                             <span className="text-gray-500 dark:text-gray-400 w-24">Válida hasta:</span>
-                            <span className={`font-medium ${
-                              new Date(quotation.valid_until) < new Date() 
-                                ? 'text-red-600 dark:text-red-400' 
+                            <span className={`font-medium ${new Date(quotation.valid_until) < new Date()
+                                ? 'text-red-600 dark:text-red-400'
                                 : 'text-emerald-600 dark:text-emerald-400'
-                            }`}>
+                              }`}>
                               {new Date(quotation.valid_until).toLocaleDateString('es-PE')}
                             </span>
                           </p>
@@ -518,7 +514,7 @@ export default function AdminQuotations() {
                 No hay cotizaciones
               </h3>
               <p className="text-gray-500 dark:text-gray-400">
-                {searchTerm || dateFilter !== 'all' 
+                {searchTerm || dateFilter !== 'all'
                   ? 'No se encontraron cotizaciones con los filtros aplicados'
                   : 'Aún no se han generado cotizaciones'}
               </p>

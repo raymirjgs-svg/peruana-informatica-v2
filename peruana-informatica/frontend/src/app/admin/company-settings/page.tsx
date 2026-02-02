@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { AdminLayout } from '@/components/admin/AdminLayout';
+import { API_CONFIG } from '@/config/api';
 import {
   Building2,
   Phone,
@@ -74,7 +75,7 @@ export default function CompanySettingsPage() {
   const fetchSettings = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:3001/api/admin/company-settings');
+      const response = await fetch(`${API_CONFIG.API_BASE_URL}/admin/company-settings`);
       const data = await response.json();
       setSettings(data);
       setFormData({
@@ -118,7 +119,7 @@ export default function CompanySettingsPage() {
     setMessage(null);
 
     try {
-      const response = await fetch('http://localhost:3001/api/admin/company-settings', {
+      const response = await fetch(`${API_CONFIG.API_BASE_URL}/admin/company-settings`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -189,8 +190,8 @@ export default function CompanySettingsPage() {
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all whitespace-nowrap ${activeTab === tab.id
-                  ? 'bg-blue-600 text-white shadow-md'
-                  : 'bg-white text-gray-600 hover:bg-gray-50 border border-transparent hover:border-gray-200'
+                ? 'bg-blue-600 text-white shadow-md'
+                : 'bg-white text-gray-600 hover:bg-gray-50 border border-transparent hover:border-gray-200'
                 }`}
             >
               <tab.icon className="h-5 w-5" />

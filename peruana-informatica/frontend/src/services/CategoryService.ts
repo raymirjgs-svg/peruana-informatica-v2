@@ -11,12 +11,12 @@ export interface Category {
 }
 
 export class CategoryService {
-  private baseUrl = API_CONFIG.BASE_URL;
+  private baseUrl = API_CONFIG.API_BASE_URL;
 
   async getCategories(): Promise<Category[]> {
     try {
       const timestamp = new Date().getTime();
-      const url = `${this.baseUrl}/api/categories?t=${timestamp}`;
+      const url = `${this.baseUrl}/categories?t=${timestamp}`;
       console.log('🔍 Fetching categories from:', url);
       console.log('📍 Base URL configured:', this.baseUrl);
 
@@ -79,7 +79,7 @@ export class CategoryService {
       baseUrl = baseUrl.replace(/\/+$/, ''); // Eliminar trailing slashes
 
       const timestamp = new Date().getTime();
-      const url = `${baseUrl}/api/categories/menu?t=${timestamp}`;
+      const url = `${baseUrl}/categories/menu?t=${timestamp}`;
 
       // Verificar que la URL sea válida
       try {
@@ -128,7 +128,7 @@ export class CategoryService {
   async getCategoryBySlug(slug: string): Promise<Category | null> {
     try {
       const timestamp = new Date().getTime();
-      const url = `${this.baseUrl}/api/categories/${slug}?t=${timestamp}`;
+      const url = `${this.baseUrl}/categories/${slug}?t=${timestamp}`;
       console.log('🔍 Fetching category by slug from:', url);
 
       // Verificar que la URL sea válida

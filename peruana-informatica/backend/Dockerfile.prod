@@ -1,29 +1,54 @@
-FROM node:18-alpine AS builder
+# ============================================
+# 🐳 Backend Dockerfile - PRODUCTION (FIXED)
+# ============================================
+
+# 1. Base Image for dependencies
+FROM node:20-alpine AS deps
 WORKDIR /app
 COPY package*.json ./
+# Install production dependencies only
 RUN npm ci
+
+# 2. Builder Stage
+FROM node:20-alpine AS builder
+WORKDIR /app
+COPY package*.json ./
+# Install ALL dependencies (including dev) to build typescript
+RUN npm install
 COPY . .
 RUN npm run build
 
-FROM node:18-alpine AS runner
+# 3. Production Runner Stage
+FROM node:20-alpine AS runner
 WORKDIR /app
-ENV NODE_ENV production
 
-# Crear usuario no-root
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+ENV NODE_ENV=production
 
-# Crear directorios para uploads con permisos
-RUN mkdir -p public/uploads public/images && chown -R appuser:appgroup public
+# Install basic tools for healthchecks
+RUN apk add --no-cache wget curl
 
-COPY package*.json ./
-RUN npm ci --only=production
+# --- FIX: COPY PACKAGE.JSON ---
+# Copiamos package.json porque swagger.ts lo importa
+COPY package.json ./
 
+# Copy production node_modules from deps
+COPY --from=deps /app/node_modules ./node_modules
+
+# Copy built dist folder
 COPY --from=builder /app/dist ./dist
 
-# Copiar carpeta public por si tiene assets base
+# Copy public folder (images, uploads) if needed
 COPY --from=builder /app/public ./public
 
-USER appuser
+# Create uploads directory
+RUN mkdir -p /app/public/uploads && chmod 777 /app/public/uploads
+
+# Expose backend port
 EXPOSE 3001
 
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:3001/api/health || exit 1
+
+# Start server
 CMD ["node", "dist/server.js"]

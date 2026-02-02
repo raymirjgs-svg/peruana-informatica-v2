@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from 'react';
 import { AdminLayout } from '@/components/admin/AdminLayout';
+import { API_CONFIG } from '@/config/api';
 
 interface OrderItem {
   id: number;
@@ -45,7 +46,7 @@ export default function AdminOrdersPage() {
 
   const fetchOrders = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/admin/orders');
+      const response = await fetch(`${API_CONFIG.API_BASE_URL}/admin/orders`);
       const data = await response.json();
       setOrders(data);
     } catch (error) {
@@ -61,7 +62,7 @@ export default function AdminOrdersPage() {
 
   const handleVerifyPayment = async (orderId: number, verified: boolean) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/admin/payments/${orderId}/verify`, {
+      const response = await fetch(`${API_CONFIG.API_BASE_URL}/admin/payments/${orderId}/verify`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json'
@@ -98,7 +99,7 @@ export default function AdminOrdersPage() {
       formData.append('invoice_file', invoiceFile);
       formData.append('invoice_number', invoiceNumber);
 
-      const response = await fetch(`http://localhost:3001/api/admin/payments/${orderId}/upload-invoice`, {
+      const response = await fetch(`${API_CONFIG.API_BASE_URL}/admin/payments/${orderId}/upload-invoice`, {
         method: 'POST',
         body: formData
       });
@@ -248,7 +249,7 @@ export default function AdminOrdersPage() {
                   {/* Acciones - Flujo de Trabajo Mejorado */}
                   <div className="mt-4 border-t dark:border-gray-700 pt-4">
                     <h4 className="font-semibold mb-3 text-gray-700 dark:text-gray-200">Acciones del Pedido:</h4>
-                    
+
                     {/* Paso 1: Ver comprobante del cliente */}
                     {order.payment_proof && (
                       <div className="mb-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
@@ -256,7 +257,7 @@ export default function AdminOrdersPage() {
                           📎 Paso 1: Revisar Comprobante del Cliente
                         </p>
                         <a
-                          href={`http://localhost:3001/api/payments/proofs/${order.payment_proof}`}
+                          href={`${API_CONFIG.API_BASE_URL}/payments/proofs/${order.payment_proof}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="inline-block px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-medium"
@@ -327,7 +328,7 @@ export default function AdminOrdersPage() {
                         </p>
                         <div className="flex gap-3 items-center">
                           <a
-                            href={`http://localhost:3001/api/admin/payments/invoices/${order.invoice_file}`}
+                            href={`${API_CONFIG.API_BASE_URL}/admin/payments/invoices/${order.invoice_file}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="px-4 py-2 bg-white text-emerald-700 rounded-lg hover:bg-emerald-50 transition text-sm font-semibold flex items-center gap-2 shadow"
@@ -413,9 +414,8 @@ export default function AdminOrdersPage() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Archivo PDF del Comprobante *
                 </label>
-                <div className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
-                  invoiceFile ? 'border-green-400 bg-green-50' : 'border-gray-300 hover:border-purple-400 hover:bg-purple-50'
-                }`}>
+                <div className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${invoiceFile ? 'border-green-400 bg-green-50' : 'border-gray-300 hover:border-purple-400 hover:bg-purple-50'
+                  }`}>
                   <input
                     type="file"
                     accept=".pdf"

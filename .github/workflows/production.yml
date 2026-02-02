@@ -1,0 +1,33 @@
+name: Production Deploy
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Production Server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            # Navegar al directorio del proyecto
+            cd ~/peruana-informatica_v2 || exit
+            
+            # Actualizar código
+            git checkout main
+            git pull origin main
+            
+            # Inyectar variables de entorno (Seguridad)
+            echo "${{ secrets.ENV_PRODUCTION }}" > envs/.env.production
+            
+            # Desplegar (Reconstruir si es necesario)
+            docker compose -f docker-compose.yml -f docker-compose.prod.yml down
+            docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+            
+            # Limpieza de imágenes huérfanas
+            docker image prune -f

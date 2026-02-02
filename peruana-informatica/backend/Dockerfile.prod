@@ -1,28 +1,29 @@
-# Stage 1: Build
-FROM node:20-alpine AS builder
+FROM node:18-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 COPY . .
 RUN npm run build
 
-# Stage 2: Production
-FROM node:20-alpine
+FROM node:18-alpine AS runner
 WORKDIR /app
+ENV NODE_ENV production
 
-# Install only production dependencies
+# Crear usuario no-root
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
+# Crear directorios para uploads con permisos
+RUN mkdir -p public/uploads public/images && chown -R appuser:appgroup public
+
 COPY package*.json ./
 RUN npm ci --only=production
 
-# Copy built code from builder
 COPY --from=builder /app/dist ./dist
 
-# Copy other necessary assets (templates, uploads folder structure if needed)
-# Ensuring uploads directory exists
-RUN mkdir -p uploads && chown -R node:node uploads
+# Copiar carpeta public por si tiene assets base
+COPY --from=builder /app/public ./public
 
-# Expose port
+USER appuser
 EXPOSE 3001
 
-# Start the server
 CMD ["node", "dist/server.js"]

@@ -1,23 +1,32 @@
-# Usar una imagen de Node.js estable y ligera
+# ============================================
+# 🐳 Backend Dockerfile - LOCAL DEVELOPMENT
+# ============================================
 FROM node:20-alpine
 
-# Crear directorio de trabajo
+# Install basic utilities for healthcheck and debugging
+RUN apk add --no-cache wget curl bash
+
+# Create app directory
 WORKDIR /app
 
-# Copiar archivos de dependencias
+# Copy package files
 COPY package*.json ./
 
-# Instalar dependencias
+# Install ALL dependencies (including dev dependencies for hot-reload)
 RUN npm install
 
-# Copiar el resto del código
+# Copy source code
 COPY . .
 
-# Compilar el código TypeScript
-RUN npm run build
+# Create uploads directory
+RUN mkdir -p /app/public/uploads
 
-# Exponer el puerto del backend
+# Expose backend port
 EXPOSE 3001
 
-# Comando para iniciar la aplicación
-CMD ["npm", "start"]
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:3001/api/health || exit 1
+
+# Start development server with hot-reload
+CMD ["npm", "run", "dev"]

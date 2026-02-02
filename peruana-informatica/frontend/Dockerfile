@@ -1,27 +1,29 @@
-# Usar una imagen de Node.js actual
+# ============================================
+# 🐳 Frontend Dockerfile - LOCAL DEVELOPMENT
+# ============================================
 FROM node:20-alpine
 
-# Crear directorio de trabajo
+# Install basic utilities for healthcheck
+RUN apk add --no-cache wget curl
+
+# Create app directory
 WORKDIR /app
 
-# Copiar archivos de dependencias
+# Copy package files
 COPY package*.json ./
 
-# Instalar dependencias
+# Install ALL dependencies (including dev dependencies)
 RUN npm install
 
-# Copiar el resto del código
+# Copy source code
 COPY . .
 
-# Argumento para la URL de la API durante el build
-ARG NEXT_PUBLIC_API_URL
-ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
-
-# Construir la aplicación para producción
-RUN npm run build
-
-# Exponer el puerto
+# Expose frontend port
 EXPOSE 3000
 
-# Iniciar la aplicación
-CMD ["npm", "start"]
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:3000 || exit 1
+
+# Start development server with Turbopack (hot-reload)
+CMD ["npm", "run", "dev"]

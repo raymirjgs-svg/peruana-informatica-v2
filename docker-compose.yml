@@ -1,0 +1,58 @@
+services:
+  nginx:
+    image: nginx:alpine
+    networks:
+      - peruana_net
+    # Ports, Volumes y Restart policies se definen en los overrides
+
+  frontend:
+    build:
+      context: ./peruana-informatica/frontend
+      dockerfile: Dockerfile.prod
+    networks:
+      - peruana_net
+    healthcheck:
+      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    # Environment variables se inyectan via env_file en overrides
+
+  backend:
+    build:
+      context: ./peruana-informatica/backend
+      dockerfile: Dockerfile.prod
+    volumes:
+      - uploads_data:/app/public/uploads
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - peruana_net
+    healthcheck:
+      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3001/api/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  mysql:
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./scripts/init-db:/docker-entrypoint-initdb.d
+    networks:
+      - peruana_net
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10
+
+volumes:
+  mysql_data:
+  uploads_data:
+
+
+networks:
+  peruana_net:
+    driver: bridge

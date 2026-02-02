@@ -9,6 +9,7 @@ out/
 # --- AMBIENTE / SECRETOS ---
 .env*
 !.env.example
+!.env.docker.example
 *.pem
 *.key
 
@@ -32,11 +33,20 @@ yarn-debug.log*
 .cache/
 .temp/
 tmp/
+temp_build/
 
 # --- DATABASE ---
 *.sql
 *.sqlite
 *.db
 
-# --- OTROS ---
+# --- BACKUPS Y ARCHIVOS TEMPORALES ---
+*.zip
+*.rar
+*.7z
+/backups/
 /docs/archive/db-dumps/
+
+# --- UPLOADS (PRODUCCIÓN) ---
+**/public/uploads/*
+!**/public/uploads/.gitkeep

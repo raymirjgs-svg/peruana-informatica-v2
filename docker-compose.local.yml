@@ -1,0 +1,130 @@
+version: '3.8'
+
+services:
+  # ============================================
+  # 🗄️ MySQL Database
+  # ============================================
+  mysql:
+    image: mysql:8.0
+    container_name: peruana_mysql_local
+    command: --default-authentication-plugin=mysql_native_password
+    env_file:
+      - .env.docker
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data_local:/var/lib/mysql
+      - ./scripts/init-db:/docker-entrypoint-initdb.d:ro
+    networks:
+      - peruana_net_local
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    restart: unless-stopped
+
+  # ============================================
+  # 🔴 Redis Cache (Optional)
+  # ============================================
+  redis:
+    image: redis:7-alpine
+    container_name: peruana_redis_local
+    ports:
+      - "6379:6379"
+    networks:
+      - peruana_net_local
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+
+  # ============================================
+  # ⚙️ Backend API (Node.js/Express)
+  # ============================================
+  backend:
+    build:
+      context: ./peruana-informatica/backend
+      dockerfile: Dockerfile
+    container_name: peruana_backend_local
+    env_file:
+      - .env.docker
+    ports:
+      - "3001:3001"
+    volumes:
+      # Hot-reload: bind mount source code
+      - ./peruana-informatica/backend/src:/app/src:ro
+      # Persistent uploads
+      - uploads_data_local:/app/public/uploads
+      # Node modules (avoid overwriting)
+      - /app/node_modules
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - peruana_net_local
+    healthcheck:
+      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3001/api/health" ]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+    restart: unless-stopped
+    command: npm run dev
+
+  # ============================================
+  # 🎨 Frontend (Next.js)
+  # ============================================
+  frontend:
+    build:
+      context: ./peruana-informatica/frontend
+      dockerfile: Dockerfile
+    container_name: peruana_frontend_local
+    env_file:
+      - .env.docker
+    environment:
+      # Override PORT from .env.docker (backend uses 3001, frontend needs 3000)
+      - PORT=3000
+    ports:
+      - "3000:3000"
+    volumes:
+      # Hot-reload: bind mount source code
+      - ./peruana-informatica/frontend/src:/app/src:ro
+      - ./peruana-informatica/frontend/public:/app/public:ro
+      # Node modules (avoid overwriting)
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - peruana_net_local
+    healthcheck:
+      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000" ]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    restart: unless-stopped
+    command: npm run dev
+
+# ============================================
+# 💾 Volumes (Persistent Data)
+# ============================================
+volumes:
+  mysql_data_local:
+    driver: local
+  uploads_data_local:
+    driver: local
+
+# ============================================
+# 🌐 Networks
+# ============================================
+networks:
+  peruana_net_local:
+    driver: bridge

@@ -16,38 +16,34 @@ const nextConfig: NextConfig = {
    * Se habilitan dominios externos necesarios para el proyecto
    */
   images: {
-    // unoptimized: false, // Default is false (optimized)
+    unoptimized: true, // Disable optimization to avoid ECONNREFUSED in Docker
     remotePatterns: [
+      // Development: Allow images from localhost (backend API)
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '3001',
+        pathname: '/images/**',
+      },
+      {
+        protocol: 'http',
+        hostname: '127.0.0.1',
+        port: '3001',
+        pathname: '/images/**',
+      },
+      {
+        protocol: 'http',
+        hostname: 'backend',
+        port: '3001',
+        pathname: '/images/**',
+      },
       {
         protocol: 'https',
         hostname: 'placehold.co',
       },
       {
-        protocol: 'http',
-        hostname: 'localhost',
-        port: '3001',
-      },
-      {
-        protocol: 'http',
-        hostname: 'localhost',
-        port: '3000',
-      },
-      {
-        protocol: 'http',
-        hostname: '127.0.0.1',
-      },
-      {
-        protocol: 'http',
-        hostname: '54.144.139.115', // IP de producción
-      },
-      {
         protocol: 'https',
         hostname: '*.vercel.app',
-      },
-      {
-        protocol: 'http',
-        hostname: '192.168.1.122',
-        port: '3001',
       },
       {
         protocol: 'https',
@@ -56,6 +52,11 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'images.unsplash.com',
+      },
+      // Permitir imágenes del propio dominio (producion self-hosted)
+      {
+        protocol: 'https',
+        hostname: '**',
       }
     ],
   },

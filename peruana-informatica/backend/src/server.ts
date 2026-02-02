@@ -65,6 +65,15 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Security Headers
+// Health Check Endpoint
+app.get('/api/health', (req, res) => {
+  res.status(200).json({
+    status: 'ok',
+    service: 'backend',
+    timestamp: new Date().toISOString()
+  });
+});
+
 app.use(helmet({
   contentSecurityPolicy: false, // Disable CSP for API
   crossOriginEmbedderPolicy: false, // Allow embedding
@@ -171,88 +180,12 @@ app.use("/api/admin/system", adminSystemRoutes); // Rutas de monitoreo del siste
 app.use("/api/admin", require("./routes/admin/roleRoutes").default); // Rutas admin de roles y permisos
 app.use("/api/admin/discounts", require("./routes/admin/discountRoutes").default); // Rutas admin de descuentos
 
-
-// Rutas API Externa
+// Rutas API Externa y Adicionales
 app.use("/api/external", externalApiRoutes);
 app.use("/api/pages", require("./routes/pageRoutes").default); // Rutas públicas de páginas
-
-
-// ... imports
-
-// Rutas API Externa
-app.use("/api/external", externalApiRoutes);
 app.use("/api/sync", syncRoutes); // Rutas de sincronización con API Externa
-app.use("/api/auth", authRoutes); // Rutas de autenticación de clientes
 app.use("/api/cart", cartRoutes); // Rutas de carrito
 app.use("/api/payment", paymentRoutes); // Rutas de pago
-app.use("/api/promo-banners", require("./routes/promoBannerRoutes").default); // Rutas públicas de banners
-
-// Ruta temporal para sincronizar tablas de pedidos y cotizador
-app.get('/api/debug/sync-orders', async (req, res) => {
-  try {
-    const { Order } = require('./models/Order');
-    const { OrderItem } = require('./models/OrderItem');
-    const { Product } = require('./models/Product');
-    const { Setting } = require('./models/Setting');
-    const { Page } = require('./models/Page');
-    const { PromoBanner } = require('./models/PromoBanner');
-    const { Review } = require('./models/Review');
-
-    await Order.sync({ alter: true });
-    await OrderItem.sync({ alter: true });
-    await Product.sync({ alter: true }); // Add price columns
-    await Setting.sync({ alter: true }); // Create settings table
-    await Page.sync({ alter: true }); // Create pages table
-    await PromoBanner.sync({ alter: true }); // Create promo banners table
-    await Review.sync({ alter: true }); // Create review table
-
-    // Init default setting
-    const setting = await Setting.findByPk('cotizador_price_type');
-    if (!setting) {
-      await Setting.create({ key: 'cotizador_price_type', value: 'pre_cot' });
-    }
-
-    res.json({ success: true, message: 'Tablas sincronizadas (Orders, Product, Settings)' });
-  } catch (error: any) {
-    console.error('Error syncing:', error);
-    res.status(500).json({ error: error.message });
-  }
-});
-
-
-
-// Endpoint para obtener una imagen aleatoria real
-app.get('/api/debug/random-image', async (req, res) => {
-  try {
-    const fs = require('fs');
-    const path = require('path');
-    const publicPath = path.join(__dirname, 'public', 'images', 'products');
-
-    // Verificar si la carpeta existe
-    if (!fs.existsSync(publicPath)) {
-      return res.json({ url: 'https://placehold.co/600x600?text=Carpeta+no+encontrada' });
-    }
-
-    // Obtener archivos de la carpeta
-    const files = fs.readdirSync(publicPath).filter((file: string) => {
-      const ext = path.extname(file).toLowerCase();
-      return ['.jpg', '.jpeg', '.png', '.gif', '.webp'].includes(ext);
-    });
-
-    if (files.length === 0) {
-      return res.json({ url: 'https://placehold.co/600x600?text=No+hay+imágenes' });
-    }
-
-    // Seleccionar una imagen aleatoria
-    const randomFile = files[Math.floor(Math.random() * files.length)];
-    const url = `http://localhost:3001/images/products/${randomFile}`;
-
-    res.json({ url, file: randomFile });
-  } catch (error) {
-    console.error('Error getting random image:', error);
-    res.status(500).json({ error: 'Error obteniendo imagen aleatoria' });
-  }
-});
 
 // Manejo de errores (debe ir al final)
 app.use(notFoundHandler);
@@ -262,17 +195,7 @@ app.use(errorHandler);
 const startServer = async () => {
   try {
     await connectDatabase();
-    // Optional schema sync in development to apply new columns (e.g., SEO fields)
-    // if (process.env.DB_SYNC_ALTER === "true") {
-    //   console.log("🛠️ Applying DB schema updates (alter)...");
-    //   await sequelize.sync({ alter: true });
-    //   console.log("✅ DB schema updated");
-    // } else {
-    //   // Sync Image model specifically
-    //   const { Image } = require("./models/Image");
-    //   // await sequelize.sync({ alter: true });
-    //   console.log("✅ Image table synced");
-    // }
+    
     // Inicializar asociaciones
     const { initAssociations } = require("./models/associations");
     initAssociations();

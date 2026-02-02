@@ -37,27 +37,34 @@ echo -e "   (Asegúrate de que esta URL sea accesible desde el navegador del usu
 # echo -e "${BLUE}⬇️  Actualizando código fuente...${NC}"
 # git pull origin main
 
+# Determinar comando de docker-compose
+if command -v docker-compose &> /dev/null; then
+    DOCKER_COMPOSE_CMD="docker-compose"
+else
+    DOCKER_COMPOSE_CMD="docker compose"
+fi
+
+echo -e "${BLUE}ℹ️  Usando comando: $DOCKER_COMPOSE_CMD${NC}"
+
 # 4. Reconstruir los contenedores
 echo -e "${BLUE}🏗️  Construyendo imágenes Docker (Optimizado para Producción)...${NC}"
-# 4. Reconstruir los contenedores (Forzando reconstrucción del frontend para tomar variables de entorno)
-echo -e "${BLUE}🏗️  Construyendo imágenes Docker...${NC}"
 # Forzamos no-cache en frontend para asegurar que las ENV vars se "cocinen" en el build
-docker-compose -f docker-compose.production.yml build --no-cache frontend
+$DOCKER_COMPOSE_CMD -f docker-compose.production.yml build --no-cache frontend
 # Construimos el resto normalmente
-docker-compose -f docker-compose.production.yml build backend nginx db redis
+$DOCKER_COMPOSE_CMD -f docker-compose.production.yml build backend nginx db redis
 
 # 5. Detener contenedores antiguos
 echo -e "${BLUE}🛑 Deteniendo servicios actuales...${NC}"
-docker-compose -f docker-compose.production.yml down
+$DOCKER_COMPOSE_CMD -f docker-compose.production.yml down
 
 # 6. Iniciar nuevos contenedores en background
 echo -e "${BLUE}🚀 Iniciando servicios...${NC}"
-docker-compose -f docker-compose.production.yml up -d
+$DOCKER_COMPOSE_CMD -f docker-compose.production.yml up -d
 
 # 7. Verificar estado
 echo -e "${BLUE}🔍 Verificando estado de los servicios...${NC}"
 sleep 5
-docker-compose -f docker-compose.production.yml ps
+$DOCKER_COMPOSE_CMD -f docker-compose.production.yml ps
 
 echo -e "${GREEN}✅ ¡Despliegue completado!${NC}"
 echo -e "Visita: http://200.58.98.122"

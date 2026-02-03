@@ -50,7 +50,7 @@ export interface QuotationDetail {
 }
 
 export class QuotationService {
-  private API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001/api';
+  private API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
   async createQuotation(quotationData: QuotationRequest): Promise<QuotationResponse> {
     const response = await fetch(`${this.API_BASE}/quotations`, {

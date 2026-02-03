@@ -69,20 +69,12 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: false,
   },
   async rewrites() {
-    return [
-      {
-        source: '/api/auth/:path*',
-        destination: '/api/auth/:path*',
-      },
-      {
-        source: '/api/:path*',
-        destination: 'http://backend:3001/api/:path*',
-      },
-      {
-        source: '/uploads/:path*',
-        destination: 'http://backend:3001/uploads/:path*',
-      },
-    ];
+    // ✅ NO usar rewrites en Docker
+    // El frontend llama directamente a NEXT_PUBLIC_API_URL
+    // En Docker local: http://localhost:3001
+    // En Docker producción con Nginx: https://dominio.com
+    // Nginx hace el routing, Next.js no debe interferir
+    return [];
   },
 };
 

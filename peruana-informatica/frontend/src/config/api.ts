@@ -1,34 +1,40 @@
+// ============================================
+// 🔧 API CONFIGURATION
+// ============================================
+// REGLA FUNDAMENTAL:
+// - NEXT_PUBLIC_API_URL NUNCA incluye /api
+// - Cada endpoint incluye /api en su ruta
+// - Ejemplo: NEXT_PUBLIC_API_URL=http://localhost:3001
+//          + endpoint=/api/products
+//          = http://localhost:3001/api/products ✅
+
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
 export const API_CONFIG = {
     BASE_URL,
 
+    // URL base para llamadas API (sin manipulación)
     API_BASE_URL: (() => {
-        // Asegura que no haya trailing slash
-        const cleanUrl = BASE_URL.replace(/\/+$/, '');
-        // Si la URL ya termina en /api, la usamos tal cual. Si no, agregamos /api
-        const finalUrl = cleanUrl.endsWith('/api') ? cleanUrl : `${cleanUrl}/api`;
+        const finalUrl = BASE_URL.replace(/\/+$/, ''); // Solo eliminar trailing slash
 
         if (typeof window !== 'undefined') {
-            console.log('🔧 API Configuration Loaded:');
-            console.log('   - Original env var (NEXT_PUBLIC_API_URL):', BASE_URL);
+            console.log('🔧 API Configuration:');
+            console.log('   - NEXT_PUBLIC_API_URL:', BASE_URL);
             console.log('   - Final API URL:', finalUrl);
+            console.log('   - Example endpoint: ' + finalUrl + '/api/products');
         }
 
         return finalUrl;
     })(),
 
+    // URL para imágenes (uploads)
     IMAGES_URL: (path?: string) => {
         if (!path) return 'https://placehold.co/100x100?text=Sin+Imagen';
         if (path.startsWith('http')) return path;
 
-        // Construir URL de imágenes basada en el host base, no en la URL de la API
-        // Si API_URL es http://api.com/api, queremos http://api.com/images
-        const hostUrl = BASE_URL.replace(/\/api\/?$/, '').replace(/\/+$/, '');
-
-        // Si el path empieza con slash, lo quitamos para evitar dobles
+        const hostUrl = BASE_URL.replace(/\/+$/, '');
         const cleanPath = path.startsWith('/') ? path.substring(1) : path;
 
-        return `${hostUrl}/images/products/${cleanPath}`;
+        return `${hostUrl}/uploads/${cleanPath}`;
     },
 };

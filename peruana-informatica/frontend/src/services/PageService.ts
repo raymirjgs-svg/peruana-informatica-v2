@@ -1,4 +1,5 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+import { API_CONFIG } from '../config/api';
+const API_BASE = API_CONFIG.API_BASE_URL;
 
 export interface Page {
     id: number;
@@ -27,7 +28,7 @@ class PageService {
      */
     async getAllPages(page: number = 1, limit: number = 10, search?: string, token?: string) {
         try {
-            let url = `${API_BASE}/api/admin/pages?page=${page}&limit=${limit}`;
+            let url = `${API_BASE}/admin/pages?page=${page}&limit=${limit}`;
             if (search) {
                 url += `&search=${search}`;
             }
@@ -58,7 +59,7 @@ class PageService {
      */
     async getPageById(id: number, token?: string) {
         try {
-            const response = await fetch(`${API_BASE}/api/admin/pages/${id}`, {
+            const response = await fetch(`${API_BASE}/admin/pages/${id}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -80,7 +81,7 @@ class PageService {
      */
     async createPage(data: CreatePageData, token?: string) {
         try {
-            const response = await fetch(`${API_BASE}/api/admin/pages`, {
+            const response = await fetch(`${API_BASE}/admin/pages`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -106,7 +107,7 @@ class PageService {
      */
     async updatePage(id: number, data: Partial<CreatePageData>, token?: string) {
         try {
-            const response = await fetch(`${API_BASE}/api/admin/pages/${id}`, {
+            const response = await fetch(`${API_BASE}/admin/pages/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -132,7 +133,7 @@ class PageService {
      */
     async deletePage(id: number, token?: string) {
         try {
-            const response = await fetch(`${API_BASE}/api/admin/pages/${id}`, {
+            const response = await fetch(`${API_BASE}/admin/pages/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -155,7 +156,7 @@ class PageService {
      */
     async getPageBySlug(slug: string) {
         try {
-            const response = await fetch(`${API_BASE}/api/pages/${slug}`, { next: { revalidate: 3600 } });
+            const response = await fetch(`${API_BASE}/pages/${slug}`, { next: { revalidate: 3600 } });
 
             if (!response.ok) {
                 if (response.status === 404) return null;

@@ -1,4 +1,5 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+import { API_CONFIG } from '../config/api';
+const API_BASE = API_CONFIG.API_BASE_URL;
 
 export interface Coupon {
     id: number;
@@ -37,7 +38,7 @@ class CouponService {
      */
     async validateCoupon(code: string, purchaseAmount: number): Promise<{ success: boolean; data?: Coupon; message?: string }> {
         try {
-            const response = await fetch(`${API_BASE}/api/coupons/validate`, {
+            const response = await fetch(`${API_BASE}/coupons/validate`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -72,7 +73,7 @@ class CouponService {
      */
     async applyCoupon(code: string): Promise<{ success: boolean; message?: string }> {
         try {
-            const response = await fetch(`${API_BASE}/api/coupons/apply`, {
+            const response = await fetch(`${API_BASE}/coupons/apply`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -115,7 +116,7 @@ class CouponService {
      */
     async getAllCoupons(token: string): Promise<Coupon[]> {
         try {
-            const response = await fetch(`${API_BASE}/api/coupons/admin/all`, {
+            const response = await fetch(`${API_BASE}/coupons/admin/all`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -135,7 +136,7 @@ class CouponService {
      */
     async createCoupon(data: Partial<Coupon>, token: string) {
         try {
-            const response = await fetch(`${API_BASE}/api/coupons/admin`, {
+            const response = await fetch(`${API_BASE}/coupons/admin`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -158,7 +159,7 @@ class CouponService {
      */
     async updateCoupon(id: number, data: Partial<Coupon>, token: string) {
         try {
-            const response = await fetch(`${API_BASE}/api/coupons/admin/${id}`, {
+            const response = await fetch(`${API_BASE}/coupons/admin/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -181,7 +182,7 @@ class CouponService {
      */
     async deleteCoupon(id: number, token: string) {
         try {
-            const response = await fetch(`${API_BASE}/api/coupons/admin/${id}`, {
+            const response = await fetch(`${API_BASE}/coupons/admin/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -200,13 +201,15 @@ class CouponService {
     /**
      * Toggle coupon status
      */
-    async toggleStatus(id: number, token: string) {
+    async toggleStatus(id: number, is_active: boolean, token: string) {
         try {
-            const response = await fetch(`${API_BASE}/api/coupons/admin/${id}/status`, {
+            const response = await fetch(`${API_BASE}/coupons/admin/${id}/status`, {
                 method: 'PATCH',
                 headers: {
+                    'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
-                }
+                },
+                body: JSON.stringify({ is_active })
             });
 
             const result = await response.json();

@@ -16,13 +16,14 @@ export interface CompanySettings {
     show_distributor_price_in_detail?: boolean;
 }
 
+import { API_CONFIG } from '../config/api';
+
 export class SettingsService {
-    private static readonly BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://200.58.98.122';
-    private static readonly API_BASE = `${SettingsService.BASE_URL}/api`;
+    private static readonly API_BASE = API_CONFIG.API_BASE_URL;
 
     static async getPublicSettings(): Promise<CompanySettings> {
         try {
-            const response = await fetch(`${this.API_BASE}/company-settings`, {
+            const response = await fetch(`${this.API_BASE}/api/company-settings`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

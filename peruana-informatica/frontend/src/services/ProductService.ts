@@ -47,7 +47,7 @@ export class ProductService {
    */
   async testConnection(): Promise<boolean> {
     const [error, response] = await safeAsync(
-      this.fetchWithErrorHandling(`${this.baseUrl}/health`)
+      this.fetchWithErrorHandling(`${this.baseUrl}/api/health`)
     );
 
     if (error) {
@@ -155,7 +155,8 @@ export class ProductService {
     const fixUrl = (url: string | undefined): string | null => {
       if (!url) return null;
       if (typeof url !== 'string') return null;
-      if (url.includes('192.168') || url.includes('localhost:3001')) {
+      // Check if URL contains localhost or private IPs and needs fixing
+      if (url.includes('localhost') || url.match(/192\.168\.\d+\.\d+/) || url.match(/10\.\d+\.\d+\.\d+/)) {
         const parts = url.split('/uploads/');
         if (parts.length > 1) {
           return `uploads/${parts[1]}`;
@@ -195,7 +196,7 @@ export class ProductService {
   ): Promise<PaginatedResponse<Product>> {
     try {
       const timestamp = new Date().getTime();
-      let url = `${this.apiBase}/products?page=${page}&limit=${pageSize}&t=${timestamp}`;
+      let url = `${this.apiBase}/api/products?page=${page}&limit=${pageSize}&t=${timestamp}`;
 
       if (filters.featured) url += '&featured=true';
       if (filters.new) url += '&new=true';
@@ -256,7 +257,7 @@ export class ProductService {
   async getProductsWithFilters(queryParams: string): Promise<PaginatedResponse<Product> & { filters?: any }> {
     try {
       const timestamp = new Date().getTime();
-      const url = `${this.apiBase}/products?${queryParams}&t=${timestamp}`;
+      const url = `${this.apiBase}/api/products?${queryParams}&t=${timestamp}`;
 
       try { new URL(url); } catch (e) { throw new Error(`Invalid URL: ${url}`); }
 
@@ -294,7 +295,7 @@ export class ProductService {
     try {
       const cleanSlug = slug.replace(/%22/g, '').replace(/"/g, '').trim();
       const timestamp = new Date().getTime();
-      const response = await fetch(`${this.apiBase}/products/slug/${cleanSlug}?t=${timestamp}`, {
+      const response = await fetch(`${this.apiBase}/api/products/slug/${cleanSlug}?t=${timestamp}`, {
         cache: 'no-store',
         headers: { 'Cache-Control': 'no-cache' }
       });
@@ -312,7 +313,7 @@ export class ProductService {
   async getProductById(id: number): Promise<Product | null> {
     try {
       const timestamp = new Date().getTime();
-      const response = await fetch(`${this.apiBase}/products/${id}?t=${timestamp}`, {
+      const response = await fetch(`${this.apiBase}/api/products/${id}?t=${timestamp}`, {
         cache: 'no-store',
         headers: { 'Cache-Control': 'no-cache' }
       });
@@ -331,7 +332,7 @@ export class ProductService {
     try {
       if (!query || query.trim().length === 0) return [];
       const timestamp = new Date().getTime();
-      const response = await fetch(`${this.apiBase}/products/utils/suggestions?q=${encodeURIComponent(query)}&limit=${limit}&t=${timestamp}`, {
+      const response = await fetch(`${this.apiBase}/api/products/utils/suggestions?q=${encodeURIComponent(query)}&limit=${limit}&t=${timestamp}`, {
         cache: 'no-store',
         headers: { 'Cache-Control': 'no-cache' }
       });

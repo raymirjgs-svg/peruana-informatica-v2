@@ -30,7 +30,7 @@ interface Order {
 export default function OrderDetailPage() {
   const params = useParams();
   const orderId = params.id as string;
-  
+
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -43,9 +43,9 @@ export default function OrderDetailPage() {
   const fetchOrder = async () => {
     try {
       setLoading(true);
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
       const response = await fetch(`${apiUrl}/api/client/orders/${orderId}`);
-      
+
       if (!response.ok) {
         throw new Error('Pedido no encontrado');
       }
@@ -62,9 +62,9 @@ export default function OrderDetailPage() {
   const downloadInvoice = async () => {
     try {
       setDownloading(true);
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
       const response = await fetch(`${apiUrl}/api/client/orders/${orderId}/invoice`);
-      
+
       if (!response.ok) {
         throw new Error('Comprobante no disponible');
       }
@@ -147,9 +147,9 @@ export default function OrderDetailPage() {
         </Link>
         <h1 className="text-3xl font-bold text-gray-800">Pedido #{order.id}</h1>
         <p className="text-gray-600">
-          Realizado el {new Date(order.createdAt).toLocaleDateString('es-PE', { 
-            year: 'numeric', 
-            month: 'long', 
+          Realizado el {new Date(order.createdAt).toLocaleDateString('es-PE', {
+            year: 'numeric',
+            month: 'long',
             day: 'numeric',
             hour: '2-digit',
             minute: '2-digit'

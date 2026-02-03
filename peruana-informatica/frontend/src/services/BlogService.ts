@@ -145,7 +145,7 @@ class BlogService {
         });
       }
 
-      const url = `${this.API_BASE}/blog${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+      const url = `${this.API_BASE}/api/blog${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
 
       console.log('🔍 Fetching blog posts from:', url);
       console.log('📍 API Base:', this.API_BASE);
@@ -197,7 +197,7 @@ class BlogService {
    */
   static async getPostBySlug(slug: string): Promise<ApiResponse<BlogPost>> {
     try {
-      const response = await fetch(`${this.API_BASE}/blog/post/${slug}`, {
+      const response = await fetch(`${this.API_BASE}/api/blog/post/${slug}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -222,7 +222,7 @@ class BlogService {
    */
   static async likePost(id: number): Promise<ApiResponse<{ likes: number }>> {
     try {
-      const response = await fetch(`${this.API_BASE}/blog/post/${id}/like`, {
+      const response = await fetch(`${this.API_BASE}/api/blog/post/${id}/like`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -264,7 +264,7 @@ class BlogService {
         });
       }
 
-      const url = `${this.API_BASE}/blog/admin${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+      const url = `${this.API_BASE}/api/blog/admin${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
 
       const response = await fetch(url, {
         method: 'GET',
@@ -289,7 +289,7 @@ class BlogService {
    */
   static async getBlogStats(): Promise<ApiResponse<BlogStats>> {
     try {
-      const response = await fetch(`${this.API_BASE}/blog/admin/stats`, {
+      const response = await fetch(`${this.API_BASE}/api/blog/admin/stats`, {
         method: 'GET',
         headers: this.getAuthHeaders(),
       });
@@ -312,7 +312,7 @@ class BlogService {
    */
   static async createPost(data: BlogFormData): Promise<ApiResponse<BlogPost>> {
     try {
-      const response = await fetch(`${this.API_BASE}/blog/admin`, {
+      const response = await fetch(`${this.API_BASE}/api/blog/admin`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
         body: JSON.stringify(data),
@@ -336,7 +336,7 @@ class BlogService {
    */
   static async getPostById(id: number): Promise<ApiResponse<BlogPost>> {
     try {
-      const response = await fetch(`${this.API_BASE}/blog/admin/${id}`, {
+      const response = await fetch(`${this.API_BASE}/api/blog/admin/${id}`, {
         method: 'GET',
         headers: this.getAuthHeaders(),
       });
@@ -359,7 +359,7 @@ class BlogService {
    */
   static async updatePost(id: number, data: Partial<BlogFormData>): Promise<ApiResponse<BlogPost>> {
     try {
-      const response = await fetch(`${this.API_BASE}/blog/admin/${id}`, {
+      const response = await fetch(`${this.API_BASE}/api/blog/admin/${id}`, {
         method: 'PUT',
         headers: this.getAuthHeaders(),
         body: JSON.stringify(data),
@@ -383,7 +383,7 @@ class BlogService {
    */
   static async deletePost(id: number): Promise<ApiResponse<void>> {
     try {
-      const response = await fetch(`${this.API_BASE}/blog/admin/${id}`, {
+      const response = await fetch(`${this.API_BASE}/api/blog/admin/${id}`, {
         method: 'DELETE',
         headers: this.getAuthHeaders(),
       });
@@ -408,7 +408,7 @@ class BlogService {
    */
   static async generateTitles(data: AIGenerationRequest): Promise<ApiResponse<BlogTitleSuggestion[]>> {
     try {
-      const response = await fetch(`${this.API_BASE}/blog/admin/ai/generate-titles`, {
+      const response = await fetch(`${this.API_BASE}/api/blog/admin/ai/generate-titles`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
         body: JSON.stringify(data),
@@ -445,7 +445,7 @@ class BlogService {
         });
       }
 
-      const url = `${this.API_BASE}/blog/admin/ai/title-suggestions${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+      const url = `${this.API_BASE}/api/blog/admin/ai/title-suggestions${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
 
       const response = await fetch(url, {
         method: 'GET',
@@ -474,7 +474,7 @@ class BlogService {
     generated_image: boolean;
   }>> {
     try {
-      const response = await fetch(`${this.API_BASE}/blog/admin/ai/generate-content`, {
+      const response = await fetch(`${this.API_BASE}/api/blog/admin/ai/generate-content`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
         body: JSON.stringify(data),
@@ -501,7 +501,7 @@ class BlogService {
     action: 'select' | 'reject'
   ): Promise<ApiResponse<BlogTitleSuggestion>> {
     try {
-      const response = await fetch(`${this.API_BASE}/blog/admin/ai/title-suggestions/${id}`, {
+      const response = await fetch(`${this.API_BASE}/api/blog/admin/ai/title-suggestions/${id}`, {
         method: 'PUT',
         headers: this.getAuthHeaders(),
         body: JSON.stringify({ action }),
@@ -640,7 +640,7 @@ class BlogService {
    */
   static async testConnection(): Promise<any> {
     try {
-      const response = await fetch(`${this.API_BASE}/blog/test`, {
+      const response = await fetch(`${this.API_BASE}/api/blog/test`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

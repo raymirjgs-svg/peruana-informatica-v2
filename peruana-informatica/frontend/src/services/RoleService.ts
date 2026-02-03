@@ -1,4 +1,5 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+import { API_CONFIG } from '../config/api';
+const API_BASE = API_CONFIG.API_BASE_URL;
 
 export interface Role {
     id: number;
@@ -23,7 +24,7 @@ class RoleService {
      */
     async getAllRoles(token?: string) {
         try {
-            const response = await fetch(`${API_BASE}/api/admin/roles`, {
+            const response = await fetch(`${API_BASE}/admin/roles`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -42,7 +43,7 @@ class RoleService {
      */
     async getRoleById(id: number, token?: string) {
         try {
-            const response = await fetch(`${API_BASE}/api/admin/roles/${id}`, {
+            const response = await fetch(`${API_BASE}/admin/roles/${id}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -61,7 +62,7 @@ class RoleService {
      */
     async createRole(data: { name: string; slug: string; description?: string; permissions: number[] }, token?: string) {
         try {
-            const response = await fetch(`${API_BASE}/api/admin/roles`, {
+            const response = await fetch(`${API_BASE}/admin/roles`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -83,7 +84,7 @@ class RoleService {
      */
     async updateRole(id: number, data: { name: string; slug: string; description?: string; permissions: number[] }, token?: string) {
         try {
-            const response = await fetch(`${API_BASE}/api/admin/roles/${id}`, {
+            const response = await fetch(`${API_BASE}/admin/roles/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -105,7 +106,7 @@ class RoleService {
      */
     async deleteRole(id: number, token?: string) {
         try {
-            const response = await fetch(`${API_BASE}/api/admin/roles/${id}`, {
+            const response = await fetch(`${API_BASE}/admin/roles/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -125,7 +126,7 @@ class RoleService {
      */
     async getAllPermissions(token?: string) {
         try {
-            const response = await fetch(`${API_BASE}/api/admin/permissions`, {
+            const response = await fetch(`${API_BASE}/admin/permissions`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -144,7 +145,7 @@ class RoleService {
      */
     async assignRoleToUser(userId: number, roleId: number, token?: string) {
         try {
-            const response = await fetch(`${API_BASE}/api/admin/assign-role`, {
+            const response = await fetch(`${API_BASE}/admin/assign-role`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

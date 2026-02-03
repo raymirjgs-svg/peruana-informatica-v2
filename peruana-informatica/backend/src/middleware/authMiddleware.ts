@@ -1,6 +1,15 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
+// Extender Request interface localmente
+interface AuthRequest extends Request {
+    user?: {
+        id: number;
+        email: string;
+        role?: string;
+    };
+}
+
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
 
 export const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
@@ -15,17 +24,15 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
         if (err) {
             return res.status(403).json({ error: 'Token inválido o expirado' });
         }
-        // @ts-ignore
-        req.user = user;
+        (req as AuthRequest).user = user;
         next();
     });
 };
 
 export const requireAdmin = (req: Request, res: Response, next: NextFunction) => {
-    // @ts-ignore
-    const userRole = req.user?.role;
+    const userRole = (req as AuthRequest).user?.role;
     // Allow admin, super-admin, etc.
-    if (['admin', 'super-admin'].includes(userRole)) {
+    if (userRole && ['admin', 'super-admin'].includes(userRole)) {
         next();
     } else {
         return res.status(403).json({ error: 'Role unauthorized' });

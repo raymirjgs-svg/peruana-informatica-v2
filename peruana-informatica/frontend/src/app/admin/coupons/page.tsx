@@ -59,7 +59,10 @@ export default function CouponsPage() {
   const handleToggleStatus = async (id: number) => {
     if (!session?.accessToken) return;
     try {
-      await couponService.toggleStatus(id, session.accessToken);
+      const coupon = coupons.find(c => c.id === id);
+      if (!coupon) return;
+      const newStatus = !coupon.is_active;
+      await couponService.toggleStatus(id, newStatus, session.accessToken);
       toast.success('Estado actualizado');
       fetchCoupons();
     } catch (error) {

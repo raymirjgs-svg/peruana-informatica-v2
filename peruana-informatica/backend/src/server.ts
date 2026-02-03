@@ -44,6 +44,20 @@ import authRoutes from "./routes/authRoutes"; // Rutas de autenticación de clie
 import customerRoutes from "./routes/customerRoutes"; // Rutas de perfil de clientes
 import cartRoutes from "./routes/cartRoutes"; // Rutas de carrito
 import compatibilityRoutes from "./routes/compatibilityRoutes"; // Rutas de compatibilidad
+import reviewRoutes from "./routes/reviewRoutes"; // Rutas de reseñas
+import wishlistRoutes from "./routes/wishlistRoutes"; // Rutas de wishlist
+import couponRoutes from "./routes/couponRoutes"; // Rutas de cupones
+import promoBannerRoutes from "./routes/promoBannerRoutes"; // Rutas de banners promocionales
+import pageRoutes from "./routes/pageRoutes"; // Rutas públicas de páginas
+import adminReviewRoutes from "./routes/admin/reviewRoutes"; // Rutas admin de reseñas
+import adminCouponRoutes from "./routes/admin/couponRoutes"; // Rutas admin de cupones
+import adminPromoBannerRoutes from "./routes/admin/promoBannerRoutes"; // Rutas admin de banners
+import adminPageRoutes from "./routes/admin/pageRoutes"; // Rutas admin de páginas
+import adminWishlistRoutes from "./routes/admin/wishlistRoutes"; // Rutas admin de wishlists
+import adminAnalyticsRoutes from "./routes/admin/analyticsRoutes"; // Rutas admin de analytics
+import adminRoleRoutes from "./routes/admin/roleRoutes"; // Rutas admin de roles y permisos
+import adminDiscountRoutes from "./routes/admin/discountRoutes"; // Rutas admin de descuentos
+import { initAssociations } from "./models/associations"; // Inicialización de asociaciones
 
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler";
 import {
@@ -65,15 +79,6 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Security Headers
-// Health Check Endpoint
-app.get('/api/health', (req, res) => {
-  res.status(200).json({
-    status: 'ok',
-    service: 'backend',
-    timestamp: new Date().toISOString()
-  });
-});
-
 app.use(helmet({
   contentSecurityPolicy: false, // Disable CSP for API
   crossOriginEmbedderPolicy: false, // Allow embedding
@@ -127,6 +132,16 @@ app.get("/health", (req, res) => {
   res.json({ status: "OK", timestamp: new Date() });
 });
 
+// Health Check Endpoint with CORS support
+app.get('/api/health', (req, res) => {
+  res.status(200).json({
+    status: 'ok',
+    service: 'backend',
+    timestamp: new Date().toISOString()
+  });
+});
+
+
 // Rutas públicas
 app.use("/api/products", productRoutes);
 app.use("/api/brands", brandRoutes);
@@ -144,11 +159,11 @@ app.use("/api/company-settings", companySettingsRoutes); // Rutas públicas de c
 app.use("/api/settings", globalSettingsRoutes); // Rutas públicas de configuración global
 app.use("/api/auth", authRoutes); // Rutas de autenticación de clientes
 app.use("/api/customers", customerRoutes); // Rutas de perfil de clientes
-app.use("/api/reviews", require("./routes/reviewRoutes").default); // Rutas de reseñas
-app.use("/api/wishlist", require("./routes/wishlistRoutes").default); // Rutas de wishlist
-app.use("/api/coupons", require("./routes/couponRoutes").default); // Rutas de cupones
-app.use("/api/compatibility", compatibilityRoutes); // Rutas de compatibilidad (FIX: Was missing)
-app.use("/api/promo-banners", require("./routes/promoBannerRoutes").default); // Rutas de banners promocionales
+app.use("/api/reviews", reviewRoutes); // Rutas de reseñas
+app.use("/api/wishlist", wishlistRoutes); // Rutas de wishlist
+app.use("/api/coupons", couponRoutes); // Rutas de cupones
+app.use("/api/compatibility", compatibilityRoutes); // Rutas de compatibilidad
+app.use("/api/promo-banners", promoBannerRoutes); // Rutas de banners promocionales
 
 // Swagger Documentation
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
@@ -170,19 +185,19 @@ app.use("/api/admin/orders", adminOrderRoutes);
 app.use("/api/admin/payments", adminPaymentRoutes); // Rutas admin de pagos
 app.use("/api/admin/settings", adminSettingRoutes);
 app.use("/api/admin/company-settings", adminCompanySettingsRoutes); // Rutas admin de configuración de empresa
-app.use("/api/admin/reviews", require("./routes/admin/reviewRoutes").default); // Rutas admin de reseñas
-app.use("/api/admin/coupons", require("./routes/admin/couponRoutes").default); // Rutas admin de cupones
-app.use("/api/admin/promo-banners", require("./routes/admin/promoBannerRoutes").default); // Rutas admin de banners
-app.use("/api/admin/pages", require("./routes/admin/pageRoutes").default); // Rutas admin de páginas
-app.use("/api/admin/wishlists", require("./routes/admin/wishlistRoutes").default); // Rutas admin de wishlists
-app.use("/api/admin/analytics", require("./routes/admin/analyticsRoutes").default); // Rutas admin de analytics
+app.use("/api/admin/reviews", adminReviewRoutes); // Rutas admin de reseñas
+app.use("/api/admin/coupons", adminCouponRoutes); // Rutas admin de cupones
+app.use("/api/admin/promo-banners", adminPromoBannerRoutes); // Rutas admin de banners
+app.use("/api/admin/pages", adminPageRoutes); // Rutas admin de páginas
+app.use("/api/admin/wishlists", adminWishlistRoutes); // Rutas admin de wishlists
+app.use("/api/admin/analytics", adminAnalyticsRoutes); // Rutas admin de analytics
 app.use("/api/admin/system", adminSystemRoutes); // Rutas de monitoreo del sistema
-app.use("/api/admin", require("./routes/admin/roleRoutes").default); // Rutas admin de roles y permisos
-app.use("/api/admin/discounts", require("./routes/admin/discountRoutes").default); // Rutas admin de descuentos
+app.use("/api/admin/roles", adminRoleRoutes); // Rutas admin de roles y permisos
+app.use("/api/admin/discounts", adminDiscountRoutes); // Rutas admin de descuentos
 
 // Rutas API Externa y Adicionales
 app.use("/api/external", externalApiRoutes);
-app.use("/api/pages", require("./routes/pageRoutes").default); // Rutas públicas de páginas
+app.use("/api/pages", pageRoutes); // Rutas públicas de páginas
 app.use("/api/sync", syncRoutes); // Rutas de sincronización con API Externa
 app.use("/api/cart", cartRoutes); // Rutas de carrito
 app.use("/api/payment", paymentRoutes); // Rutas de pago
@@ -195,11 +210,35 @@ app.use(errorHandler);
 const startServer = async () => {
   try {
     await connectDatabase();
-    
+
     // Inicializar asociaciones
-    const { initAssociations } = require("./models/associations");
     initAssociations();
 
+    // ✅ CRÍTICO: Validar que la BD tenga tablas ANTES de continuar
+    console.log(chalk.cyan('\n🔍 Validando estructura de base de datos...'));
+    try {
+      const [tables]: any = await sequelize.query("SHOW TABLES");
+      const tableCount = tables.length;
+
+      console.log(chalk.green(`📊 Tablas encontradas en BD: ${tableCount}`));
+
+      if (tableCount === 0) {
+        console.error(chalk.red('\n❌ FATAL: La base de datos está VACÍA'));
+        console.error(chalk.yellow('Por favor importa el archivo SQL:'));
+        console.error(chalk.white('docker exec -i peruana_mysql_local mysql -u peruana_user -pPASSWORD peruana_informatica < init.sql'));
+        console.error('');
+        process.exit(1);
+      }
+
+      // Listar primeras 5 tablas para confirmar
+      const tableNames = tables.slice(0, 5).map((t: any) => Object.values(t)[0]);
+      console.log(chalk.gray(`   Primeras tablas: ${tableNames.join(', ')}...`));
+      console.log(chalk.green('✅ Estructura de BD validada correctamente\n'));
+
+    } catch (error) {
+      console.error(chalk.red('❌ Error validando BD:'), error);
+      console.error(chalk.yellow('El servidor continuará, pero pueden ocurrir errores 500'));
+    }
 
     // Global Error Handlers
     process.on('uncaughtException', (error) => {

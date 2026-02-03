@@ -1,4 +1,5 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+import { API_CONFIG } from '../config/api';
+const API_BASE = API_CONFIG.API_BASE_URL;
 
 export interface Review {
     id: number;
@@ -56,7 +57,7 @@ class ReviewService {
             if (filters?.sort) queryParams.append('sort', filters.sort);
 
             const response = await fetch(
-                `${API_BASE}/api/reviews/product/${productId}?${queryParams.toString()}`
+                `${API_BASE}/reviews/product/${productId}?${queryParams.toString()}`
             );
 
             if (!response.ok) {
@@ -76,7 +77,7 @@ class ReviewService {
     async getProductRatingSummary(productId: number): Promise<{ success: boolean; data: ReviewSummary }> {
         try {
             const response = await fetch(
-                `${API_BASE}/api/reviews/product/${productId}/summary`
+                `${API_BASE}/reviews/product/${productId}/summary`
             );
 
             if (!response.ok) {
@@ -95,7 +96,7 @@ class ReviewService {
      */
     async createReview(data: CreateReviewData) {
         try {
-            const response = await fetch(`${API_BASE}/api/reviews`, {
+            const response = await fetch(`${API_BASE}/reviews`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -122,7 +123,7 @@ class ReviewService {
     async markHelpful(reviewId: number) {
         try {
             const response = await fetch(
-                `${API_BASE}/api/reviews/${reviewId}/helpful`,
+                `${API_BASE}/reviews/${reviewId}/helpful`,
                 {
                     method: 'POST',
                 }
@@ -144,7 +145,7 @@ class ReviewService {
      */
     async getAllReviews(page: number = 1, limit: number = 20, status?: string, token?: string) {
         try {
-            let url = `${API_BASE}/api/reviews/admin/all?page=${page}&limit=${limit}`;
+            let url = `${API_BASE}/reviews/admin/all?page=${page}&limit=${limit}`;
             if (status) {
                 url += `&status=${status}`;
             }
@@ -185,7 +186,7 @@ class ReviewService {
      */
     async approveReview(reviewId: number, token?: string) {
         try {
-            const response = await fetch(`${API_BASE}/api/reviews/admin/${reviewId}/approve`, {
+            const response = await fetch(`${API_BASE}/reviews/admin/${reviewId}/approve`, {
                 method: 'PATCH',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -208,7 +209,7 @@ class ReviewService {
      */
     async rejectReview(reviewId: number, token?: string) {
         try {
-            const response = await fetch(`${API_BASE}/api/reviews/admin/${reviewId}/reject`, {
+            const response = await fetch(`${API_BASE}/reviews/admin/${reviewId}/reject`, {
                 method: 'PATCH',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -231,7 +232,7 @@ class ReviewService {
      */
     async deleteReview(reviewId: number, token?: string) {
         try {
-            const response = await fetch(`${API_BASE}/api/reviews/admin/${reviewId}`, {
+            const response = await fetch(`${API_BASE}/reviews/admin/${reviewId}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`

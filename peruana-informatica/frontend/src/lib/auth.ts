@@ -63,6 +63,12 @@ export const authOptions: NextAuthOptions = {
             },
         }),
     ],
+    debug: false, // Disable debug mode to prevent logging errors
+    logger: {
+        error: () => { }, // Disable error logging
+        warn: () => { },  // Disable warning logging
+        debug: () => { }  // Disable debug logging
+    },
     pages: {
         signIn: "/admin/login",
     },

@@ -8,7 +8,9 @@
 //          + endpoint=/api/products
 //          = http://localhost:3001/api/products ✅
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';
+const BASE_URL = (typeof window === 'undefined')
+    ? (process.env.INTERNAL_API_URL || process.env.NEXT_PUBLIC_API_URL || '')
+    : (process.env.NEXT_PUBLIC_API_URL || '');
 
 export const API_CONFIG = {
     BASE_URL,

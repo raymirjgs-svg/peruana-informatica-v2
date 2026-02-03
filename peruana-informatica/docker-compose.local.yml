@@ -48,6 +48,8 @@ services:
       - .env.local.docker
     depends_on:
       - backend
+    ports:
+      - "3000:3001" # Frontend corre en puerto 3001 internamente
 
   # Nginx (Servidor Web) - El punto de entrada único
   nginx:

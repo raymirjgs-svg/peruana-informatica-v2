@@ -6,7 +6,7 @@
 # container starts for the FIRST TIME ONLY
 # ============================================
 
-set -e
+set -euo pipefail
 
 echo "============================================"
 echo "🚀 Starting MySQL Initialization"
@@ -19,6 +19,14 @@ DB_USER="${MYSQL_USER:-peruana_user}"
 echo "📊 Database: $DB_NAME"
 echo "👤 User: $DB_USER"
 
+# Wait for MySQL to be ready
+echo "⏳ Waiting for MySQL to be ready..."
+until mysqladmin ping -h localhost -u root -p"${MYSQL_ROOT_PASSWORD}" --silent; do
+    echo "   MySQL not ready yet, waiting..."
+    sleep 2
+done
+echo "✅ MySQL is ready"
+
 # Create database if not exists
 echo "📝 Creating database if not exists..."
 mysql -u root -p"${MYSQL_ROOT_PASSWORD}" <<-EOSQL
@@ -30,15 +38,18 @@ EOSQL
 echo "✅ Database created successfully"
 
 # Check if SQL backup file exists
-SQL_FILE="/docker-entrypoint-initdb.d/peruana_informatica.sql"
+SQL_FILE="/docker-entrypoint-initdb.d/database_backup"
 
 if [ -f "$SQL_FILE" ]; then
-    echo "📥 Found SQL backup file: peruana_informatica.sql"
-    echo "🔄 Importing database..."
+    echo "📥 Found SQL backup file: database_backup"
+    echo "🔄 Importing database (this may take several minutes)..."
     
-    mysql -u root -p"${MYSQL_ROOT_PASSWORD}" "${DB_NAME}" < "$SQL_FILE"
-    
-    echo "✅ Database imported successfully"
+    if mysql -u root -p"${MYSQL_ROOT_PASSWORD}" "${DB_NAME}" < "$SQL_FILE"; then
+        echo "✅ Database imported successfully"
+    else
+        echo "❌ Error during import"
+        exit 1
+    fi
 else
     echo "⚠️  No SQL backup file found at: $SQL_FILE"
     echo "ℹ️  Starting with empty database"

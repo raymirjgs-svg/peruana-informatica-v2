@@ -223,11 +223,9 @@ const startServer = async () => {
       console.log(chalk.green(`📊 Tablas encontradas en BD: ${tableCount}`));
 
       if (tableCount === 0) {
-        console.error(chalk.red('\n❌ FATAL: La base de datos está VACÍA'));
-        console.error(chalk.yellow('Por favor importa el archivo SQL:'));
-        console.error(chalk.white('docker exec -i peruana_mysql_local mysql -u peruana_user -pPASSWORD peruana_informatica < init.sql'));
-        console.error('');
-        process.exit(1);
+        console.error(chalk.red('\n⚠️ WARNING: La base de datos está VACÍA'));
+        console.error(chalk.yellow('Se intentará sincronizar los modelos automáticamente...'));
+        // process.exit(1); // DISABLED TEMPORARILY
       }
 
       // Listar primeras 5 tablas para confirmar

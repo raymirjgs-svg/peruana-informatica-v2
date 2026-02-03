@@ -7,9 +7,10 @@ services:
   mysql:
     image: mysql:8.0
     container_name: peruana_mysql_local
-    command: --default-authentication-plugin=mysql_native_password
+    command: >
+      --default-authentication-plugin=mysql_native_password --max_allowed_packet=64M --innodb_buffer_pool_size=256M --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     env_file:
-      - .env.docker
+      - ./.env.docker.local
     ports:
       - "3306:3306"
     volumes:
@@ -51,7 +52,7 @@ services:
       dockerfile: Dockerfile
     container_name: peruana_backend_local
     env_file:
-      - .env.docker
+      - ./.env.docker.local
     ports:
       - "3001:3001"
     volumes:
@@ -86,10 +87,11 @@ services:
       dockerfile: Dockerfile
     container_name: peruana_frontend_local
     env_file:
-      - .env.docker
+      - ./.env.docker.local
     environment:
-      # Override PORT from .env.docker (backend uses 3001, frontend needs 3000)
+      # Override PORT from .env.docker.local (backend uses 3001, frontend needs 3000)
       - PORT=3000
+      - DOCKER_ENV=true
     ports:
       - "3000:3000"
     volumes:

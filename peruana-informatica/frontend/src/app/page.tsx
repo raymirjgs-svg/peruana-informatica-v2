@@ -50,7 +50,7 @@ export default function HomePage() {
             <div className="flex justify-between items-center mb-6">
               <div className="flex items-center gap-3">
                 <span className="text-3xl">🆕</span>
-                <h2 className="text-3xl font-bold text-gray-900">Nuevos Ingresos</h2>
+                <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Nuevos Ingresos</h2>
               </div>
               <Link href="/products?new=true" className="text-blue-600 font-semibold hover:text-blue-800 transition flex items-center gap-1">
                 Ver todo <span className="text-xl">→</span>
@@ -71,7 +71,7 @@ export default function HomePage() {
           <div className="flex justify-between items-center mb-6">
             <div className="flex items-center gap-3">
               <span className="text-3xl">⭐</span>
-              <h2 className="text-3xl font-bold text-gray-900">Productos Destacados</h2>
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Productos Destacados</h2>
             </div>
             <Link href="/products?featured=true" className="text-blue-600 font-semibold hover:text-blue-800 transition flex items-center gap-1">
               Ver todo <span className="text-xl">→</span>
@@ -92,7 +92,7 @@ export default function HomePage() {
             <div className="flex justify-between items-center mb-6">
               <div className="flex items-center gap-3">
                 <span className="text-3xl">🔥</span>
-                <h2 className="text-3xl font-bold text-red-700">Zona de Remates</h2>
+                <h2 className="text-3xl font-bold text-red-700 dark:text-red-400">Zona de Remates</h2>
               </div>
               <Link href="/products?clearance=true" className="text-red-600 font-semibold hover:text-red-800 transition flex items-center gap-1">
                 Ver ofertas <span className="text-xl">→</span>
@@ -112,23 +112,23 @@ export default function HomePage() {
       <div className="mb-16"></div>
 
       {/* Why us */}
-      <section className="bg-white py-16 rounded-xl shadow-md border border-gray-100 mb-12">
-        <h2 className="text-4xl font-bold mb-12 text-center">¿Por qué elegirnos?</h2>
+      <section className="bg-white dark:bg-gray-800 py-16 rounded-xl shadow-md border border-gray-100 dark:border-gray-700 mb-12">
+        <h2 className="text-4xl font-bold mb-12 text-center text-gray-900 dark:text-gray-100">¿Por qué elegirnos?</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="text-center p-6 rounded-lg bg-gradient-to-br from-blue-50 to-blue-100 hover:shadow-lg transition">
+          <div className="text-center p-6 rounded-lg bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/30 hover:shadow-lg transition border border-blue-200 dark:border-blue-700">
             <div className="text-5xl mb-4">🚚</div>
-            <h3 className="font-bold text-lg mb-2">Envío Rápido</h3>
-            <p className="text-gray-700">Llegamos a todo el Perú en 2-3 días hábiles</p>
+            <h3 className="font-bold text-lg mb-2 text-gray-900 dark:text-gray-100">Envío Rápido</h3>
+            <p className="text-gray-700 dark:text-gray-300">Llegamos a todo el Perú en 2-3 días hábiles</p>
           </div>
-          <div className="text-center p-6 rounded-lg bg-gradient-to-br from-green-50 to-green-100 hover:shadow-lg transition">
+          <div className="text-center p-6 rounded-lg bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/30 dark:to-green-800/30 hover:shadow-lg transition border border-green-200 dark:border-green-700">
             <div className="text-5xl mb-4">✅</div>
-            <h3 className="font-bold text-lg mb-2">Garantía Oficial</h3>
-            <p className="text-gray-700">Todos nuestros productos tienen garantía del fabricante</p>
+            <h3 className="font-bold text-lg mb-2 text-gray-900 dark:text-gray-100">Garantía Oficial</h3>
+            <p className="text-gray-700 dark:text-gray-300">Todos nuestros productos tienen garantía del fabricante</p>
           </div>
-          <div className="text-center p-6 rounded-lg bg-gradient-to-br from-purple-50 to-purple-100 hover:shadow-lg transition">
+          <div className="text-center p-6 rounded-lg bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/30 dark:to-purple-800/30 hover:shadow-lg transition border border-purple-200 dark:border-purple-700">
             <div className="text-5xl mb-4">💬</div>
-            <h3 className="font-bold text-lg mb-2">Soporte 24/7</h3>
-            <p className="text-gray-700">Atención al cliente disponible todo el tiempo</p>
+            <h3 className="font-bold text-lg mb-2 text-gray-900 dark:text-gray-100">Soporte 24/7</h3>
+            <p className="text-gray-700 dark:text-gray-300">Atención al cliente disponible todo el tiempo</p>
           </div>
         </div>
       </section>

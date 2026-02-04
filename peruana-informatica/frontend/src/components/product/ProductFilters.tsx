@@ -122,7 +122,7 @@ export function ProductFilters() {
       <div className={`
         fixed lg:sticky top-0 left-0 h-screen lg:h-auto
         w-80 lg:w-full
-        bg-white lg:bg-transparent
+        bg-white dark:bg-gray-900 lg:bg-transparent lg:dark:bg-transparent
         shadow-xl lg:shadow-none
         z-50 lg:z-0
         transform transition-transform duration-300
@@ -132,7 +132,7 @@ export function ProductFilters() {
       `}>
         {/* Header móvil */}
         <div className="lg:hidden flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold">Filtros</h2>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Filtros</h2>
           <button
             onClick={() => setShowFilters(false)}
             className="text-gray-500 hover:text-gray-700"
@@ -146,9 +146,9 @@ export function ProductFilters() {
         {/* Contenido de filtros */}
         <div className="space-y-6">
           {/* Ordenar por */}
-          <div className="bg-white rounded-lg shadow-md p-4">
-            <h3 className="font-bold text-lg mb-3 flex items-center gap-2">
-              <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 border border-gray-100 dark:border-gray-700">
+            <h3 className="font-bold text-lg mb-3 flex items-center gap-2 text-gray-900 dark:text-gray-100">
+              <svg className="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
               </svg>
               Ordenar por
@@ -156,7 +156,7 @@ export function ProductFilters() {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-2 border border-gray-300 rounded-lg text-gray-900 bg-white dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
               <option value="">Relevancia</option>
               <option value="price_asc">Precio: Menor a Mayor</option>
@@ -168,9 +168,9 @@ export function ProductFilters() {
           </div>
 
           {/* Rango de precio */}
-          <div className="bg-white rounded-lg shadow-md p-4">
-            <h3 className="font-bold text-lg mb-3 flex items-center gap-2">
-              <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 border border-gray-100 dark:border-gray-700">
+            <h3 className="font-bold text-lg mb-3 flex items-center gap-2 text-gray-900 dark:text-gray-100">
+              <svg className="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               Rango de Precio
@@ -181,38 +181,38 @@ export function ProductFilters() {
                 placeholder="Min"
                 value={minPrice}
                 onChange={(e) => setMinPrice(e.target.value)}
-                className="w-1/2 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-1/2 p-2 border border-gray-300 rounded-lg text-gray-900 bg-white placeholder-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
               <input
                 type="number"
                 placeholder="Max"
                 value={maxPrice}
                 onChange={(e) => setMaxPrice(e.target.value)}
-                className="w-1/2 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-1/2 p-2 border border-gray-300 rounded-lg text-gray-900 bg-white placeholder-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
           </div>
 
           {/* Categorías */}
-          <div className="bg-white rounded-lg shadow-md p-4">
-            <h3 className="font-bold text-lg mb-3 flex items-center gap-2">
-              <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 border border-gray-100 dark:border-gray-700">
+            <h3 className="font-bold text-lg mb-3 flex items-center gap-2 text-gray-900 dark:text-gray-100">
+              <svg className="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
               </svg>
               Categorías
             </h3>
             <div className="space-y-2 max-h-48 overflow-y-auto">
               {categories.map((category) => (
-                <label key={category.id} className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
+                <label key={category.id} className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 p-2 rounded">
                   <input
                     type="radio"
                     name="category"
                     value={category.slug}
                     checked={selectedCategory === category.slug}
                     onChange={(e) => setSelectedCategory(e.target.value)}
-                    className="text-blue-600 focus:ring-blue-500"
+                    className="text-blue-600 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600"
                   />
-                  <span className="text-sm">{category.name}</span>
+                  <span className="text-sm text-gray-800 dark:text-gray-200">{category.name}</span>
                 </label>
               ))}
               {selectedCategory && (
@@ -227,25 +227,25 @@ export function ProductFilters() {
           </div>
 
           {/* Marcas */}
-          <div className="bg-white rounded-lg shadow-md p-4">
-            <h3 className="font-bold text-lg mb-3 flex items-center gap-2">
-              <svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 border border-gray-100 dark:border-gray-700">
+            <h3 className="font-bold text-lg mb-3 flex items-center gap-2 text-gray-900 dark:text-gray-100">
+              <svg className="w-5 h-5 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
               </svg>
               Marcas
             </h3>
             <div className="space-y-2 max-h-48 overflow-y-auto">
               {brands.map((brand) => (
-                <label key={brand.id} className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
+                <label key={brand.id} className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 p-2 rounded">
                   <input
                     type="radio"
                     name="brand"
                     value={brand.slug}
                     checked={selectedBrand === brand.slug}
                     onChange={(e) => setSelectedBrand(e.target.value)}
-                    className="text-blue-600 focus:ring-blue-500"
+                    className="text-blue-600 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600"
                   />
-                  <span className="text-sm">{brand.name}</span>
+                  <span className="text-sm text-gray-800 dark:text-gray-200">{brand.name}</span>
                 </label>
               ))}
               {selectedBrand && (
@@ -260,7 +260,7 @@ export function ProductFilters() {
           </div>
 
           {/* Botones de acción */}
-          <div className="sticky bottom-0 bg-white pt-4 pb-2 space-y-2 border-t lg:border-0">
+          <div className="sticky bottom-0 bg-white dark:bg-gray-900 lg:dark:bg-transparent pt-4 pb-2 space-y-2 border-t dark:border-gray-700 lg:border-0">
             <button
               onClick={applyFilters}
               className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition"

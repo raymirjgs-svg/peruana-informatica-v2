@@ -100,12 +100,12 @@ function ProductsContent() {
         <div className="lg:col-span-3">
           {/* Header con filtros activos */}
           <div className="mb-8">
-            <h1 className="text-4xl font-bold mb-4">Nuestros Productos</h1>
+            <h1 className="text-4xl font-bold mb-4 text-gray-900 dark:text-gray-100">Nuestros Productos</h1>
 
             {/* Filtros activos */}
             {hasFilters && (
-              <div className="bg-blue-50 p-4 rounded-lg mb-4 flex flex-wrap items-center gap-3">
-                <span className="font-semibold text-gray-700">Filtros activos:</span>
+              <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg mb-4 flex flex-wrap items-center gap-3 border border-blue-100 dark:border-blue-800">
+                <span className="font-semibold text-gray-800 dark:text-gray-200">Filtros activos:</span>
 
                 {categoryFilter && (
                   <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm flex items-center gap-2">
@@ -206,7 +206,7 @@ function ProductsContent() {
               </div>
             )}
 
-            <p className="text-gray-600">
+            <p className="text-gray-700 dark:text-gray-300">
               {total > 0 ? (
                 <>Mostrando {products.length} de {total} productos</>
               ) : (
@@ -227,8 +227,8 @@ function ProductsContent() {
               <Pagination currentPage={currentPage} totalPages={totalPages} basePath="/products" />
             </>
           ) : (
-            <div className="text-center py-12 bg-gray-50 rounded-lg">
-              <p className="text-gray-600 text-lg mb-4">📦 No hay productos disponibles con estos filtros</p>
+            <div className="text-center py-12 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+              <p className="text-gray-700 dark:text-gray-300 text-lg mb-4">📦 No hay productos disponibles con estos filtros</p>
               {hasFilters && (
                 <button
                   onClick={clearFilters}

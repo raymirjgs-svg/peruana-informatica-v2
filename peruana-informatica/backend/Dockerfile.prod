@@ -41,7 +41,13 @@ COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/public ./public
 
 # Create uploads directory
-RUN mkdir -p /app/public/uploads && chmod 777 /app/public/uploads
+RUN mkdir -p /app/public/uploads
+
+# Chown all files to the 'node' user (included in alpine node images)
+RUN chown -R node:node /app
+
+# Switch to non-root user for security
+USER node
 
 # Expose backend port
 EXPOSE 3001

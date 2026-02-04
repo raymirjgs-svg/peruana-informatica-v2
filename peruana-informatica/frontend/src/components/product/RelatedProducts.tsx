@@ -18,11 +18,11 @@ export function RelatedProducts({ products }: RelatedProductsProps) {
     if (!products || products.length === 0) return null;
 
     return (
-        <div className="bg-white rounded-xl shadow-lg p-6 md:p-8 mt-8 border border-gray-100">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 md:p-8 mt-8 border border-gray-100 dark:border-gray-700">
             <div className="flex items-center justify-between mb-6">
-                <h3 className="text-2xl font-bold text-slate-900">
+                <h3 className="text-2xl font-bold text-slate-900 dark:text-gray-100">
                     Comprados juntos habitualmente
-                    <span className="block text-sm font-normal text-gray-500 mt-1">
+                    <span className="block text-sm font-normal text-gray-500 dark:text-gray-400 mt-1">
                         Clientes que vieron esto también vieron
                     </span>
                 </h3>
@@ -50,14 +50,14 @@ export function RelatedProducts({ products }: RelatedProductsProps) {
                     return (
                         <div
                             key={product.id}
-                            className="group flex flex-col bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300 relative"
+                            className="group flex flex-col bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300 relative"
                         >
                             {/* Image Area */}
-                            <div className="relative h-48 bg-gray-50 p-4 transition-transform duration-500 group-hover:scale-105">
+                            <div className="relative h-48 bg-gray-50 dark:bg-gray-700 p-4 transition-transform duration-500 group-hover:scale-105">
                                 <img
                                     src={imageUrl}
                                     alt={product.name}
-                                    className="w-full h-full object-contain mix-blend-multiply"
+                                    className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal"
                                     onError={(e) => {
                                         (e.target as HTMLImageElement).src = "https://placehold.co/300x300?text=No+Image";
                                     }}
@@ -70,7 +70,7 @@ export function RelatedProducts({ products }: RelatedProductsProps) {
                                             e.preventDefault();
                                             isOnWishlist ? removeFromWishlist(product.id) : addToWishlist(product);
                                         }}
-                                        className={`p-2 rounded-full shadow-sm ${isOnWishlist ? 'bg-red-50 text-red-500' : 'bg-white text-gray-400 hover:text-red-500'}`}
+                                        className={`p-2 rounded-full shadow-sm ${isOnWishlist ? 'bg-red-50 text-red-500' : 'bg-white dark:bg-gray-600 text-gray-400 dark:text-gray-200 hover:text-red-500 dark:hover:text-red-400'}`}
                                         title="Favoritos"
                                     >
                                         <svg className="w-4 h-4" fill={isOnWishlist ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
@@ -81,7 +81,7 @@ export function RelatedProducts({ products }: RelatedProductsProps) {
                             {/* Content */}
                             <div className="p-4 flex flex-col flex-1">
                                 <Link href={`/products/${product.slug}`} className="mb-2">
-                                    <h4 className="font-semibold text-gray-800 text-sm line-clamp-2 min-h-[2.5rem] group-hover:text-blue-600 transition-colors">
+                                    <h4 className="font-semibold text-gray-800 dark:text-gray-100 text-sm line-clamp-2 min-h-[2.5rem] group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                                         {product.name}
                                     </h4>
                                 </Link>
@@ -95,7 +95,7 @@ export function RelatedProducts({ products }: RelatedProductsProps) {
                                 {/* Price & Stock */}
                                 <div className="mt-auto">
                                     <div className="flex items-baseline gap-2 mb-3">
-                                        <span className="text-lg font-bold text-slate-900">
+                                        <span className="text-lg font-bold text-slate-900 dark:text-gray-100">
                                             {pPrice > 0 ? `S/. ${pPrice.toFixed(2)}` : 'Consultar'}
                                         </span>
                                         {/* Fake crossed out price for effect if we had it */}

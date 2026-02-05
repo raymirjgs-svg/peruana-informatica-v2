@@ -49,7 +49,15 @@ router.get('/utils/suggestions', searchRateLimit, [
           { brand_id: { [Op.in]: sequelize.literal(`(SELECT id FROM brands WHERE name LIKE '%${q}%')`) } }
         ]
       },
-      attributes: ['cod_producto', 'name', 'slug', 'image', 'category', 'price', 'price_dis', 'price_web', 'price_cot'],
+      attributes: ['cod_producto', 'name', 'slug', 'image', 'category', 'price', 'price_dis', 'price_web', 'price_cot', 'codigo_interno'],
+      include: [
+        {
+          model: Image,
+          as: 'images',
+          attributes: ['imagen'],
+          limit: 1
+        }
+      ],
       limit: limit,
       order: [
         // Prioritize exact start of name

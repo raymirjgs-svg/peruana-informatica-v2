@@ -46,11 +46,18 @@ export default function AdminOrdersPage() {
 
   const fetchOrders = async () => {
     try {
-      const response = await fetch(`${API_CONFIG.API_BASE_URL}/admin/orders`);
+      const response = await fetch(`${API_CONFIG.API_BASE_URL}/api/admin/orders`);
       const data = await response.json();
-      setOrders(data);
-    } catch (error) {
-      setError('Error al cargar pedidos');
+
+      if (!response.ok) {
+        throw new Error(data?.message || data?.error || 'Error al cargar pedidos');
+      }
+
+      // Asegurar que data sea un array
+      setOrders(Array.isArray(data) ? data : (data?.orders || data?.data || []));
+    } catch (error: any) {
+      setError(error.message || 'Error al cargar pedidos');
+      setOrders([]);
     } finally {
       setIsLoading(false);
     }
@@ -62,7 +69,7 @@ export default function AdminOrdersPage() {
 
   const handleVerifyPayment = async (orderId: number, verified: boolean) => {
     try {
-      const response = await fetch(`${API_CONFIG.API_BASE_URL}/admin/payments/${orderId}/verify`, {
+      const response = await fetch(`${API_CONFIG.API_BASE_URL}/api/admin/payments/${orderId}/verify`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json'
@@ -99,7 +106,7 @@ export default function AdminOrdersPage() {
       formData.append('invoice_file', invoiceFile);
       formData.append('invoice_number', invoiceNumber);
 
-      const response = await fetch(`${API_CONFIG.API_BASE_URL}/admin/payments/${orderId}/upload-invoice`, {
+      const response = await fetch(`${API_CONFIG.API_BASE_URL}/api/admin/payments/${orderId}/upload-invoice`, {
         method: 'POST',
         body: formData
       });
@@ -257,7 +264,7 @@ export default function AdminOrdersPage() {
                           📎 Paso 1: Revisar Comprobante del Cliente
                         </p>
                         <a
-                          href={`${API_CONFIG.API_BASE_URL}/payments/proofs/${order.payment_proof}`}
+                          href={`${API_CONFIG.API_BASE_URL}/api/payments/proofs/${order.payment_proof}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="inline-block px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-medium"
@@ -328,7 +335,7 @@ export default function AdminOrdersPage() {
                         </p>
                         <div className="flex gap-3 items-center">
                           <a
-                            href={`${API_CONFIG.API_BASE_URL}/admin/payments/invoices/${order.invoice_file}`}
+                            href={`${API_CONFIG.API_BASE_URL}/api/admin/payments/invoices/${order.invoice_file}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="px-4 py-2 bg-white text-emerald-700 rounded-lg hover:bg-emerald-50 transition text-sm font-semibold flex items-center gap-2 shadow"

@@ -69,7 +69,7 @@ export default function AdminQuotations() {
 
   const fetchQuotations = async () => {
     try {
-      const response = await fetch(`${API_CONFIG.API_BASE_URL}/quotations`);
+      const response = await fetch(`${API_CONFIG.API_BASE_URL}/api/quotations`);
       if (!response.ok) throw new Error('Error');
       const data = await response.json();
       const items = Array.isArray(data) ? data : (data.quotations || data.data || []);
@@ -375,7 +375,7 @@ export default function AdminQuotations() {
                     </div>
                     <div className="flex items-center gap-2">
                       <a
-                        href={`${API_CONFIG.API_BASE_URL}/quotations/${quotation.code}/pdf`}
+                        href={`${API_CONFIG.API_BASE_URL}/api/quotations/${quotation.code}/pdf`}
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={(e) => e.stopPropagation()}

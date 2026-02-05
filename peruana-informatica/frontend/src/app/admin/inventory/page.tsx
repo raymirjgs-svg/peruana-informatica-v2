@@ -27,15 +27,16 @@ export default function InventoryPage() {
 
   useEffect(() => {
     const fetchInventory = async () => {
-      if (!session?.accessToken) return;
-
+      // Cargar sin autenticación para evitar bloqueo
       try {
         const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-        const response = await fetch(`${API_BASE}/api/admin/products`, {
-          headers: {
-            'Authorization': `Bearer ${session.accessToken}`
-          }
-        });
+        const headers: HeadersInit = {};
+
+        if (session?.accessToken) {
+          headers['Authorization'] = `Bearer ${session.accessToken}`;
+        }
+
+        const response = await fetch(`${API_BASE}/api/admin/products`, { headers });
 
         if (!response.ok) throw new Error('Failed to fetch inventory');
 

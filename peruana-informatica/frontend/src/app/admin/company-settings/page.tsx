@@ -75,7 +75,7 @@ export default function CompanySettingsPage() {
   const fetchSettings = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${API_CONFIG.API_BASE_URL}/admin/company-settings`);
+      const response = await fetch(`${API_CONFIG.API_BASE_URL}/api/admin/company-settings`);
       const data = await response.json();
       setSettings(data);
       setFormData({
@@ -119,7 +119,7 @@ export default function CompanySettingsPage() {
     setMessage(null);
 
     try {
-      const response = await fetch(`${API_CONFIG.API_BASE_URL}/admin/company-settings`, {
+      const response = await fetch(`${API_CONFIG.API_BASE_URL}/api/admin/company-settings`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

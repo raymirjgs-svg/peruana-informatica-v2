@@ -50,7 +50,7 @@ export default function QuotationDetail({ params }: { params: { id: string } }) 
   useEffect(() => {
     const fetchQuotation = async () => {
       try {
-        const response = await fetch(`${API_CONFIG.API_BASE_URL}/quotations/${params.id}`);
+        const response = await fetch(`${API_CONFIG.API_BASE_URL}/api/quotations/${params.id}`);
         if (!response.ok) throw new Error('Error al cargar la cotización');
         const data = await response.json();
         setQuotation(data);
@@ -162,7 +162,7 @@ export default function QuotationDetail({ params }: { params: { id: string } }) 
 
     setSaving(true);
     try {
-      const response = await fetch(`${API_CONFIG.API_BASE_URL}/quotations/${params.id}`, {
+      const response = await fetch(`${API_CONFIG.API_BASE_URL}/api/quotations/${params.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -196,7 +196,7 @@ export default function QuotationDetail({ params }: { params: { id: string } }) 
 
     if (confirm('¿Está seguro de enviar esta cotización por correo electrónico?')) {
       try {
-        const response = await fetch(`${API_CONFIG.API_BASE_URL}/quotations/${params.id}/send-email`, {
+        const response = await fetch(`${API_CONFIG.API_BASE_URL}/api/quotations/${params.id}/send-email`, {
           method: 'POST',
         });
 
@@ -246,7 +246,7 @@ export default function QuotationDetail({ params }: { params: { id: string } }) 
               Volver
             </Link>
             <a
-              href={`${API_CONFIG.API_BASE_URL}/quotations/${quotation.code}/pdf`}
+              href={`${API_CONFIG.API_BASE_URL}/api/quotations/${quotation.code}/pdf`}
               target="_blank"
               rel="noopener noreferrer"
               className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"

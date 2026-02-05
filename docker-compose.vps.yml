@@ -1,0 +1,120 @@
+services:
+  # Nginx Reverse Proxy (HTTP only - no SSL)
+  nginx:
+    image: nginx:alpine
+    container_name: peruana_nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.http.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      frontend:
+        condition: service_healthy
+      backend:
+        condition: service_healthy
+    networks:
+      - peruana_net
+    restart: unless-stopped
+
+  # Frontend (Next.js)
+  frontend:
+    build:
+      context: ./peruana-informatica/frontend
+      dockerfile: Dockerfile.prod
+    container_name: peruana_frontend
+    env_file:
+      - ./envs/.env.production
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    expose:
+      - "3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - peruana_net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # Backend API
+  backend:
+    build:
+      context: ./peruana-informatica/backend
+      dockerfile: Dockerfile.prod
+    container_name: peruana_backend
+    env_file:
+      - ./envs/.env.production
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+    expose:
+      - "3001"
+    volumes:
+      - uploads_data:/app/public/uploads
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - peruana_net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3001/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: peruana_mysql
+    command: --default-authentication-plugin=mysql_native_password
+    env_file:
+      - ./envs/.env.production
+    expose:
+      - "3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - peruana_net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: peruana_redis
+    expose:
+      - "6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - peruana_net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  mysql_data:
+  uploads_data:
+  redis_data:
+
+networks:
+  peruana_net:
+    driver: bridge

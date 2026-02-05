@@ -9,8 +9,8 @@ import { AdminAuthGuard } from "@/components/admin/AdminAuthGuard";
 export default function AdminRootLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
-  // Don't require auth for login page
-  const isLoginPage = pathname === '/admin/login';
+  // Don't require auth for login page (handle both with and without trailing slash)
+  const isLoginPage = pathname === '/admin/login' || pathname === '/admin/login/';
 
   return (
     <AuthProvider>

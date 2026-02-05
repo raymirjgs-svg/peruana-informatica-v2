@@ -1,27 +1,30 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 interface AdminAuthGuardProps {
     children: React.ReactNode;
 }
 
 export function AdminAuthGuard({ children }: AdminAuthGuardProps) {
-    const { data: session, status } = useSession();
     const router = useRouter();
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
     useEffect(() => {
-        if (status === 'loading') return;
+        // Check localStorage for admin token
+        const token = localStorage.getItem('adminToken');
 
-        if (status === 'unauthenticated' || !session?.accessToken) {
+        if (!token) {
             router.replace('/admin/login');
+            setIsAuthenticated(false);
+        } else {
+            setIsAuthenticated(true);
         }
-    }, [session, status, router]);
+    }, [router]);
 
     // Show loading while checking auth
-    if (status === 'loading') {
+    if (isAuthenticated === null) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-100">
                 <div className="flex flex-col items-center gap-4">
@@ -33,7 +36,7 @@ export function AdminAuthGuard({ children }: AdminAuthGuardProps) {
     }
 
     // Don't render children if not authenticated
-    if (status === 'unauthenticated' || !session?.accessToken) {
+    if (!isAuthenticated) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-100">
                 <div className="flex flex-col items-center gap-4">

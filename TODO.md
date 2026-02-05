@@ -9,7 +9,7 @@
 
 | # | Descripción | Reportado | Estado | Fecha Fix |
 |---|-------------|-----------|--------|-----------|
-| 1 | _(ejemplo: "Carrito no guarda productos")_ | Cliente | Pendiente | - |
+| 1 | Página de admin login se quedaba colgada (trailing slash + auth check) | Dev | Resuelto | 2026-02-05 |
 
 ---
 
@@ -46,6 +46,7 @@
 | 2026-02-05 | Migración de 2,359 imágenes |
 | 2026-02-05 | Fix búsqueda (imágenes + precios) |
 | 2026-02-05 | Protección admin con login |
+| 2026-02-05 | Fix admin login page hanging (trailing slash + localStorage auth) |
 
 ---
 

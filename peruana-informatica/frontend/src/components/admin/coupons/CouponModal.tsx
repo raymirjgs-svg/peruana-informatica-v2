@@ -31,7 +31,7 @@ export function CouponModal({ isOpen, onClose, onSuccess, couponToEdit, token }:
                 value: couponToEdit.value,
                 min_purchase: couponToEdit.min_purchase || 0,
                 max_uses: couponToEdit.max_uses || 0,
-                valid_until: couponToEdit.valid_until ? new Date(couponToEdit.valid_until).toISOString().split('T')[0] : '',
+                valid_until: couponToEdit.valid_until ? (new Date(couponToEdit.valid_until).toISOString().split('T')[0] ?? '') : '',
                 description: couponToEdit.description || ''
             });
         } else {

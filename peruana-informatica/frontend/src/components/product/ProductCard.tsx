@@ -65,8 +65,8 @@ export function ProductCard({ product }: ProductCardProps) {
           src={(() => {
             // ... existing image logic ...
             // Primero verificar si hay imágenes reales asociadas
-            if (product.images && product.images.length > 0 && product.images[0].imagen) {
-              const image = product.images[0].imagen;
+            if (product.images && product.images.length > 0 && product.images[0]?.imagen) {
+              const image = product.images[0]?.imagen;
               if (image.startsWith('http')) return image;
               const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
               return `${apiUrl}/images/products/${image}`;

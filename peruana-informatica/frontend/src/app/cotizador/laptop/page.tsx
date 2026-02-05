@@ -160,7 +160,7 @@ export default function LaptopQuotation() {
 
     // Extract the numeric value and unit
     const match = storage.match(/(\d+)\s*(GB|TB|gb|tb)/i);
-    if (match) {
+    if (match && match[1] && match[2]) {
       const value = match[1];
       const unit = match[2].toUpperCase();
       return `${value}${unit}`;

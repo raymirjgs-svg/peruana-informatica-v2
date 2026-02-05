@@ -4,6 +4,9 @@ const nextConfig: NextConfig = {
   // Exportar como sitio estático para hosting compartido
   output: "standalone",
 
+  // Fix NextAuth compatibility with Next.js 15
+  serverExternalPackages: ["@auth/core"],
+
   // Deshabilitar optimización de imágenes para exportación estática
   // Si necesitas imágenes optimizadas, usa un servicio externo como Cloudinary
 

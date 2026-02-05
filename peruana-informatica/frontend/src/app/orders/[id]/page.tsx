@@ -91,7 +91,8 @@ export default function OrderDetailPage() {
       processed: { bg: 'bg-green-100', text: 'text-green-800', label: 'Procesado' },
       cancelled: { bg: 'bg-red-100', text: 'text-red-800', label: 'Cancelado' }
     };
-    const badge = badges[status] || badges.pending;
+    const defaultBadge = { bg: 'bg-yellow-100', text: 'text-yellow-800', label: 'Pendiente' };
+    const badge = badges[status] ?? defaultBadge;
     return (
       <span className={`px-3 py-1 rounded-full text-sm font-semibold ${badge.bg} ${badge.text}`}>
         {badge.label}
@@ -105,7 +106,8 @@ export default function OrderDetailPage() {
       verified: { bg: 'bg-green-100', text: 'text-green-800', label: 'Verificado' },
       rejected: { bg: 'bg-red-100', text: 'text-red-800', label: 'Rechazado' }
     };
-    const badge = badges[status] || badges.pending;
+    const defaultBadge = { bg: 'bg-yellow-100', text: 'text-yellow-800', label: 'Pendiente' };
+    const badge = badges[status] ?? defaultBadge;
     return (
       <span className={`px-3 py-1 rounded-full text-sm font-semibold ${badge.bg} ${badge.text}`}>
         {badge.label}

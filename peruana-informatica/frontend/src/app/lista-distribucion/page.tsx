@@ -141,30 +141,20 @@ export default function ListaDistribucionPage() {
         // Fix hardcoded internal IPs that are not accessible
         if (img.includes('192.168.1.122') || img.includes('localhost:3001')) {
           try {
-            // Replace the bad origin with our correct local base
             const urlObj = new URL(img);
-            if (urlObj.pathname.startsWith('/uploads/')) {
-              return `${baseUrl}${urlObj.pathname}`;
-            }
-            // Fallback replace
-            return img.replace(/(http:\/\/)?(192\.168\.1\.122|localhost):3001/, baseUrl);
+            return `${baseUrl}${urlObj.pathname}`;
           } catch (e) {
-            return `${baseUrl}/uploads/${img.split('/').pop()}`;
+            return `${baseUrl}/images/products/${img.split('/').pop()}`;
           }
         }
         return img;
       }
 
-      // Handle relative paths
-      const cleanPath = img.startsWith('/') ? img.slice(1) : img;
+      // Handle relative paths - just get the filename
+      const filename = img.split('/').pop() || img;
 
-      // If it starts with uploads/, prepend the base URL
-      if (cleanPath.startsWith('uploads/')) {
-        return `${baseUrl}/${cleanPath}`;
-      }
-
-      // Default fallback
-      return `${baseUrl}/uploads/${cleanPath}`;
+      // Product images are stored in /images/products/
+      return `${baseUrl}/images/products/${filename}`;
     };
 
     // Priority: images array > image field
@@ -428,10 +418,10 @@ export default function ListaDistribucionPage() {
                               )}
                             </div>
                           </td>
-                          <td className="px-6 py-4 text-right">
+                          <td className="px-6 py-4 text-right whitespace-nowrap">
                             <div className="flex flex-col items-end">
                               <span className="text-lg font-bold text-gray-900">
-                                S/ {Math.ceil(Number((product as any).priceCot || (product as any).priceWeb || product.price)).toFixed(2)}
+                                S/ {Number((product as any).priceCot || (product as any).priceWeb || product.price || 0).toFixed(2)}
                               </span>
                               {hasSpecialPrice && (
                                 <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-green-100 text-green-700 border border-green-200">
@@ -593,7 +583,7 @@ export default function ListaDistribucionPage() {
 
                   <div className="flex items-center gap-4">
                     <div className="text-3xl font-bold text-blue-600">
-                      S/ {Math.ceil(Number((selectedProduct as any).priceCot || (selectedProduct as any).priceWeb || selectedProduct.price)).toFixed(2)}
+                      S/ {Number((selectedProduct as any).priceCot || (selectedProduct as any).priceWeb || selectedProduct.price || 0).toFixed(2)}
                     </div>
                     <span className={`px-3 py-1 rounded-full text-sm font-medium ${selectedProduct.stock > 10 ? 'bg-green-100 text-green-800' :
                       selectedProduct.stock > 0 ? 'bg-yellow-100 text-yellow-800' :

@@ -207,7 +207,7 @@ export default function BlogPostPage() {
             <div className="flex flex-wrap items-center gap-4 text-blue-100">
               <div className="flex items-center">
                 <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-blue-600 font-bold mr-3">
-                  {post.author_name[0].toUpperCase()}
+                  {(post.author_name?.[0] ?? 'A').toUpperCase()}
                 </div>
                 <span className="font-medium">{post.author_name}</span>
               </div>

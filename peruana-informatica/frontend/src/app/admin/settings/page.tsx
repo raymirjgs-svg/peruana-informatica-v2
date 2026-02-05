@@ -253,13 +253,15 @@ export default function SettingsPage() {
                 {priceOptions.map((option) => {
                   const isSelected = settings.cotizador_price_type === option.value;
                   const colorClasses = getColorClasses(option.color, isSelected);
+                  const selectedClass = colorClasses?.selected ?? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30';
+                  const hoverClass = colorClasses?.hover ?? 'hover:bg-blue-50 dark:hover:bg-blue-900/20';
 
                   return (
                     <label
                       key={option.value}
                       className={`flex items-center p-5 border-2 rounded-xl cursor-pointer transition-all ${isSelected
-                        ? colorClasses.selected
-                        : `border-gray-200 dark:border-gray-600 ${colorClasses.hover}`
+                        ? selectedClass
+                        : `border-gray-200 dark:border-gray-600 ${hoverClass}`
                         }`}
                     >
                       <input
@@ -270,7 +272,7 @@ export default function SettingsPage() {
                         onChange={(e) => handleSettingChange('cotizador_price_type', e.target.value)}
                         className="sr-only"
                       />
-                      <div className={`p-3 rounded-lg ${isSelected ? colorClasses.icon : 'text-gray-400 dark:text-gray-500'} ${isSelected ? `bg-white dark:bg-gray-800` : 'bg-gray-100 dark:bg-gray-700'
+                      <div className={`p-3 rounded-lg ${isSelected ? (colorClasses?.icon ?? 'text-blue-600 dark:text-blue-400') : 'text-gray-400 dark:text-gray-500'} ${isSelected ? `bg-white dark:bg-gray-800` : 'bg-gray-100 dark:bg-gray-700'
                         }`}>
                         {option.icon}
                       </div>
@@ -285,7 +287,7 @@ export default function SettingsPage() {
                           </span>
                           {isSelected && (
                             <span className="ml-auto">
-                              <CheckCircle className={`h-6 w-6 ${colorClasses.icon}`} />
+                              <CheckCircle className={`h-6 w-6 ${colorClasses?.icon ?? 'text-blue-600'}`} />
                             </span>
                           )}
                         </div>

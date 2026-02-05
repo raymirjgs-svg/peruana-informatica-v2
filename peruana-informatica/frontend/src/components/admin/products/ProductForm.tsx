@@ -188,8 +188,9 @@ export function ProductForm({ initialData, productId, onSubmit, isSubmitting, is
     if (e.target.files && e.target.files.length > 0) {
       setUploadingImage(true);
       const newUrls: string[] = [];
-      for (let i = 0; i < e.target.files.length; i++) {
-        const url = await handleFileUpload(e.target.files[i]);
+      const files = Array.from(e.target.files);
+      for (const file of files) {
+        const url = await handleFileUpload(file);
         if (url) newUrls.push(url);
       }
       setAdditionalImages([...additionalImages, ...newUrls]);

@@ -57,8 +57,10 @@ export default function PCBuilder() {
   const [totalProducts, setTotalProducts] = useState(0);
 
   // Tipos de componentes en orden
-  const componentSteps = [
-    { type: 'motherboard', name: 'Placa Madre', icon: '🔌' },
+  type ComponentStep = { type: string; name: string; icon: string };
+  const defaultStep: ComponentStep = { type: 'motherboard', name: 'Placa Madre', icon: '🔌' };
+  const componentSteps: ComponentStep[] = [
+    defaultStep,
     { type: 'processor', name: 'Procesador', icon: '🧠' },
     { type: 'ram', name: 'Memoria RAM', icon: '💾' },
     { type: 'storage', name: 'Almacenamiento', icon: '📦' },
@@ -66,6 +68,9 @@ export default function PCBuilder() {
     { type: 'case', name: 'Gabinete', icon: '🖥️' },
     { type: 'power_supply', name: 'Fuente de Poder', icon: '⚡' },
   ];
+
+  // Helper para obtener el paso actual de forma segura
+  const getStep = (index: number): ComponentStep => componentSteps[index] ?? defaultStep;
 
   // Cargar productos al iniciar
   useEffect(() => {
@@ -143,7 +148,7 @@ export default function PCBuilder() {
 
   // Función para manejar la selección de un componente
   const selectComponent = async (product: Product) => {
-    const currentStepType = componentSteps[step - 1].type;
+    const currentStepType = getStep(step - 1).type;
     const stepKey = currentStepType.toLowerCase() as keyof PCBuild;
 
     // Ya no es necesario verificar compatibilidad individualmente aquí
@@ -158,7 +163,7 @@ export default function PCBuilder() {
     // Si hay más pasos, continuar al siguiente
     if (step < componentSteps.length) {
       const nextStep = step + 1;
-      const nextType = componentSteps[nextStep - 1].type;
+      const nextType = getStep(nextStep - 1).type;
       setStep(nextStep);
 
       // Determinar el ID del componente padre para la compatibilidad
@@ -181,7 +186,7 @@ export default function PCBuilder() {
 
   // Obtener el componente actualmente seleccionado para el paso actual
   const getCurrentSelection = () => {
-    const currentType = componentSteps[step - 1].type;
+    const currentType = getStep(step - 1).type;
     const stepKey = currentType.toLowerCase() as keyof PCBuild;
     return pcBuild[stepKey];
   };
@@ -208,7 +213,7 @@ export default function PCBuilder() {
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     setCurrentPage(1); // Reset a primera página al buscar
-    const currentType = componentSteps[step - 1].type;
+    const currentType = getStep(step - 1).type;
     const parentId = currentType.toLowerCase() !== 'motherboard' && pcBuild.motherboard ? pcBuild.motherboard.cod_producto : null;
     loadCompatibleProducts(currentType, parentId, 1, query, selectedSubcategory);
   };
@@ -216,7 +221,7 @@ export default function PCBuilder() {
   // Cambiar de página
   const handlePageChange = (newPage: number) => {
     if (newPage < 1 || newPage > totalPages) return;
-    const currentType = componentSteps[step - 1].type;
+    const currentType = getStep(step - 1).type;
     const parentId = currentType.toLowerCase() !== 'motherboard' && pcBuild.motherboard ? pcBuild.motherboard.cod_producto : null;
     loadCompatibleProducts(currentType, parentId, newPage, searchQuery, selectedSubcategory);
   };
@@ -225,7 +230,7 @@ export default function PCBuilder() {
   const handleSubcategoryChange = (subcategoryId: number | null) => {
     setSelectedSubcategory(subcategoryId);
     setCurrentPage(1);
-    const currentType = componentSteps[step - 1].type;
+    const currentType = getStep(step - 1).type;
     const parentId = currentType.toLowerCase() !== 'motherboard' && pcBuild.motherboard ? pcBuild.motherboard.cod_producto : null;
     loadCompatibleProducts(currentType, parentId, 1, searchQuery, subcategoryId);
   };
@@ -234,7 +239,7 @@ export default function PCBuilder() {
   const goToStep = (stepIndex: number) => {
     if (stepIndex < step) {
       setStep(stepIndex + 1);
-      const type = componentSteps[stepIndex].type;
+      const type = getStep(stepIndex).type;
       // Recargar productos para ese paso (usando motherboard como padre si existe y no es motherboard)
       const parentId = type.toLowerCase() !== 'motherboard' && pcBuild.motherboard ? pcBuild.motherboard.cod_producto : null;
       loadCompatibleProducts(type, parentId);
@@ -313,7 +318,7 @@ export default function PCBuilder() {
 
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
             <h2 className="text-xl font-semibold mb-4 flex items-center">
-              <span className="mr-2">{componentSteps[step - 1].icon}</span>
+              <span className="mr-2">{getStep(step - 1).icon}</span>
               Selecciona {currentStepName}
             </h2>
 
@@ -357,14 +362,14 @@ export default function PCBuilder() {
             ) : compatibleProducts.length === 0 ? (
               <div className="text-center py-12 bg-gray-50 rounded-lg border border-gray-200">
                 <div className="mx-auto w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mb-4 text-3xl">
-                  {componentSteps[step - 1].icon}
+                  {getStep(step - 1).icon}
                 </div>
                 <h3 className="text-lg font-medium text-gray-800 mb-2">No encontramos {currentStepName} compatibles</h3>
                 <p className="text-gray-600 mb-6 max-w-md mx-auto">
                   No hay productos disponibles en esta categoría que sean compatibles con tu selección actual.
                 </p>
                 <button
-                  onClick={() => loadCompatibleProducts(componentSteps[step - 1].type, null)}
+                  onClick={() => loadCompatibleProducts(getStep(step - 1).type, null)}
                   className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
                 >
                   Ver todo el catálogo de {currentStepName}
@@ -474,7 +479,7 @@ export default function PCBuilder() {
                 if (step < componentSteps.length) {
                   setStep(prev => prev + 1);
                   // Cargar siguientes
-                  const nextType = componentSteps[step].type;
+                  const nextType = getStep(step).type;
                   const parentId = pcBuild.motherboard ? pcBuild.motherboard.cod_producto : null;
                   loadCompatibleProducts(nextType, parentId);
                 } else {

@@ -32,8 +32,8 @@ export function DiscountModal({ isOpen, onClose, onSuccess, discountToEdit, toke
                 discount_type: discountToEdit.discount_type,
                 discount_value: discountToEdit.discount_value,
                 applies_to: discountToEdit.applies_to,
-                valid_from: discountToEdit.valid_from ? new Date(discountToEdit.valid_from).toISOString().split('T')[0] : '',
-                valid_until: discountToEdit.valid_until ? new Date(discountToEdit.valid_until).toISOString().split('T')[0] : '',
+                valid_from: discountToEdit.valid_from ? (new Date(discountToEdit.valid_from).toISOString().split('T')[0] ?? '') : '',
+                valid_until: discountToEdit.valid_until ? (new Date(discountToEdit.valid_until).toISOString().split('T')[0] ?? '') : '',
                 is_active: discountToEdit.is_active
             });
         } else {

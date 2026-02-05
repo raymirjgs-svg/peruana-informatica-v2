@@ -37,10 +37,11 @@ export function RelatedProducts({ products }: RelatedProductsProps) {
 
                     // Image logic
                     let imageUrl = '/placeholder.png';
-                    if (product.images && product.images.length > 0 && product.images[0].imagen) {
-                        imageUrl = product.images[0].imagen.startsWith('http')
-                            ? product.images[0].imagen
-                            : `${apiUrl}/images/products/${product.images[0].imagen}`;
+                    const firstImage = product.images?.[0]?.imagen;
+                    if (firstImage) {
+                        imageUrl = firstImage.startsWith('http')
+                            ? firstImage
+                            : `${apiUrl}/images/products/${firstImage}`;
                     } else if (product.image) {
                         imageUrl = product.image.startsWith('http')
                             ? product.image

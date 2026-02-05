@@ -143,7 +143,7 @@ export default function AdminProductsPage() {
   // Obtener URL de imagen del producto
   const getProductImageUrl = (product: Product) => {
     if (!product.images || product.images.length === 0) return null;
-    const img = product.images[0].imagen;
+    const img = product.images?.[0]?.imagen;
     if (!img) return null;
     if (img.startsWith('http')) return img;
     const baseUrl = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001').replace(/\/api\/?$/, '');

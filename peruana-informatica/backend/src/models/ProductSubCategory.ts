@@ -50,6 +50,13 @@ ProductSubCategory.init({
   tableName: 'product_sub_categories',
   timestamps: false,
   underscored: true,
+  indexes: [
+    {
+      unique: true,
+      name: 'prod_subcat_unique',
+      fields: ['product_codigo_interno', 'sub_category_id']
+    }
+  ]
 });
 
 export default ProductSubCategory;

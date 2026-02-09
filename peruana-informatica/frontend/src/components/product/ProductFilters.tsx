@@ -97,14 +97,14 @@ export function ProductFilters() {
       {/* Botón flotante para móvil */}
       <button
         onClick={() => setShowFilters(!showFilters)}
-        className="lg:hidden fixed bottom-6 right-6 bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 transition z-40 flex items-center gap-2"
+        className="lg:hidden fixed bottom-6 right-6 bg-brand-red-600 text-white p-4 rounded-full shadow-brand-lg hover:bg-brand-red-700 hover:shadow-brand-red transition-all z-40 flex items-center gap-2 active:scale-95"
       >
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
         </svg>
         Filtros
         {hasActiveFilters && (
-          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
+          <span className="absolute -top-1 -right-1 bg-brand-red-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold shadow-brand-red animate-pulse">
             {[selectedCategory, selectedBrand, sortBy, minPrice || maxPrice].filter(Boolean).length}
           </span>
         )}
@@ -148,7 +148,7 @@ export function ProductFilters() {
           {/* Ordenar por */}
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 border border-gray-100 dark:border-gray-700">
             <h3 className="font-bold text-lg mb-3 flex items-center gap-2 text-gray-900 dark:text-gray-100">
-              <svg className="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-brand-red-600 dark:text-brand-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
               </svg>
               Ordenar por
@@ -156,7 +156,7 @@ export function ProductFilters() {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded-lg text-gray-900 bg-white dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full p-2 border border-gray-300 rounded-lg text-gray-900 bg-white dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-brand-red-500 focus:border-brand-red-500"
             >
               <option value="">Relevancia</option>
               <option value="price_asc">Precio: Menor a Mayor</option>
@@ -181,14 +181,14 @@ export function ProductFilters() {
                 placeholder="Min"
                 value={minPrice}
                 onChange={(e) => setMinPrice(e.target.value)}
-                className="w-1/2 p-2 border border-gray-300 rounded-lg text-gray-900 bg-white placeholder-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-1/2 p-2 border border-gray-300 rounded-lg text-gray-900 bg-white placeholder-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-red-500 focus:border-brand-red-500"
               />
               <input
                 type="number"
                 placeholder="Max"
                 value={maxPrice}
                 onChange={(e) => setMaxPrice(e.target.value)}
-                className="w-1/2 p-2 border border-gray-300 rounded-lg text-gray-900 bg-white placeholder-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-1/2 p-2 border border-gray-300 rounded-lg text-gray-900 bg-white placeholder-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-red-500 focus:border-brand-red-500"
               />
             </div>
           </div>
@@ -210,7 +210,7 @@ export function ProductFilters() {
                     value={category.slug}
                     checked={selectedCategory === category.slug}
                     onChange={(e) => setSelectedCategory(e.target.value)}
-                    className="text-blue-600 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600"
+                    className="text-brand-red-600 focus:ring-brand-red-500 dark:bg-gray-700 dark:border-gray-600"
                   />
                   <span className="text-sm text-gray-800 dark:text-gray-200">{category.name}</span>
                 </label>
@@ -218,7 +218,7 @@ export function ProductFilters() {
               {selectedCategory && (
                 <button
                   onClick={() => setSelectedCategory('')}
-                  className="text-sm text-blue-600 hover:text-blue-800 underline w-full text-left pl-2"
+                  className="text-sm text-brand-red-600 hover:text-brand-red-700 underline w-full text-left pl-2"
                 >
                   Limpiar categoría
                 </button>
@@ -243,7 +243,7 @@ export function ProductFilters() {
                     value={brand.slug}
                     checked={selectedBrand === brand.slug}
                     onChange={(e) => setSelectedBrand(e.target.value)}
-                    className="text-blue-600 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600"
+                    className="text-brand-red-600 focus:ring-brand-red-500 dark:bg-gray-700 dark:border-gray-600"
                   />
                   <span className="text-sm text-gray-800 dark:text-gray-200">{brand.name}</span>
                 </label>
@@ -251,7 +251,7 @@ export function ProductFilters() {
               {selectedBrand && (
                 <button
                   onClick={() => setSelectedBrand('')}
-                  className="text-sm text-blue-600 hover:text-blue-800 underline w-full text-left pl-2"
+                  className="text-sm text-brand-red-600 hover:text-brand-red-700 underline w-full text-left pl-2"
                 >
                   Limpiar marca
                 </button>
@@ -263,14 +263,14 @@ export function ProductFilters() {
           <div className="sticky bottom-0 bg-white dark:bg-gray-900 lg:dark:bg-transparent pt-4 pb-2 space-y-2 border-t dark:border-gray-700 lg:border-0">
             <button
               onClick={applyFilters}
-              className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
+              className="w-full bg-brand-red-600 text-white py-3 rounded-lg font-semibold hover:bg-brand-red-700 active:bg-brand-red-800 hover:shadow-brand-red transition-all duration-300"
             >
               Aplicar Filtros
             </button>
             {hasActiveFilters && (
               <button
                 onClick={clearFilters}
-                className="w-full bg-gray-200 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-300 transition"
+                className="w-full bg-brand-slate-700 text-white py-3 rounded-lg font-semibold hover:bg-brand-slate-600 transition-colors"
               >
                 Limpiar Filtros
               </button>

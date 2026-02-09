@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { useSettings } from '@/context/SettingsContext';
 import { API_CONFIG } from '@/config/api';
@@ -57,6 +57,10 @@ export default function CompanySettingsPage() {
   // Previews
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [faviconPreview, setFaviconPreview] = useState<string | null>(null);
+
+  // Refs for file inputs
+  const logoInputRef = useRef<HTMLInputElement>(null);
+  const faviconInputRef = useRef<HTMLInputElement>(null);
 
   const [formData, setFormData] = useState<CompanySettings>({
     id: 1,
@@ -146,10 +150,9 @@ export default function CompanySettingsPage() {
       if (!res.ok) throw new Error('Error al guardar datos');
 
       // 2. Upload Logo if selected
-      const logoInput = document.getElementById('logo-upload') as HTMLInputElement;
-      if (logoInput?.files?.length) {
+      if (logoInputRef.current?.files?.length) {
         const logoData = new FormData();
-        logoData.append('logo', logoInput.files[0]);
+        logoData.append('logo', logoInputRef.current.files[0]);
 
         const resLogo = await fetch(`${API_CONFIG.API_BASE_URL}/api/admin/company-settings/upload-logo`, {
           method: 'POST',
@@ -163,10 +166,9 @@ export default function CompanySettingsPage() {
       }
 
       // 3. Upload Favicon if selected
-      const faviconInput = document.getElementById('favicon-upload') as HTMLInputElement;
-      if (faviconInput?.files?.length) {
+      if (faviconInputRef.current?.files?.length) {
         const favData = new FormData();
-        favData.append('favicon', faviconInput.files[0]);
+        favData.append('favicon', faviconInputRef.current.files[0]);
 
         const resFav = await fetch(`${API_CONFIG.API_BASE_URL}/api/admin/company-settings/upload-favicon`, {
           method: 'POST',
@@ -353,6 +355,7 @@ export default function CompanySettingsPage() {
                     <input
                       type="file"
                       id="logo-upload"
+                      ref={logoInputRef}
                       accept="image/*"
                       className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                       onChange={handleLogoChange}
@@ -388,6 +391,7 @@ export default function CompanySettingsPage() {
                     <input
                       type="file"
                       id="favicon-upload"
+                      ref={faviconInputRef}
                       accept="image/x-icon,image/png,image/svg+xml"
                       className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                       onChange={handleFaviconChange}

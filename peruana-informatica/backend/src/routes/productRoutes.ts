@@ -99,7 +99,8 @@ router.get('/', searchRateLimit, [
 
     // Construir where clause basic
     const where: any = {
-      is_active: 1  // Solo productos activos en el frontend público
+      is_active: 1,  // Solo productos activos en el frontend público
+      stock: { [Op.gt]: 0 } // Solo mostrar productos con stock disponible
     };
 
     // Filtro por categoría

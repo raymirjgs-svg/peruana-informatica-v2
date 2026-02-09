@@ -21,9 +21,9 @@ export default function HomePage() {
 
       try {
         const [featured, newArrivals, clearance] = await Promise.all([
-          productService.getProducts(1, 4, { featured: true }),
-          productService.getProducts(1, 4, { new: true }),
-          productService.getProducts(1, 4, { clearance: true }),
+          productService.getProducts(1, 8, { featured: true }),
+          productService.getProducts(1, 8, { new: true }),
+          productService.getProducts(1, 8, { clearance: true }),
         ]);
 
         setFeaturedProducts(featured.products);
@@ -58,7 +58,7 @@ export default function HomePage() {
             </div>
             {loading ? (
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                {[1, 2, 3, 4].map(i => <ProductCardSkeleton key={i} />)}
+                {[1, 2, 3, 4, 5, 6, 7, 8].map(i => <ProductCardSkeleton key={i} />)}
               </div>
             ) : (
               <ProductGrid products={newProducts} />
@@ -79,7 +79,7 @@ export default function HomePage() {
           </div>
           {loading ? (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              {[1, 2, 3, 4].map(i => <ProductCardSkeleton key={i} />)}
+              {[1, 2, 3, 4, 5, 6, 7, 8].map(i => <ProductCardSkeleton key={i} />)}
             </div>
           ) : (
             <ProductGrid products={featuredProducts.length > 0 ? featuredProducts : []} />
@@ -100,7 +100,7 @@ export default function HomePage() {
             </div>
             {loading ? (
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                {[1, 2, 3, 4].map(i => <ProductCardSkeleton key={i} />)}
+                {[1, 2, 3, 4, 5, 6, 7, 8].map(i => <ProductCardSkeleton key={i} />)}
               </div>
             ) : (
               <ProductGrid products={clearanceProducts} />

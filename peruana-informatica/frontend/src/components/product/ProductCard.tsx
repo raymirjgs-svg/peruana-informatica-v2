@@ -57,7 +57,7 @@ export function ProductCard({ product }: ProductCardProps) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       whileHover={{ y: -8, transition: { duration: 0.2 } }}
-      className="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 dark:border-gray-700 group"
+      className="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-brand-red transition-all duration-300 overflow-hidden border border-gray-100 dark:border-gray-700 group"
     >
       {/* Imagen */}
       <div className="bg-gray-100 dark:bg-gray-700 h-56 relative overflow-hidden">
@@ -97,8 +97,8 @@ export function ProductCard({ product }: ProductCardProps) {
           <button
             onClick={handleToggleWishlist}
             className={`p-2 rounded-full shadow-md transition-colors ${isInWishlist(product.id)
-              ? 'bg-red-500 text-white'
-              : 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-500'
+              ? 'bg-brand-red-600 text-white shadow-brand-red'
+              : 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-brand-red-50 dark:hover:bg-red-900/30 hover:text-brand-red-600'
               }`}
             title={isInWishlist(product.id) ? 'Quitar de favoritos' : 'Agregar a favoritos'}
           >
@@ -110,8 +110,8 @@ export function ProductCard({ product }: ProductCardProps) {
           <button
             onClick={handleToggleCompare}
             className={`p-2 rounded-full shadow-md transition-colors ${isInCompare(product.id)
-              ? 'bg-blue-500 text-white'
-              : 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:text-blue-500'
+              ? 'bg-brand-slate-800 text-white shadow-brand-slate'
+              : 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-brand-slate-100 dark:hover:bg-slate-900/30 hover:text-brand-slate-800'
               }`}
             title={isInCompare(product.id) ? 'Quitar de comparación' : 'Agregar a comparación'}
           >
@@ -131,7 +131,7 @@ export function ProductCard({ product }: ProductCardProps) {
       {/* Contenido */}
       <div className="p-5">
         <Link href={`/products/${product.slug}`}>
-          <h3 className="font-bold text-gray-800 dark:text-gray-100 text-lg mb-2 hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer line-clamp-2 min-h-[3.5rem]">
+          <h3 className="font-bold text-brand-black-800 dark:text-gray-100 text-lg mb-2 hover:text-brand-red-600 dark:hover:text-brand-red-400 transition-colors cursor-pointer line-clamp-2 min-h-[3.5rem]">
             {product.name}
           </h3>
         </Link>
@@ -150,7 +150,7 @@ export function ProductCard({ product }: ProductCardProps) {
               const pList = Number(product.price || 0);
               if (pList > 0) {
                 return (
-                  <span className="text-2xl font-bold text-slate-900 dark:text-gray-100 leading-none">S/. {pList.toFixed(2)}</span>
+                  <span className="text-2xl font-bold text-brand-black-800 dark:text-gray-100 leading-none">S/. {pList.toFixed(2)}</span>
                 );
               }
               return <span className="text-xl font-bold text-gray-500 dark:text-gray-400">Consultar</span>;
@@ -178,10 +178,10 @@ export function ProductCard({ product }: ProductCardProps) {
         <button
           onClick={handleAddToCart}
           disabled={!product.isAvailable()}
-          className={`w-full py-3 rounded-lg font-semibold transition-all duration-300 shadow-md hover:shadow-lg active:scale-95 ${product.isAvailable()
+          className={`w-full py-3 rounded-lg font-semibold transition-all duration-300 shadow-md hover:shadow-brand-red active:scale-95 ${product.isAvailable()
             ? isInCart(product.id)
               ? 'bg-green-600 text-white hover:bg-green-700'
-              : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700'
+              : 'bg-gradient-to-r from-brand-red-600 to-brand-red-700 text-white hover:from-brand-red-700 hover:to-brand-red-800'
             : 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed shadow-none'
             }`}
         >

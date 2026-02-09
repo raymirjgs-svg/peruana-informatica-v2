@@ -46,6 +46,7 @@ export const updateCompanySettings = async (req: Request, res: Response) => {
             twitter_url,
             linkedin_url,
             logo_url,
+            favicon_url,
             show_distributor_price_in_detail,
         } = req.body;
 
@@ -70,8 +71,9 @@ export const updateCompanySettings = async (req: Request, res: Response) => {
                 twitter_url,
                 linkedin_url,
                 logo_url,
+                favicon_url,
                 show_distributor_price_in_detail: show_distributor_price_in_detail !== undefined ? show_distributor_price_in_detail : false,
-            });
+            } as any);
         } else {
             // Actualizar si existe
             await settings.update({
@@ -88,9 +90,13 @@ export const updateCompanySettings = async (req: Request, res: Response) => {
                 instagram_url,
                 twitter_url,
                 linkedin_url,
-                logo_url,
+
+                // Si se envía undefined/null no actualizar, si se envía string actualizar
+                ...(logo_url !== undefined && { logo_url }),
+                ...(favicon_url !== undefined && { favicon_url }),
+
                 show_distributor_price_in_detail: show_distributor_price_in_detail !== undefined ? show_distributor_price_in_detail : settings.show_distributor_price_in_detail,
-            });
+            } as any);
         }
 
         res.json({
@@ -101,6 +107,71 @@ export const updateCompanySettings = async (req: Request, res: Response) => {
     } catch (error) {
         console.error('Error updating company settings:', error);
         res.status(500).json({ error: 'Error al actualizar configuración de empresa' });
+    }
+};
+
+// Subir Logo
+export const uploadLogo = async (req: Request, res: Response) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ error: 'No se ha subido ningún archivo' });
+        }
+
+        const relativePath = `/uploads/settings/${req.file.filename}`;
+
+        let settings = await CompanySettings.findByPk(1);
+        if (settings) {
+            await settings.update({ logo_url: relativePath });
+        } else {
+            // Create minimal settings
+            await CompanySettings.create({
+                id: 1,
+                company_name: 'Peruana Informática',
+                company_ruc: '20123456789',
+                company_address: '-',
+                company_phone: '-',
+                company_email: '-',
+                logo_url: relativePath
+            } as any);
+        }
+
+        res.json({ success: true, url: relativePath });
+    } catch (error) {
+        console.error('Error uploading logo:', error);
+        res.status(500).json({ error: 'Error al subir logo' });
+    }
+};
+
+// Subir Favicon
+export const uploadFavicon = async (req: Request, res: Response) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ error: 'No se ha subido ningún archivo' });
+        }
+
+        const relativePath = `/uploads/settings/${req.file.filename}`;
+
+        let settings = await CompanySettings.findByPk(1);
+        if (settings) {
+            // @ts-ignore
+            await settings.update({ favicon_url: relativePath });
+        } else {
+            await CompanySettings.create({
+                id: 1,
+                company_name: 'Peruana Informática',
+                company_ruc: '20123456789',
+                company_address: '-',
+                company_phone: '-',
+                company_email: '-',
+                // @ts-ignore
+                favicon_url: relativePath
+            } as any);
+        }
+
+        res.json({ success: true, url: relativePath });
+    } catch (error) {
+        console.error('Error uploading favicon:', error);
+        res.status(500).json({ error: 'Error al subir favicon' });
     }
 };
 
@@ -123,21 +194,25 @@ export const getPublicCompanySettings = async (req: Request, res: Response) => {
         }
 
         // Devolver solo datos públicos (excluir datos sensibles si los hubiera)
+        // Usar any para acceder a favicon_url si TS se queja
+        const s = settings as any;
         res.json({
-            company_name: settings.company_name,
-            company_address: settings.company_address,
-            company_phone: settings.company_phone,
-            company_email: settings.company_email,
-            company_whatsapp: settings.company_whatsapp,
-            company_website: settings.company_website,
-            store_address: settings.store_address,
-            store_hours: settings.store_hours,
-            facebook_url: settings.facebook_url,
-            instagram_url: settings.instagram_url,
-            twitter_url: settings.twitter_url,
-            linkedin_url: settings.linkedin_url,
-            logo_url: settings.logo_url,
-            show_distributor_price_in_detail: settings.show_distributor_price_in_detail,
+            company_name: s.company_name,
+            company_ruc: s.company_ruc,
+            company_address: s.company_address,
+            company_phone: s.company_phone,
+            company_email: s.company_email,
+            company_whatsapp: s.company_whatsapp,
+            company_website: s.company_website,
+            store_address: s.store_address,
+            store_hours: s.store_hours,
+            facebook_url: s.facebook_url,
+            instagram_url: s.instagram_url,
+            twitter_url: s.twitter_url,
+            linkedin_url: s.linkedin_url,
+            logo_url: s.logo_url,
+            favicon_url: s.favicon_url,
+            show_distributor_price_in_detail: s.show_distributor_price_in_detail,
         });
     } catch (error) {
         console.error('Error getting public company settings:', error);

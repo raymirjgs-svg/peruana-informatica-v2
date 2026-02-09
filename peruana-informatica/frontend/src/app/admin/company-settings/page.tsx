@@ -1,8 +1,11 @@
+
 'use client';
 
 import { useEffect, useState } from 'react';
 import { AdminLayout } from '@/components/admin/AdminLayout';
+import { useSettings } from '@/context/SettingsContext';
 import { API_CONFIG } from '@/config/api';
+import { toast } from 'sonner';
 import {
   Building2,
   Phone,
@@ -19,9 +22,10 @@ import {
   CheckCircle,
   AlertCircle,
   Loader2,
-  LayoutGrid,
   Store,
-  Share2
+  Share2,
+  Image as ImageIcon,
+  Upload
 } from 'lucide-react';
 
 interface CompanySettings {
@@ -40,17 +44,22 @@ interface CompanySettings {
   twitter_url?: string;
   linkedin_url?: string;
   logo_url?: string;
+  favicon_url?: string;
   show_distributor_price_in_detail?: boolean;
 }
 
 export default function CompanySettingsPage() {
   const [activeTab, setActiveTab] = useState('general');
-  const [settings, setSettings] = useState<CompanySettings | null>(null);
+  const { refreshSettings } = useSettings();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
-  const [formData, setFormData] = useState({
+  // Previews
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [faviconPreview, setFaviconPreview] = useState<string | null>(null);
+
+  const [formData, setFormData] = useState<CompanySettings>({
+    id: 1,
     company_name: '',
     company_ruc: '',
     company_address: '',
@@ -65,6 +74,7 @@ export default function CompanySettingsPage() {
     twitter_url: '',
     linkedin_url: '',
     logo_url: '',
+    favicon_url: '',
     show_distributor_price_in_detail: false,
   });
 
@@ -76,28 +86,20 @@ export default function CompanySettingsPage() {
     try {
       setLoading(true);
       const response = await fetch(`${API_CONFIG.API_BASE_URL}/api/admin/company-settings`);
-      const data = await response.json();
-      setSettings(data);
-      setFormData({
-        company_name: data.company_name || '',
-        company_ruc: data.company_ruc || '',
-        company_address: data.company_address || '',
-        company_phone: data.company_phone || '',
-        company_email: data.company_email || '',
-        company_whatsapp: data.company_whatsapp || '',
-        company_website: data.company_website || '',
-        store_address: data.store_address || '',
-        store_hours: data.store_hours || '',
-        facebook_url: data.facebook_url || '',
-        instagram_url: data.instagram_url || '',
-        twitter_url: data.twitter_url || '',
-        linkedin_url: data.linkedin_url || '',
-        logo_url: data.logo_url || '',
-        show_distributor_price_in_detail: data.show_distributor_price_in_detail || false,
-      });
+      if (response.ok) {
+        const data = await response.json();
+        setFormData({
+          ...formData,
+          ...data
+        });
+
+        // Set previews
+        if (data.logo_url) setLogoPreview(`${process.env.NEXT_PUBLIC_API_URL}${data.logo_url}`);
+        if (data.favicon_url) setFaviconPreview(`${process.env.NEXT_PUBLIC_API_URL}${data.favicon_url}`);
+      }
     } catch (error) {
       console.error('Error fetching settings:', error);
-      setMessage({ type: 'error', text: 'Error al cargar configuración' });
+      toast.error('Error al cargar configuración');
     } finally {
       setLoading(false);
     }
@@ -113,31 +115,76 @@ export default function CompanySettingsPage() {
     }
   };
 
+  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setLogoPreview(url);
+    }
+  };
+
+  const handleFaviconChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setFaviconPreview(url);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
-    setMessage(null);
 
     try {
-      const response = await fetch(`${API_CONFIG.API_BASE_URL}/api/admin/company-settings`, {
+      // 1. Update text fields first
+      const res = await fetch(`${API_CONFIG.API_BASE_URL}/api/admin/company-settings`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
 
-      const data = await response.json();
+      if (!res.ok) throw new Error('Error al guardar datos');
 
-      if (response.ok) {
-        setMessage({ type: 'success', text: 'Configuración actualizada exitosamente' });
-        setSettings(data.settings);
-      } else {
-        setMessage({ type: 'error', text: data.error || 'Error al actualizar configuración' });
+      // 2. Upload Logo if selected
+      const logoInput = document.getElementById('logo-upload') as HTMLInputElement;
+      if (logoInput?.files?.length) {
+        const logoData = new FormData();
+        logoData.append('logo', logoInput.files[0]);
+
+        const resLogo = await fetch(`${API_CONFIG.API_BASE_URL}/api/admin/company-settings/upload-logo`, {
+          method: 'POST',
+          body: logoData,
+        });
+
+        if (resLogo.ok) {
+          const data = await resLogo.json();
+          setLogoPreview(`${process.env.NEXT_PUBLIC_API_URL}${data.url}`);
+        }
       }
+
+      // 3. Upload Favicon if selected
+      const faviconInput = document.getElementById('favicon-upload') as HTMLInputElement;
+      if (faviconInput?.files?.length) {
+        const favData = new FormData();
+        favData.append('favicon', faviconInput.files[0]);
+
+        const resFav = await fetch(`${API_CONFIG.API_BASE_URL}/api/admin/company-settings/upload-favicon`, {
+          method: 'POST',
+          body: favData,
+        });
+
+        if (resFav.ok) {
+          const data = await resFav.json();
+          setFaviconPreview(`${process.env.NEXT_PUBLIC_API_URL}${data.url}`);
+        }
+      }
+
+      toast.success('Configuración actualizada exitosamente');
+      await refreshSettings();
+
     } catch (error) {
       console.error('Error updating settings:', error);
-      setMessage({ type: 'error', text: 'Error de conexión' });
+      toast.error('Error al guardar configuración');
     } finally {
       setSaving(false);
     }
@@ -145,6 +192,7 @@ export default function CompanySettingsPage() {
 
   const tabs = [
     { id: 'general', label: 'General', icon: Building2 },
+    { id: 'identity', label: 'Identidad Visual', icon: ImageIcon },
     { id: 'contact', label: 'Contacto', icon: Phone },
     { id: 'location', label: 'Ubicación', icon: Store },
     { id: 'social', label: 'Redes Sociales', icon: Share2 },
@@ -184,7 +232,7 @@ export default function CompanySettingsPage() {
         </div>
 
         {/* Tabs */}
-        <div className="flex overflow-x-auto gap-2 mb-6 pb-2">
+        <div className="flex overflow-x-auto gap-2 mb-6 pb-2 custom-scrollbar">
           {tabs.map(tab => (
             <button
               key={tab.id}
@@ -199,21 +247,6 @@ export default function CompanySettingsPage() {
             </button>
           ))}
         </div>
-
-        {/* Mensaje de estado */}
-        {message && (
-          <div className={`mb-6 p-4 rounded-xl flex items-center gap-3 shadow-sm ${message.type === 'success'
-            ? 'bg-green-50 border border-green-200 text-green-800'
-            : 'bg-red-50 border border-red-200 text-red-800'
-            }`}>
-            {message.type === 'success' ? (
-              <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
-            ) : (
-              <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0" />
-            )}
-            <span className="font-medium">{message.text}</span>
-          </div>
-        )}
 
         <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden min-h-[400px]">
 
@@ -294,6 +327,88 @@ export default function CompanySettingsPage() {
                         Habilita la visualización del precio de distribuidor en el detalle del producto.
                       </div>
                     </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Identity Tab */}
+          {activeTab === 'identity' && (
+            <div className="p-6 animate-fadeIn">
+              <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                <ImageIcon className="h-5 w-5 text-purple-600" />
+                Identidad Visual
+              </h2>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {/* Logo Upload */}
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <label className="block text-sm font-semibold text-gray-700">Logo del Sitio</label>
+                    <span className="text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded-full">Visible en Header y Footer</span>
+                  </div>
+
+                  <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:bg-gray-50 transition-colors group relative">
+                    <input
+                      type="file"
+                      id="logo-upload"
+                      accept="image/*"
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                      onChange={handleLogoChange}
+                    />
+
+                    {logoPreview ? (
+                      <div className="relative h-32 w-full flex items-center justify-center">
+                        <img src={logoPreview} alt="Logo Preview" className="max-h-full max-w-full object-contain" />
+                        <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-lg">
+                          <span className="text-white font-medium flex items-center gap-2"><Upload className="w-4 h-4" /> Cambiar imagen</span>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center py-6">
+                        <div className="bg-blue-100 p-4 rounded-full mb-3 text-blue-600">
+                          <ImageIcon className="h-8 w-8" />
+                        </div>
+                        <p className="text-gray-500 font-medium">Arrastra o selecciona un logo</p>
+                        <p className="text-xs text-gray-400 mt-1">PNG transparente recomendado</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Favicon Upload */}
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <label className="block text-sm font-semibold text-gray-700">Icono de Pestaña (Favicon)</label>
+                    <span className="text-xs text-purple-600 bg-purple-50 px-2 py-1 rounded-full">Icono del navegador</span>
+                  </div>
+
+                  <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:bg-gray-50 transition-colors group relative">
+                    <input
+                      type="file"
+                      id="favicon-upload"
+                      accept="image/x-icon,image/png,image/svg+xml"
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                      onChange={handleFaviconChange}
+                    />
+
+                    {faviconPreview ? (
+                      <div className="relative h-16 w-16 mx-auto mb-3">
+                        <img src={faviconPreview} alt="Favicon Preview" className="h-full w-full object-contain" />
+                        <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-lg">
+                          <Upload className="w-4 h-4 text-white" />
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center py-6">
+                        <div className="bg-purple-100 p-4 rounded-full mb-3 text-purple-600">
+                          <ImageIcon className="h-8 w-8" />
+                        </div>
+                        <p className="text-gray-500 font-medium">Selecciona un icono</p>
+                        <p className="text-xs text-gray-400 mt-1">.ico o .png 32x32px</p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

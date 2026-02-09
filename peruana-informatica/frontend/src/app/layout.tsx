@@ -29,6 +29,8 @@ export const metadata: Metadata = {
   },
 };
 
+import { SettingsProvider } from '@/context/SettingsContext';
+import { FaviconUpdater } from '@/components/common/FaviconUpdater';
 import NextAuthProvider from '@/components/providers/NextAuthProvider';
 
 export default function RootLayout({
@@ -44,15 +46,18 @@ export default function RootLayout({
       </head>
       <body className={`${inter.variable} font-sans bg-gray-50`} suppressHydrationWarning={true}>
         <NextAuthProvider>
-          <ErrorBoundary>
-            <CompareProvider>
-              <WishlistProvider>
-                <CartProvider>
-                  <LayoutWrapper>{children}</LayoutWrapper>
-                </CartProvider>
-              </WishlistProvider>
-            </CompareProvider>
-          </ErrorBoundary>
+          <SettingsProvider>
+            <FaviconUpdater />
+            <ErrorBoundary>
+              <CompareProvider>
+                <WishlistProvider>
+                  <CartProvider>
+                    <LayoutWrapper>{children}</LayoutWrapper>
+                  </CartProvider>
+                </WishlistProvider>
+              </CompareProvider>
+            </ErrorBoundary>
+          </SettingsProvider>
         </NextAuthProvider>
       </body>
     </html>

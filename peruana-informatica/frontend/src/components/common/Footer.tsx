@@ -4,25 +4,13 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
-import { SettingsService, CompanySettings } from '../../services/SettingsService';
+import { useState } from 'react';
+import { useSettings } from '@/context/SettingsContext';
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
   const [email, setEmail] = useState('');
-  const [settings, setSettings] = useState<CompanySettings | null>(null);
-
-  useEffect(() => {
-    const fetchSettings = async () => {
-      try {
-        const data = await SettingsService.getPublicSettings();
-        setSettings(data);
-      } catch (error) {
-        console.error('Error loading footer settings:', error);
-      }
-    };
-    fetchSettings();
-  }, []);
+  const { settings, logoUrl } = useSettings();
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
@@ -67,8 +55,8 @@ export function Footer() {
           <div>
             <div className="flex items-center gap-2 mb-4">
               <div className="bg-gradient-to-br from-blue-500 to-purple-600 p-2 rounded-lg">
-                {settings?.logo_url ? (
-                  <img src={settings.logo_url} alt={settings.company_name} className="w-8 h-8 object-contain" />
+                {logoUrl ? (
+                  <img src={logoUrl} alt={settings?.company_name || 'Logo'} className="w-8 h-8 object-contain" />
                 ) : (
                   <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />

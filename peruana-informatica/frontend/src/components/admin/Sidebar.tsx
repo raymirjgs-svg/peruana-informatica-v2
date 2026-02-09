@@ -86,7 +86,7 @@ const menuItems: MenuItem[] = [
     name: "Sistema",
     icon: <Settings className="h-5 w-5" />,
     children: [
-      { name: "Empresa", href: "/admin/company-settings", icon: <Settings className="h-4 w-4" /> },
+      { name: "Empresa y Logos", href: "/admin/company-settings", icon: <Settings className="h-4 w-4" /> },
       { name: "Clientes", href: "/admin/customers", icon: <Users className="h-4 w-4" /> },
       { name: "Usuarios", href: "/admin/users", icon: <Users className="h-4 w-4" /> },
       { name: "Configuración", href: "/admin/settings", icon: <Settings className="h-4 w-4" /> },

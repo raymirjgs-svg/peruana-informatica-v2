@@ -366,6 +366,16 @@ export default function SettingsPage() {
                 <p className="text-gray-500 dark:text-gray-400">Personaliza los colores y estilo visual de tu tienda.</p>
               </div>
 
+              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-xl p-6 mb-8 flex items-center justify-between">
+                <div>
+                  <h3 className="font-bold text-blue-800 dark:text-blue-200 mb-1">¿Buscas cambiar el Logo?</h3>
+                  <p className="text-sm text-blue-600 dark:text-blue-300">La configuración de identidad visual (Logo y Favicon) se encuentra en la sección de Empresa.</p>
+                </div>
+                <a href="/admin/company-settings" className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-lg transition-colors shadow-sm">
+                  Ir a Empresa y Logos →
+                </a>
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Color Primario</label>

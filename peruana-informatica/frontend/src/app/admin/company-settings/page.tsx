@@ -150,9 +150,10 @@ export default function CompanySettingsPage() {
       if (!res.ok) throw new Error('Error al guardar datos');
 
       // 2. Upload Logo if selected
-      if (logoInputRef.current?.files?.length) {
+      const logoFile = logoInputRef.current?.files?.[0];
+      if (logoFile) {
         const logoData = new FormData();
-        logoData.append('logo', logoInputRef.current.files[0]);
+        logoData.append('logo', logoFile);
 
         const resLogo = await fetch(`${API_CONFIG.API_BASE_URL}/api/admin/company-settings/upload-logo`, {
           method: 'POST',
@@ -166,9 +167,10 @@ export default function CompanySettingsPage() {
       }
 
       // 3. Upload Favicon if selected
-      if (faviconInputRef.current?.files?.length) {
+      const faviconFile = faviconInputRef.current?.files?.[0];
+      if (faviconFile) {
         const favData = new FormData();
-        favData.append('favicon', faviconInputRef.current.files[0]);
+        favData.append('favicon', faviconFile);
 
         const resFav = await fetch(`${API_CONFIG.API_BASE_URL}/api/admin/company-settings/upload-favicon`, {
           method: 'POST',

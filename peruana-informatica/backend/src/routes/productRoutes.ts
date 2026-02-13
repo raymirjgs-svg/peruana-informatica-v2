@@ -11,6 +11,7 @@ import { Op } from 'sequelize';
 import { sequelize } from '../database/connection';
 import { searchRateLimit } from '../middleware/security';
 import { SyncService } from '../services/SyncService';
+import { cacheSuccessMiddleware, invalidateProductsCache, invalidateProductCache } from '../middleware/cache';
 
 const router = express.Router();
 
@@ -74,7 +75,7 @@ router.get('/utils/suggestions', searchRateLimit, [
 });
 
 // GET todos los productos con filtros y paginación
-router.get('/', searchRateLimit, [
+router.get('/', searchRateLimit, cacheSuccessMiddleware('products', 300), [
   query('page').optional().isInt({ min: 1 }).withMessage('Página debe ser un número mayor a 0'),
   query('limit').optional().isInt({ min: 1, max: 100 }).withMessage('Límite debe estar entre 1 y 100'),
   query('search').optional().isLength({ min: 1, max: 100 }).withMessage('Búsqueda debe tener entre 1 y 100 caracteres'),
@@ -251,7 +252,7 @@ router.get('/', searchRateLimit, [
 });
 
 // GET producto por ID
-router.get('/:id', [
+router.get('/:id', cacheSuccessMiddleware('product', 600), [
   param('id').isInt({ min: 1 }).withMessage('ID debe ser un número entero mayor a 0'),
 ], validateRequest, async (req: Request, res: Response) => {
   try {
@@ -304,7 +305,7 @@ router.get('/:id', [
 });
 
 // GET producto por slug
-router.get('/slug/:slug', [
+router.get('/slug/:slug', cacheSuccessMiddleware('product-slug', 600), [
   param('slug').isLength({ min: 1, max: 255 }).withMessage('Slug inválido'),
 ], validateRequest, async (req: Request, res: Response) => {
   try {

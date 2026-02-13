@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 import path from "path";
 import helmet from "helmet";
+import compression from "compression";
 import swaggerUi from "swagger-ui-express";
 import chalk from "chalk";
 import { swaggerSpec } from "./config/swagger";
@@ -84,6 +85,9 @@ app.use(helmet({
   crossOriginEmbedderPolicy: false, // Allow embedding
   crossOriginResourcePolicy: { policy: "cross-origin" }, // Allow images to be loaded by frontend
 }));
+
+// Gzip Compression
+app.use(compression());
 
 const allowedOrigins = (process.env.ALLOWED_ORIGINS || process.env.CORS_ORIGIN || '').split(',')
   .map(o => o.trim())

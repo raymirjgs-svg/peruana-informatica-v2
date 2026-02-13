@@ -1,10 +1,13 @@
 import express from 'express';
 import { Brand } from '../models/Brand';
+import { cacheMiddleware } from '../middleware/cache';
 
 const router = express.Router();
 
+const brandCache = cacheMiddleware('brands', 600);
+
 // GET todas las marcas
-router.get('/', async (req, res) => {
+router.get('/', brandCache, async (req, res) => {
   try {
     const brands = await Brand.findAll({
       attributes: ['id','name','slug','created_at','updated_at'],
@@ -18,7 +21,7 @@ router.get('/', async (req, res) => {
 });
 
 // GET marca por slug
-router.get('/:slug', async (req, res) => {
+router.get('/:slug', brandCache, async (req, res) => {
   try {
     const brand = await Brand.findOne({
       where: { slug: req.params.slug },

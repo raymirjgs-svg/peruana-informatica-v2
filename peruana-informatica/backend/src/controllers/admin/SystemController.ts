@@ -2,20 +2,37 @@ import { Request, Response } from 'express';
 import { sequelize } from '../../database/connection';
 import { PeruanaInformaticaService } from '../../services/PeruanaInformaticaService';
 import { geminiService } from '../../services/GeminiService';
+import { isRedisReady, getRedisClient } from '../../config/redis';
 import os from 'os';
+import { exec } from 'child_process';
+import { promisify } from 'util';
+
+const execAsync = promisify(exec);
 
 export const getSystemHealth = async (req: Request, res: Response) => {
     const healthData: any = {
         database: { status: 'unknown', latency: 0 },
+        redis: { status: 'unknown', latency: 0 },
         externalApi: { status: 'unknown', latency: 0 },
         geminiApi: { status: 'unknown', latency: 0 },
         googleAuth: { status: 'unknown', message: 'Not configured' },
         system: {
             uptime: process.uptime(),
-            memoryUsage: process.memoryUsage(),
-            freeMemory: os.freemem(),
-            totalMemory: os.totalmem(),
-            loadAvg: os.loadavg()
+            memory: {
+                used: Math.round(process.memoryUsage().heapUsed / 1024 / 1024),
+                total: Math.round(process.memoryUsage().heapTotal / 1024 / 1024),
+                rss: Math.round(process.memoryUsage().rss / 1024 / 1024),
+                external: Math.round(process.memoryUsage().external / 1024 / 1024),
+            },
+            system: {
+                freeMemory: Math.round(os.freemem() / 1024 / 1024),
+                totalMemory: Math.round(os.totalmem() / 1024 / 1024),
+                cpuCount: os.cpus().length,
+                loadAvg: os.loadavg(),
+                platform: os.platform(),
+                nodeVersion: process.version,
+            },
+            timestamp: new Date().toISOString(),
         },
         timestamp: new Date().toISOString()
     };
@@ -35,13 +52,31 @@ export const getSystemHealth = async (req: Request, res: Response) => {
             }
         })(),
 
-        // 2. API Externa
+        // 2. Redis
+        (async () => {
+            const redisStart = Date.now();
+            try {
+                const redisReady = isRedisReady();
+                if (redisReady) {
+                    const client = getRedisClient();
+                    if (client) {
+                        await client.ping();
+                        return { type: 'redis', status: 'ok', latency: Date.now() - redisStart };
+                    }
+                }
+                return { type: 'redis', status: 'disabled', message: 'Redis no disponible', latency: 0 };
+            } catch (error: any) {
+                return { type: 'redis', status: 'error', message: error.message, latency: Date.now() - redisStart };
+            }
+        })(),
+
+        // 3. API Externa
         (async () => {
             const apiHealth = await PeruanaInformaticaService.checkHealth();
             return { type: 'externalApi', ...apiHealth };
         })(),
 
-        // 3. Gemini API
+        // 4. Gemini API
         (async () => {
             const geminiStart = Date.now();
             try {
@@ -69,6 +104,10 @@ export const getSystemHealth = async (req: Request, res: Response) => {
                 healthData.database.status = val.status;
                 healthData.database.latency = val.latency;
                 healthData.database.message = val.message;
+            } else if (val.type === 'redis') {
+                healthData.redis.status = val.status;
+                healthData.redis.latency = val.latency;
+                healthData.redis.message = val.message;
             } else if (val.type === 'externalApi') {
                 healthData.externalApi.status = val.status;
                 healthData.externalApi.latency = val.latency;

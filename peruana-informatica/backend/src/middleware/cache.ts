@@ -1,5 +1,59 @@
 import { Request, Response, NextFunction } from 'express';
-import { getCache, setCache, isRedisReady } from '../config/redis';
+import { getCache, setCache, isRedisReady, deleteCachePattern } from '../config/redis';
+
+/**
+ * Cache keys constants
+ */
+export const CACHE_KEYS = {
+    products: 'products:*',
+    product: (id: number) => `product:${id}`,
+    productBySlug: (slug: string) => `product:slug:${slug}`,
+    categories: 'categories:*',
+    category: (id: number) => `category:${id}`,
+    brands: 'brands:*',
+    brand: (id: number) => `brand:${id}`,
+    featured: 'products:featured:*',
+};
+
+/**
+ * Invalidate cache by pattern
+ */
+export const invalidateCache = async (pattern: string): Promise<void> => {
+    if (!isRedisReady()) return;
+    await deleteCachePattern(pattern);
+};
+
+/**
+ * Invalidate all product-related cache
+ */
+export const invalidateProductsCache = async (): Promise<void> => {
+    await invalidateCache(CACHE_KEYS.products);
+};
+
+/**
+ * Invalidate specific product cache
+ */
+export const invalidateProductCache = async (id: number, slug?: string): Promise<void> => {
+    await invalidateCache(CACHE_KEYS.product(id));
+    if (slug) {
+        await invalidateCache(CACHE_KEYS.productBySlug(slug));
+    }
+    await invalidateProductsCache();
+};
+
+/**
+ * Invalidate categories cache
+ */
+export const invalidateCategoriesCache = async (): Promise<void> => {
+    await invalidateCache(CACHE_KEYS.categories);
+};
+
+/**
+ * Invalidate brands cache
+ */
+export const invalidateBrandsCache = async (): Promise<void> => {
+    await invalidateCache(CACHE_KEYS.brands);
+};
 
 /**
  * Cache middleware factory

@@ -226,7 +226,7 @@ router.get('/', searchRateLimit, cacheSuccessMiddleware('products', 300), [
       order,
       attributes: [
         'cod_producto', 'name', 'slug', 'description', 'short_description', 'price', 'price_web', 'price_cot', 'price_dis', 'stock', 'category', 'keywords', 'brand_id', 'category_id', 'estado', 'codigo_interno',
-        'component_type', 'socket_type', 'ram_type', 'form_factor', 'tdp_watts', 'has_integrated_graphics', 'component_specs', 'is_featured', 'is_new', 'is_clearance'
+        'component_type', 'socket_type', 'ram_type', 'form_factor', 'tdp_watts', 'has_integrated_graphics', 'component_specs', 'is_featured', 'is_new', 'is_clearance', 'image'
       ],
       include: [
         { model: Brand, as: 'productBrand', attributes: ['id', 'name', 'slug'], required: false },

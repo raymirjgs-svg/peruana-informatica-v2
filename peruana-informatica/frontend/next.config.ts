@@ -20,7 +20,18 @@ const nextConfig: NextConfig = {
     formats: ['image/avif', 'image/webp'],
     minimumCacheTTL: 60 * 60 * 24, // 1 día
     remotePatterns: [
-      // Development: Allow images from localhost (backend API)
+      // Production server
+      {
+        protocol: 'http',
+        hostname: '200.58.98.122',
+        pathname: '/images/**',
+      },
+      {
+        protocol: 'http',
+        hostname: 'peruana-informatica-backend',
+        port: '3001',
+        pathname: '/images/**',
+      },
       {
         protocol: 'http',
         hostname: 'localhost',
@@ -30,12 +41,6 @@ const nextConfig: NextConfig = {
       {
         protocol: 'http',
         hostname: '127.0.0.1',
-        port: '3001',
-        pathname: '/images/**',
-      },
-      {
-        protocol: 'http',
-        hostname: 'backend',
         port: '3001',
         pathname: '/images/**',
       },

@@ -7,19 +7,18 @@ const nextConfig: NextConfig = {
   // Fix NextAuth compatibility with Next.js 15
   serverExternalPackages: ["@auth/core"],
 
-  // Deshabilitar optimización de imágenes para exportación estática
-  // Si necesitas imágenes optimizadas, usa un servicio externo como Cloudinary
-
-
-  // Configuración para URLs limpias
-  trailingSlash: true,
-
   /* 
    * Configuración de imágenes optimizada
-   * Se habilitan dominios externos necesarios para el proyecto
+   * Habilitar optimización solo en producción
    */
   images: {
-    unoptimized: true, // Disable optimization to avoid ECONNREFUSED in Docker
+    // En producción: optimización habilitada con Sharp
+    // En desarrollo: deshabilitado para velocidad
+    unoptimized: process.env.NODE_ENV === 'development',
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    formats: ['image/avif', 'image/webp'],
+    minimumCacheTTL: 60 * 60 * 24, // 1 día
     remotePatterns: [
       // Development: Allow images from localhost (backend API)
       {
@@ -56,7 +55,6 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'images.unsplash.com',
       },
-      // Permitir imágenes del propio dominio (producion self-hosted)
       {
         protocol: 'https',
         hostname: '**',
@@ -71,6 +69,10 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: false,
   },
+
+  // URLs limpias
+  trailingSlash: true,
+
   async rewrites() {
     // ✅ NO usar rewrites en Docker
     // El frontend llama directamente a NEXT_PUBLIC_API_URL

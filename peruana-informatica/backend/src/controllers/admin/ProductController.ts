@@ -91,7 +91,7 @@ export class ProductController {
                 order,
                 attributes: [
                     'cod_producto',
-                    'name', 'slug', 'description', 'short_description', 'price', 'stock', 'category', 'keywords', 'brand_id', 'category_id', 'is_active', 'codigo_interno', 'component_type', 'is_featured', 'is_new', 'is_clearance'
+                    'name', 'slug', 'description', 'short_description', 'price', 'price_web', 'price_cot', 'price_dis', 'stock', 'category', 'keywords', 'brand_id', 'category_id', 'is_active', 'codigo_interno', 'component_type', 'is_featured', 'is_new', 'is_clearance', 'image'
                 ],
                 include: [
                     {
@@ -151,7 +151,7 @@ export class ProductController {
                 where: { cod_producto: productId },
                 attributes: [
                     'cod_producto',
-                    'name', 'slug', 'description', 'short_description', 'price', 'stock', 'category', 'keywords', 'brand_id', 'category_id', 'is_active', 'codigo_interno', 'component_type', 'is_featured', 'is_new', 'is_clearance',
+                    'name', 'slug', 'description', 'short_description', 'price', 'price_web', 'price_cot', 'price_dis', 'stock', 'category', 'keywords', 'brand_id', 'category_id', 'is_active', 'codigo_interno', 'component_type', 'is_featured', 'is_new', 'is_clearance', 'image',
                     'seo_title', 'seo_description'
                 ],
                 include: [

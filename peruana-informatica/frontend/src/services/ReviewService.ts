@@ -57,7 +57,7 @@ class ReviewService {
             if (filters?.sort) queryParams.append('sort', filters.sort);
 
             const response = await fetch(
-                `${API_BASE}/reviews/product/${productId}?${queryParams.toString()}`
+                `${API_BASE}/api/reviews/product/${productId}?${queryParams.toString()}`
             );
 
             if (!response.ok) {
@@ -77,7 +77,7 @@ class ReviewService {
     async getProductRatingSummary(productId: number): Promise<{ success: boolean; data: ReviewSummary }> {
         try {
             const response = await fetch(
-                `${API_BASE}/reviews/product/${productId}/summary`
+                `${API_BASE}/api/reviews/product/${productId}/summary`
             );
 
             if (!response.ok) {
@@ -123,7 +123,7 @@ class ReviewService {
     async markHelpful(reviewId: number) {
         try {
             const response = await fetch(
-                `${API_BASE}/reviews/${reviewId}/helpful`,
+                `${API_BASE}/api/reviews/${reviewId}/helpful`,
                 {
                     method: 'POST',
                 }
@@ -145,7 +145,7 @@ class ReviewService {
      */
     async getAllReviews(page: number = 1, limit: number = 20, status?: string, token?: string) {
         try {
-            let url = `${API_BASE}/reviews/admin/all?page=${page}&limit=${limit}`;
+            let url = `${API_BASE}/api/reviews/admin/all?page=${page}&limit=${limit}`;
             if (status) {
                 url += `&status=${status}`;
             }
@@ -186,7 +186,7 @@ class ReviewService {
      */
     async approveReview(reviewId: number, token?: string) {
         try {
-            const response = await fetch(`${API_BASE}/reviews/admin/${reviewId}/approve`, {
+            const response = await fetch(`${API_BASE}/api/reviews/admin/${reviewId}/approve`, {
                 method: 'PATCH',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -209,7 +209,7 @@ class ReviewService {
      */
     async rejectReview(reviewId: number, token?: string) {
         try {
-            const response = await fetch(`${API_BASE}/reviews/admin/${reviewId}/reject`, {
+            const response = await fetch(`${API_BASE}/api/reviews/admin/${reviewId}/reject`, {
                 method: 'PATCH',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -232,7 +232,7 @@ class ReviewService {
      */
     async deleteReview(reviewId: number, token?: string) {
         try {
-            const response = await fetch(`${API_BASE}/reviews/admin/${reviewId}`, {
+            const response = await fetch(`${API_BASE}/api/reviews/admin/${reviewId}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`

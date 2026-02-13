@@ -38,7 +38,7 @@ class CouponService {
      */
     async validateCoupon(code: string, purchaseAmount: number): Promise<{ success: boolean; data?: Coupon; message?: string }> {
         try {
-            const response = await fetch(`${API_BASE}/coupons/validate`, {
+            const response = await fetch(`${API_BASE}/api/coupons/validate`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -73,7 +73,7 @@ class CouponService {
      */
     async applyCoupon(code: string): Promise<{ success: boolean; message?: string }> {
         try {
-            const response = await fetch(`${API_BASE}/coupons/apply`, {
+            const response = await fetch(`${API_BASE}/api/coupons/apply`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -116,7 +116,7 @@ class CouponService {
      */
     async getAllCoupons(token: string): Promise<Coupon[]> {
         try {
-            const response = await fetch(`${API_BASE}/coupons/admin/all`, {
+            const response = await fetch(`${API_BASE}/api/coupons/admin/all`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -136,7 +136,7 @@ class CouponService {
      */
     async createCoupon(data: Partial<Coupon>, token: string) {
         try {
-            const response = await fetch(`${API_BASE}/coupons/admin`, {
+            const response = await fetch(`${API_BASE}/api/coupons/admin`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -159,7 +159,7 @@ class CouponService {
      */
     async updateCoupon(id: number, data: Partial<Coupon>, token: string) {
         try {
-            const response = await fetch(`${API_BASE}/coupons/admin/${id}`, {
+            const response = await fetch(`${API_BASE}/api/coupons/admin/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -182,7 +182,7 @@ class CouponService {
      */
     async deleteCoupon(id: number, token: string) {
         try {
-            const response = await fetch(`${API_BASE}/coupons/admin/${id}`, {
+            const response = await fetch(`${API_BASE}/api/coupons/admin/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -203,7 +203,7 @@ class CouponService {
      */
     async toggleStatus(id: number, is_active: boolean, token: string) {
         try {
-            const response = await fetch(`${API_BASE}/coupons/admin/${id}/status`, {
+            const response = await fetch(`${API_BASE}/api/coupons/admin/${id}/status`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',

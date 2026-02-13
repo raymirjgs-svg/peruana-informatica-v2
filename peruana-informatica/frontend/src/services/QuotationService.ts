@@ -53,7 +53,7 @@ export class QuotationService {
   private API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
   async createQuotation(quotationData: QuotationRequest): Promise<QuotationResponse> {
-    const response = await fetch(`${this.API_BASE}/quotations`, {
+    const response = await fetch(`${this.API_BASE}/api/quotations`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -69,7 +69,7 @@ export class QuotationService {
   }
 
   async getQuotationByCode(code: string): Promise<QuotationDetail> {
-    const response = await fetch(`${this.API_BASE}/quotations/${code}`);
+    const response = await fetch(`${this.API_BASE}/api/quotations/${code}`);
 
     if (!response.ok) {
       throw new Error(`Error fetching quotation: ${response.statusText}`);
@@ -79,7 +79,7 @@ export class QuotationService {
   }
 
   async validateQuotation(code: string): Promise<{ isValid: boolean; message: string }> {
-    const response = await fetch(`${this.API_BASE}/quotations/validate`, {
+    const response = await fetch(`${this.API_BASE}/api/quotations/validate`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

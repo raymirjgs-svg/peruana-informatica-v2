@@ -5,7 +5,7 @@ const API_BASE = API_CONFIG.API_BASE_URL;
 
 class PromoBannerService {
     async getAllBanners(token: string): Promise<PromoBanner[]> {
-        const response = await fetch(`${API_BASE}/admin/promo-banners`, {
+        const response = await fetch(`${API_BASE}/api/admin/promo-banners`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -16,7 +16,7 @@ class PromoBannerService {
     }
 
     async createBanner(data: Partial<PromoBanner>, token: string) {
-        const response = await fetch(`${API_BASE}/admin/promo-banners`, {
+        const response = await fetch(`${API_BASE}/api/admin/promo-banners`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -32,7 +32,7 @@ class PromoBannerService {
     }
 
     async updateBanner(id: number, data: Partial<PromoBanner>, token: string) {
-        const response = await fetch(`${API_BASE}/admin/promo-banners/${id}`, {
+        const response = await fetch(`${API_BASE}/api/admin/promo-banners/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -48,7 +48,7 @@ class PromoBannerService {
     }
 
     async deleteBanner(id: number, token: string) {
-        const response = await fetch(`${API_BASE}/admin/promo-banners/${id}`, {
+        const response = await fetch(`${API_BASE}/api/admin/promo-banners/${id}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -59,7 +59,7 @@ class PromoBannerService {
     }
 
     async toggleStatus(id: number, token: string) {
-        const response = await fetch(`${API_BASE}/admin/promo-banners/${id}/toggle`, {
+        const response = await fetch(`${API_BASE}/api/admin/promo-banners/${id}/toggle`, {
             method: 'PATCH',
             headers: {
                 'Authorization': `Bearer ${token}`

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { useTheme } from '@/context/ThemeContext';
+import { useSettings } from '@/context/SettingsContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import {
@@ -100,6 +101,7 @@ const menuItems: MenuItem[] = [
 export function Sidebar() {
   const pathname = usePathname();
   const { theme, toggleTheme } = useTheme();
+  const { settings, logoUrl } = useSettings();
   const [expandedMenus, setExpandedMenus] = useState<Record<string, boolean>>({});
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeItem, setActiveItem] = useState<string>('');
@@ -220,9 +222,17 @@ export function Sidebar() {
       {/* Mobile Toggle */}
       <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg border-b border-gray-200 dark:border-gray-800 flex items-center justify-between px-4 z-50">
         <div className="flex items-center gap-2">
-          <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold text-sm">
-            PI
-          </div>
+          {settings?.logo_url ? (
+            <img
+              src={logoUrl}
+              alt="Admin"
+              className="h-8 w-auto object-contain max-w-[120px]"
+            />
+          ) : (
+            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold text-sm">
+              PI
+            </div>
+          )}
           <span className="font-bold text-gray-900 dark:text-white">Admin</span>
         </div>
         <button
@@ -245,13 +255,28 @@ export function Sidebar() {
           {/* Logo Area */}
           <div className="p-6 hidden lg:block">
             <Link href="/admin" className="flex items-center gap-3 group">
-              <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/20 group-hover:scale-105 transition-transform">
-                <span className="text-white font-bold text-xl">PI</span>
-              </div>
-              <div>
-                <h1 className="font-bold text-lg text-gray-900 dark:text-white leading-tight">Peruana</h1>
-                <p className="text-xs text-blue-600 dark:text-blue-400 font-medium tracking-wide">PANEL DE CONTROL</p>
-              </div>
+              {settings?.logo_url ? (
+                <div className="flex flex-col">
+                  <img
+                    src={logoUrl}
+                    alt={settings?.company_name || 'Admin'}
+                    className="h-10 w-auto object-contain max-w-[200px]"
+                  />
+                  <p className="text-xs text-blue-600 dark:text-blue-400 font-medium tracking-wide mt-1">PANEL DE CONTROL</p>
+                </div>
+              ) : (
+                <>
+                  <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/20 group-hover:scale-105 transition-transform">
+                    <span className="text-white font-bold text-xl">PI</span>
+                  </div>
+                  <div>
+                    <h1 className="font-bold text-lg text-gray-900 dark:text-white leading-tight">
+                      {settings?.company_name || 'Peruana'}
+                    </h1>
+                    <p className="text-xs text-blue-600 dark:text-blue-400 font-medium tracking-wide">PANEL DE CONTROL</p>
+                  </div>
+                </>
+              )}
             </Link>
           </div>
 

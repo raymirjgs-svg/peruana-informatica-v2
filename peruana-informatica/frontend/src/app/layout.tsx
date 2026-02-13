@@ -16,22 +16,75 @@ const inter = Inter({
   variable: '--font-inter',
 });
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://peruanainformatica.com';
+
 export const metadata: Metadata = {
-  title: 'Peruana de Informática | Equipos Tecnológicos en Perú',
-  description: 'Venta de laptops, monitores, periféricos y equipos informáticos de calidad en todo Perú',
-  keywords: 'laptop, computadora, monitor, periféricos, tecnología, Perú',
-  openGraph: {
-    title: 'Peruana de Informática',
-    description: 'Tu tienda de tecnología de confianza',
-    url: 'https://peruanainformatica.com',
-    type: 'website',
-    locale: 'es_ES',
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: 'Peruana Informática | Tecnología y Equipos en Perú',
+    template: '%s | Peruana Informática',
   },
+  description: 'Tienda líder en venta de laptops, computadoras, monitores, periféricos y accesorios tecnológicos en Perú. Envíos a todo el país. ¡Compra ahora!',
+  keywords: ['laptop', 'computadora', 'monitor', 'periféricos', 'tecnología', 'Perú', 'tienda online', 'hardware', 'accesorios pc', 'gaming'],
+  authors: [{ name: 'Peruana Informática' }],
+  creator: 'Peruana Informática',
+  publisher: 'Peruana Informática',
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'es_PE',
+    url: SITE_URL,
+    siteName: 'Peruana Informática',
+    title: 'Peruana Informática | Tecnología y Equipos en Perú',
+    description: 'Tienda líder en venta de laptops, computadoras, monitores, periféricos y accesorios tecnológicos en Perú.',
+    images: [
+      {
+        url: `${SITE_URL}/og-image.jpg`,
+        width: 1200,
+        height: 630,
+        alt: 'Peruana Informática - Tu tienda de tecnología',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Peruana Informática | Tecnología y Equipos en Perú',
+    description: 'Tienda líder en venta de laptops, computadoras, monitores y accesorios tecnológicos en Perú.',
+    images: [`${SITE_URL}/og-image.jpg`],
+    creator: '@peruanainformatica',
+  },
+  verification: {
+    google: 'google-site-verification-code',
+  },
+  alternates: {
+    canonical: SITE_URL,
+    languages: {
+      'es-PE': SITE_URL,
+    },
+  },
+  category: 'technology',
+  classification: 'E-commerce',
 };
 
 import { SettingsProvider } from '@/context/SettingsContext';
 import { FaviconUpdater } from '@/components/common/FaviconUpdater';
 import NextAuthProvider from '@/components/providers/NextAuthProvider';
+import { OrganizationSchema, WebSiteSchema, LocalBusinessSchema } from '@/components/seo/SchemaMarkup';
 
 export default function RootLayout({
   children,
@@ -43,6 +96,9 @@ export default function RootLayout({
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <OrganizationSchema />
+        <WebSiteSchema />
+        <LocalBusinessSchema />
       </head>
       <body className={`${inter.variable} font-sans bg-gray-50`} suppressHydrationWarning={true}>
         <NextAuthProvider>

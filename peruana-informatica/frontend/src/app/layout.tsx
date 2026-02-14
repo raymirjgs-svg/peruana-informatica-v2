@@ -91,11 +91,17 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://200.58.98.122';
+  
   return (
     <html lang="es" className="scroll-smooth" data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="preconnect" href={SITE_URL} />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href={SITE_URL} />
         <OrganizationSchema />
         <WebSiteSchema />
         <LocalBusinessSchema />

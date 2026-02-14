@@ -2,6 +2,10 @@
 
 import { usePathname } from 'next/navigation';
 
+const SITE_URL = typeof window !== 'undefined' 
+  ? (process.env.NEXT_PUBLIC_SITE_URL || 'http://200.58.98.122')
+  : 'http://200.58.98.122';
+
 interface OrganizationSchemaProps {
   name?: string;
   url?: string;
@@ -22,8 +26,8 @@ interface OrganizationSchemaProps {
 
 export function OrganizationSchema({
   name = 'Peruana Informática',
-  url = 'https://peruanainformatica.com',
-  logo = 'https://peruanainformatica.com/logo.png',
+  url = SITE_URL,
+  logo = `${SITE_URL}/logo.png`,
   description = 'Tienda líder en venta de laptops, computadoras, monitores y accesorios tecnológicos en Perú',
   contactPoint,
   address,
@@ -58,12 +62,12 @@ export function WebSiteSchema() {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: 'Peruana Informática',
-    url: 'https://peruanainformatica.com',
+    url: SITE_URL,
     potentialAction: {
       '@type': 'SearchAction',
       target: {
         '@type': 'EntryPoint',
-        urlTemplate: 'https://peruanainformatica.com/products?search={search_term_string}',
+        urlTemplate: `${SITE_URL}/products?search={search_term_string}`,
       },
       'query-input': 'required name=search_term_string',
     },
@@ -141,7 +145,7 @@ export function LocalBusinessSchema() {
     '@type': 'Store',
     name: 'Peruana Informática',
     description: 'Tienda de tecnología y equipos informáticos',
-    url: 'https://peruanainformatica.com',
+    url: SITE_URL,
     telephone: '+51-1-234-5678',
     address: {
       '@type': 'PostalAddress',
@@ -170,6 +174,51 @@ export function LocalBusinessSchema() {
       latitude: -12.0464,
       longitude: -77.0428,
     },
+    priceRange: '$$',
+    acceptsReservations: false,
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  );
+}
+
+export function FAQSchema({ faqs }: { faqs: { question: string; answer: string }[] }) {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map(faq => ({
+      '@type': 'Question',
+      name: faq.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: faq.answer,
+      },
+    })),
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  );
+}
+
+export function HowToSchema({ steps }: { steps: { name: string; text: string }[] }) {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'HowTo',
+    name: 'Cómo comprar en Peruana Informática',
+    step: steps.map((step, index) => ({
+      '@type': 'HowToStep',
+      position: index + 1,
+      name: step.name,
+      text: step.text,
+    })),
   };
 
   return (

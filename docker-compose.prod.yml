@@ -54,13 +54,18 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3000
+      - NEXT_PUBLIC_API_URL=${FRONTEND_URL:-http://200.58.98.122}
+      - INTERNAL_API_URL=http://backend:3001
     expose:
       - "3000"
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     networks:
       - peruana_net_prod
     restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000"]
       interval: 30s

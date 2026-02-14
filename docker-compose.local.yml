@@ -85,13 +85,15 @@ services:
     build:
       context: ./peruana-informatica/frontend
       dockerfile: Dockerfile
-    container_name: peruana_frontend_local
+    container_name: peruano-informatica-frontend-1
     env_file:
       - ./.env.docker.local
     environment:
       # Override PORT from .env.docker.local (backend uses 3001, frontend needs 3000)
       - PORT=3000
       - DOCKER_ENV=true
+      - NEXT_PUBLIC_API_URL=http://localhost:3000
+      - INTERNAL_API_URL=http://backend:3001
     ports:
       - "3000:3000"
     volumes:

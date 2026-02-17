@@ -151,17 +151,29 @@ export class ProductService {
       product.brand = item.brand;
     }
 
-    // Fix URLs Helper
+    // Fix URLs Helper - encode special characters in image filenames
     const fixUrl = (url: string | undefined): string | null => {
       if (!url) return null;
       if (typeof url !== 'string') return null;
+      
       // Check if URL contains localhost or private IPs and needs fixing
       if (url.includes('localhost') || url.match(/192\.168\.\d+\.\d+/) || url.match(/10\.\d+\.\d+\.\d+/)) {
         const parts = url.split('/uploads/');
-        if (parts.length > 1) {
-          return `uploads/${parts[1]}`;
+        if (parts.length > 1 && parts[1]) {
+          return `uploads/${encodeURIComponent(parts[1])}`;
         }
       }
+      
+      // Encode the filename portion of image URLs to handle special characters
+      if (url.includes('/images/') || url.includes('/uploads/')) {
+        const match = url.match(/^(.+\/)([^/]+)$/);
+        if (match && match[1] && match[2]) {
+          const basePath = match[1];
+          const filename = match[2];
+          return basePath + encodeURIComponent(filename);
+        }
+      }
+      
       return url;
     };
 

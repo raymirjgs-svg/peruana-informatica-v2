@@ -89,7 +89,7 @@ export function Header() {
                   <img
                     src={logoUrl}
                     alt={settings?.company_name || 'Logo'}
-                    className="h-12 w-auto object-contain max-w-[200px]"
+                    className="h-16 w-auto object-contain max-w-[280px]"
                   />
                 ) : (
                   <div className="flex items-center gap-3">

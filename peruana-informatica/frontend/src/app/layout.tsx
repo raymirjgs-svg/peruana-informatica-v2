@@ -85,6 +85,7 @@ import { SettingsProvider } from '@/context/SettingsContext';
 import { FaviconUpdater } from '@/components/common/FaviconUpdater';
 import NextAuthProvider from '@/components/providers/NextAuthProvider';
 import { OrganizationSchema, WebSiteSchema, LocalBusinessSchema } from '@/components/seo/SchemaMarkup';
+import { Toaster } from 'sileo';
 
 export default function RootLayout({
   children,
@@ -92,7 +93,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://200.58.98.122';
-  
+
   return (
     <html lang="es" className="scroll-smooth" data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
@@ -114,6 +115,7 @@ export default function RootLayout({
               <CompareProvider>
                 <WishlistProvider>
                   <CartProvider>
+                    <Toaster position="top-right" />
                     <LayoutWrapper>{children}</LayoutWrapper>
                   </CartProvider>
                 </WishlistProvider>

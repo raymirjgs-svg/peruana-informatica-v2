@@ -40,11 +40,31 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     const fetchSettings = async () => {
         try {
             const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-            const res = await fetch(`${apiUrl}/api/company-settings`);
+            const res = await fetch(`${apiUrl}/api/settings`);
 
             if (res.ok) {
                 const data = await res.json();
-                setSettings(data);
+                // Transform flat key-value to CompanySettings structure
+                const transformedSettings: CompanySettings = {
+                    id: 1,
+                    company_name: data.company_name || 'Peruana Informática',
+                    company_ruc: data.company_ruc || '',
+                    company_address: data.company_address || '',
+                    company_phone: data.company_phone || '',
+                    company_email: data.company_email || '',
+                    logo_url: data.logo_url,
+                    favicon_url: data.favicon_url,
+                    company_whatsapp: data.company_whatsapp,
+                    company_website: data.company_website,
+                    store_address: data.store_address,
+                    store_hours: data.store_hours,
+                    facebook_url: data.facebook_url,
+                    instagram_url: data.instagram_url,
+                    twitter_url: data.twitter_url,
+                    linkedin_url: data.linkedin_url,
+                    show_distributor_price_in_detail: data.show_distributor_price_in_detail === 'true',
+                };
+                setSettings(transformedSettings);
             } else {
                 console.error('Failed to fetch settings status:', res.status);
             }

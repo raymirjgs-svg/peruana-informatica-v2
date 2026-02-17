@@ -2,9 +2,8 @@
 
 import { usePathname } from 'next/navigation';
 
-const SITE_URL = typeof window !== 'undefined' 
-  ? (process.env.NEXT_PUBLIC_SITE_URL || 'http://200.58.98.122')
-  : 'http://200.58.98.122';
+// Use env variable directly to avoid hydration mismatch
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
 interface OrganizationSchemaProps {
   name?: string;
@@ -114,8 +113,8 @@ export function ProductSchema({ product }: { product: any }) {
       '@type': 'Offer',
       price: product.price_web || product.price,
       priceCurrency: 'PEN',
-      availability: product.stock > 0 
-        ? 'https://schema.org/InStock' 
+      availability: product.stock > 0
+        ? 'https://schema.org/InStock'
         : 'https://schema.org/OutOfStock',
       seller: {
         '@type': 'Organization',

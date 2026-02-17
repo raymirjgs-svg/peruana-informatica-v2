@@ -59,7 +59,7 @@ services:
     expose:
       - "3001"
     volumes:
-      - uploads_data:/app/public/uploads
+      - uploads_data_local:/app/public/uploads
     depends_on:
       mysql:
         condition: service_healthy
@@ -85,7 +85,7 @@ services:
     expose:
       - "3306"
     volumes:
-      - mysql_data:/var/lib/mysql
+      - mysql_data_local:/var/lib/mysql
     networks:
       - peruana_net
     restart: unless-stopped
@@ -103,7 +103,7 @@ services:
     expose:
       - "6379"
     volumes:
-      - redis_data:/data
+      - redis_data_local:/data
     networks:
       - peruana_net
     restart: unless-stopped
@@ -114,9 +114,9 @@ services:
       retries: 3
 
 volumes:
-  mysql_data:
-  uploads_data:
-  redis_data:
+  mysql_data_local:
+  uploads_data_local:
+  redis_data_local:
 
 networks:
   peruana_net:

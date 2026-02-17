@@ -2,6 +2,22 @@ import { Request, Response } from 'express';
 import { Setting } from '../models/Setting';
 
 export const settingsController = {
+    // GET all settings
+    async getAllSettings(req: Request, res: Response) {
+        try {
+            const settings = await Setting.findAll();
+            // Convert to { key: value } object
+            const settingsObj: Record<string, string> = {};
+            settings.forEach(setting => {
+                settingsObj[setting.key] = setting.value;
+            });
+            res.json(settingsObj);
+        } catch (error) {
+            console.error('Error getting settings:', error);
+            res.status(500).json({ error: 'Error al obtener configuración' });
+        }
+    },
+
     // GET checkout-mode
     async getCheckoutMode(req: Request, res: Response) {
         try {

@@ -4,6 +4,7 @@ import { useState, useEffect, createContext, useContext, ReactNode } from 'react
 import { Product } from '@/models/Product';
 import { cartService } from '@/services/CartService';
 import { useSession } from 'next-auth/react';
+import { useToast } from './useToast';
 
 export interface CartItem {
   product: Product;
@@ -27,6 +28,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const { data: session, status } = useSession();
   const [items, setItems] = useState<CartItem[]>([]);
   const [isInitialized, setIsInitialized] = useState(false);
+  const toast = useToast();
 
   // Initialize: Load from LocalStorage OR Server
   useEffect(() => {
@@ -91,6 +93,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [items, isInitialized, session]);
 
   const addItem = async (product: Product, quantity: number = 1) => {
+    const existingItem = items.find(item => item.product.id === product.id);
+
     // Optimistic Update
     setItems(prevItems => {
       const existingItem = prevItems.find(item => item.product.id === product.id);
@@ -100,28 +104,41 @@ export function CartProvider({ children }: { children: ReactNode }) {
       return [...prevItems, { product, quantity }];
     });
 
+    // Show toast notification
+    if (existingItem) {
+      toast.info('Cantidad actualizada', `${product.name} (x${existingItem.quantity + quantity})`);
+    } else {
+      toast.success('✓ Producto agregado al carrito', product.name);
+    }
+
     // API Update if Auth
     if (session) {
       try {
-        // Since we don't have the new total quantity easily accessible here without recounting, 
-        // let's just calculate it or simpler: let the backend handle the increment? 
-        // Our current API takes absolute quantity.
         const currentItem = items.find(i => i.product.id === product.id);
         const newQuantity = (currentItem?.quantity || 0) + quantity;
         await cartService.updateItem(product.id, newQuantity);
       } catch (e) {
         console.error('Error adding item to server cart', e);
+        toast.error('Error al actualizar', 'Intenta nuevamente');
       }
     }
   };
 
   const removeItem = async (productId: number) => {
+    const itemToRemove = items.find(item => item.product.id === productId);
     setItems(prevItems => prevItems.filter(item => item.product.id !== productId));
+
+    if (itemToRemove) {
+      toast.info('Producto eliminado', itemToRemove.product.name);
+    }
 
     if (session) {
       try {
         await cartService.removeItem(productId);
-      } catch (e) { console.error(e); }
+      } catch (e) {
+        console.error(e);
+        toast.error('Error al eliminar', 'Intenta nuevamente');
+      }
     }
   };
 

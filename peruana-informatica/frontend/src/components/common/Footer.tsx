@@ -58,7 +58,7 @@ export function Footer() {
                 <img
                   src={logoUrl}
                   alt={settings?.company_name || 'Logo'}
-                  className="h-10 w-auto object-contain max-w-[200px]"
+                  className="h-12 w-auto object-contain max-w-[200px]"
                 />
               ) : (
                 <>

@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Product } from '@/models/Product';
+import { useToast } from './useToast';
 
 interface WishlistContextType {
   wishlist: Product[];
@@ -19,6 +20,7 @@ const WISHLIST_STORAGE_KEY = 'peruana_wishlist';
 export function WishlistProvider({ children }: { children: ReactNode }) {
   const [wishlist, setWishlist] = useState<Product[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
+  const toast = useToast();
 
   // Cargar wishlist desde localStorage al montar
   useEffect(() => {
@@ -47,6 +49,8 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
   }, [wishlist, isLoaded]);
 
   const addToWishlist = (product: Product) => {
+    const alreadyExists = wishlist.some((item) => item.id === product.id);
+
     setWishlist((prev) => {
       // Evitar duplicados
       if (prev.some((item) => item.id === product.id)) {
@@ -54,10 +58,21 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
       }
       return [...prev, product];
     });
+
+    if (alreadyExists) {
+      toast.warning('Ya está en favoritos', product.name);
+    } else {
+      toast.success('♥ Agregado a favoritos', product.name);
+    }
   };
 
   const removeFromWishlist = (productId: number) => {
+    const product = wishlist.find(item => item.id === productId);
     setWishlist((prev) => prev.filter((item) => item.id !== productId));
+
+    if (product) {
+      toast.info('Eliminado de favoritos', product.name);
+    }
   };
 
   const isInWishlist = (productId: number): boolean => {

@@ -16,6 +16,8 @@ services:
     volumes:
       - mysql_data_local:/var/lib/mysql
       - ./scripts/init-db:/docker-entrypoint-initdb.d:ro
+      # Disabled: DB already migrated, no need for init script
+      # - ./scripts/init-db/database_backup.sql:/docker-entrypoint-initdb.d/database_backup:ro
     networks:
       - peruana_net_local
     healthcheck:
@@ -92,7 +94,7 @@ services:
       # Override PORT from .env.docker.local (backend uses 3001, frontend needs 3000)
       - PORT=3000
       - DOCKER_ENV=true
-      - NEXT_PUBLIC_API_URL=http://localhost:3000
+      - NEXT_PUBLIC_API_URL=http://localhost:3001
       - INTERNAL_API_URL=http://backend:3001
     ports:
       - "3000:3000"

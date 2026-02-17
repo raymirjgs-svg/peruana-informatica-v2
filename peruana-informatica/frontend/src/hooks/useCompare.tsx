@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Product } from '@/models/Product';
+import { useToast } from './useToast';
 
 interface CompareContextType {
   compareList: Product[];
@@ -22,6 +23,7 @@ const MAX_COMPARE_ITEMS = 4; // Máximo de productos a comparar
 export function CompareProvider({ children }: { children: ReactNode }) {
   const [compareList, setCompareList] = useState<Product[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
+  const toast = useToast();
 
   // Cargar lista de comparación desde localStorage
   useEffect(() => {
@@ -52,21 +54,28 @@ export function CompareProvider({ children }: { children: ReactNode }) {
   const addToCompare = (product: Product): boolean => {
     // Verificar si ya está en la lista
     if (compareList.some((item) => item.id === product.id)) {
+      toast.warning('Ya está en el comparador', product.name);
       return false;
     }
 
     // Verificar límite máximo
     if (compareList.length >= MAX_COMPARE_ITEMS) {
-      alert(`Solo puedes comparar hasta ${MAX_COMPARE_ITEMS} productos a la vez`);
+      toast.warning(`Comparador lleno (máx ${MAX_COMPARE_ITEMS})`, 'Elimina un producto primero');
       return false;
     }
 
     setCompareList((prev) => [...prev, product]);
+    toast.success('✓ Agregado al comparador', product.name);
     return true;
   };
 
   const removeFromCompare = (productId: number) => {
+    const product = compareList.find(item => item.id === productId);
     setCompareList((prev) => prev.filter((item) => item.id !== productId));
+
+    if (product) {
+      toast.info('Eliminado del comparador', product.name);
+    }
   };
 
   const isInCompare = (productId: number): boolean => {

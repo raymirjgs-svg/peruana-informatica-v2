@@ -5,6 +5,7 @@
 
 import { useState, useEffect } from 'react';
 import { CarouselService, CarouselSlide as ApiSlide } from '@/services/CarouselService';
+import { getBackendImageUrl } from '@/utils/images';
 
 interface CarouselSlide extends ApiSlide {}
 
@@ -44,17 +45,6 @@ export function Carousel() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlay, setIsAutoPlay] = useState(true);
   
-  // Helper para obtener la URL completa de la imagen
-  const getImageUrl = (imageUrl?: string) => {
-    if (!imageUrl) return '';
-    // Si es una URL relativa (empieza con /), prependemos el baseUrl del backend
-    if (imageUrl.startsWith('/')) {
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-      return `${baseUrl}${imageUrl}`;
-    }
-    return imageUrl;
-  };
-
   // Cargar slides desde el backend
   useEffect(() => {
     const loadSlides = async () => {
@@ -117,7 +107,7 @@ export function Carousel() {
                 <div 
                   className="absolute inset-0"
                   style={{
-                    backgroundImage: `url(${getImageUrl(s.imageUrl)})`,
+                    backgroundImage: `url(${getBackendImageUrl(s.imageUrl)})`,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                     backgroundRepeat: 'no-repeat'

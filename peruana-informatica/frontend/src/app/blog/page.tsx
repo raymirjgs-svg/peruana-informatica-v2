@@ -20,8 +20,6 @@ export default function BlogPage() {
     try {
       setLoading(true);
       setError("");
-      console.log("🔄 Loading blog posts...");
-      
       const response = await BlogService.getPublishedPosts({
         page,
         limit: 9,
@@ -33,9 +31,7 @@ export default function BlogPage() {
       setCurrentPage(response.pagination.currentPage);
       setTotalPages(response.pagination.totalPages);
       
-      console.log("✅ Blog posts loaded successfully");
     } catch (err: any) {
-      console.error("❌ Error loading blog posts:", err);
       const errorMessage = err.message || "Error al cargar los posts. Por favor, verifica que el servidor backend esté ejecutándose.";
       setError(errorMessage);
     } finally {

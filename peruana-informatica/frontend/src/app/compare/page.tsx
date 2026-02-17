@@ -6,18 +6,12 @@ import Image from 'next/image';
 import { useCart } from '@/hooks/useCart';
 import { Product } from '@/models/Product';
 import { useState } from 'react';
+import { getProductImageUrl } from '@/utils/images';
 
 export default function ComparePage() {
   const { compareList, compareCount, removeFromCompare, clearCompare, maxCompareItems } = useCompare();
   const { addItem } = useCart();
   const [highlightDifferences, setHighlightDifferences] = useState(false);
-
-  // Helper function to construct proper image URLs
-  const getImageUrl = (image: string | null | undefined): string => {
-    if (!image) return 'https://placehold.co/600x600?text=Sin+Imagen';
-    if (image.startsWith('http')) return image;
-    return `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/images/products/${image}`;
-  };
 
   const handleAddToCart = (product: Product) => {
     addItem(product);
@@ -141,7 +135,7 @@ export default function ComparePage() {
                         </button>
                         <div className="relative h-40 mb-4 bg-gray-50 rounded-lg">
                           <Image
-                            src={getImageUrl(product.image)}
+                            src={getProductImageUrl(product.image)}
                             alt={product.name}
                             fill
                             className="object-contain p-2"
@@ -253,7 +247,7 @@ export default function ComparePage() {
 
                 <div className="relative h-48 mb-4 bg-gray-50 rounded-lg">
                   <Image
-                    src={getImageUrl(product.image)}
+                    src={getProductImageUrl(product.image)}
                     alt={product.name}
                     fill
                     className="object-contain p-2"

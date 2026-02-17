@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { Order } from '../models/Order';
 import { OrderItem } from '../models/OrderItem';
 import { Product } from '../models/Product';
+import { Op } from 'sequelize';
 import { sequelize } from '../database/connection';
 import { EmailService } from '../services/EmailService';
 
@@ -18,16 +19,20 @@ export const createOrder = async (req: Request, res: Response) => {
             return res.status(400).json({ error: 'El carrito está vacío' });
         }
 
-        // 1. Calculate total server-side
+        // 1. Batch load all products at once (avoid N+1)
+        const productIds = items.map((item: any) => item.product_id);
+        const products = await Product.findAll({
+            where: { cod_producto: { [Op.in]: productIds } }
+        });
+        const productMap = new Map(products.map(p => [p.cod_producto, p]));
+
         let totalAmount = 0;
         const processedItems = [];
 
         for (const item of items) {
-            const product = await Product.findByPk(item.product_id);
+            const product = productMap.get(item.product_id);
 
             if (!product) {
-                // If product doesn't exist (or was deleted), we skip or error. 
-                // For safety, let's error.
                 await t.rollback();
                 return res.status(404).json({ error: `Producto con ID ${item.product_id} no encontrado` });
             }
@@ -38,9 +43,9 @@ export const createOrder = async (req: Request, res: Response) => {
             totalAmount += price * quantity;
 
             processedItems.push({
-                product_id: product.cod_producto, // Helper: cod_producto is the model property for DB 'id'
+                product_id: product.cod_producto,
                 product_name: product.name,
-                price: price, // Current snapshot price
+                price: price,
                 quantity: quantity
             });
         }
@@ -60,16 +65,17 @@ export const createOrder = async (req: Request, res: Response) => {
             status: initialStatus
         }, { transaction: t });
 
-        // 3. Create OrderItems
-        for (const pItem of processedItems) {
-            await OrderItem.create({
+        // 3. Create OrderItems in bulk
+        await OrderItem.bulkCreate(
+            processedItems.map(pItem => ({
                 order_id: order.id,
                 product_id: pItem.product_id,
                 product_name: pItem.product_name,
                 price: pItem.price,
                 quantity: pItem.quantity
-            }, { transaction: t });
-        }
+            })),
+            { transaction: t }
+        );
 
         await t.commit();
 

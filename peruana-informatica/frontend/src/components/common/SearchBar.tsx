@@ -6,20 +6,7 @@ import Link from 'next/link';
 import { ProductService } from '@/services/ProductService';
 import { Product } from '@/models/Product';
 import { API_CONFIG } from '@/config/api';
-
-// Simple local debounce hook implementation
-function useDebounceValue<T>(value: T, delay: number): T {
-    const [debouncedValue, setDebouncedValue] = useState<T>(value);
-    useEffect(() => {
-        const handler = setTimeout(() => {
-            setDebouncedValue(value);
-        }, delay);
-        return () => {
-            clearTimeout(handler);
-        };
-    }, [value, delay]);
-    return debouncedValue;
-}
+import { useDebounce } from '@/hooks/useDebounce';
 
 export function SearchBar() {
     const router = useRouter();
@@ -29,7 +16,7 @@ export function SearchBar() {
     const [showDropdown, setShowDropdown] = useState(false);
     const searchRef = useRef<HTMLDivElement>(null);
 
-    const debouncedQuery = useDebounceValue(query, 300);
+    const debouncedQuery = useDebounce(query, 300);
     const productService = new ProductService();
 
     useEffect(() => {

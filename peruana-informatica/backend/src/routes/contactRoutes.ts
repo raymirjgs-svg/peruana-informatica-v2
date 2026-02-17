@@ -1,8 +1,11 @@
 import { Router } from "express";
 import { ContactController } from "../controllers/contactController";
 import { authenticateAdmin } from "../middleware/auth";
+import { createRateLimit } from "../middleware/security";
 
 const router = Router();
+
+const contactRateLimit = createRateLimit(60 * 60 * 1000, 5, 'Demasiados mensajes enviados. Intenta de nuevo en 1 hora.');
 
 // Test endpoint to verify server connectivity
 router.get("/test", (req, res) => {
@@ -19,7 +22,7 @@ router.get("/test", (req, res) => {
  * POST /api/contacts
  * Crear un nuevo contacto desde el formulario público
  */
-router.post("/", ContactController.create);
+router.post("/", contactRateLimit, ContactController.create);
 
 // Rutas de administración (requieren autenticación)
 /**

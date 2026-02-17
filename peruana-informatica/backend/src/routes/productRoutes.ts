@@ -47,7 +47,7 @@ router.get('/utils/suggestions', searchRateLimit, [
         [Op.or]: [
           { name: { [Op.like]: `%${q}%` } },
           { category: { [Op.like]: `%${q}%` } },
-          { brand_id: { [Op.in]: sequelize.literal(`(SELECT id FROM brands WHERE name LIKE '%${q}%')`) } }
+          { brand_id: { [Op.in]: sequelize.literal(`(SELECT id FROM brands WHERE name LIKE ${sequelize.escape(`%${q}%`)})`) } }
         ]
       },
       attributes: ['cod_producto', 'name', 'slug', 'image', 'category', 'price', 'price_dis', 'price_web', 'price_cot', 'codigo_interno'],
@@ -62,7 +62,7 @@ router.get('/utils/suggestions', searchRateLimit, [
       limit: limit,
       order: [
         // Prioritize exact start of name
-        [sequelize.literal(`CASE WHEN name LIKE '${q}%' THEN 1 ELSE 2 END`), 'ASC'],
+        [sequelize.literal(`CASE WHEN name LIKE ${sequelize.escape(`${q}%`)} THEN 1 ELSE 2 END`), 'ASC'],
         ['name', 'ASC']
       ]
     });
@@ -171,16 +171,14 @@ router.get('/', searchRateLimit, cacheSuccessMiddleware('products', 300), [
       // END
 
       // Note: literal requires careful escaping. For simplicity/safety with sequelize queries, we use basic sanitization.
-      const safeSearch = cleanSearch.replace(/'/g, "\\'");
-
       order = [
         [sequelize.literal(`
-          CASE 
-            WHEN Product.codigo_interno = '${safeSearch}' THEN 1
-            WHEN Product.name LIKE '${safeSearch}' THEN 2
-            WHEN Product.name LIKE '${safeSearch}%' THEN 3
-            WHEN Product.name LIKE '%${safeSearch}%' THEN 4
-            ELSE 5 
+          CASE
+            WHEN Product.codigo_interno = ${sequelize.escape(cleanSearch)} THEN 1
+            WHEN Product.name LIKE ${sequelize.escape(cleanSearch)} THEN 2
+            WHEN Product.name LIKE ${sequelize.escape(`${cleanSearch}%`)} THEN 3
+            WHEN Product.name LIKE ${sequelize.escape(`%${cleanSearch}%`)} THEN 4
+            ELSE 5
           END`), 'ASC'],
         ['is_featured', 'DESC'], // Boost featured items among similar relevance
         ['stock', 'DESC']        // Boost in-stock items

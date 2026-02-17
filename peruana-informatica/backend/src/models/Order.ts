@@ -138,5 +138,12 @@ Order.init(
     {
         sequelize,
         tableName: 'orders',
+        indexes: [
+            { fields: ['status'] },
+            { fields: ['payment_status'] },
+            { fields: ['customer_email'] },
+            { fields: ['created_at'] },
+            { fields: ['status', 'payment_status'] },
+        ],
     }
 );

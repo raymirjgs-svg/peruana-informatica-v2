@@ -10,6 +10,7 @@ import { Product } from '@/models/Product';
 import { useCart } from '@/hooks/useCart';
 import { useWishlist } from '@/hooks/useWishlist';
 import { useCompare } from '@/hooks/useCompare';
+import { getProductImageUrl } from '@/utils/images';
 
 export function Navbar() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -58,12 +59,6 @@ export function Navbar() {
 
     return () => clearTimeout(delayDebounceFn);
   }, [searchTerm]);
-
-  const getImageUrl = (image: string) => {
-    if (!image) return 'https://placehold.co/100';
-    if (image.startsWith('http')) return image;
-    return `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/images/products/${image}`;
-  };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -435,7 +430,7 @@ export function Navbar() {
                                 <div className="w-10 h-10 bg-gray-200 rounded-md flex-shrink-0 overflow-hidden">
                                   {/* Asumiendo que tenemos acceso a la imagen o placeholder */}
                                   <img
-                                    src={product.images && product.images.length > 0 && product.images[0]?.imagen ? getImageUrl(product.images[0].imagen) : 'https://placehold.co/100'}
+                                    src={product.images && product.images.length > 0 && product.images[0]?.imagen ? getProductImageUrl(product.images[0].imagen) : 'https://placehold.co/100'}
                                     alt={product.name}
                                     className="w-full h-full object-cover"
                                     onError={(e) => { (e.target as HTMLImageElement).src = 'https://placehold.co/100' }}

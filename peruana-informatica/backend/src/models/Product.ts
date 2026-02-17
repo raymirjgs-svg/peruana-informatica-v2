@@ -271,11 +271,20 @@ Product.init(
   {
     sequelize,
     tableName: 'products',
-    timestamps: true, // La tabla tiene created_at y updated_at
+    timestamps: true,
     underscored: true,
+    indexes: [
+      { fields: ['is_active'] },
+      { fields: ['stock'] },
+      { fields: ['category_id'] },
+      { fields: ['brand_id'] },
+      { fields: ['is_active', 'stock'] },
+      { fields: ['is_featured'] },
+      { fields: ['is_new'] },
+      { fields: ['is_clearance'] },
+    ],
     hooks: {
       beforeSave: (product: Product) => {
-        // Generate slug if it doesn't exist or if name has changed
         if (!product.slug || (product.changed('name') && product.name)) {
           product.slug = Product.generateSlug(product.name);
         }

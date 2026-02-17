@@ -9,6 +9,7 @@ import { useCart } from '@/hooks/useCart';
 import { useWishlist } from '@/hooks/useWishlist';
 import { useCompare } from '@/hooks/useCompare';
 import Image from 'next/image';
+import { memo } from 'react';
 
 interface ProductCardProps {
   product: Product;
@@ -18,7 +19,7 @@ import { motion } from 'framer-motion';
 
 // ... imports
 
-export function ProductCard({ product }: ProductCardProps) {
+export const ProductCard = memo(function ProductCard({ product }: ProductCardProps) {
   const { addItem, isInCart } = useCart();
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const { addToCompare, removeFromCompare, isInCompare } = useCompare();
@@ -195,4 +196,4 @@ export function ProductCard({ product }: ProductCardProps) {
       </div>
     </motion.div>
   );
-}
+});

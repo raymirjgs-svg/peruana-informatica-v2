@@ -30,7 +30,7 @@ export default function HomePage() {
         setNewProducts(newArrivals.products);
         setClearanceProducts(clearance.products);
       } catch (error) {
-        console.error("Error loading products:", error);
+        // Error handled silently - products will show empty
       } finally {
         setLoading(false);
       }

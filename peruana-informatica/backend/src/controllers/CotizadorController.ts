@@ -1,72 +1,21 @@
 import { Request, Response } from 'express';
 import { Product } from '../models/Product';
 import { SubCategory } from '../models/SubCategory';
-import { Setting } from '../models/Setting';
 import { Op, Sequelize } from 'sequelize';
-
-// Helper to determine active price column
-const getActivePriceColumn = async () => {
-    const setting = await Setting.findByPk('cotizador_price_type');
-    return setting ? setting.value : 'pre_web';
-};
-
-// Helper function to extract component specs
-const extractComponentSpecs = (product: any) => {
-    const description = product.description || '';
-    const cleanDescription = description.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
-
-    // Processor patterns
-    let processor = 'No especificado';
-    const processorPatterns = [
-        /(Intel\s+Core\s+i[3579]-?\d+[A-Z]*)/i,
-        /(AMD\s+Ryzen\s+\d+\s*\d*)/i,
-    ];
-
-    for (const pattern of processorPatterns) {
-        const match = cleanDescription.match(pattern);
-        if (match) {
-            processor = match[0].replace(/\s+/g, ' ').trim();
-            break;
-        }
-    }
-
-    // RAM patterns
-    let ram = 'No especificado';
-    const ramMatch = cleanDescription.match(/(\d+)\s*(GB|GB DDR4|GB DDR5|GB RAM)/i);
-    if (ramMatch) {
-        ram = ramMatch[0].trim();
-    }
-
-    // Storage patterns
-    let storage = 'No especificado';
-    const storageMatch = cleanDescription.match(/(\d+)\s*(GB|TB)\s*(SSD|HDD|NVMe)/i);
-    if (storageMatch) {
-        storage = storageMatch[0].trim();
-    }
-
-    return {
-        processor,
-        ram,
-        storage,
-    };
-};
+import { sequelize } from '../database/connection';
+import { extractComponentSpecs } from '../utils/productSpecs';
+import { getActivePriceColumn, getPriceField, getProductPrice } from '../utils/priceMapping';
+import { sanitizeSlug } from '../utils/sanitize';
 
 export const getCotizadorLaptops = async (req: Request, res: Response) => {
     try {
         const { subcategory, minPrice, maxPrice, search } = req.query;
-        let activePriceCol = await getActivePriceColumn(); // e.g., 'pre_web', 'pre_cli', 'pre_dis'
+        const activePriceCol = await getActivePriceColumn(); // e.g., 'pre_web', 'pre_cli', 'pre_dis'
 
         console.log('--- COTIZADOR DEBUG ---');
         console.log('Active Price Column Setting:', activePriceCol);
 
-        // Handle legacy or fallback
-        if (activePriceCol === 'pre_cot') activePriceCol = 'pre_web';
-
-        // Map setting value to actual DB column name
-        let priceField = 'price'; // Default to pre_cli (price property)
-        if (activePriceCol === 'pre_web') priceField = 'price_web';
-        if (activePriceCol === 'pre_dis') priceField = 'price_dis';
-        if (activePriceCol === 'pre_cli') priceField = 'price';
+        const priceField = getPriceField(activePriceCol);
 
         console.log('Mapped Price Field for Sorting:', priceField);
 
@@ -126,14 +75,14 @@ export const getCotizadorLaptops = async (req: Request, res: Response) => {
         if (!whereClause[Op.and]) whereClause[Op.and] = [];
 
         const addSubcategoryFilter = (slug: string) => {
-            const sanitizedSlug = slug.replace(/[^a-zA-Z0-9-]/g, '');
+            const sanitizedSlug = sanitizeSlug(slug);
             whereClause[Op.and].push(Sequelize.literal(`
                 EXISTS (
-                SELECT 1 
+                SELECT 1
                 FROM product_sub_categories psc
                 JOIN sub_categories sc ON psc.sub_category_id = sc.id
                 WHERE psc.product_codigo_interno = Product.codigo_interno
-                AND sc.slug = '${sanitizedSlug}'
+                AND sc.slug = ${sequelize.escape(sanitizedSlug)}
                 )
             `));
         };
@@ -151,13 +100,7 @@ export const getCotizadorLaptops = async (req: Request, res: Response) => {
             const laptopData: any = laptop.toJSON();
 
             // Swap price with the selected price type
-            let finalPrice = laptopData.price; // Default (pre_cli)
-
-            if (activePriceCol === 'pre_web') finalPrice = laptopData.price_web;
-            if (activePriceCol === 'pre_dis') finalPrice = laptopData.price_dis;
-
-            // Strict Mode: If query filtering somehow failed, we double check here
-            // But since we added the WHERE clause, this should always be valid > 0
+            const finalPrice = getProductPrice(laptopData, activePriceCol);
 
             laptopData.price = finalPrice; // Overwrite the main price field for the frontend
 

@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { CouponInput } from '@/components/checkout/CouponInput';
 import { type Coupon } from '@/services/CouponService';
+import { getProductImageUrl } from '@/utils/images';
 
 type PaymentMethod = 'efectivo' | 'transferencia' | 'tarjeta' | 'yape' | 'plin' | 'mercadopago';
 type InvoiceType = 'boleta' | 'factura';
@@ -141,14 +142,6 @@ export default function CartPage() {
     if (/^5[1-5]/.test(cleanNumber)) return 'mastercard';
     if (/^3[47]/.test(cleanNumber)) return 'amex';
     return null;
-  };
-
-  // Helper para imágenes
-  const getImageUrl = (imagePath?: string) => {
-    if (!imagePath) return 'https://placehold.co/100x100?text=Sin+Imagen';
-    if (imagePath.startsWith('http')) return imagePath;
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-    return `${apiUrl}/images/products/${imagePath}`;
   };
 
   // Iconos SVG para métodos de pago
@@ -646,7 +639,7 @@ export default function CartPage() {
             <div className="lg:col-span-2 space-y-4">
               {items.map(item => (
                 <div key={item.product.id} className="bg-white p-4 rounded-xl shadow flex gap-4">
-                  <Image src={getImageUrl(item.product.image)} width={100} height={100} alt={item.product.name} className="object-cover rounded" />
+                  <Image src={getProductImageUrl(item.product.image)} width={100} height={100} alt={item.product.name} className="object-cover rounded" />
                   <div className="flex-1">
                     <h3 className="font-bold">{item.product.name}</h3>
                     <p className="text-green-600 font-bold">S/ {Number(item.product.price).toFixed(2)}</p>

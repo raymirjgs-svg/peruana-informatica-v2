@@ -3,11 +3,14 @@ import { body, validationResult } from 'express-validator';
 import { User } from '../../models/User';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { createRateLimit } from '../../middleware/security';
 
 const router = express.Router();
 
+const loginRateLimit = createRateLimit(15 * 60 * 1000, 5, 'Demasiados intentos de inicio de sesión. Intenta de nuevo en 15 minutos.');
+
 // POST /api/admin/login - Login del administrador
-router.post('/login', [
+router.post('/login', loginRateLimit, [
   body('email').isEmail().withMessage('Email válido es requerido'),
   body('password').notEmpty().withMessage('Contraseña es requerida'),
 ], async (req: Request, res: Response) => {

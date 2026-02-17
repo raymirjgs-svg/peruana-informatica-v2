@@ -45,3 +45,5 @@ export class BrandService {
     }
   }
 }
+
+export const brandService = new BrandService();

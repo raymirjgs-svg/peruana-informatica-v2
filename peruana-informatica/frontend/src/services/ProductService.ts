@@ -375,3 +375,5 @@ export class ProductService {
     return allProducts;
   }
 }
+
+export const productService = new ProductService();

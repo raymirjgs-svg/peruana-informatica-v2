@@ -19,7 +19,11 @@ export const cartController = {
 
             const items = await CartItem.findAll({
                 where: { cart_id: cart.id },
-                include: [{ model: Product, as: 'product' }]
+                include: [{
+                    model: Product,
+                    as: 'product',
+                    attributes: ['cod_producto', 'name', 'slug', 'price', 'price_web', 'stock', 'image', 'codigo_interno']
+                }]
             });
 
             res.json({ cart, items });
@@ -74,7 +78,11 @@ export const cartController = {
             // Return updated full cart
             const updatedItems = await CartItem.findAll({
                 where: { cart_id: cart.id },
-                include: [{ model: Product, as: 'product' }]
+                include: [{
+                    model: Product,
+                    as: 'product',
+                    attributes: ['cod_producto', 'name', 'slug', 'price', 'price_web', 'stock', 'image', 'codigo_interno']
+                }]
             });
 
             res.json({ cart, items: updatedItems });

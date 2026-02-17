@@ -3,71 +3,9 @@ import { Product } from '../models/Product';
 import { SubCategory } from '../models/SubCategory';
 import { ProductSubCategory } from '../models/ProductSubCategory';
 import { Op, Sequelize } from 'sequelize';
-
-const extractComponentSpecs = (product: any) => {
-  const description = product.description || '';
-  const cleanDescription = description.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
-
-  let processor = 'No especificado';
-  const processorPatterns = [
-    /(Intel\s+Core\s+i[3579]-?\d+[A-Z]*)/i,
-    /(AMD\s+Ryzen\s+\d+\s*\d*)/i,
-    /(Intel\s+Celeron|Intel\s+Pentium)/i,
-    /(Apple\s+M\d+\s+Chip)/i,
-    /(Intel\s+Core)/i,
-    /(AMD\s+Ryzen)/i
-  ];
-
-  for (const pattern of processorPatterns) {
-    const match = cleanDescription.match(pattern);
-    if (match) {
-      processor = match[0].replace(/\s+/g, ' ').trim();
-      break;
-    }
-  }
-
-  let ram = 'No especificado';
-  const ramMatch = cleanDescription.match(/(\d+)\s*(GB|GB DDR4|GB DDR5|GB RAM)/i);
-  if (ramMatch) {
-    ram = ramMatch[0].trim();
-  }
-
-  let storage = 'No especificado';
-  const storagePatterns = [
-    /(\d+)\s*(GB|TB)\s*(SSD|HDD|NVMe)/i,
-    /Disco\s+S[oó]lido\s+de\s+(\d+)\s*(GB|TB)/i,
-    /(\d+)\s*(GB|TB)\s+de\s+almacenamiento/i
-  ];
-
-  for (const pattern of storagePatterns) {
-    const match = cleanDescription.match(pattern);
-    if (match) {
-      storage = match[0].replace(/Disco\s+S[oó]lido\s+de\s+/i, '').replace(/de\s+almacenamiento/i, '').trim();
-      break;
-    }
-  }
-
-  let graphics = 'No especificado';
-  if (cleanDescription.includes('GTX') || cleanDescription.includes('RTX')) {
-    graphics = 'Dedicada';
-  } else if (cleanDescription.includes('Intel') || cleanDescription.includes('AMD') || cleanDescription.includes('integrada')) {
-    graphics = 'Integrada';
-  }
-
-  let screenSize = 'No especificado';
-  const screenMatch = cleanDescription.match(/(\d+\.?\d*)[""]/);
-  if (screenMatch) {
-    screenSize = screenMatch[0];
-  }
-
-  return {
-    processor,
-    ram,
-    storage,
-    graphics,
-    screen_size: screenSize
-  };
-};
+import { sequelize } from '../database/connection';
+import { extractComponentSpecs } from '../utils/productSpecs';
+import { sanitizeSlug } from '../utils/sanitize';
 
 export const getLaptopsWithSubcategories = async (req: Request, res: Response) => {
   try {
@@ -92,8 +30,8 @@ export const getLaptopsWithSubcategories = async (req: Request, res: Response) =
 
     if (search) {
       whereClause[Op.or] = [
-        { name: { [Op.like]: '%${search}%' } },
-        { description: { [Op.like]: '%${search}%' } }
+        { name: { [Op.like]: `%${search}%` } },
+        { description: { [Op.like]: `%${search}%` } }
       ];
     }
 
@@ -121,15 +59,15 @@ export const getLaptopsWithSubcategories = async (req: Request, res: Response) =
     }
 
     const addSubcategoryFilter = (slug: string) => {
-      const sanitizedSlug = slug.replace(/[^a-zA-Z0-9-]/g, '');
+      const sanitizedSlug = sanitizeSlug(slug);
 
       whereClause[Op.and].push(Sequelize.literal(`
         EXISTS (
-          SELECT 1 
+          SELECT 1
           FROM product_sub_categories psc
           JOIN sub_categories sc ON psc.sub_category_id = sc.id
           WHERE psc.product_codigo_interno = Product.codigo_interno
-          AND sc.slug = '${sanitizedSlug}'
+          AND sc.slug = ${sequelize.escape(sanitizedSlug)}
         )
       `));
     };
@@ -151,7 +89,7 @@ export const getLaptopsWithSubcategories = async (req: Request, res: Response) =
         return laptopData;
       }
 
-      laptopData.component_specs = extractComponentSpecs(laptopData);
+      laptopData.component_specs = extractComponentSpecs(laptopData, true);
       return laptopData;
     });
 
@@ -192,71 +130,36 @@ export const getLaptopSubcategories = async (req: Request, res: Response) => {
   }
 };
 
-export const getLaptopProcessors = async (req: Request, res: Response) => {
+// Shared helper for subcategory option queries
+const getSubcategoryOptions = async (where: any, req: Request, res: Response) => {
   try {
-    const processors = await SubCategory.findAll({
-      where: {
-        category_id: 8,
-        is_active: true
-      },
+    const options = await SubCategory.findAll({
+      where: { ...where, is_active: true },
       include: [{
         model: Product,
         as: 'products',
         through: { attributes: [] },
         attributes: [],
-        where: {
-          is_active: true
-        },
+        where: { is_active: true },
         required: true
       }],
-      order: [['order', 'ASC']],
+      order: [['order', 'ASC']]
     });
-
-    res.json(processors);
+    res.json(options);
   } catch (error) {
-    console.error('Error fetching laptop processors:', error);
+    console.error('Error fetching subcategory options:', error);
     res.json([]);
   }
+};
+
+export const getLaptopProcessors = async (req: Request, res: Response) => {
+  await getSubcategoryOptions({ category_id: 8 }, req, res);
 };
 
 export const getLaptopRamOptions = async (req: Request, res: Response) => {
-  try {
-    const options = await SubCategory.findAll({
-      where: { slug: { [Op.like]: '%ram%' }, is_active: true },
-      include: [{
-        model: Product,
-        as: 'products',
-        through: { attributes: [] },
-        attributes: [],
-        where: { is_active: true },
-        required: true
-      }],
-      order: [['order', 'ASC']]
-    });
-    res.json(options);
-  } catch (error) {
-    console.error('Error fetching laptop RAM options:', error);
-    res.json([]);
-  }
+  await getSubcategoryOptions({ slug: { [Op.like]: '%ram%' } }, req, res);
 };
 
 export const getLaptopStorageOptions = async (req: Request, res: Response) => {
-  try {
-    const options = await SubCategory.findAll({
-      where: { slug: { [Op.like]: '%ssd%' }, is_active: true },
-      include: [{
-        model: Product,
-        as: 'products',
-        through: { attributes: [] },
-        attributes: [],
-        where: { is_active: true },
-        required: true
-      }],
-      order: [['order', 'ASC']]
-    });
-    res.json(options);
-  } catch (error) {
-    console.error('Error fetching laptop storage options:', error);
-    res.json([]);
-  }
+  await getSubcategoryOptions({ slug: { [Op.like]: '%ssd%' } }, req, res);
 };

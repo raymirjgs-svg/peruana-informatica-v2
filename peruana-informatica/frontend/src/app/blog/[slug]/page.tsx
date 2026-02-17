@@ -22,10 +22,7 @@ export default function BlogPostPage() {
     const loadPost = async () => {
       try {
         setLoading(true);
-        console.log('🔍 Loading blog post with slug:', slug);
-
         const response = await BlogService.getPostBySlug(slug);
-        console.log('✅ Post response:', response);
 
         setPost(response.data || null);
 
@@ -43,7 +40,6 @@ export default function BlogPostPage() {
           setTableOfContents(headings);
         }
       } catch (err: any) {
-        console.error('❌ Error loading post:', err);
         setError(err.message || "Error al cargar el post");
       } finally {
         setLoading(false);

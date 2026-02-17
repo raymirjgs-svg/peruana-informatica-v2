@@ -55,7 +55,6 @@ function ProductsContent() {
       // Primero probar la conexión
       const productService = new ProductService();
       const connectionOk = await productService.testConnection();
-      console.log('🔌 Connection test result:', connectionOk);
 
       if (!connectionOk) {
         setError('No se puede conectar con el servidor. Por favor, verifica que el backend esté corriendo.');
@@ -70,7 +69,6 @@ function ProductsContent() {
         setTotal(totalData);
         setTotalPages(totalPagesData);
       } catch (err) {
-        console.error('Error loading products:', err);
         setError(err instanceof Error ? err.message : 'Error desconocido al cargar productos');
       } finally {
         setLoading(false);

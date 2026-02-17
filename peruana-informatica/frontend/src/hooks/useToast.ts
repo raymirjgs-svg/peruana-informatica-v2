@@ -60,13 +60,14 @@ export const useToast = () => {
         },
         options?: ToastOptions
     ) => {
-        return sileo.promise(promise, {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return (sileo as any).promise(promise, {
             loading: { title: loading },
-            success: (data) => ({
+            success: (data: T) => ({
                 title: typeof successMsg === 'function' ? successMsg(data) : successMsg,
             }),
-            error: (error) => ({
-                title: typeof errorMsg === 'function' ? errorMsg(error) : errorMsg,
+            error: (error: unknown) => ({
+                title: typeof errorMsg === 'function' ? errorMsg(error as Error) : errorMsg,
             }),
             duration: options?.duration,
             position: options?.position,

@@ -108,8 +108,11 @@ export function cacheMiddleware(keyPrefix: string, ttl: number = 300) {
  */
 function generateCacheKey(prefix: string, req: Request): string {
     const path = req.path;
-    const query = JSON.stringify(req.query);
-    return `${prefix}:${path}:${query}`;
+    const sortedQuery = Object.keys(req.query).sort().reduce((acc: Record<string, any>, key) => {
+        acc[key] = req.query[key];
+        return acc;
+    }, {});
+    return `${prefix}:${path}:${JSON.stringify(sortedQuery)}`;
 }
 
 /**

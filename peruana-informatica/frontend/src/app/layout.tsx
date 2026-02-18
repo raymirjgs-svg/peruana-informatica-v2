@@ -85,7 +85,7 @@ import { SettingsProvider } from '@/context/SettingsContext';
 import { FaviconUpdater } from '@/components/common/FaviconUpdater';
 import NextAuthProvider from '@/components/providers/NextAuthProvider';
 import { OrganizationSchema, WebSiteSchema, LocalBusinessSchema } from '@/components/seo/SchemaMarkup';
-import { Toaster } from 'sileo';
+import ToasterClient from '@/components/common/ToasterClient';
 
 export default function RootLayout({
   children,
@@ -115,7 +115,7 @@ export default function RootLayout({
               <CompareProvider>
                 <WishlistProvider>
                   <CartProvider>
-                    <Toaster position="top-right" />
+                    <ToasterClient />
                     <LayoutWrapper>{children}</LayoutWrapper>
                   </CartProvider>
                 </WishlistProvider>

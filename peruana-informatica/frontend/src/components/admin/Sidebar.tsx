@@ -29,6 +29,9 @@ import {
   MessageCircle,
   Heart,
   Activity,
+  Megaphone,
+  Tag,
+  LayoutGrid,
 } from 'lucide-react';
 
 interface MenuItem {
@@ -81,6 +84,9 @@ const menuItems: MenuItem[] = [
     children: [
       { name: "Blog", href: "/admin/blog", icon: <FileText className="h-4 w-4" /> },
       { name: "Carrusel", href: "/admin/carousel", icon: <ImageIcon className="h-4 w-4" /> },
+      { name: "Marcas / Logos", href: "/admin/brands", icon: <Tag className="h-4 w-4" /> },
+      { name: "Accesos Rápidos", href: "/admin/quick-categories", icon: <LayoutGrid className="h-4 w-4" /> },
+      { name: "Barra de Anuncios", href: "/admin/announcements", icon: <Megaphone className="h-4 w-4" /> },
       { name: "Páginas", href: "/admin/pages", icon: <FileText className="h-4 w-4" /> }
     ]
   },

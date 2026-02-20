@@ -20,29 +20,62 @@ export function Footer() {
 
   return (
     <footer className="bg-gradient-to-b from-gray-900 to-gray-950 text-gray-300 mt-16">
-      {/* Newsletter Section */}
-      <div className="bg-blue-900/20 border-y border-blue-900/30">
-        <div className="max-w-[1920px] mx-auto px-4 md:px-6 py-8">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="text-center md:text-left">
-              <h3 className="text-white font-bold text-xl mb-2">📧 Suscríbete a nuestro newsletter</h3>
-              <p className="text-sm text-gray-400">Recibe ofertas exclusivas y las últimas novedades en tecnología</p>
+
+      {/* Newsletter Section — Brand Red */}
+      <div className="relative overflow-hidden">
+        {/* Background */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background: 'linear-gradient(135deg, #7f1d1d 0%, #991b1b 40%, #b91c1c 100%)',
+          }}
+        />
+        {/* Subtle dot pattern */}
+        <svg className="absolute inset-0 w-full h-full opacity-[0.06] pointer-events-none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="newsletterdots" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+              <circle cx="10" cy="10" r="1.5" fill="white" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#newsletterdots)" />
+        </svg>
+        {/* Top shine */}
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-red-400/40 to-transparent" />
+
+        <div className="relative max-w-[1920px] mx-auto px-4 md:px-6 py-10">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+            {/* Left copy */}
+            <div className="text-center md:text-left max-w-sm">
+              <p className="text-red-200/70 text-xs font-bold tracking-widest uppercase mb-1">Newsletter</p>
+              <h3 className="text-white font-black text-2xl mb-2 leading-tight">
+                Ofertas exclusivas<br />directo a tu correo
+              </h3>
+              <p className="text-red-100/70 text-sm">
+                Sé el primero en enterarte de descuentos, nuevos productos y promociones especiales.
+              </p>
             </div>
-            <form onSubmit={handleSubscribe} className="flex gap-2 w-full md:w-auto">
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Tu correo electrónico"
-                required
-                className="px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-80"
-              />
-              <button
-                type="submit"
-                className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors whitespace-nowrap"
-              >
-                Suscribirme
-              </button>
+
+            {/* Right form */}
+            <form onSubmit={handleSubscribe} className="w-full md:w-auto">
+              <div className="flex flex-col sm:flex-row gap-2">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="tu@correo.com"
+                  required
+                  className="px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-red-200/50 focus:outline-none focus:ring-2 focus:ring-white/40 focus:bg-white/15 w-full sm:w-72 text-sm transition-all"
+                />
+                <button
+                  type="submit"
+                  className="px-6 py-3 bg-white text-red-700 font-bold rounded-xl hover:bg-red-50 transition-all duration-200 whitespace-nowrap text-sm active:scale-95 shadow-lg"
+                >
+                  Suscribirme →
+                </button>
+              </div>
+              <p className="text-red-200/50 text-[10px] mt-2 text-center sm:text-left">
+                Sin spam. Cancela cuando quieras.
+              </p>
             </form>
           </div>
         </div>
@@ -151,18 +184,29 @@ export function Footer() {
 
         {/* Métodos de pago */}
         <div className="border-t border-gray-800 pt-8 mb-8">
-          <h4 className="text-white font-semibold mb-4 text-center">Métodos de Pago</h4>
-          <div className="flex flex-wrap justify-center gap-3">
-            <div className="bg-gray-800 px-4 py-2 rounded-lg text-xs">💳 Visa</div>
-            <div className="bg-gray-800 px-4 py-2 rounded-lg text-xs">💳 Mastercard</div>
-            <div className="bg-gray-800 px-4 py-2 rounded-lg text-xs">💰 Yape</div>
-            <div className="bg-gray-800 px-4 py-2 rounded-lg text-xs">💰 Plin</div>
-            <div className="bg-gray-800 px-4 py-2 rounded-lg text-xs">🏦 Transferencia</div>
-            <div className="bg-gray-800 px-4 py-2 rounded-lg text-xs flex items-center gap-1">
-              <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2 text-gray-400">
+              <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
               </svg>
-              Compra Segura
+              <span className="text-xs font-semibold text-white">Pago 100% seguro</span>
+            </div>
+            <div className="flex flex-wrap justify-center gap-2">
+              {[
+                { label: 'Visa', color: '#1a1f71', text: 'white' },
+                { label: 'Mastercard', color: '#eb001b', text: 'white' },
+                { label: 'Yape', color: '#6d1b7b', text: 'white' },
+                { label: 'Plin', color: '#00b09b', text: 'white' },
+                { label: 'Transferencia', color: '#1e293b', text: '#94a3b8' },
+              ].map((pm) => (
+                <div
+                  key={pm.label}
+                  className="px-3 py-1.5 rounded-lg text-[11px] font-bold border border-gray-700"
+                  style={{ backgroundColor: `${pm.color}33`, color: pm.text, borderColor: `${pm.color}55` }}
+                >
+                  {pm.label}
+                </div>
+              ))}
             </div>
           </div>
         </div>

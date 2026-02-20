@@ -122,11 +122,42 @@ export const ProductCard = memo(function ProductCard({ product }: ProductCardPro
           </button>
         </div>
 
-        {!product.isAvailable() && (
-          <div className="absolute top-3 left-3 bg-red-500/90 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs font-bold shadow-sm">
-            Agotado
-          </div>
-        )}
+        {/* Badges: NEW / FEATURED / CLEARANCE / AGOTADO */}
+        <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
+          {!product.isAvailable() && (
+            <span className="px-2.5 py-1 text-[10px] font-black tracking-widest uppercase bg-gray-800/90 backdrop-blur-sm text-white rounded-md shadow-sm">
+              Agotado
+            </span>
+          )}
+          {product.is_new && product.isAvailable() && (
+            <span className="px-2.5 py-1 text-[10px] font-black tracking-widest uppercase bg-blue-600 text-white rounded-md shadow-sm">
+              Nuevo
+            </span>
+          )}
+          {product.is_featured && product.isAvailable() && (
+            <span className="px-2.5 py-1 text-[10px] font-black tracking-widest uppercase bg-amber-500 text-white rounded-md shadow-sm">
+              ⭐ Top
+            </span>
+          )}
+          {product.is_clearance && product.isAvailable() && (
+            <span className="px-2.5 py-1 text-[10px] font-black tracking-widest uppercase bg-red-600 text-white rounded-md shadow-sm animate-pulse">
+              🔥 Oferta
+            </span>
+          )}
+          {(() => {
+            const pWeb = Number(product.price || 0);
+            const pDis = Number(product.priceDis || 0);
+            if (pDis > 0 && pWeb > 0 && pDis > pWeb * 1.1) {
+              const pct = Math.round((1 - pWeb / pDis) * 100);
+              return (
+                <span className="px-2.5 py-1 text-[10px] font-black tracking-wide bg-red-600 text-white rounded-md shadow-sm">
+                  -{pct}%
+                </span>
+              );
+            }
+            return null;
+          })()}
+        </div>
       </div>
 
       {/* Contenido */}
@@ -148,10 +179,21 @@ export const ProductCard = memo(function ProductCard({ product }: ProductCardPro
         <div className="flex justify-between items-end mb-4">
           <div className="flex flex-col">
             {(() => {
-              const pList = Number(product.price || 0);
-              if (pList > 0) {
+              const pWeb = Number(product.price || 0);
+              const pDis = Number(product.priceDis || 0);
+              const hasDiscount = pDis > 0 && pWeb > 0 && pDis > pWeb * 1.1;
+              if (pWeb > 0) {
                 return (
-                  <span className="text-2xl font-bold text-brand-black-800 dark:text-gray-100 leading-none">S/. {pList.toFixed(2)}</span>
+                  <div className="flex flex-col gap-0.5">
+                    {hasDiscount && (
+                      <span className="text-sm text-gray-400 dark:text-gray-500 line-through leading-none">
+                        S/. {pDis.toFixed(2)}
+                      </span>
+                    )}
+                    <span className="text-2xl font-bold text-brand-black-800 dark:text-gray-100 leading-none">
+                      S/. {pWeb.toFixed(2)}
+                    </span>
+                  </div>
                 );
               }
               return <span className="text-xl font-bold text-gray-500 dark:text-gray-400">Consultar</span>;

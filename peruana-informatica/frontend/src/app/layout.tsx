@@ -86,13 +86,13 @@ import { FaviconUpdater } from '@/components/common/FaviconUpdater';
 import NextAuthProvider from '@/components/providers/NextAuthProvider';
 import { OrganizationSchema, WebSiteSchema, LocalBusinessSchema } from '@/components/seo/SchemaMarkup';
 import ToasterClient from '@/components/common/ToasterClient';
+import { WhatsAppButton } from '@/components/common/WhatsAppButton';
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://200.58.98.122';
 
   return (
     <html lang="es" className="scroll-smooth" data-scroll-behavior="smooth" suppressHydrationWarning>
@@ -116,6 +116,7 @@ export default function RootLayout({
                 <WishlistProvider>
                   <CartProvider>
                     <ToasterClient />
+                    <WhatsAppButton />
                     <LayoutWrapper>{children}</LayoutWrapper>
                   </CartProvider>
                 </WishlistProvider>

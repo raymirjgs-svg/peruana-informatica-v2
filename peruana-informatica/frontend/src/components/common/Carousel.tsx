@@ -3,225 +3,274 @@
 // ============================================
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { CarouselService, CarouselSlide as ApiSlide } from '@/services/CarouselService';
 import { getBackendImageUrl } from '@/utils/images';
 
 interface CarouselSlide extends ApiSlide {}
 
-// Slides por defecto si no se pueden cargar desde el backend
 const defaultSlides: CarouselSlide[] = [
   {
     id: 1,
-    title: '¡Bienvenido a Peruana de Informática!',
-    description: 'Descubre nuestra amplia selección de equipos tecnológicos de calidad. Garantía oficial y envío rápido a todo el Perú.',
-    buttonText: 'Ver Productos',
+    title: 'Tecnología de Punta para Ti',
+    description: 'Laptops, procesadores, monitores y más. Todo con garantía oficial y envío rápido a todo el Perú.',
+    buttonText: 'Explorar Catálogo',
     buttonUrl: '/products',
-    backgroundColor: 'from-blue-600 to-blue-800',
+    imageUrl: '/images/banners/banner1.jpg',
+    backgroundColor: 'from-[#0a0a0a] to-[#1a1a2e]',
     order: 0,
   },
   {
     id: 2,
-    title: 'Ofertas Especiales',
-    description: 'Grandes descuentos en productos seleccionados. No te pierdas nuestras promociones exclusivas.',
+    title: 'Ofertas que No Puedes Perder',
+    description: 'Descuentos exclusivos en equipos seleccionados. Precios directos del distribuidor oficial.',
     buttonText: 'Ver Ofertas',
-    buttonUrl: '/products',
-    backgroundColor: 'from-purple-600 to-purple-800',
+    buttonUrl: '/products?clearance=true',
+    backgroundColor: 'from-[#1a0000] to-[#3d0000]',
     order: 1,
   },
   {
     id: 3,
-    title: 'Envío Gratis',
-    description: 'En compras mayores a S/. 100. Llegamos a todo el Perú en 2-3 días hábiles.',
+    title: 'Envío Gratis a Todo el Perú',
+    description: 'En compras mayores a S/. 100. Llegamos en 2-3 días hábiles con seguimiento en tiempo real.',
     buttonText: 'Comprar Ahora',
     buttonUrl: '/products',
-    backgroundColor: 'from-green-600 to-green-800',
+    backgroundColor: 'from-[#0d1b2a] to-[#1b263b]',
     order: 2,
   },
 ];
+
+// Accent colors per slide index
+const slideAccents = ['#dc2626', '#ef4444', '#3b82f6'];
+const slideLabels = ['CATÁLOGO 2026', 'OFERTA ESPECIAL', 'ENVÍO GRATIS'];
 
 export function Carousel() {
   const [slides, setSlides] = useState<CarouselSlide[]>(defaultSlides);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlay, setIsAutoPlay] = useState(true);
-  
-  // Cargar slides desde el backend
+  const [isTransitioning, setIsTransitioning] = useState(false);
+
   useEffect(() => {
     const loadSlides = async () => {
       const carouselService = new CarouselService();
       const activeSlides = await carouselService.getActiveSlides();
-      
       if (activeSlides && activeSlides.length > 0) {
         setSlides(activeSlides);
       }
-      // Si no hay slides del backend, se mantienen los slides por defecto
     };
-
     loadSlides();
   }, []);
 
-  // Auto-play del carousel
+  const goToSlide = useCallback((index: number) => {
+    if (isTransitioning) return;
+    setIsTransitioning(true);
+    setCurrentSlide(index);
+    setTimeout(() => setIsTransitioning(false), 700);
+  }, [isTransitioning]);
+
   useEffect(() => {
     if (!isAutoPlay || slides.length === 0) return;
-
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 5000); // Cambiar cada 5 segundos
-
+    }, 5500);
     return () => clearInterval(timer);
   }, [isAutoPlay, slides.length]);
 
-  const goToSlide = (index: number) => {
-    setCurrentSlide(index);
-    setIsAutoPlay(false);
-  };
-
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % slides.length);
+    goToSlide((currentSlide + 1) % slides.length);
     setIsAutoPlay(false);
   };
 
   const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+    goToSlide((currentSlide - 1 + slides.length) % slides.length);
     setIsAutoPlay(false);
   };
 
-  // const currentSlideData = slides[currentSlide]; // Variable no utilizada
+  const accentColor = slideAccents[currentSlide % slideAccents.length];
 
   return (
-    <div className="relative w-full mb-16 rounded-xl overflow-hidden shadow-2xl">
-      {/* Contenedor del carrusel */}
-      <div className="relative h-96 md:h-[500px] bg-gray-900">
-        {/* Slides */}
-        {slides.map((s, index) => (
-          <div
-            key={s.id}
-            className={`absolute inset-0 transition-opacity duration-1000 ${
-              index === currentSlide ? 'opacity-100' : 'opacity-0'
-            }`}
-          >
-            {/* Si hay imagen URL, usarla como fondo */}
-            {s.imageUrl ? (
-              <>
-                {/* Fondo con imagen */}
-                <div 
-                  className="absolute inset-0"
+    <div className="relative w-full mb-10 overflow-hidden rounded-2xl shadow-2xl" style={{ height: '480px' }}>
+
+      {/* Tech grid SVG pattern */}
+      <svg
+        className="absolute inset-0 w-full h-full z-0 opacity-[0.04] pointer-events-none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <defs>
+          <pattern id="techgrid" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" strokeWidth="0.5" />
+          </pattern>
+          <pattern id="techdots" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+            <circle cx="20" cy="20" r="1" fill="white" />
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#techgrid)" />
+        <rect width="100%" height="100%" fill="url(#techdots)" />
+      </svg>
+
+      {/* Slides */}
+      {slides.map((s, index) => (
+        <div
+          key={s.id}
+          className="absolute inset-0"
+          style={{
+            opacity: index === currentSlide ? 1 : 0,
+            transform: index === currentSlide
+              ? 'translateX(0) scale(1)'
+              : index < currentSlide
+                ? 'translateX(-3%) scale(0.98)'
+                : 'translateX(3%) scale(0.98)',
+            transition: 'opacity 0.7s ease, transform 0.7s ease',
+            zIndex: index === currentSlide ? 1 : 0,
+          }}
+        >
+          {s.imageUrl ? (
+            <>
+              <div
+                className="absolute inset-0"
+                style={{
+                  backgroundImage: `url(${s.imageUrl.startsWith('/images/banners/') ? s.imageUrl : getBackendImageUrl(s.imageUrl)})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
+            </>
+          ) : (
+            <div className={`absolute inset-0 bg-gradient-to-br ${s.backgroundColor || 'from-[#0a0a0a] to-[#1a1a2e]'}`} />
+          )}
+
+          {/* Slide content */}
+          <div className="absolute inset-0 flex items-center z-10">
+            <div className="w-full px-10 md:px-20 max-w-3xl">
+              {/* Label badge */}
+              <div
+                className="inline-flex items-center gap-2 mb-4 px-3 py-1 rounded-full text-xs font-bold tracking-widest uppercase"
+                style={{
+                  backgroundColor: `${accentColor}20`,
+                  border: `1px solid ${accentColor}60`,
+                  color: accentColor,
+                  opacity: index === currentSlide ? 1 : 0,
+                  transform: index === currentSlide ? 'translateY(0)' : 'translateY(10px)',
+                  transition: 'opacity 0.5s ease 0.2s, transform 0.5s ease 0.2s',
+                }}
+              >
+                <span
+                  className="w-1.5 h-1.5 rounded-full animate-pulse"
+                  style={{ backgroundColor: accentColor }}
+                />
+                {slideLabels[index % slideLabels.length]}
+              </div>
+
+              <h2
+                className="text-4xl md:text-5xl font-black text-white mb-4 leading-tight"
+                style={{
+                  opacity: index === currentSlide ? 1 : 0,
+                  transform: index === currentSlide ? 'translateY(0)' : 'translateY(15px)',
+                  transition: 'opacity 0.6s ease 0.35s, transform 0.6s ease 0.35s',
+                  textShadow: '0 2px 20px rgba(0,0,0,0.5)',
+                }}
+              >
+                {s.title}
+              </h2>
+
+              {/* Accent line under title */}
+              <div
+                className="h-1 w-16 rounded-full mb-4"
+                style={{
+                  backgroundColor: accentColor,
+                  opacity: index === currentSlide ? 1 : 0,
+                  transform: index === currentSlide ? 'scaleX(1)' : 'scaleX(0)',
+                  transformOrigin: 'left',
+                  transition: 'opacity 0.4s ease 0.5s, transform 0.4s ease 0.5s',
+                }}
+              />
+
+              <p
+                className="text-base md:text-lg text-white/75 mb-8 leading-relaxed max-w-xl"
+                style={{
+                  opacity: index === currentSlide ? 1 : 0,
+                  transform: index === currentSlide ? 'translateY(0)' : 'translateY(10px)',
+                  transition: 'opacity 0.6s ease 0.55s, transform 0.6s ease 0.55s',
+                }}
+              >
+                {s.description}
+              </p>
+
+              <div
+                style={{
+                  opacity: index === currentSlide ? 1 : 0,
+                  transform: index === currentSlide ? 'translateY(0)' : 'translateY(10px)',
+                  transition: 'opacity 0.6s ease 0.7s, transform 0.6s ease 0.7s',
+                }}
+              >
+                <a
+                  href={s.buttonUrl}
+                  className="inline-flex items-center gap-3 px-7 py-3.5 rounded-lg font-bold text-sm tracking-wide text-white transition-all duration-200 hover:gap-4 hover:shadow-lg active:scale-95"
                   style={{
-                    backgroundImage: `url(${getBackendImageUrl(s.imageUrl)})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    backgroundRepeat: 'no-repeat'
+                    backgroundColor: accentColor,
+                    boxShadow: `0 4px 20px ${accentColor}50`,
                   }}
                 >
-                  {/* Overlay oscuro para mejorar legibilidad */}
-                  <div className="absolute inset-0 bg-black/20" />
-                </div>
-
-                {/* Contenido superpuesto */}
-                <div className="absolute inset-0 flex items-center">
-                  <div className="container mx-auto px-4">
-                    <div className="max-w-2xl">
-                      {/* Texto */}
-                      <div className="text-white z-10">
-                        <h2 className="text-4xl md:text-5xl font-bold mb-4 leading-tight drop-shadow-lg">
-                          {s.title}
-                        </h2>
-                        <p className="text-lg md:text-xl text-white/90 mb-8 drop-shadow">
-                          {s.description}
-                        </p>
-                        <a
-                          href={s.buttonUrl}
-                          className="inline-block bg-white text-gray-900 px-8 py-3 rounded-lg font-bold hover:bg-gray-100 transition transform hover:scale-105 shadow-xl"
-                        >
-                          {s.buttonText} →
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </>
-            ) : (
-              <>
-                {/* Fondo con gradiente (sin imagen) */}
-                <div className={`absolute inset-0 bg-gradient-to-r ${s.backgroundColor}`} />
-
-                {/* Contenido */}
-                <div className="absolute inset-0 flex items-center">
-                  <div className="container mx-auto px-4">
-                    <div className="max-w-2xl">
-                      {/* Texto */}
-                      <div className="text-white z-10">
-                        <h2 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">
-                          {s.title}
-                        </h2>
-                        <p className="text-lg md:text-xl text-white/90 mb-8">
-                          {s.description}
-                        </p>
-                        <a
-                          href={s.buttonUrl}
-                          className="inline-block bg-white text-gray-900 px-8 py-3 rounded-lg font-bold hover:bg-gray-100 transition transform hover:scale-105"
-                        >
-                          {s.buttonText} →
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </>
-            )}
+                  {s.buttonText}
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </a>
+              </div>
+            </div>
           </div>
-        ))}
-
-        {/* Botones de navegación */}
-        <button
-          onClick={prevSlide}
-          className="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-white/30 hover:bg-white/50 text-white p-3 rounded-full transition"
-          aria-label="Anterior"
-        >
-          ←
-        </button>
-        <button
-          onClick={nextSlide}
-          className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-white/30 hover:bg-white/50 text-white p-3 rounded-full transition"
-          aria-label="Siguiente"
-        >
-          →
-        </button>
-
-        {/* Indicadores */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-2">
-          {slides.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => goToSlide(index)}
-              className={`h-3 rounded-full transition-all ${
-                index === currentSlide
-                  ? 'bg-white w-8'
-                  : 'bg-white/50 w-3 hover:bg-white/70'
-              }`}
-              aria-label={`Ir a slide ${index + 1}`}
-            />
-          ))}
         </div>
+      ))}
 
-        {/* Indicador de auto-play */}
-        <button
-          onClick={() => setIsAutoPlay(!isAutoPlay)}
-          className="absolute top-4 right-4 z-20 bg-white/20 hover:bg-white/40 text-white px-4 py-2 rounded-full text-sm transition"
-        >
-          {isAutoPlay ? '⏸ Pausar' : '▶ Reanudar'}
-        </button>
+      {/* Left navigation */}
+      <button
+        onClick={prevSlide}
+        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full border border-white/20 bg-black/30 backdrop-blur-sm text-white hover:bg-white/20 hover:border-white/40 transition-all duration-200 flex items-center justify-center"
+        aria-label="Anterior"
+      >
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+
+      {/* Right navigation */}
+      <button
+        onClick={nextSlide}
+        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full border border-white/20 bg-black/30 backdrop-blur-sm text-white hover:bg-white/20 hover:border-white/40 transition-all duration-200 flex items-center justify-center"
+        aria-label="Siguiente"
+      >
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+
+      {/* Slide indicators */}
+      <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-20 flex gap-2 items-center">
+        {slides.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => { goToSlide(index); setIsAutoPlay(false); }}
+            className="transition-all duration-400 rounded-full"
+            style={{
+              width: index === currentSlide ? '28px' : '8px',
+              height: '8px',
+              backgroundColor: index === currentSlide ? accentColor : 'rgba(255,255,255,0.4)',
+            }}
+            aria-label={`Ir a slide ${index + 1}`}
+          />
+        ))}
       </div>
 
-      {/* Información adicional debajo del carrusel */}
-      <div className="bg-gradient-to-r from-gray-50 to-gray-100 px-4 py-6">
-        <div className="container mx-auto">
-          <div className="text-center md:text-left">
-            <p className="text-gray-700 font-semibold">
-              Slide {currentSlide + 1} de {slides.length}
-            </p>
-          </div>
-        </div>
+      {/* Progress bar */}
+      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-white/10 z-20">
+        <div
+          className="h-full transition-all duration-300"
+          style={{
+            width: `${((currentSlide + 1) / slides.length) * 100}%`,
+            backgroundColor: accentColor,
+          }}
+        />
       </div>
     </div>
   );

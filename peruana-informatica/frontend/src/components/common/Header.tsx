@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { SearchBar } from './SearchBar';
 import { MegaMenu } from './MegaMenu';
+import { AnnouncementBar } from './AnnouncementBar';
 import { useSettings } from '@/context/SettingsContext'; // Usar Contexto
 import { useCart } from '@/hooks/useCart';
 import { useWishlist } from '@/hooks/useWishlist';
@@ -61,6 +62,9 @@ export function Header() {
 
   return (
     <div className="sticky top-0 z-50 flex flex-col transition-all duration-300 shadow-xl">
+      {/* Announcement ticker */}
+      <AnnouncementBar />
+
       {/* Main Header */}
       <header className={`text-white py-3 border-b border-white/5 relative z-20 transition-colors duration-300 ${isScrolled ? 'bg-slate-900/95 backdrop-blur-md' : 'bg-slate-900'}`}>
         <div className="max-w-[1920px] mx-auto px-4 md:px-6">

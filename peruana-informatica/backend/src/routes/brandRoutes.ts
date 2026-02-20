@@ -13,10 +13,26 @@ router.get('/', brandCache, async (req, res) => {
       attributes: ['id','name','slug','created_at','updated_at'],
       order: [['name', 'ASC']],
     });
-    res.json(brands);
+    res.json({ success: true, data: brands });
   } catch (error) {
     console.error('Error:', error);
-    res.status(500).json({ error: 'Error al obtener marcas' });
+    res.status(500).json({ success: false, error: 'Error al obtener marcas' });
+  }
+});
+
+// GET marcas para carrusel de logos
+router.get('/carousel', async (req, res) => {
+  try {
+    const { Op } = await import('sequelize');
+    const brands = await Brand.findAll({
+      where: { show_in_carousel: true, logo: { [Op.ne]: null } },
+      attributes: ['id', 'name', 'slug', 'logo'],
+      order: [['name', 'ASC']],
+    });
+    res.json({ success: true, data: brands });
+  } catch (error) {
+    console.error('Error carousel brands:', error);
+    res.status(500).json({ success: false, error: 'Error al obtener marcas del carrusel' });
   }
 });
 

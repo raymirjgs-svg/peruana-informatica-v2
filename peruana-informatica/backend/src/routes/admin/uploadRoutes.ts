@@ -5,10 +5,10 @@ import fs from 'fs';
 
 const router = express.Router();
 
-// Configurar almacenamiento
+// Guardar en public/images/products/ para que nginx lo sirva via /images/
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        const uploadDir = path.join(__dirname, '../../../public/uploads');
+        const uploadDir = path.join(__dirname, '../../../public/images/products');
         if (!fs.existsSync(uploadDir)) {
             fs.mkdirSync(uploadDir, { recursive: true });
         }
@@ -42,9 +42,9 @@ router.post('/', upload.single('image'), (req: Request, res: Response) => {
             return res.status(400).json({ error: 'No se subió ningún archivo' });
         }
 
-        // Construir URL pública
-        const baseUrl = process.env.API_URL || 'http://localhost:3001';
-        const imageUrl = `${baseUrl}/uploads/${req.file.filename}`;
+        // URL pública accesible via nginx /images/ → backend /images/products/
+        const baseUrl = process.env.FRONTEND_URL || process.env.API_URL || 'http://localhost';
+        const imageUrl = `${baseUrl}/images/products/${req.file.filename}`;
 
         res.json({
             success: true,

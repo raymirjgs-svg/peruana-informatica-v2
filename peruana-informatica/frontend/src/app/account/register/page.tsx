@@ -41,11 +41,12 @@ export default function RegisterPage() {
 
             toast.success('Cuenta creada exitosamente');
 
-            // Auto login with credentials
+            // Auto login after register
             await signIn('credentials', {
                 redirect: false,
                 email: data.email,
                 password: data.password,
+                type: 'customer',
             });
 
             router.push('/cart');

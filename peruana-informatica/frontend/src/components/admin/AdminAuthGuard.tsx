@@ -7,16 +7,26 @@ interface AdminAuthGuardProps {
     children: React.ReactNode;
 }
 
+function isTokenExpired(token: string): boolean {
+    try {
+        const payload = JSON.parse(atob(token.split('.')[1] ?? ''));
+        return payload.exp * 1000 < Date.now();
+    } catch {
+        return true;
+    }
+}
+
 export function AdminAuthGuard({ children }: AdminAuthGuardProps) {
     const router = useRouter();
     const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
     useEffect(() => {
-        // Check localStorage for admin token
         const token = localStorage.getItem('adminToken');
 
-        if (!token) {
-            router.replace('/admin/login');
+        if (!token || isTokenExpired(token)) {
+            localStorage.removeItem('adminToken');
+            localStorage.removeItem('adminUser');
+            router.replace('/admin/login?reason=expired');
             setIsAuthenticated(false);
         } else {
             setIsAuthenticated(true);

@@ -25,33 +25,33 @@ export const authOptions: NextAuthOptions = {
         CredentialsProvider({
             name: "Credentials",
             credentials: {
-                username: { label: "Email", type: "email" },
+                email: { label: "Email", type: "email" },
                 password: { label: "Contraseña", type: "password" },
+                type: { label: "Type", type: "text" }, // 'admin' | 'customer'
             },
             async authorize(credentials) {
-                if (!credentials?.username || !credentials?.password) return null;
+                const email = credentials?.email;
+                if (!email || !credentials?.password) return null;
 
                 try {
-                    // Always query backend on port 3001
                     const apiBase = process.env.INTERNAL_API_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+                    const isCustomer = credentials?.type === 'customer';
+                    const endpoint = isCustomer ? `${apiBase}/api/auth/login` : `${apiBase}/api/admin/login`;
 
-                    const res = await fetch(`${apiBase}/api/admin/login`, {
+                    const res = await fetch(endpoint, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                            email: credentials.username, // NextAuth uses 'username' field by default for the first credential
-                            password: credentials.password,
-                        }),
+                        body: JSON.stringify({ email, password: credentials.password }),
                     });
 
                     const data = await res.json();
 
-                    if (res.ok && data.accessToken) { // Backend returns accessToken, not token
+                    if (res.ok && data.accessToken) {
                         return {
-                            id: data.user?.id || "1",
-                            username: data.user?.username || data.user?.email.split('@')[0],
+                            id: String(data.user?.id || "1"),
+                            username: data.user?.username || email.split('@')[0],
                             token: data.accessToken,
-                            role: data.user?.role || 'customer'
+                            role: data.user?.role || (isCustomer ? 'customer' : 'admin'),
                         };
                     }
 

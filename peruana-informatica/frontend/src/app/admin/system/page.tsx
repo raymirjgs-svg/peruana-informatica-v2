@@ -275,7 +275,7 @@ export default function SystemStatusPage() {
                                     <div>
                                         <p className="text-sm text-gray-500 dark:text-gray-400">Uso de Memoria (Heap)</p>
                                         <p className="text-xl font-bold text-gray-800 dark:text-white">
-                                            {formatBytes(health.system.memoryUsage.heapUsed)} / {formatBytes(health.system.memoryUsage.heapTotal)}
+                                            {health.system.memory.used} MB / {health.system.memory.total} MB
                                         </p>
                                     </div>
                                 </div>
@@ -288,7 +288,7 @@ export default function SystemStatusPage() {
                                     <div>
                                         <p className="text-sm text-gray-500 dark:text-gray-400">Memoria Libre (SO)</p>
                                         <p className="text-xl font-bold text-gray-800 dark:text-white">
-                                            {formatBytes(health.system.freeMemory)}
+                                            {health.system.system.freeMemory} MB / {health.system.system.totalMemory} MB
                                         </p>
                                     </div>
                                 </div>

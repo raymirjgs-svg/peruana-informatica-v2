@@ -83,28 +83,12 @@ export function Header() {
               </button>
 
               {/* Logo */}
-              {/* Logo */}
               <Link href="/" className="flex items-center gap-2 transition-opacity hover:opacity-90">
-                {settings?.logo_url ? (
-                  <img
-                    src={logoUrl}
-                    alt={settings?.company_name || 'Logo'}
-                    className="h-16 w-auto object-contain max-w-[280px]"
-                  />
-                ) : (
-                  <div className="flex items-center gap-3">
-                    <div className="bg-gradient-to-br from-blue-500 to-purple-600 p-2 rounded-xl shadow-lg shadow-blue-500/20">
-                      <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
-                      </svg>
-                    </div>
-                    <div className="hidden xl:block">
-                      <h1 className="text-xl font-bold bg-gradient-to-r from-white via-blue-100 to-white bg-clip-text text-transparent leading-tight">
-                        {settings?.company_name || 'Peruana de Informática'}
-                      </h1>
-                    </div>
-                  </div>
-                )}
+                <img
+                  src={settings?.logo_url ? logoUrl : '/images/logo.png'}
+                  alt={settings?.company_name || 'Peruana Informática'}
+                  className="h-16 w-auto object-contain max-w-[280px]"
+                />
               </Link>
             </div>
 

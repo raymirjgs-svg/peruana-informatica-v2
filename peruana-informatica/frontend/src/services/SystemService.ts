@@ -21,14 +21,21 @@ interface SystemHealth {
     };
     system: {
         uptime: number;
-        memoryUsage: {
+        memory: {
+            used: number;
+            total: number;
             rss: number;
-            heapTotal: number;
-            heapUsed: number;
             external: number;
         };
-        freeMemory: number;
-        totalMemory: number;
+        system: {
+            freeMemory: number;
+            totalMemory: number;
+            cpuCount: number;
+            loadAvg: number[];
+            platform: string;
+            nodeVersion: string;
+        };
+        timestamp: string;
     };
     timestamp: string;
 }

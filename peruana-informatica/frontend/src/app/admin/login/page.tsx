@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 function getApiBase() {
@@ -15,6 +15,14 @@ export default function AdminLoginPage() {
   const [password, setPassword] = useState("admin123");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [sessionExpired, setSessionExpired] = useState(false);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('reason') === 'expired') {
+      setSessionExpired(true);
+    }
+  }, []);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,6 +61,13 @@ export default function AdminLoginPage() {
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="w-full max-w-sm border rounded-lg p-6 shadow-sm">
         <h1 className="text-xl font-semibold mb-4">Acceso Administrador</h1>
+
+        {sessionExpired && (
+          <div className="mb-4 flex items-start gap-2 bg-amber-50 border border-amber-300 text-amber-800 rounded-md px-3 py-2 text-sm" role="alert">
+            <span className="mt-0.5">⚠️</span>
+            <span>Tu sesión ha expirado. Por favor inicia sesión nuevamente para continuar.</span>
+          </div>
+        )}
         <form onSubmit={onSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium mb-1">Email</label>

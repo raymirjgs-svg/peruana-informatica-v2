@@ -58,6 +58,7 @@ import adminWishlistRoutes from "./routes/admin/wishlistRoutes"; // Rutas admin 
 import adminAnalyticsRoutes from "./routes/admin/analyticsRoutes"; // Rutas admin de analytics
 import adminRoleRoutes from "./routes/admin/roleRoutes"; // Rutas admin de roles y permisos
 import adminDiscountRoutes from "./routes/admin/discountRoutes"; // Rutas admin de descuentos
+import adminMarketingRoutes from "./routes/admin/marketingRoutes"; // Rutas admin de marketing
 import { initAssociations } from "./models/associations"; // Inicialización de asociaciones
 
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler";
@@ -198,6 +199,7 @@ app.use("/api/admin/analytics", adminAnalyticsRoutes); // Rutas admin de analyti
 app.use("/api/admin/system", adminSystemRoutes); // Rutas de monitoreo del sistema
 app.use("/api/admin/roles", adminRoleRoutes); // Rutas admin de roles y permisos
 app.use("/api/admin/discounts", adminDiscountRoutes); // Rutas admin de descuentos
+app.use("/api/admin/marketing", adminMarketingRoutes); // Rutas admin de marketing
 
 // Rutas API Externa y Adicionales
 app.use("/api/external", externalApiRoutes);

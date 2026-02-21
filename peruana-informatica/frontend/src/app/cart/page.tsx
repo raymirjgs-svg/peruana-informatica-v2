@@ -316,8 +316,8 @@ export default function CartPage() {
         setError('Fecha de vencimiento inválida — use el formato MM/YY');
         return;
       }
-      const month = parseInt(expiryMatch[1]);
-      const year = parseInt(expiryMatch[2]) + 2000;
+      const month = parseInt(expiryMatch[1]!);
+      const year = parseInt(expiryMatch[2]!) + 2000;
       const now = new Date();
       if (month < 1 || month > 12 || year < now.getFullYear() || (year === now.getFullYear() && month < now.getMonth() + 1)) {
         setError('La tarjeta está vencida o la fecha es inválida');

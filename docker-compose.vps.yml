@@ -14,6 +14,7 @@ services:
         condition: service_healthy
     networks:
       - peruana_net
+      - katsher_net
     restart: unless-stopped
 
   # Frontend (Next.js)
@@ -121,3 +122,6 @@ volumes:
 networks:
   peruana_net:
     driver: bridge
+  katsher_net:
+    external: true
+    name: katsher_v2_katsher_net

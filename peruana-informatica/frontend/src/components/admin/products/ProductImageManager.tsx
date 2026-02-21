@@ -143,13 +143,13 @@ export function ProductImageManager({ productId, onImagesUpdate }: ProductImageM
             <div key={image.cod_galeria} className="border rounded-lg overflow-hidden">
               <div className="aspect-square bg-gray-100 flex items-center justify-center">
                 {image.imagen ? (
-                  <img 
-                    src={image.imagen} 
+                  <img
+                    src={image.imagen.startsWith('http') ? image.imagen : `/uploads/${image.imagen}`}
                     alt={`Imagen ${image.cod_galeria}`}
                     className="w-full h-full object-cover"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
-                      target.src = "https://placehold.co/300x300?text=Imagen+no+disponible";
+                      target.src = "/images/no-image.svg";
                     }}
                   />
                 ) : (

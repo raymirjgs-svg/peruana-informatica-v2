@@ -7,6 +7,8 @@ export interface Brand {
   id: number;
   name: string;
   slug: string;
+  logo?: string | null;
+  show_in_carousel?: boolean;
 }
 
 export class BrandService {
@@ -25,8 +27,9 @@ export class BrandService {
         cache: 'no-store'
       });
       if (!response.ok) throw new Error('Error fetching brands');
-      const data = await response.json();
-      return Array.isArray(data) ? (data as Brand[]) : [];
+      const json = await response.json();
+      const list = Array.isArray(json) ? json : (json.data ?? []);
+      return list as Brand[];
     } catch (error) {
       console.error('Error:', error);
       return [];

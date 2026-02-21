@@ -456,10 +456,10 @@ export function ProductForm({ initialData, productId, onSubmit, isSubmitting, is
                 {mainImage && (
                   <div className="mt-2">
                     <img
-                      src={mainImage}
+                      src={mainImage.startsWith('http') ? mainImage : `/uploads/${mainImage}`}
                       alt="Preview"
                       className="h-24 w-24 object-cover rounded-lg border"
-                      onError={(e) => (e.target as HTMLImageElement).src = 'https://placehold.co/100?text=Error'}
+                      onError={(e) => (e.target as HTMLImageElement).src = '/images/no-image.svg'}
                     />
                   </div>
                 )}

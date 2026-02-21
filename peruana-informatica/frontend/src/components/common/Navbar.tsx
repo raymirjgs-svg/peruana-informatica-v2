@@ -430,10 +430,10 @@ export function Navbar() {
                                 <div className="w-10 h-10 bg-gray-200 rounded-md flex-shrink-0 overflow-hidden">
                                   {/* Asumiendo que tenemos acceso a la imagen o placeholder */}
                                   <img
-                                    src={product.images && product.images.length > 0 && product.images[0]?.imagen ? getProductImageUrl(product.images[0].imagen) : 'https://placehold.co/100'}
+                                    src={product.images && product.images.length > 0 && product.images[0]?.imagen ? getProductImageUrl(product.images[0].imagen) : '/images/no-image.svg'}
                                     alt={product.name}
                                     className="w-full h-full object-cover"
-                                    onError={(e) => { (e.target as HTMLImageElement).src = 'https://placehold.co/100' }}
+                                    onError={(e) => { (e.target as HTMLImageElement).src = '/images/no-image.svg' }}
                                   />
                                 </div>
                                 <div>

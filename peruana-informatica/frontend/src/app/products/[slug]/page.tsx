@@ -36,7 +36,7 @@ export default function ProductDetailPage() {
     ? product.images.map(img => img.imagen.startsWith('http') ? img.imagen : `${apiUrl}/images/products/${img.imagen}`)
     : product?.image
       ? [product.image.startsWith('http') ? product.image : `${apiUrl}/images/products/${product.image}`]
-      : ['https://placehold.co/600x600?text=Imagen+no+disponible'];
+      : ['/images/no-image.svg'];
 
   useEffect(() => {
     const loadData = async () => {
@@ -159,7 +159,7 @@ export default function ProductDetailPage() {
                     className="w-full h-full object-contain"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
-                      target.src = "https://placehold.co/600x600?text=Imagen+no+disponible";
+                      target.src = "/images/no-image.svg";
                     }}
                   />
                 ) : (
@@ -185,7 +185,7 @@ export default function ProductDetailPage() {
                         className="w-full h-full object-cover rounded-lg"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
-                          target.src = "https://placehold.co/600x600?text=Imagen+no+disponible";
+                          target.src = "/images/no-image.svg";
                         }}
                       />
                     ) : (

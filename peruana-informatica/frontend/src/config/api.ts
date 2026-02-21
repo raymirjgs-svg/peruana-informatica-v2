@@ -31,7 +31,7 @@ export const API_CONFIG = {
 
     // URL para imágenes (uploads)
     IMAGES_URL: (path?: string) => {
-        if (!path) return 'https://placehold.co/100x100?text=Sin+Imagen';
+        if (!path) return '/images/no-image.svg';
         if (path.startsWith('http')) return path;
 
         const hostUrl = BASE_URL.replace(/\/+$/, '');

@@ -50,7 +50,7 @@ export default function BlogPage() {
 
   // Obtener imagen por defecto
   const getDefaultImage = (slug: string) => {
-    return `https://placehold.co/400x240?text=Imagen+no+disponible`;
+    return `/images/no-image.svg`;
   };
 
   // Dar like a un post

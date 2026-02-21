@@ -164,7 +164,7 @@ export function PromoBannerModal({ banner, isOpen, onClose, onSave }: PromoBanne
                                         alt="Preview"
                                         className="w-full h-full object-cover"
                                         onError={(e) => {
-                                            (e.target as HTMLImageElement).src = 'https://placehold.co/600x400?text=Error+Loading';
+                                            (e.target as HTMLImageElement).src = '/images/no-image.svg';
                                         }}
                                     />
                                 ) : (

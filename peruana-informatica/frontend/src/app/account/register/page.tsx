@@ -42,14 +42,20 @@ export default function RegisterPage() {
             toast.success('Cuenta creada exitosamente');
 
             // Auto login after register
-            await signIn('credentials', {
+            const loginResult = await signIn('credentials', {
                 redirect: false,
                 email: data.email,
                 password: data.password,
                 type: 'customer',
             });
 
-            router.push('/cart');
+            if (loginResult?.error) {
+                // Registro exitoso pero login automático falló — redirigir al login
+                toast.error('Cuenta creada. Por favor inicia sesión.');
+                router.push('/account/login');
+            } else {
+                router.push('/cart');
+            }
         } catch (error: any) {
             toast.error(error.message || 'Error al registrarse');
         } finally {

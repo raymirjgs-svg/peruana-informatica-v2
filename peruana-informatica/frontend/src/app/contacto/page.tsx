@@ -282,7 +282,6 @@ export default function ContactPage() {
                 {isSubmitting ? (
                   <>
                     <LoadingSpinner size="sm" />
-                    <span>Enviar Mensaje</span>
                     Enviando...
                   </>
                 ) : (

@@ -283,9 +283,48 @@ export default function CartPage() {
       }
     }
 
+    // Validación factura
+    if (invoiceType === 'factura') {
+      const rucClean = invoiceData.ruc.replace(/\D/g, '');
+      if (rucClean.length !== 11) {
+        setError('El RUC debe tener exactamente 11 dígitos');
+        return;
+      }
+      if (!invoiceData.business_name.trim()) {
+        setError('Debe ingresar la Razón Social');
+        return;
+      }
+      if (!invoiceData.tax_address.trim()) {
+        setError('Debe ingresar la Dirección Fiscal');
+        return;
+      }
+    }
+
+    // Validación tarjeta
     if (paymentMethod === 'tarjeta') {
-      if (!cardData.number || !cardData.holder || !cardData.expiry || !cardData.cvv) {
-        setError('Debe completar todos los datos de la tarjeta');
+      const cleanCard = cardData.number.replace(/\s/g, '');
+      if (cleanCard.length < 13 || cleanCard.length > 19 || !/^\d+$/.test(cleanCard)) {
+        setError('Número de tarjeta inválido');
+        return;
+      }
+      if (!cardData.holder.trim()) {
+        setError('Debe ingresar el nombre del titular de la tarjeta');
+        return;
+      }
+      const expiryMatch = cardData.expiry.match(/^(\d{2})\/(\d{2})$/);
+      if (!expiryMatch) {
+        setError('Fecha de vencimiento inválida — use el formato MM/YY');
+        return;
+      }
+      const month = parseInt(expiryMatch[1]);
+      const year = parseInt(expiryMatch[2]) + 2000;
+      const now = new Date();
+      if (month < 1 || month > 12 || year < now.getFullYear() || (year === now.getFullYear() && month < now.getMonth() + 1)) {
+        setError('La tarjeta está vencida o la fecha es inválida');
+        return;
+      }
+      if (!/^\d{3,4}$/.test(cardData.cvv)) {
+        setError('CVV inválido — debe tener 3 o 4 dígitos');
         return;
       }
     } else if (paymentMethod !== 'efectivo' && !paymentProof) {
@@ -537,10 +576,41 @@ export default function CartPage() {
                     <button type="button" onClick={() => setInvoiceType('factura')} className={`flex-1 p-4 border rounded ${invoiceType === 'factura' ? 'border-blue-500 bg-blue-50' : ''}`}>Factura</button>
                   </div>
                   {invoiceType === 'factura' && (
-                    <div className="mt-4 space-y-4">
-                      <input type="text" placeholder="RUC" value={invoiceData.ruc} onChange={e => setInvoiceData({ ...invoiceData, ruc: e.target.value })} className="w-full border p-2 rounded" />
-                      <input type="text" placeholder="Razón Social" value={invoiceData.business_name} onChange={e => setInvoiceData({ ...invoiceData, business_name: e.target.value })} className="w-full border p-2 rounded" />
-                      <input type="text" placeholder="Dirección Fiscal" value={invoiceData.tax_address} onChange={e => setInvoiceData({ ...invoiceData, tax_address: e.target.value })} className="w-full border p-2 rounded" />
+                    <div className="mt-4 space-y-3">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">RUC <span className="text-red-500">*</span></label>
+                        <input
+                          type="text"
+                          placeholder="20123456789"
+                          value={invoiceData.ruc}
+                          maxLength={11}
+                          onChange={e => setInvoiceData({ ...invoiceData, ruc: e.target.value.replace(/\D/g, '').slice(0, 11) })}
+                          className={`w-full border p-2 rounded ${invoiceData.ruc && invoiceData.ruc.length !== 11 ? 'border-red-400' : 'border-gray-300'}`}
+                        />
+                        {invoiceData.ruc && invoiceData.ruc.length !== 11 && (
+                          <p className="text-xs text-red-500 mt-1">{invoiceData.ruc.length}/11 dígitos</p>
+                        )}
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Razón Social <span className="text-red-500">*</span></label>
+                        <input
+                          type="text"
+                          placeholder="EMPRESA SAC"
+                          value={invoiceData.business_name}
+                          onChange={e => setInvoiceData({ ...invoiceData, business_name: e.target.value })}
+                          className="w-full border border-gray-300 p-2 rounded"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Dirección Fiscal <span className="text-red-500">*</span></label>
+                        <input
+                          type="text"
+                          placeholder="Av. Ejemplo 123, Lima"
+                          value={invoiceData.tax_address}
+                          onChange={e => setInvoiceData({ ...invoiceData, tax_address: e.target.value })}
+                          className="w-full border border-gray-300 p-2 rounded"
+                        />
+                      </div>
                     </div>
                   )}
                 </div>

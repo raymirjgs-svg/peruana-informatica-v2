@@ -10,7 +10,7 @@ const brandCache = cacheMiddleware('brands', 600);
 router.get('/', brandCache, async (req, res) => {
   try {
     const brands = await Brand.findAll({
-      attributes: ['id','name','slug','created_at','updated_at'],
+      attributes: ['id','name','slug','logo','show_in_carousel','created_at','updated_at'],
       order: [['name', 'ASC']],
     });
     res.json({ success: true, data: brands });

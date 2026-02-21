@@ -25,6 +25,16 @@ export const sequelize = new Sequelize(
   }
 );
 
+// Force utf8mb4 charset on every new connection (mysql2 v2 callback API)
+sequelize.addHook('afterConnect', (connection: any) => {
+  return new Promise<void>((resolve, reject) => {
+    connection.query('SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci', (err: Error | null) => {
+      if (err) reject(err);
+      else resolve();
+    });
+  });
+});
+
 export async function connectDatabase() {
   try {
     await sequelize.authenticate();

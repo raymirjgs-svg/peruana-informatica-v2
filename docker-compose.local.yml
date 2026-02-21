@@ -62,8 +62,6 @@ services:
       - ./peruana-informatica/backend/src:/app/src:ro
       # Persistent uploads
       - uploads_data_local:/app/public/uploads
-      # Node modules (avoid overwriting)
-      - /app/node_modules
     depends_on:
       mysql:
         condition: service_healthy
@@ -102,9 +100,8 @@ services:
       # Hot-reload: bind mount source code
       - ./peruana-informatica/frontend/src:/app/src:ro
       - ./peruana-informatica/frontend/public:/app/public:ro
-      # Node modules (avoid overwriting)
-      - /app/node_modules
-      - /app/.next
+      # .next cache for faster rebuilds
+      - frontend_next_cache:/app/.next
     depends_on:
       backend:
         condition: service_healthy
@@ -126,6 +123,8 @@ volumes:
   mysql_data_local:
     driver: local
   uploads_data_local:
+    driver: local
+  frontend_next_cache:
     driver: local
 
 # ============================================

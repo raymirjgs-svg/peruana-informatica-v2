@@ -79,7 +79,7 @@ export default function BlogPostPage() {
     if (post?.featured_image) {
       return post.featured_image;
     }
-    return `https://placehold.co/1200x600?text=Imagen+no+disponible`;
+    return `/images/no-image.svg`;
   };
 
   const handleLike = async () => {

@@ -105,6 +105,14 @@ export default function LoginPage() {
                         </div>
                     </div>
 
+                    <div className="flex items-center justify-between">
+                        <div className="text-sm">
+                            <Link href="/contacto" className="font-medium text-blue-600 hover:text-blue-500">
+                                ¿Olvidaste tu contraseña?
+                            </Link>
+                        </div>
+                    </div>
+
                     <div>
                         <button
                             type="submit"

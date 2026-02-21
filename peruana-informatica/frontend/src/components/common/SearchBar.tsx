@@ -131,7 +131,7 @@ export function SearchBar() {
                                                         alt={product.name}
                                                         className="w-full h-full object-contain p-1 group-hover:scale-110 transition-transform duration-300"
                                                         onError={(e) => {
-                                                            (e.target as HTMLImageElement).src = 'https://placehold.co/100x100?text=Sin+Imagen';
+                                                            (e.target as HTMLImageElement).src = '/images/no-image.svg';
                                                         }}
                                                     />
                                                 );
@@ -145,7 +145,7 @@ export function SearchBar() {
                                             </h4>
                                             <div className="flex items-center gap-2 mt-0.5">
                                                 <span className="text-blue-600 font-bold text-sm">
-                                                    S/ {Number((product as any).price_web || product.price || 0).toFixed(2)}
+                                                    S/ {Number(product.priceWeb || product.price || 0).toFixed(2)}
                                                 </span>
                                                 {product.category && (
                                                     <span className="text-[10px] bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded-full capitalize">

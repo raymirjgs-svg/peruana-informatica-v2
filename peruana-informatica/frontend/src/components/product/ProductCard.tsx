@@ -79,7 +79,7 @@ export const ProductCard = memo(function ProductCard({ product }: ProductCardPro
               return `${apiUrl}/images/products/${product.image}`;
             }
 
-            return `https://placehold.co/600x600?text=Imagen+no+disponible`;
+            return `/images/no-image.svg`;
           })()}
           alt={product.name}
           fill
@@ -89,7 +89,7 @@ export const ProductCard = memo(function ProductCard({ product }: ProductCardPro
           blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nNjAwJyBoZWlnaHQ9JzYwMCcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJz48cmVjdCB3aWR0aD0nMTAwJScgaGVpZ2h0PScxMDAlJyBmaWxsPScjZWVlZmZlJy8+PC9zdmc+"
           onError={(e) => {
             const target = e.target as HTMLImageElement;
-            target.src = "https://placehold.co/600x600?text=Imagen+no+disponible";
+            target.src = "/images/no-image.svg";
           }}
         />
 

@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
 import { API_CONFIG } from '@/config/api';
 
 interface BrandItem {
@@ -52,14 +51,12 @@ export function BrandLogoCarousel() {
               title={brand.name}
               style={{ width: '100px', height: '48px' }}
             >
-              <Image
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
                 src={brand.logo}
                 alt={brand.name}
-                width={100}
-                height={48}
                 className="object-contain dark:invert"
-                style={{ maxHeight: '48px', maxWidth: '100px' }}
-                unoptimized
+                style={{ maxHeight: '48px', maxWidth: '100px', width: 'auto', height: 'auto' }}
               />
             </a>
           ))}

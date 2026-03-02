@@ -48,7 +48,7 @@ export function RichTextEditor({ value, onChange, placeholder }: RichTextEditorP
     if (editor && value !== undefined) {
       const normalized = normalizeHtml(value || '');
       if (editor.getHTML() !== normalized && normalized !== '<p></p>') {
-        editor.commands.setContent(normalized, false);
+        editor.commands.setContent(normalized);
       }
     }
   }, [value, editor]);

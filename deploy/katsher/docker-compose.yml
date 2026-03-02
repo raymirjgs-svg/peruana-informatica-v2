@@ -1,0 +1,66 @@
+# ============================================
+# Katsher — Nuevo Servidor de Producción
+# Dominio: katsher.com
+# Puerto: 127.0.0.1:3005 (nginx del host maneja SSL)
+# ============================================
+
+services:
+
+  db:
+    image: mysql:8.0
+    container_name: katsher_db
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: katsher_root
+      MYSQL_DATABASE: katsher_db
+      MYSQL_USER: katsher_user
+      MYSQL_PASSWORD: K4tsh3r_Pr0d_2024
+    expose:
+      - "3306"
+    volumes:
+      - katsher_mysql_data:/var/lib/mysql
+      - ./katsher_db.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - katsher_net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: https://katsher.com
+        DATABASE_URL: mysql://katsher_user:K4tsh3r_Pr0d_2024@katsher_db:3306/katsher_db
+    container_name: katsher_app
+    ports:
+      - "127.0.0.1:3005:3000"
+    environment:
+      - HOSTNAME=0.0.0.0
+      - DATABASE_URL=mysql://katsher_user:K4tsh3r_Pr0d_2024@katsher_db:3306/katsher_db
+    volumes:
+      - /var/www/katsher/images:/app/public/images
+    networks:
+      - katsher_net
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:3000/katsher"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  katsher_mysql_data:
+
+networks:
+  katsher_net:
+    driver: bridge

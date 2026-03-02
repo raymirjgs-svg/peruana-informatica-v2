@@ -1,0 +1,57 @@
+# ============================================
+# Magnatte — Nuevo Servidor de Producción
+# Dominio: magnatte.es
+# Puerto: 127.0.0.1:3007 (nginx del host maneja SSL)
+# ============================================
+
+services:
+
+  db:
+    image: mysql:8.0
+    container_name: magnatte_db
+    environment:
+      MYSQL_ROOT_PASSWORD: magnatte123
+      MYSQL_DATABASE: magnatte_v2
+      MYSQL_USER: magnatte
+      MYSQL_PASSWORD: magnatte123
+    expose:
+      - "3306"
+    volumes:
+      - magnatte_mysql_data:/var/lib/mysql
+      - ./magnatte_v2.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - magnatte_net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    container_name: magnatte_app
+    ports:
+      - "127.0.0.1:3007:3000"
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=mysql://magnatte:magnatte123@db:3306/magnatte_v2
+      - AUTH_TRUST_HOST=true
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - magnatte_net
+    restart: unless-stopped
+
+volumes:
+  magnatte_mysql_data:
+
+networks:
+  magnatte_net:
+    driver: bridge

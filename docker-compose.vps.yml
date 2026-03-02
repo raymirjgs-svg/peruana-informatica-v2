@@ -31,8 +31,8 @@ services:
       - NODE_ENV=production
       - PORT=3000
       - NEXT_PUBLIC_API_URL=http://200.58.98.122
-    expose:
-      - "3000"
+    ports:
+      - "127.0.0.1:3000:3000"
     depends_on:
       backend:
         condition: service_healthy

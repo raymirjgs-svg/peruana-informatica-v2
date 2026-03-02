@@ -1,236 +1,122 @@
-version: '3.8'
+# ============================================
+# PRODUCCIÓN — peruana-informatica
+# Dominio: peruanadeinformatica.com.pe
+# El SSL y el nginx corren en el HOST, no en Docker.
+# ============================================
 
 services:
-  # ============================================
-  # 🌐 Nginx Reverse Proxy
-  # ============================================
-  nginx:
-    image: nginx:alpine
-    container_name: peruana_nginx_prod
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./nginx/conf.d:/etc/nginx/conf.d:ro
-      - ./certbot/conf:/etc/letsencrypt:ro
-      - ./certbot/www:/var/www/certbot:ro
-    depends_on:
-      - frontend
-      - backend
-    networks:
-      - peruana_net_prod
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
 
   # ============================================
-  # 🔐 SSL Certificate Management
-  # ============================================
-  certbot:
-    image: certbot/certbot
-    container_name: peruana_certbot_prod
-    volumes:
-      - ./certbot/conf:/etc/letsencrypt
-      - ./certbot/www:/var/www/certbot
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
-    networks:
-      - peruana_net_prod
-    restart: unless-stopped
-
-  # ============================================
-  # 🎨 Frontend (Next.js Production)
+  # Frontend (Next.js)
   # ============================================
   frontend:
     build:
       context: ./peruana-informatica/frontend
       dockerfile: Dockerfile.prod
-    container_name: peruana_frontend_prod
+      args:
+        - NEXT_PUBLIC_API_URL=https://peruanadeinformatica.com.pe
+    container_name: peruana_frontend
     env_file:
       - ./envs/.env.production
     environment:
       - NODE_ENV=production
       - PORT=3000
-      - NEXT_PUBLIC_API_URL=${FRONTEND_URL:-http://200.58.98.122}
+      - NEXT_PUBLIC_API_URL=https://peruanadeinformatica.com.pe
       - INTERNAL_API_URL=http://backend:3001
-    expose:
-      - "3000"
+    ports:
+      - "127.0.0.1:3000:3000"
     depends_on:
       backend:
         condition: service_healthy
     networks:
-      - peruana_net_prod
+      - peruana_net
     restart: unless-stopped
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000"]
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:3000"]
       interval: 30s
       timeout: 10s
       retries: 3
-    deploy:
-      resources:
-        limits:
-          cpus: '1.0'
-          memory: 1G
-        reservations:
-          cpus: '0.5'
-          memory: 512M
+      start_period: 60s
 
   # ============================================
-  # ⚙️ Backend API (Node.js/Express Production)
+  # Backend API (Node.js/Express)
   # ============================================
   backend:
     build:
       context: ./peruana-informatica/backend
       dockerfile: Dockerfile.prod
-    container_name: peruana_backend_prod
+    container_name: peruana_backend
     env_file:
       - ./envs/.env.production
     environment:
       - NODE_ENV=production
       - PORT=3001
-    expose:
-      - "3001"
+    ports:
+      - "127.0.0.1:3001:3001"
     volumes:
-      - uploads_data_prod:/app/public/uploads
+      - uploads_data:/app/public/uploads
     depends_on:
       mysql:
         condition: service_healthy
       redis:
         condition: service_healthy
     networks:
-      - peruana_net_prod
+      - peruana_net
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3001/api/health"]
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:3001/api/health"]
       interval: 30s
       timeout: 10s
       retries: 3
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 512M
-        reservations:
-          cpus: '0.25'
-          memory: 256M
+      start_period: 30s
 
   # ============================================
-  # 🗄️ MySQL Database (Production)
+  # MySQL Database
   # ============================================
   mysql:
     image: mysql:8.0
-    container_name: peruana_mysql_prod
+    container_name: peruana_mysql
     command: --default-authentication-plugin=mysql_native_password
     env_file:
       - ./envs/.env.production
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     expose:
       - "3306"
     volumes:
-      - mysql_data_prod:/var/lib/mysql
-      - ./scripts/init-db:/docker-entrypoint-initdb.d:ro
+      - mysql_data:/var/lib/mysql
     networks:
-      - peruana_net_prod
+      - peruana_net
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 30s
       timeout: 10s
       retries: 5
       start_period: 60s
-    deploy:
-      resources:
-        limits:
-          cpus: '1.0'
-          memory: 1G
-        reservations:
-          cpus: '0.5'
-          memory: 512M
 
   # ============================================
-  # 🔴 Redis Cache (Production)
+  # Redis Cache
   # ============================================
   redis:
     image: redis:7-alpine
-    container_name: peruana_redis_prod
+    container_name: peruana_redis
     expose:
       - "6379"
     volumes:
-      - redis_data_prod:/data
+      - redis_data:/data
     networks:
-      - peruana_net_prod
+      - peruana_net
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 30s
       timeout: 5s
       retries: 3
-    deploy:
-      resources:
-        limits:
-          cpus: '0.25'
-          memory: 256M
-        reservations:
-          cpus: '0.1'
-          memory: 128M
 
-  # ============================================
-  # 💾 Backup Service
-  # ============================================
-  backup:
-    image: alpine:latest
-    container_name: peruana_backup_prod
-    depends_on:
-      mysql:
-        condition: service_healthy
-    volumes:
-      - ./backups:/backups
-      - ./scripts/backup_daemon.sh:/usr/local/bin/backup_daemon.sh:ro
-      - uploads_data_prod:/app/uploads:ro
-    env_file:
-      - ./envs/.env.production
-    command: >
-      /bin/sh -c "apk add --no-cache mysql-client && 
-      chmod +x /usr/local/bin/backup_daemon.sh && 
-      /usr/local/bin/backup_daemon.sh"
-    networks:
-      - peruana_net_prod
-    restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          cpus: '0.2'
-          memory: 128M
-        reservations:
-          cpus: '0.1'
-          memory: 64M
-
-# ============================================
-# 💾 Volumes (Persistent Data - Production)
-# ============================================
 volumes:
-  mysql_data_prod:
-    driver: local
-  uploads_data_prod:
-    driver: local
-  redis_data_prod:
-    driver: local
+  mysql_data:
+  uploads_data:
+  redis_data:
 
-# ============================================
-# 🌐 Networks (Production)
-# ============================================
 networks:
-  peruana_net_prod:
+  peruana_net:
     driver: bridge
-    ipam:
-      config:
-        - subnet: 172.20.0.0/16

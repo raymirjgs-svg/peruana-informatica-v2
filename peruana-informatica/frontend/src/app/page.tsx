@@ -39,7 +39,11 @@ function SectionHeader({
 }) {
   return (
     <div className="flex justify-between items-center mb-7">
-      <div>
+      <div className="flex items-center gap-3">
+        <div
+          className="w-1 h-8 rounded-full flex-none"
+          style={{ backgroundColor: accentColor }}
+        />
         <div className="flex items-center gap-2">
           <h2 className="text-2xl font-black text-gray-900 dark:text-gray-100 tracking-tight">
             {title}
@@ -53,10 +57,6 @@ function SectionHeader({
             </span>
           )}
         </div>
-        <div
-          className="h-0.5 w-10 rounded-full mt-1"
-          style={{ backgroundColor: accentColor }}
-        />
       </div>
       <Link
         href={href}

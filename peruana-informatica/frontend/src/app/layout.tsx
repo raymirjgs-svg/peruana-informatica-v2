@@ -1,7 +1,7 @@
 // ============================================
 // 1. src/app/layout.tsx
 // ============================================
-import { Inter } from 'next/font/google';
+import { Outfit, Barlow_Condensed } from 'next/font/google';
 import type { Metadata } from 'next';
 import { LayoutWrapper } from '@/components/LayoutWrapper';
 import { CartProvider } from '@/hooks/useCart';
@@ -10,10 +10,18 @@ import { CompareProvider } from '@/hooks/useCompare';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import './globals.css';
 
-const inter = Inter({
+const outfit = Outfit({
   subsets: ['latin'],
   display: 'swap',
-  variable: '--font-inter',
+  variable: '--font-outfit',
+  weight: ['300', '400', '500', '600', '700', '800', '900'],
+});
+
+const barlowCondensed = Barlow_Condensed({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-barlow',
+  weight: ['400', '500', '600', '700'],
 });
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://peruanainformatica.com';
@@ -111,7 +119,7 @@ export default function RootLayout({
         <WebSiteSchema />
         <LocalBusinessSchema />
       </head>
-      <body className={`${inter.variable} font-sans bg-gray-50`} suppressHydrationWarning={true}>
+      <body className={`${outfit.variable} ${barlowCondensed.variable} font-sans bg-gray-50`} suppressHydrationWarning={true}>
         <NextAuthProvider>
           <SettingsProvider>
             <FaviconUpdater />

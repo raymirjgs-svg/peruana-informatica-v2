@@ -39,9 +39,35 @@ log "Docker y Nginx activos."
 # ── 2. DIRECTORIOS BASE ────────────────────────────────────────────
 log "Creando estructura de directorios..."
 mkdir -p /root/projects
+mkdir -p /root/migration
 mkdir -p /var/www/certbot
-mkdir -p /var/www/katsher/images
-mkdir -p /var/www/magnatte/images
+mkdir -p /var/www/images
+mkdir -p /var/www/katsher
+mkdir -p /var/www/magnatte_v2
+
+# ── 2b. TRANSFERIR ARCHIVOS DE MIGRACIÓN ──────────────────────────
+warn "Transfiere los archivos de migración del servidor anterior a /root/migration/"
+warn "En el servidor ANTERIOR ejecuta:"
+warn "  rsync -avz --progress /root/backups/migration/ root@NUEVA_IP:/root/migration/"
+warn ""
+warn "Archivos a transferir (~508 MB):"
+warn "  - peruana_informatica.sql  (3 MB)"
+warn "  - peruana_images.tar.gz    (433 MB)"
+warn "  - katsher_db.sql           (17 KB)"
+warn "  - katsher_images.tar.gz    (5 MB)"
+warn "  - magnatte_v2.sql          (41 KB)"
+warn "  - magnatte_images.tar.gz   (68 MB)"
+echo ""
+read -p "Presiona ENTER cuando los archivos estén en /root/migration/ ..."
+
+# Restaurar imágenes
+log "Restaurando imágenes..."
+tar -xzf /root/migration/peruana_images.tar.gz    -C /var/www/
+tar -xzf /root/migration/katsher_images.tar.gz    -C /var/www/
+tar -xzf /root/migration/magnatte_images.tar.gz   -C /var/www/
+cp /root/migration/katsher_db.sql   /root/projects/katsher_v2/katsher_db.sql    2>/dev/null || true
+cp /root/migration/magnatte_v2.sql  /root/projects/magnatte/magnatte_v2.sql     2>/dev/null || true
+log "Imágenes restauradas en /var/www/"
 
 # ── 3. CLONAR REPOSITORIOS ─────────────────────────────────────────
 warn "Necesitas configurar acceso SSH a GitHub antes de continuar."
@@ -94,6 +120,11 @@ read -p "Presiona ENTER cuando envs/.env.production esté listo ..."
 
 docker compose -f docker-compose.prod.yml build
 docker compose -f docker-compose.prod.yml up -d
+
+# Importar base de datos de peruana
+log "Importando BD de Peruana Informática..."
+sleep 30  # esperar que MySQL arranque
+docker exec -i peruana_mysql mysql -uroot -p"$(grep MYSQL_ROOT_PASSWORD envs/.env.production | cut -d= -f2)" peruana_informatica < /root/migration/peruana_informatica.sql
 log "Peruana Informática desplegada en 127.0.0.1:3000"
 
 # ── 7. KATSHER ─────────────────────────────────────────────────────

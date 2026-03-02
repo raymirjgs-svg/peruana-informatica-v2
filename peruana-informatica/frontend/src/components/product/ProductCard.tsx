@@ -61,7 +61,7 @@ export const ProductCard = memo(function ProductCard({ product }: ProductCardPro
       className="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-brand-red transition-all duration-300 overflow-hidden border border-gray-100 dark:border-gray-700 group"
     >
       {/* Imagen */}
-      <div className="bg-gray-100 dark:bg-gray-700 h-56 relative overflow-hidden">
+      <div className="bg-gray-100 dark:bg-gray-700 h-44 relative overflow-hidden">
         {(() => {
           const getImageSrc = () => {
             if (product.images && product.images.length > 0 && product.images[0]?.imagen) {
@@ -173,22 +173,22 @@ export const ProductCard = memo(function ProductCard({ product }: ProductCardPro
       </div>
 
       {/* Contenido */}
-      <div className="p-5">
+      <div className="p-3">
         <Link href={`/products/${product.slug}`}>
-          <h3 className="font-bold text-brand-black-800 dark:text-gray-100 text-lg mb-2 hover:text-brand-red-600 dark:hover:text-brand-red-400 transition-colors cursor-pointer line-clamp-2 min-h-[3.5rem]">
+          <h3 className="font-semibold text-brand-black-800 dark:text-gray-100 text-sm mb-1 hover:text-brand-red-600 dark:hover:text-brand-red-400 transition-colors cursor-pointer line-clamp-2 min-h-[2.5rem]">
             {product.name}
           </h3>
         </Link>
 
         {/* Codigo Interno */}
         {product.codigo_interno && (
-          <div className="text-xs text-gray-400 dark:text-gray-500 mb-3 font-mono">
+          <div className="text-[10px] text-gray-400 dark:text-gray-500 mb-2 font-mono">
             {product.codigo_interno}
           </div>
         )}
 
         {/* Precio y stock */}
-        <div className="flex justify-between items-end mb-4">
+        <div className="flex justify-between items-end mb-3">
           <div className="flex flex-col">
             {(() => {
               const pWeb = Number(product.price || 0);
@@ -202,7 +202,7 @@ export const ProductCard = memo(function ProductCard({ product }: ProductCardPro
                         S/. {pDis.toFixed(2)}
                       </span>
                     )}
-                    <span className="text-2xl font-bold text-brand-black-800 dark:text-gray-100 leading-none">
+                    <span className="text-lg font-bold text-brand-black-800 dark:text-gray-100 leading-none">
                       S/. {pWeb.toFixed(2)}
                     </span>
                   </div>
@@ -213,15 +213,15 @@ export const ProductCard = memo(function ProductCard({ product }: ProductCardPro
 
             {/* Indicador de Stock */}
             {product.isAvailable() && (
-              <div className="mt-2 text-sm font-medium">
+              <div className="mt-1 text-xs font-medium">
                 {product.stock < 5 ? (
                   <span className="text-red-600 dark:text-red-400 flex items-center gap-1 animate-pulse">
-                    ⚠️ ¡Solo quedan {product.stock}!
+                    ⚠️ ¡Solo {product.stock}!
                   </span>
                 ) : (
                   <span className="text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-                    {product.stock} disponibles
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                    En stock
                   </span>
                 )}
               </div>
@@ -233,7 +233,7 @@ export const ProductCard = memo(function ProductCard({ product }: ProductCardPro
         <button
           onClick={handleAddToCart}
           disabled={!product.isAvailable()}
-          className={`w-full py-3 rounded-lg font-semibold transition-all duration-300 shadow-md hover:shadow-brand-red active:scale-95 ${product.isAvailable()
+          className={`w-full py-2 text-sm rounded-lg font-semibold transition-all duration-300 shadow-sm hover:shadow-brand-red active:scale-95 ${product.isAvailable()
             ? isInCart(product.id)
               ? 'bg-green-600 text-white hover:bg-green-700'
               : 'bg-gradient-to-r from-brand-red-600 to-brand-red-700 text-white hover:from-brand-red-700 hover:to-brand-red-800'

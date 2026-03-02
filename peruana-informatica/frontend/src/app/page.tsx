@@ -25,14 +25,12 @@ const FALLBACK_QUICK_CATEGORIES = [
 ];
 
 function SectionHeader({
-  icon,
   title,
   href,
   linkText = 'Ver todo',
   accentColor = '#dc2626',
   badge,
 }: {
-  icon: string;
   title: string;
   href: string;
   linkText?: string;
@@ -41,32 +39,24 @@ function SectionHeader({
 }) {
   return (
     <div className="flex justify-between items-center mb-7">
-      <div className="flex items-center gap-4">
+      <div>
+        <div className="flex items-center gap-2">
+          <h2 className="text-2xl font-black text-gray-900 dark:text-gray-100 tracking-tight">
+            {title}
+          </h2>
+          {badge && (
+            <span
+              className="text-[10px] font-black tracking-widest uppercase px-2 py-0.5 rounded-full text-white"
+              style={{ backgroundColor: accentColor }}
+            >
+              {badge}
+            </span>
+          )}
+        </div>
         <div
-          className="w-10 h-10 rounded-xl flex items-center justify-center text-xl shadow-lg"
-          style={{ backgroundColor: `${accentColor}18`, border: `1.5px solid ${accentColor}40` }}
-        >
-          {icon}
-        </div>
-        <div>
-          <div className="flex items-center gap-2">
-            <h2 className="text-2xl font-black text-gray-900 dark:text-gray-100 tracking-tight">
-              {title}
-            </h2>
-            {badge && (
-              <span
-                className="text-[10px] font-black tracking-widest uppercase px-2 py-0.5 rounded-full text-white"
-                style={{ backgroundColor: accentColor }}
-              >
-                {badge}
-              </span>
-            )}
-          </div>
-          <div
-            className="h-0.5 w-10 rounded-full mt-1"
-            style={{ backgroundColor: accentColor }}
-          />
-        </div>
+          className="h-0.5 w-10 rounded-full mt-1"
+          style={{ backgroundColor: accentColor }}
+        />
       </div>
       <Link
         href={href}
@@ -162,7 +152,6 @@ export default function HomePage() {
         {(loading || newProducts.length > 0) && (
           <section>
             <SectionHeader
-              icon="🆕"
               title="Nuevos Ingresos"
               href="/products?new=true"
               badge="NEW"
@@ -175,7 +164,6 @@ export default function HomePage() {
         {/* ─── PRODUCTOS DESTACADOS ─── */}
         <section>
           <SectionHeader
-            icon="⭐"
             title="Productos Destacados"
             href="/products?featured=true"
             accentColor="#d97706"
@@ -212,8 +200,10 @@ export default function HomePage() {
               <div className="flex justify-between items-center mb-7">
                 <div className="flex items-center gap-4">
                   <div className="relative">
-                    <div className="w-12 h-12 rounded-xl bg-red-600/20 border border-red-500/40 flex items-center justify-center text-2xl animate-pulse">
-                      🔥
+                    <div className="w-12 h-12 rounded-xl bg-red-600/20 border border-red-500/40 flex items-center justify-center animate-pulse">
+                      <svg className="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7s1 2 3 3c0-2 .5-5 3-7 2 2 4 3 4 7a7 7 0 11-14 0c0-1.5.4-3 1-4a5 5 0 003 1z" />
+                      </svg>
                     </div>
                     <div className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-red-500 animate-ping" />
                   </div>
@@ -277,7 +267,11 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
               {
-                icon: '🚚',
+                icon: (
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8l1 12h12l1-12M10 12v4M14 12v4" />
+                  </svg>
+                ),
                 title: 'Envío Rápido',
                 description: 'Llegamos a todo el Perú en 2-3 días hábiles con seguimiento en tiempo real.',
                 accent: '#2563eb',
@@ -285,7 +279,11 @@ export default function HomePage() {
                 border: 'border-blue-100 dark:border-blue-900/40',
               },
               {
-                icon: '✅',
+                icon: (
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                ),
                 title: 'Garantía Oficial',
                 description: 'Todos nuestros productos tienen garantía de fábrica y soporte post-venta.',
                 accent: '#10b981',
@@ -293,7 +291,11 @@ export default function HomePage() {
                 border: 'border-emerald-100 dark:border-emerald-900/40',
               },
               {
-                icon: '💬',
+                icon: (
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
+                  </svg>
+                ),
                 title: 'Soporte 24/7',
                 description: 'Nuestro equipo de expertos está disponible para ayudarte en todo momento.',
                 accent: '#dc2626',
@@ -303,18 +305,11 @@ export default function HomePage() {
             ].map((item) => (
               <div
                 key={item.title}
-                className={`relative p-6 rounded-xl bg-gradient-to-br ${item.bg} border ${item.border} hover:shadow-lg transition-all duration-300 group overflow-hidden`}
+                className={`relative p-6 rounded-xl bg-gradient-to-br ${item.bg} border ${item.border} hover:shadow-lg transition-all duration-300 group`}
               >
-                {/* Background number */}
                 <div
-                  className="absolute -right-3 -bottom-4 text-7xl opacity-5 select-none pointer-events-none"
-                  style={{ color: item.accent }}
-                >
-                  {item.icon}
-                </div>
-                <div
-                  className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-4 transition-transform duration-300 group-hover:scale-110"
-                  style={{ backgroundColor: `${item.accent}18` }}
+                  className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-110"
+                  style={{ backgroundColor: `${item.accent}18`, color: item.accent }}
                 >
                   {item.icon}
                 </div>

@@ -87,7 +87,7 @@ export const ProductCard = memo(function ProductCard({ product }: ProductCardPro
                 alt={product.name}
                 fill
                 sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
-                className="object-cover group-hover:scale-110 transition-transform duration-500"
+                className="object-contain group-hover:scale-105 transition-transform duration-500"
               />
             );
           }
@@ -97,7 +97,7 @@ export const ProductCard = memo(function ProductCard({ product }: ProductCardPro
             <img
               src={imgSrc}
               alt={product.name}
-              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
               onError={(e) => {
                 e.currentTarget.src = '/images/no-image.svg';
               }}

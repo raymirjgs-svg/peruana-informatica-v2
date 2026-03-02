@@ -123,7 +123,9 @@ export default function ProductDetailPage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="text-6xl mb-4">😕</div>
+          <div className="w-16 h-16 mx-auto mb-4 text-gray-300">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          </div>
           <h2 className="text-2xl font-bold text-gray-800 mb-2">Producto no encontrado</h2>
           <p className="text-gray-600 mb-4">El producto que buscas no existe o ha sido removido.</p>
           <Link href="/products" className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition">
@@ -163,7 +165,7 @@ export default function ProductDetailPage() {
                     }}
                   />
                 ) : (
-                  <div className="text-9xl">🖥️</div>
+                  <div className="w-24 h-24 text-gray-300"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg></div>
                 )}
               </div>
 
@@ -189,7 +191,7 @@ export default function ProductDetailPage() {
                         }}
                       />
                     ) : (
-                      <div className="text-xl">🖥️</div>
+                      <div className="w-8 h-8 text-gray-300"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14" /></svg></div>
                     )}
                   </button>
                 ))}
@@ -197,36 +199,19 @@ export default function ProductDetailPage() {
 
               {/* Badges */}
               <div className="flex gap-2 mt-4">
-                <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
-                  ✅ En Stock
-                </span>
-                <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
-                  🚚 Envío Gratis
-                </span>
-                <span className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-medium">
-                  🛡️ Garantía
-                </span>
+                <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">En Stock</span>
+                <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">Envío Gratis</span>
+                <span className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-medium">Garantía</span>
               </div>
             </div>
 
             {/* Información del producto */}
             <div>
-              <h1 className="text-4xl font-bold text-gray-800 mb-4">{product.name}</h1>
-
-              {/* Rating */}
-              <div className="flex items-center gap-2 mb-4">
-                <div className="flex text-yellow-400">
-                  {'★★★★★'.split('').map((star, i) => (
-                    <span key={i} className={i < 4 ? 'text-yellow-400' : 'text-gray-300'}>{star}</span>
-                  ))}
-                </div>
-                <span className="text-gray-600">(4.2)</span>
-                <span className="text-blue-600 hover:underline cursor-pointer">Ver 156 reseñas</span>
-              </div>
+              <h1 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-gray-100 leading-snug mb-4">{product.name}</h1>
 
               {/* Precio */}
               {/* Precio */}
-              <div className="bg-gradient-to-r from-yellow-50 to-orange-50 p-6 rounded-xl mb-6 border border-yellow-200">
+              <div className="bg-gray-50 dark:bg-gray-900 p-5 rounded-xl mb-5 border border-gray-200 dark:border-gray-700">
                 <div className="flex flex-col gap-1">
                   {(() => {
                     const pWeb = Number(product.priceWeb || 0);
@@ -236,7 +221,7 @@ export default function ProductDetailPage() {
                     if (pList > 0) {
                       return (
                         <div className="flex items-baseline gap-4">
-                          <span className="text-4xl font-bold text-blue-600">S/. {pList.toFixed(2)}</span>
+                          <span className="text-3xl font-bold text-gray-900 dark:text-gray-100">S/. {pList.toFixed(2)}</span>
                         </div>
                       );
                     }
@@ -244,7 +229,7 @@ export default function ProductDetailPage() {
                     return <span className="text-3xl font-bold text-gray-600">Consultar Precio</span>;
                   })()}
                 </div>
-                <p className="text-sm text-gray-600 mt-2">💳 Precio especial con cualquier medio de pago</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Precio especial con cualquier medio de pago</p>
 
                 {/* Precio Distribuidor (Condicional) */}
                 {settings?.show_distributor_price_in_detail && (product.priceDis || 0) > 0 && (
@@ -320,41 +305,44 @@ export default function ProductDetailPage() {
               <div className="space-y-3 mb-6">
                 <button
                   onClick={handleBuyNow}
-                  className="w-full bg-orange-500 text-white py-4 rounded-xl font-bold text-lg hover:bg-orange-600 transition transform hover:scale-105 shadow-lg"
+                  className="w-full bg-brand-red-600 text-white py-3.5 rounded-xl font-bold text-base hover:bg-brand-red-700 transition active:scale-95 shadow-md"
                 >
-                  🚀 Comprar Ahora
+                  Comprar Ahora
                 </button>
                 <button
                   onClick={handleAddToCart}
-                  className="w-full bg-blue-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-blue-700 transition transform hover:scale-105 shadow-lg"
+                  className="w-full bg-gray-900 dark:bg-gray-700 text-white py-3.5 rounded-xl font-bold text-base hover:bg-gray-800 dark:hover:bg-gray-600 transition active:scale-95 shadow-md"
                 >
-                  🛒 Agregar al Carrito
+                  Agregar al Carrito
                 </button>
                 <div className="grid grid-cols-2 gap-3">
                   <button
                     onClick={handleToggleWishlist}
-                    className={`py-3 rounded-xl font-medium transition transform hover:scale-105 ${isInWishlist(product.id)
-                      ? 'bg-red-500 text-white shadow-lg'
-                      : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+                    className={`py-3 rounded-xl font-medium transition active:scale-95 flex items-center justify-center gap-2 ${isInWishlist(product.id)
+                      ? 'bg-red-500 text-white'
+                      : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600'
                       }`}
                   >
-                    {isInWishlist(product.id) ? '❤️ En Favoritos' : '🤍 Agregar a Favoritos'}
+                    <svg className="w-4 h-4" fill={isInWishlist(product.id) ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
+                    {isInWishlist(product.id) ? 'En Favoritos' : 'Favoritos'}
                   </button>
                   <button
                     onClick={() => {
                       navigator.clipboard.writeText(window.location.href);
                       alert('Enlace copiado al portapapeles');
                     }}
-                    className="bg-gray-100 text-gray-800 py-3 rounded-xl font-medium hover:bg-gray-200 transition"
+                    className="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 py-3 rounded-xl font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition active:scale-95"
                   >
-                    📤 Compartir
+                    Compartir
                   </button>
                 </div>
               </div>
 
               {/* Información de envío */}
               <div className="bg-blue-50 p-4 rounded-xl border border-blue-200">
-                <h4 className="font-semibold text-blue-800 mb-2">🚚 Información de Envío</h4>
+                <h4 className="font-semibold text-blue-800 mb-2">Información de Envío</h4>
                 <ul className="text-sm text-blue-700 space-y-1">
                   <li>• Envío gratis a todo Lima</li>
                   <li>• Entrega en 24-48 horas</li>
@@ -371,10 +359,10 @@ export default function ProductDetailPage() {
           <div className="border-b border-gray-200">
             <nav className="flex space-x-8 px-8">
               {[
-                { id: 'description', label: '📝 Descripción', icon: '📝' },
-                { id: 'specifications', label: '⚙️ Especificaciones', icon: '⚙️' },
-                { id: 'reviews', label: '⭐ Reseñas', icon: '⭐' },
-                { id: 'shipping', label: '🚚 Envío', icon: '🚚' }
+                { id: 'description', label: 'Descripción' },
+                { id: 'specifications', label: 'Especificaciones' },
+                { id: 'reviews', label: 'Reseñas' },
+                { id: 'shipping', label: 'Envío y Devoluciones' },
               ].map((tab) => (
                 <button
                   key={tab.id}
@@ -498,7 +486,7 @@ export default function ProductDetailPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div>
-                    <h4 className="text-lg font-semibold mb-3 text-green-600">🚚 Opciones de Envío</h4>
+                    <h4 className="text-lg font-semibold mb-3 text-green-600">Opciones de Envío</h4>
                     <div className="space-y-4">
                       <div className="border border-green-200 rounded-lg p-4">
                         <div className="font-semibold">Envío Estándar - GRATIS</div>
@@ -519,24 +507,24 @@ export default function ProductDetailPage() {
                   </div>
 
                   <div>
-                    <h4 className="text-lg font-semibold mb-3 text-blue-600">🔄 Política de Devoluciones</h4>
+                    <h4 className="text-lg font-semibold mb-3 text-blue-600">Política de Devoluciones</h4>
                     <div className="space-y-3">
                       <div className="flex items-start gap-3">
-                        <div className="text-green-500 mt-1">✅</div>
+                        <div className="text-green-500 mt-1 flex-none"><svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg></div>
                         <div>
                           <div className="font-medium">30 días para devoluciones</div>
                           <div className="text-sm text-gray-600">Sin preguntas, reembolso completo</div>
                         </div>
                       </div>
                       <div className="flex items-start gap-3">
-                        <div className="text-green-500 mt-1">✅</div>
+                        <div className="text-green-500 mt-1 flex-none"><svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg></div>
                         <div>
                           <div className="font-medium">Producto en condiciones originales</div>
                           <div className="text-sm text-gray-600">Con embalaje y accesorios</div>
                         </div>
                       </div>
                       <div className="flex items-start gap-3">
-                        <div className="text-green-500 mt-1">✅</div>
+                        <div className="text-green-500 mt-1 flex-none"><svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg></div>
                         <div>
                           <div className="font-medium">Envío de devolución gratuito</div>
                           <div className="text-sm text-gray-600">Recogemos en tu domicilio</div>
@@ -545,7 +533,7 @@ export default function ProductDetailPage() {
                     </div>
 
                     <div className="mt-6 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-                      <h5 className="font-semibold text-yellow-800 mb-2">📞 ¿Necesitas ayuda?</h5>
+                      <h5 className="font-semibold text-yellow-800 mb-2">¿Necesitas ayuda?</h5>
                       <p className="text-sm text-yellow-700">
                         Contáctanos al +51 1 234-5678 o envía un email a soporte@peruanainformatica.com
                       </p>

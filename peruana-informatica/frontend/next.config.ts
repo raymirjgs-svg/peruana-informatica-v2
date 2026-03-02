@@ -3,6 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   // Exportar como sitio estático para hosting compartido
   output: "standalone",
+  basePath: process.env.NEXT_PUBLIC_BASE_PATH || '',
 
   // Fix NextAuth compatibility with Next.js 15
   serverExternalPackages: ["@auth/core"],
@@ -14,7 +15,7 @@ const nextConfig: NextConfig = {
   images: {
     // En producción: optimización habilitada con Sharp
     // En desarrollo: deshabilitado para velocidad
-    unoptimized: process.env.NODE_ENV === 'development',
+    unoptimized: true,
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     formats: ['image/avif', 'image/webp'],
@@ -74,9 +75,6 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: false,
   },
-
-  // URLs limpias
-  trailingSlash: true,
 
   async rewrites() {
     // ✅ NO usar rewrites en Docker

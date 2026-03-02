@@ -20,6 +20,10 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://peruanainformatica
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+  icons: {
+    icon: '/favicon.ico',
+    shortcut: '/favicon.ico',
+  },
   title: {
     default: 'Peruana Informática | Tecnología y Equipos en Perú',
     template: '%s | Peruana Informática',

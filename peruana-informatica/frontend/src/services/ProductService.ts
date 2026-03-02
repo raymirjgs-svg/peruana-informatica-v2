@@ -187,15 +187,15 @@ export class ProductService {
 
       const firstImg = product.images[0]?.imagen;
       if (firstImg) {
-        product.image = fixUrl(firstImg) || 'placeholder.jpg';
+        product.image = fixUrl(firstImg) || '';
       } else {
-        product.image = 'placeholder.jpg';
+        product.image = '';
       }
     } else if (item.image || item.imagen) {
       const mainImg = fixUrl(item.image || item.imagen);
-      product.image = mainImg || 'placeholder.jpg';
+      product.image = mainImg || '';
     } else {
-      product.image = 'placeholder.jpg';
+      product.image = '';
     }
 
     return product;

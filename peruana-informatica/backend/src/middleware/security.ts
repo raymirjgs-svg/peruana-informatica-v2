@@ -19,7 +19,7 @@ export const createRateLimit = (windowMs: number, max: number, message: string) 
 // Rate limit para API general
 export const apiRateLimit = createRateLimit(
   15 * 60 * 1000, // 15 minutos
-  parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || '1000'), // Configurable via env
+  parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || '5000'), // Configurable via env
   'Demasiadas solicitudes desde esta IP, intenta de nuevo más tarde'
 );
 

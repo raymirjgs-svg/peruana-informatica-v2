@@ -62,36 +62,48 @@ export const ProductCard = memo(function ProductCard({ product }: ProductCardPro
     >
       {/* Imagen */}
       <div className="bg-gray-100 dark:bg-gray-700 h-56 relative overflow-hidden">
-        <Image
-          src={(() => {
-            // ... existing image logic ...
-            // Primero verificar si hay imágenes reales asociadas
+        {(() => {
+          const getImageSrc = () => {
             if (product.images && product.images.length > 0 && product.images[0]?.imagen) {
               const image = product.images[0]?.imagen;
               if (image.startsWith('http')) return image;
               const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-              return `${apiUrl}/images/products/${image}`;
+              return `${apiUrl}/images/products/${encodeURIComponent(image)}`;
             }
-
             if (product.image && product.image.trim() !== '') {
               if (product.image.startsWith('http')) return product.image;
               const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-              return `${apiUrl}/images/products/${product.image}`;
+              return `${apiUrl}/images/products/${encodeURIComponent(product.image)}`;
             }
-
-            return `/images/no-image.svg`;
-          })()}
-          alt={product.name}
-          fill
-          sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
-          className="object-cover group-hover:scale-110 transition-transform duration-500"
-          placeholder="blur"
-          blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nNjAwJyBoZWlnaHQ9JzYwMCcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJz48cmVjdCB3aWR0aD0nMTAwJScgaGVpZ2h0PScxMDAlJyBmaWxsPScjZWVlZmZlJy8+PC9zdmc+"
-          onError={(e) => {
-            const target = e.target as HTMLImageElement;
-            target.src = "/images/no-image.svg";
-          }}
-        />
+            return '/images/no-image.svg';
+          };
+          const imgSrc = getImageSrc();
+          const isLocal = imgSrc.startsWith('/') || imgSrc === '/images/no-image.svg';
+          
+          if (isLocal) {
+            return (
+              <Image
+                src={imgSrc}
+                alt={product.name}
+                fill
+                sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+                className="object-cover group-hover:scale-110 transition-transform duration-500"
+              />
+            );
+          }
+          
+          return (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={imgSrc}
+              alt={product.name}
+              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              onError={(e) => {
+                e.currentTarget.src = '/images/no-image.svg';
+              }}
+            />
+          );
+        })()}
 
         {/* Botones de acción flotantes (solo visibles en hover) */}
         <div className="absolute top-3 right-3 flex flex-col gap-2 translate-x-12 group-hover:translate-x-0 transition-transform duration-300">

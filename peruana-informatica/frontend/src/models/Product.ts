@@ -47,7 +47,7 @@ export class Product {
     this.price = price;
     this.stock = stock;
     this.category = category;
-    this.image = 'placeholder.jpg'; // Asignar un valor por defecto válido
+    this.image = ''; // El ProductCard maneja imágenes vacías con no-image.svg
     this.createdAt = new Date();
     this.updatedAt = new Date();
   }

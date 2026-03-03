@@ -11,8 +11,8 @@ function getApiBase() {
 
 export default function AdminLoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("admin@peruanadeinformatica.com");
-  const [password, setPassword] = useState("admin123");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [sessionExpired, setSessionExpired] = useState(false);
@@ -58,22 +58,27 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="w-full max-w-sm border rounded-lg p-6 shadow-sm">
-        <h1 className="text-xl font-semibold mb-4">Acceso Administrador</h1>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+      <div className="w-full max-w-sm bg-white border border-gray-200 rounded-xl p-8 shadow-md">
+        <div className="mb-6 text-center">
+          <h1 className="text-2xl font-bold text-gray-900">Panel de Administración</h1>
+          <p className="text-sm text-gray-500 mt-1">Peruana de Informática</p>
+        </div>
 
         {sessionExpired && (
           <div className="mb-4 flex items-start gap-2 bg-amber-50 border border-amber-300 text-amber-800 rounded-md px-3 py-2 text-sm" role="alert">
             <span className="mt-0.5">⚠️</span>
-            <span>Tu sesión ha expirado. Por favor inicia sesión nuevamente para continuar.</span>
+            <span>Tu sesión ha expirado. Por favor inicia sesión nuevamente.</span>
           </div>
         )}
+
         <form onSubmit={onSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-1">Email</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
             <input
               type="email"
-              className="w-full border rounded px-3 py-2"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+              placeholder="admin@ejemplo.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               autoComplete="email"
@@ -81,10 +86,11 @@ export default function AdminLoginPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Contraseña</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
             <input
               type="password"
-              className="w-full border rounded px-3 py-2"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+              placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               autoComplete="current-password"
@@ -93,22 +99,19 @@ export default function AdminLoginPage() {
           </div>
 
           {error && (
-            <div className="text-red-600 text-sm" role="alert">
+            <div className="bg-red-50 border border-red-200 text-red-700 rounded-md px-3 py-2 text-sm" role="alert">
               {error}
             </div>
           )}
 
           <button
             type="submit"
-            className="w-full bg-black text-white rounded px-4 py-2 disabled:opacity-60"
+            className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg px-4 py-2.5 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
             disabled={loading}
           >
             {loading ? "Ingresando..." : "Ingresar"}
           </button>
         </form>
-        <p className="text-xs text-gray-500 mt-4">
-          Endpoint: <code>{`${getApiBase()}/admin/login`}</code>
-        </p>
       </div>
     </div>
   );

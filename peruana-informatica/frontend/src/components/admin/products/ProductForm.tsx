@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { ProductImageManager } from './ProductImageManager';
+import { RichTextEditor } from '@/components/admin/RichTextEditor';
 
 function getApiBase() {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
@@ -89,14 +90,20 @@ export function ProductForm({ initialData, productId, onSubmit, isSubmitting, is
         const brsRes = await brandRes.json().catch(() => []);
         const cats = Array.isArray(catsRes) ? catsRes : (catsRes.data || []);
         const brs = Array.isArray(brsRes) ? brsRes : (brsRes.data || []);
-        if (catRes.ok) setCategories(cats.map((c: any) => ({ id: c.id, name: c.name })));
-        if (brandRes.ok) setBrands(brs.map((b: any) => ({ id: b.id, name: b.name })));
+        if (catRes.ok) {
+          setCategories(cats.map((c: any) => ({ id: c.id, name: c.name })));
+          if (initialData?.category_id) setValue('category_id', initialData.category_id);
+        }
+        if (brandRes.ok) {
+          setBrands(brs.map((b: any) => ({ id: b.id, name: b.name })));
+          if (initialData?.brand_id) setValue('brand_id', initialData.brand_id);
+        }
       } catch (err) {
         console.error('Error loading categories/brands:', err);
       }
     };
     loadData();
-  }, []);
+  }, [initialData]);
 
   // Load subcategories when category changes
   useEffect(() => {
@@ -390,10 +397,9 @@ export function ProductForm({ initialData, productId, onSubmit, isSubmitting, is
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Descripción *
                 </label>
-                <textarea
-                  {...register('description')}
-                  rows={4}
-                  className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                <RichTextEditor
+                  value={watch('description') || ''}
+                  onChange={(html) => setValue('description', html, { shouldValidate: true })}
                   placeholder="Descripción detallada del producto..."
                 />
                 {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description.message}</p>}

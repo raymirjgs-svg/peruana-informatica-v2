@@ -147,7 +147,7 @@ export default function ReviewsPage() {
                                             <div className="flex items-center gap-2 text-xs text-gray-500 bg-gray-50 dark:bg-gray-900/50 p-2 rounded-lg w-fit">
                                                 <div className="h-8 w-8 rounded bg-gray-200 dark:bg-gray-700 overflow-hidden">
                                                     {/* Product Image Placeholder */}
-                                                    <img src={review.Product?.images?.[0]?.imagen || '/placeholder.png'} className="w-full h-full object-cover" />
+                                                    <img src={review.Product?.images?.[0]?.imagen ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/uploads/${encodeURIComponent(review.Product.images[0].imagen)}` : '/images/no-image.svg'} className="w-full h-full object-cover" />
                                                 </div>
                                                 <span>Producto: <strong>{review.Product?.name || 'Desconocido'}</strong></span>
                                             </div>

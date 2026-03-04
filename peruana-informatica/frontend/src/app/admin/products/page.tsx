@@ -230,8 +230,10 @@ export default function AdminProductsPage() {
           fetch(`${getApiBase()}/categories`),
           fetch(`${getApiBase()}/brands`)
         ]);
-        const cats = await catRes.json().catch(() => []);
-        const brs = await brandRes.json().catch(() => []);
+        const catsRes = await catRes.json().catch(() => []);
+        const brsRes = await brandRes.json().catch(() => []);
+        const cats = Array.isArray(catsRes) ? catsRes : (catsRes.data || []);
+        const brs = Array.isArray(brsRes) ? brsRes : (brsRes.data || []);
         if (catRes.ok) setCategories(cats.map((c: any) => ({ id: c.id, name: c.name })));
         if (brandRes.ok) setBrands(brs.map((b: any) => ({ id: b.id, name: b.name })));
       } catch (err: any) {

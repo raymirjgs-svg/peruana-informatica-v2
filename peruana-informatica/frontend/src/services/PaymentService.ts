@@ -45,6 +45,27 @@ class PaymentService {
         return await response.json();
     }
 
+    async culqiCharge(params: {
+        orderId: number;
+        culqiToken: string;
+        email: string;
+        invoiceType: string;
+        ruc?: string;
+        business_name?: string;
+        tax_address?: string;
+    }): Promise<{ success: boolean; chargeId: string; message: string }> {
+        const response = await fetch(`${this.apiBase}/culqi/charge`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(params),
+        });
+        const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.error || 'Error al procesar el pago con tarjeta');
+        }
+        return data;
+    }
+
     async createPreferenceForOrder(orderId: number): Promise<PaymentPreference> {
         const response = await fetch(`${this.apiBase}/create-preference-order`, {
             method: 'POST',

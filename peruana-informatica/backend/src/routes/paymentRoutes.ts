@@ -46,6 +46,9 @@ router.post('/create-preference-order', paymentController.createPreferenceFromOr
 // Webhook (Public, MP calls this)
 router.post('/webhook', paymentController.receiveWebhook);
 
+// Culqi — cobro directo con token generado por Culqi.js
+router.post('/culqi/charge', paymentController.culqiCharge);
+
 // Upload Payment Proof (Public/Generic)
 // Move dynamic route to the end to avoid conflict with static routes like 'create-preference'
 router.post('/:orderId/upload-proof', upload.single('payment_proof'), paymentController.uploadProof);

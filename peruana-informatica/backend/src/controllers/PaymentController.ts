@@ -243,6 +243,79 @@ export const paymentController = {
         }
     },
 
+    // Culqi Charge — recibe token de Culqi.js y cobra al instante
+    async culqiCharge(req: Request, res: Response) {
+        try {
+            const { orderId, culqiToken, email, invoiceType, ruc, business_name, tax_address } = req.body;
+
+            if (!orderId || !culqiToken || !email) {
+                return res.status(400).json({ success: false, error: 'Faltan parámetros requeridos' });
+            }
+
+            const secretKey = process.env.CULQI_SECRET_KEY;
+            if (!secretKey) {
+                console.error('CULQI_SECRET_KEY no configurada');
+                return res.status(500).json({ success: false, error: 'Pasarela de pago no configurada' });
+            }
+
+            const order = await Order.findByPk(orderId);
+            if (!order) {
+                return res.status(404).json({ success: false, error: 'Pedido no encontrado' });
+            }
+
+            // Monto en céntimos (PEN)
+            const amountCentimos = Math.round(Number(order.total_amount) * 100);
+
+            const culqiResponse = await fetch('https://api.culqi.com/v2/charges', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${secretKey}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    amount: amountCentimos,
+                    currency_code: 'PEN',
+                    email: email,
+                    source_id: culqiToken,
+                    description: `Pedido #${orderId} - Peruana Informática`,
+                    capture: true,
+                    metadata: { order_id: String(orderId) }
+                })
+            });
+
+            const culqiData = await culqiResponse.json() as any;
+
+            if (!culqiResponse.ok || culqiData.object === 'error') {
+                const userMessage = culqiData.user_message || culqiData.merchant_message || 'El cargo fue rechazado';
+                return res.status(402).json({ success: false, error: userMessage });
+            }
+
+            // Cobro exitoso — actualizar orden
+            order.payment_method = 'tarjeta';
+            order.payment_status = 'verified';
+            order.payment_verified_at = new Date();
+            order.status = 'processed';
+            order.culqi_charge_id = culqiData.id;
+            order.card_last_four = culqiData.source?.last_four || culqiData.source?.card_number?.slice(-4);
+            order.card_type = culqiData.source?.brand?.toLowerCase() || undefined;
+            order.invoice_type = invoiceType || 'boleta';
+
+            if (invoiceType === 'factura') {
+                order.ruc = ruc;
+                order.business_name = business_name;
+                order.tax_address = tax_address;
+            }
+
+            await order.save();
+
+            return res.json({ success: true, chargeId: culqiData.id, message: 'Pago procesado exitosamente' });
+
+        } catch (error) {
+            console.error('Error en cargo Culqi:', error);
+            return res.status(500).json({ success: false, error: 'Error al procesar el pago' });
+        }
+    },
+
     // Webhook
     async receiveWebhook(req: Request, res: Response) {
         try {

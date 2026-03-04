@@ -23,6 +23,9 @@ export class Order extends Model {
     public card_type?: string; // 'visa', 'mastercard', 'amex'
     public card_holder?: string;
 
+    // Culqi payment fields
+    public culqi_charge_id?: string;
+
     // Invoice fields
     public invoice_type!: string; // 'boleta', 'factura'
     public invoice_number?: string;
@@ -106,6 +109,10 @@ Order.init(
         },
         card_holder: {
             type: DataTypes.STRING(255),
+            allowNull: true,
+        },
+        culqi_charge_id: {
+            type: DataTypes.STRING(100),
             allowNull: true,
         },
         invoice_type: {

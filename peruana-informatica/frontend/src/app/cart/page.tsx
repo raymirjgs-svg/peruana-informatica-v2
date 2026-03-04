@@ -41,6 +41,21 @@ export default function CartPage() {
   const [coupon, setCoupon] = useState<Coupon | null>(null);
   const [discountAmount, setDiscountAmount] = useState(0);
 
+  // Cargar Culqi.js cuando se va a usar tarjeta
+  useEffect(() => {
+    const culqiPk = process.env.NEXT_PUBLIC_CULQI_PUBLIC_KEY;
+    if (!culqiPk || document.getElementById('culqi-js')) return;
+    const script = document.createElement('script');
+    script.id = 'culqi-js';
+    script.src = 'https://js.culqi.com/culqijs-1.0.8.js';
+    script.onload = () => {
+      if (typeof (window as any).Culqi !== 'undefined') {
+        (window as any).Culqi.setPublicKey(culqiPk);
+      }
+    };
+    document.head.appendChild(script);
+  }, []);
+
   // Fetch Checkout Mode
   useEffect(() => {
     const fetchCheckoutMode = async () => {
@@ -335,22 +350,70 @@ export default function CartPage() {
     setIsLoading(true);
     setError(null);
 
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-
     try {
+      // Pago con tarjeta vía Culqi.js
+      if (paymentMethod === 'tarjeta') {
+        const culqiPk = process.env.NEXT_PUBLIC_CULQI_PUBLIC_KEY;
+        if (!culqiPk) {
+          setError('El pago con tarjeta no está habilitado. Elija otro método.');
+          setIsLoading(false);
+          return;
+        }
+
+        const CulqiSDK = (window as any).Culqi;
+        if (!CulqiSDK) {
+          setError('Error al cargar la pasarela de pago. Recargue la página e intente nuevamente.');
+          setIsLoading(false);
+          return;
+        }
+
+        const [expMonth, expYear] = cardData.expiry.split('/');
+        const cleanCard = cardData.number.replace(/\s/g, '');
+
+        const culqiToken = await new Promise<string>((resolve, reject) => {
+          CulqiSDK.createToken(
+            {
+              card_number: cleanCard,
+              cvv: cardData.cvv,
+              expiration_month: expMonth,
+              expiration_year: `20${expYear}`,
+              email: customerData.email,
+            },
+            (token: any) => {
+              if (token.object === 'error') {
+                reject(new Error(token.user_message || 'Error al validar la tarjeta'));
+              } else {
+                resolve(token.id);
+              }
+            }
+          );
+        });
+
+        const { paymentService } = await import('@/services/PaymentService');
+        await paymentService.culqiCharge({
+          orderId: orderId!,
+          culqiToken,
+          email: customerData.email,
+          invoiceType,
+          ...(invoiceType === 'factura' ? {
+            ruc: invoiceData.ruc,
+            business_name: invoiceData.business_name,
+            tax_address: invoiceData.tax_address,
+          } : {})
+        });
+
+        setStep('success');
+        return;
+      }
+
+      // Otros métodos de pago (comprobante)
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
       const formData = new FormData();
       formData.append('payment_method', paymentMethod);
       formData.append('invoice_type', invoiceType);
 
       if (paymentProof) {
         formData.append('payment_proof', paymentProof);
-      }
-
-      if (paymentMethod === 'tarjeta') {
-        const cleanCardNumber = cardData.number.replace(/\s/g, '');
-        formData.append('card_last_four', cleanCardNumber.slice(-4));
-        formData.append('card_type', getCardType(cardData.number) || 'unknown');
-        formData.append('card_holder', cardData.holder);
       }
 
       if (invoiceType === 'factura') {
@@ -371,8 +434,8 @@ export default function CartPage() {
       } else {
         setError(data.error || 'No se pudo procesar el pago');
       }
-    } catch {
-      setError('Error de conexión. Por favor intente de nuevo.');
+    } catch (err: any) {
+      setError(err.message || 'Error de conexión. Por favor intente de nuevo.');
     } finally {
       setIsLoading(false);
     }

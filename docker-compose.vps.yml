@@ -24,6 +24,7 @@ services:
       dockerfile: Dockerfile.prod
       args:
         - NEXT_PUBLIC_API_URL=http://200.58.98.122
+        - NEXT_PUBLIC_CULQI_PUBLIC_KEY=${NEXT_PUBLIC_CULQI_PUBLIC_KEY:-}
     container_name: peruana_frontend
     env_file:
       - ./envs/.env.production

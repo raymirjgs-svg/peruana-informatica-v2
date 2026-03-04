@@ -82,8 +82,8 @@ export function ProductForm({ initialData, productId, onSubmit, isSubmitting, is
     const loadData = async () => {
       try {
         const [catRes, brandRes] = await Promise.all([
-          fetch(`${getApiBase()}/admin/categories`),
-          fetch(`${getApiBase()}/admin/brands`)
+          fetch(`${getApiBase()}/categories`),
+          fetch(`${getApiBase()}/brands`)
         ]);
         const cats = await catRes.json().catch(() => []);
         const brs = await brandRes.json().catch(() => []);

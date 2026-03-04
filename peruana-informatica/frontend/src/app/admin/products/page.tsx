@@ -227,8 +227,8 @@ export default function AdminProductsPage() {
         await reloadProducts();
         // Cargar categorías y marcas desde admin
         const [catRes, brandRes] = await Promise.all([
-          fetch(`${getApiBase()}/admin/categories`),
-          fetch(`${getApiBase()}/admin/brands`)
+          fetch(`${getApiBase()}/categories`),
+          fetch(`${getApiBase()}/brands`)
         ]);
         const cats = await catRes.json().catch(() => []);
         const brs = await brandRes.json().catch(() => []);

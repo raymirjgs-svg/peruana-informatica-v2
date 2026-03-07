@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 
@@ -22,6 +22,7 @@ interface Order {
   invoice_type: string;
   invoice_number?: string;
   invoice_file?: string;
+  payment_proof?: string;
   has_invoice: boolean;
   items: OrderItem[];
   createdAt: string;
@@ -35,6 +36,10 @@ export default function OrderDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [downloading, setDownloading] = useState(false);
+  const [proofFile, setProofFile] = useState<File | null>(null);
+  const [uploadingProof, setUploadingProof] = useState(false);
+  const [proofUploaded, setProofUploaded] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetchOrder();
@@ -85,10 +90,33 @@ export default function OrderDetailPage() {
     }
   };
 
+  const handleUploadProof = async () => {
+    if (!proofFile || !order) return;
+    setUploadingProof(true);
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const formData = new FormData();
+      formData.append('payment_proof', proofFile);
+      const response = await fetch(`${apiUrl}/api/payments/${order.id}/upload-proof`, {
+        method: 'POST',
+        body: formData,
+      });
+      if (!response.ok) throw new Error('Error al enviar comprobante');
+      setProofUploaded(true);
+      setProofFile(null);
+      fetchOrder();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Error al subir comprobante');
+    } finally {
+      setUploadingProof(false);
+    }
+  };
+
   const getStatusBadge = (status: string) => {
     const badges: Record<string, { bg: string; text: string; label: string }> = {
       pending: { bg: 'bg-yellow-100', text: 'text-yellow-800', label: 'Pendiente' },
-      processed: { bg: 'bg-green-100', text: 'text-green-800', label: 'Procesado' },
+      pending_approval: { bg: 'bg-orange-100', text: 'text-orange-800', label: 'En revisión' },
+      processed: { bg: 'bg-green-100', text: 'text-green-800', label: 'Aprobado' },
       cancelled: { bg: 'bg-red-100', text: 'text-red-800', label: 'Cancelado' }
     };
     const defaultBadge = { bg: 'bg-yellow-100', text: 'text-yellow-800', label: 'Pendiente' };
@@ -173,14 +201,77 @@ export default function OrderDetailPage() {
           </div>
         </div>
 
-        {order.payment_status === 'pending' && (
-          <div className="mt-4 p-4 bg-yellow-50 border-l-4 border-yellow-500 rounded">
-            <p className="text-sm text-yellow-800">
-              <strong>⏳ En espera:</strong> Tu pago está siendo verificado. Recibirás un email cuando sea confirmado.
+        {/* Orden en revisión — esperando aprobación del admin */}
+        {order.status === 'pending_approval' && (
+          <div className="mt-4 p-4 bg-orange-50 border-l-4 border-orange-400 rounded">
+            <p className="text-sm text-orange-800">
+              <strong>🔍 En revisión:</strong> Tu pedido está siendo revisado por nuestro equipo. En breve recibirás confirmación para proceder con el pago.
             </p>
           </div>
         )}
 
+        {/* Orden aprobada — cliente debe realizar pago y subir comprobante */}
+        {order.status === 'processed' && order.payment_status === 'pending' && !order.payment_proof && !proofUploaded && (
+          <div className="mt-4 space-y-4">
+            <div className="p-4 bg-green-50 border-l-4 border-green-500 rounded">
+              <p className="text-sm text-green-800 font-semibold mb-1">✅ ¡Pedido aprobado! Procede con el pago</p>
+              <p className="text-sm text-green-700">Realiza la transferencia o depósito por <strong>S/ {parseFloat(order.total_amount).toFixed(2)}</strong> y sube tu comprobante aquí.</p>
+            </div>
+            <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <p className="text-sm font-semibold text-blue-900 mb-2">📋 Datos para la transferencia:</p>
+              <ul className="text-sm text-blue-800 space-y-1">
+                <li><strong>Banco:</strong> BCP / Interbank</li>
+                <li><strong>Titular:</strong> Peruana de Informática S.A.C.</li>
+                <li><strong>N° de cuenta:</strong> Consúltanos por WhatsApp</li>
+                <li><strong>Monto exacto:</strong> S/ {parseFloat(order.total_amount).toFixed(2)}</li>
+                <li><strong>Referencia:</strong> Pedido #{order.id}</li>
+              </ul>
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-gray-700 mb-2">📎 Subir comprobante de pago (imagen)</p>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/jpeg,image/jpg,image/png,image/webp"
+                onChange={(e) => setProofFile(e.target.files?.[0] || null)}
+                className="hidden"
+                id="proof-upload"
+              />
+              <label
+                htmlFor="proof-upload"
+                className={`block w-full border-2 border-dashed rounded-lg p-4 text-center cursor-pointer transition-colors ${proofFile ? 'border-green-400 bg-green-50' : 'border-gray-300 hover:border-blue-400 hover:bg-blue-50'}`}
+              >
+                {proofFile ? (
+                  <span className="text-sm font-semibold text-green-700">{proofFile.name} — {(proofFile.size / 1024).toFixed(0)} KB · Clic para cambiar</span>
+                ) : (
+                  <span className="text-sm text-gray-500">Clic para seleccionar imagen (JPG, PNG · máx. 5 MB)</span>
+                )}
+              </label>
+              {proofFile && (
+                <button
+                  onClick={handleUploadProof}
+                  disabled={uploadingProof}
+                  className="mt-3 w-full bg-blue-600 text-white py-2.5 rounded-lg font-semibold hover:bg-blue-700 transition disabled:opacity-50 flex items-center justify-center gap-2"
+                >
+                  {uploadingProof ? (
+                    <><div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />Enviando...</>
+                  ) : '📤 Enviar comprobante'}
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Comprobante enviado, esperando verificación */}
+        {((order.status === 'processed' && order.payment_proof) || proofUploaded) && order.payment_status === 'pending' && (
+          <div className="mt-4 p-4 bg-yellow-50 border-l-4 border-yellow-500 rounded">
+            <p className="text-sm text-yellow-800">
+              <strong>⏳ Comprobante recibido:</strong> Estamos verificando tu pago. Recibirás confirmación por email en breve.
+            </p>
+          </div>
+        )}
+
+        {/* Pago verificado, generando comprobante */}
         {order.payment_status === 'verified' && !order.has_invoice && (
           <div className="mt-4 p-4 bg-blue-50 border-l-4 border-blue-500 rounded">
             <p className="text-sm text-blue-800">

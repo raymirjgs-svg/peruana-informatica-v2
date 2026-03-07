@@ -4,7 +4,18 @@ import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 
-type PaymentMethod = 'transferencia' | 'yape' | 'plin' | 'tarjeta' | 'efectivo';
+type PaymentMethod = 'transferencia' | 'yape' | 'plin' | 'tarjeta';
+
+interface PaymentSettings {
+  payment_bcp_account: string;
+  payment_bcp_cci: string;
+  payment_ibk_account: string;
+  payment_ibk_cci: string;
+  payment_holder: string;
+  payment_yape_phone: string;
+  payment_plin_phone: string;
+  payment_methods_enabled: string;
+}
 
 interface OrderItem {
   id: number;
@@ -41,6 +52,12 @@ export default function OrderDetailPage() {
   const [paymentDone, setPaymentDone] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [paymentError, setPaymentError] = useState<string | null>(null);
+  const [paymentSettings, setPaymentSettings] = useState<PaymentSettings>({
+    payment_bcp_account: '', payment_bcp_cci: '',
+    payment_ibk_account: '', payment_ibk_cci: '',
+    payment_holder: '', payment_yape_phone: '',
+    payment_plin_phone: '', payment_methods_enabled: 'transferencia,yape,plin,tarjeta'
+  });
 
   // Payment method state
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('transferencia');
@@ -65,6 +82,11 @@ export default function OrderDetailPage() {
 
   useEffect(() => {
     fetchOrder();
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+    fetch(`${apiUrl}/api/settings`)
+      .then(r => r.json())
+      .then(data => setPaymentSettings(prev => ({ ...prev, ...data })))
+      .catch(() => {});
   }, [orderId]);
 
   const fetchOrder = async () => {
@@ -119,7 +141,7 @@ export default function OrderDetailPage() {
     if (!order) return;
     setPaymentError(null);
 
-    if (paymentMethod !== 'efectivo' && paymentMethod !== 'tarjeta' && !proofFile) {
+    if (paymentMethod !== 'tarjeta' && !proofFile) {
       setPaymentError('Debes subir el comprobante de pago');
       return;
     }
@@ -286,42 +308,52 @@ export default function OrderDetailPage() {
 
           <form onSubmit={handlePaymentSubmit} className="space-y-5">
             {/* Selector de método */}
-            <div>
-              <h3 className="text-lg font-semibold text-gray-800 mb-3">Método de pago</h3>
-              <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-                {([
-                  { value: 'transferencia', label: 'Transferencia', desc: 'BCP / IBK' },
-                  { value: 'yape', label: 'Yape', desc: 'Pago rápido' },
-                  { value: 'plin', label: 'Plin', desc: 'Pago móvil' },
-                  { value: 'tarjeta', label: 'Tarjeta', desc: 'Visa / MC' },
-                  { value: 'efectivo', label: 'Efectivo', desc: 'En tienda' },
-                ] as { value: PaymentMethod; label: string; desc: string }[]).map((m) => (
-                  <button key={m.value} type="button" onClick={() => setPaymentMethod(m.value)}
-                    className={`p-4 rounded-xl border-2 transition-all text-left ${paymentMethod === m.value ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200' : 'border-gray-200 hover:border-gray-300'}`}>
-                    <p className="font-bold text-sm text-gray-800">{m.label}</p>
-                    <p className="text-xs text-gray-500">{m.desc}</p>
-                  </button>
-                ))}
-              </div>
-            </div>
+            {(() => {
+              const allMethods: { value: PaymentMethod; label: string; desc: string }[] = [
+                { value: 'transferencia', label: 'Transferencia', desc: 'BCP / IBK' },
+                { value: 'yape', label: 'Yape', desc: 'Pago rápido' },
+                { value: 'plin', label: 'Plin', desc: 'Pago móvil' },
+                { value: 'tarjeta', label: 'Tarjeta', desc: 'Visa / MC' },
+              ];
+              const enabledMethods = paymentSettings.payment_methods_enabled.split(',').map(m => m.trim()).filter(Boolean);
+              const availableMethods = allMethods.filter(m => enabledMethods.includes(m.value));
+              return (
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-3">Método de pago</h3>
+                  <div className={`grid grid-cols-2 gap-3 ${availableMethods.length <= 2 ? 'sm:grid-cols-2' : availableMethods.length === 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-4'}`}>
+                    {availableMethods.map((m) => (
+                      <button key={m.value} type="button" onClick={() => setPaymentMethod(m.value)}
+                        className={`p-4 rounded-xl border-2 transition-all text-left ${paymentMethod === m.value ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200' : 'border-gray-200 hover:border-gray-300'}`}>
+                        <p className="font-bold text-sm text-gray-800">{m.label}</p>
+                        <p className="text-xs text-gray-500">{m.desc}</p>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              );
+            })()}
 
             {/* Instrucciones por método */}
             {paymentMethod === 'transferencia' && (
               <div className="bg-blue-50 border border-blue-200 rounded-xl p-5">
                 <p className="font-semibold text-blue-900 mb-3">📋 Datos para transferencia bancaria</p>
                 <div className="grid sm:grid-cols-2 gap-4 text-sm text-blue-800">
-                  <div className="space-y-1">
-                    <p className="font-semibold">BCP Soles</p>
-                    <p>Cuenta: <span className="font-mono">191-1234567-0-00</span></p>
-                    <p>CCI: <span className="font-mono">00219100123456700012</span></p>
-                    <p>Titular: PERUANA INFORMATICA SAC</p>
-                  </div>
-                  <div className="space-y-1">
-                    <p className="font-semibold">Interbank Soles</p>
-                    <p>Cuenta: <span className="font-mono">200-300456789-0</span></p>
-                    <p>CCI: <span className="font-mono">00320000030045678900</span></p>
-                    <p>Titular: PERUANA INFORMATICA SAC</p>
-                  </div>
+                  {(paymentSettings.payment_bcp_account || paymentSettings.payment_bcp_cci) && (
+                    <div className="space-y-1">
+                      <p className="font-semibold">BCP Soles</p>
+                      {paymentSettings.payment_bcp_account && <p>Cuenta: <span className="font-mono">{paymentSettings.payment_bcp_account}</span></p>}
+                      {paymentSettings.payment_bcp_cci && <p>CCI: <span className="font-mono">{paymentSettings.payment_bcp_cci}</span></p>}
+                      {paymentSettings.payment_holder && <p>Titular: {paymentSettings.payment_holder}</p>}
+                    </div>
+                  )}
+                  {(paymentSettings.payment_ibk_account || paymentSettings.payment_ibk_cci) && (
+                    <div className="space-y-1">
+                      <p className="font-semibold">Interbank Soles</p>
+                      {paymentSettings.payment_ibk_account && <p>Cuenta: <span className="font-mono">{paymentSettings.payment_ibk_account}</span></p>}
+                      {paymentSettings.payment_ibk_cci && <p>CCI: <span className="font-mono">{paymentSettings.payment_ibk_cci}</span></p>}
+                      {paymentSettings.payment_holder && <p>Titular: {paymentSettings.payment_holder}</p>}
+                    </div>
+                  )}
                 </div>
                 <div className="mt-3 pt-3 border-t border-blue-200 text-sm text-blue-700 flex gap-6">
                   <span>Monto: <strong>S/ {parseFloat(order.total_amount).toFixed(2)}</strong></span>
@@ -333,8 +365,8 @@ export default function OrderDetailPage() {
             {paymentMethod === 'yape' && (
               <div className="bg-purple-50 border border-purple-200 rounded-xl p-5">
                 <p className="font-semibold text-purple-900 mb-2">📱 Datos para Yape</p>
-                <p className="text-purple-800 text-sm">Número: <strong className="font-mono">987 654 321</strong></p>
-                <p className="text-purple-800 text-sm">Nombre: <strong>PERUANA INFORMATICA SAC</strong></p>
+                {paymentSettings.payment_yape_phone && <p className="text-purple-800 text-sm">Número: <strong className="font-mono">{paymentSettings.payment_yape_phone}</strong></p>}
+                {paymentSettings.payment_holder && <p className="text-purple-800 text-sm">Nombre: <strong>{paymentSettings.payment_holder}</strong></p>}
                 <p className="text-purple-700 text-sm mt-2">Monto exacto: <strong>S/ {parseFloat(order.total_amount).toFixed(2)}</strong> · Referencia: <strong>#{order.id}</strong></p>
               </div>
             )}
@@ -342,17 +374,9 @@ export default function OrderDetailPage() {
             {paymentMethod === 'plin' && (
               <div className="bg-green-50 border border-green-200 rounded-xl p-5">
                 <p className="font-semibold text-green-900 mb-2">📱 Datos para Plin</p>
-                <p className="text-green-800 text-sm">Número: <strong className="font-mono">987 654 321</strong></p>
-                <p className="text-green-800 text-sm">Nombre: <strong>PERUANA INFORMATICA SAC</strong></p>
+                {paymentSettings.payment_plin_phone && <p className="text-green-800 text-sm">Número: <strong className="font-mono">{paymentSettings.payment_plin_phone}</strong></p>}
+                {paymentSettings.payment_holder && <p className="text-green-800 text-sm">Nombre: <strong>{paymentSettings.payment_holder}</strong></p>}
                 <p className="text-green-700 text-sm mt-2">Monto exacto: <strong>S/ {parseFloat(order.total_amount).toFixed(2)}</strong> · Referencia: <strong>#{order.id}</strong></p>
-              </div>
-            )}
-
-            {paymentMethod === 'efectivo' && (
-              <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-5">
-                <p className="font-semibold text-emerald-900 mb-2">💵 Pago en tienda</p>
-                <p className="text-emerald-800 text-sm">Acércate a nuestra tienda con el <strong>número de pedido #{order.id}</strong> y realiza el pago en efectivo por <strong>S/ {parseFloat(order.total_amount).toFixed(2)}</strong>.</p>
-                <p className="text-emerald-700 text-sm mt-1">Dirección: Av. Ejemplo 123, Lima · Horario: Lun–Sáb 9am–7pm</p>
               </div>
             )}
 
@@ -379,8 +403,8 @@ export default function OrderDetailPage() {
               </div>
             )}
 
-            {/* Upload comprobante (no tarjeta, no efectivo) */}
-            {paymentMethod !== 'tarjeta' && paymentMethod !== 'efectivo' && (
+            {/* Upload comprobante (solo para métodos no-tarjeta) */}
+            {paymentMethod !== 'tarjeta' && (
               <div>
                 <p className="text-sm font-semibold text-gray-700 mb-2">📎 Sube el comprobante de pago</p>
                 <input ref={fileInputRef} type="file" accept="image/jpeg,image/jpg,image/png,image/webp,application/pdf"
@@ -404,7 +428,6 @@ export default function OrderDetailPage() {
               {submitting
                 ? <><div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />Procesando...</>
                 : paymentMethod === 'tarjeta' ? '💳 Pagar con tarjeta'
-                : paymentMethod === 'efectivo' ? '✅ Confirmar pedido (pago en tienda)'
                 : '📤 Enviar comprobante'}
             </button>
           </form>

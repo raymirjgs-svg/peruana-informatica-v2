@@ -22,7 +22,7 @@ interface Order {
   customer_phone: string;
   customer_document?: string;
   total_amount: string;
-  status: 'pending' | 'processed' | 'cancelled';
+  status: 'pending' | 'pending_approval' | 'processed' | 'cancelled';
   payment_method?: string;
   payment_status: 'pending' | 'verified' | 'rejected';
   payment_proof?: string;
@@ -208,7 +208,7 @@ export default function AdminOrdersPage() {
                     <p className="text-xs text-gray-400 mt-0.5">{new Date(order.createdAt).toLocaleString('es-PE')}</p>
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    <StatusBadge status={order.status} label={{ pending: 'Pendiente', processed: 'Procesado', cancelled: 'Cancelado' }[order.status]} size="md" />
+                    <StatusBadge status={order.status === 'pending_approval' ? 'pending' : order.status} label={{ pending: 'Pendiente', pending_approval: 'Por aprobar', processed: 'Aprobado', cancelled: 'Cancelado' }[order.status]} size="md" />
                     <StatusBadge status={order.payment_status} label={{ pending: 'Pago pendiente', verified: 'Pago verificado', rejected: 'Pago rechazado' }[order.payment_status]} size="md" />
                   </div>
                 </div>
@@ -253,7 +253,7 @@ export default function AdminOrdersPage() {
                   {/* Acciones */}
                   <div className="flex flex-wrap gap-2 pt-1">
                     {/* Paso 1: admin debe aprobar antes de que el cliente pueda pagar */}
-                    {order.status === 'pending' && (
+                    {(order.status === 'pending_approval' || order.status === 'pending') && (
                       <>
                         <button onClick={() => handleApproveOrder(order.id)}
                           className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl transition-colors">
@@ -268,7 +268,7 @@ export default function AdminOrdersPage() {
                       </>
                     )}
                     {/* Paso 2: pedido aprobado, esperando pago del cliente */}
-                    {order.status === 'processed' && !order.payment_proof && order.payment_status === 'pending' && (
+                    {order.status === 'processed' && !order.payment_proof && order.payment_status !== 'verified' && (
                       <span className="px-3 py-2 text-xs font-medium text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 rounded-xl">Esperando comprobante del cliente</span>
                     )}
                     {/* Ver comprobante */}

@@ -14,8 +14,8 @@ export class ProductController {
     // GET todos los productos con paginación y filtros
     async getProducts(req: Request, res: Response) {
         try {
-            // Trigger automatic sync
-            await SyncService.syncProducts();
+            // Trigger automatic sync in background (non-blocking)
+            SyncService.syncProducts().catch(() => {});
 
             const page = parseInt(req.query.page as string) || 1;
             const limit = parseInt(req.query.limit as string) || 20;

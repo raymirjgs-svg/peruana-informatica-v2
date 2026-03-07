@@ -610,7 +610,7 @@ export class ProductController {
 
                     // Strategy 3: single short brand (>=2 chars) as whole word
                     if (!matched && bt.tokens.length === 1) {
-                        const token = bt.tokens[0];
+                        const token = bt.tokens[0] ?? '';
                         if (token.length >= 2) {
                             const re = new RegExp(`(^|\\s)${token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(\\s|$)`);
                             matched = re.test(productNameNorm);

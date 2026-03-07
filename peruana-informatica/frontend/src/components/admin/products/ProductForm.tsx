@@ -90,14 +90,11 @@ export function ProductForm({ initialData, productId, onSubmit, isSubmitting, is
         const brsRes = await brandRes.json().catch(() => []);
         const cats = Array.isArray(catsRes) ? catsRes : (catsRes.data || []);
         const brs = Array.isArray(brsRes) ? brsRes : (brsRes.data || []);
-        if (catRes.ok) {
-          setCategories(cats.map((c: any) => ({ id: c.id, name: c.name })));
-          if (initialData?.category_id) setValue('category_id', initialData.category_id);
-        }
-        if (brandRes.ok) {
-          setBrands(brs.map((b: any) => ({ id: b.id, name: b.name })));
-          if (initialData?.brand_id) setValue('brand_id', initialData.brand_id);
-        }
+        if (catRes.ok) setCategories(cats.map((c: any) => ({ id: c.id, name: c.name })));
+        if (brandRes.ok) setBrands(brs.map((b: any) => ({ id: b.id, name: b.name })));
+
+        // Reset form AFTER options are in the DOM so selects can find their matching option
+        if (initialData) reset(initialData);
       } catch (err) {
         console.error('Error loading categories/brands:', err);
       }

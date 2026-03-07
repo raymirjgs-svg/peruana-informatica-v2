@@ -25,18 +25,19 @@ router.get('/', [
   query('brand').optional().isInt({ min: 1 }).withMessage('Marca inválida'),
 ], validateRequest, productController.getProducts.bind(productController));
 
+// GET erp-lookup/:code - Busca producto en BD local y en API del sistema de ventas
+// IMPORTANT: must be before /:id or Express matches 'erp-lookup' as an id and returns 400
+router.get('/erp-lookup/:code', productController.erpLookup.bind(productController));
+
 // GET producto por ID
 router.get('/:id', [
   param('id').isInt({ min: 1 }).withMessage('ID debe ser un número entero mayor a 0'),
 ], validateRequest, productController.getProductById.bind(productController));
 
-// GET erp-lookup/:code - Busca producto en BD local y en API del sistema de ventas
-router.get('/erp-lookup/:code', productController.erpLookup.bind(productController));
-
 // POST crear producto
 router.post('/', [
   body('name').notEmpty().isLength({ min: 1, max: 200 }).withMessage('Nombre es requerido y debe tener entre 1 y 200 caracteres'),
-  body('description').notEmpty().isLength({ min: 1, max: 2000 }).withMessage('Descripción es requerida y debe tener entre 1 y 2000 caracteres'),
+  body('description').notEmpty().isLength({ min: 1, max: 50000 }).withMessage('Descripción es requerida'),
   body('price').isFloat({ min: 0 }).withMessage('Precio debe ser un número mayor o igual a 0'),
   body('stock').isInt({ min: 0 }).withMessage('Stock debe ser un número entero mayor o igual a 0'),
   body('category_id').optional().isInt({ min: 1 }).withMessage('Categoría inválida'),
@@ -56,7 +57,7 @@ router.post('/', [
 router.put('/:id', [
   param('id').isInt({ min: 1 }).withMessage('ID inválido'),
   body('name').optional().isLength({ min: 1, max: 200 }),
-  body('description').optional().isLength({ min: 1, max: 2000 }),
+  body('description').optional().isLength({ min: 1, max: 50000 }),
   body('price').optional().isFloat({ min: 0 }),
   body('stock').optional().isInt({ min: 0 }),
 ], validateRequest, productController.updateProduct.bind(productController));

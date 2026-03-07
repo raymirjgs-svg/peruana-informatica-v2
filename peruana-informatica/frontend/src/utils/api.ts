@@ -30,8 +30,8 @@ class ApiClient {
       headers: {
         'Content-Type': 'application/json',
         ...authHeader,
-        ...options.headers,
-      },
+        ...(options.headers as Record<string, string> | undefined),
+      } as Record<string, string>,
     };
 
     try {

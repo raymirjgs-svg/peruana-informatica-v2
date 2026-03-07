@@ -84,36 +84,37 @@ export class ProductController {
             const orderField = validSortFields[sortField] || 'cod_producto';
             const order: any = [[orderField, sortOrder === 'ASC' ? 'ASC' : 'DESC']];
 
-            const { rows: products, count: total } = await Product.findAndCountAll({
-                where,
-                limit,
-                offset,
-                order,
-                distinct: true,
-                col: 'Product.id',
-                attributes: [
-                    'cod_producto',
-                    'name', 'slug', 'description', 'short_description', 'price', 'price_web', 'price_cot', 'price_dis', 'stock', 'category', 'keywords', 'brand_id', 'category_id', 'is_active', 'codigo_interno', 'component_type', 'is_featured', 'is_new', 'is_clearance', 'image'
-                ],
-                include: [
-                    {
-                        model: Brand,
-                        as: 'productBrand',
-                        attributes: ['id', 'name', 'slug'],
-                    },
-                    {
-                        model: Category,
-                        as: 'productCategory',
-                        attributes: ['id', 'name', 'slug'],
-                    },
-                    {
-                        model: Image,
-                        as: 'images',
-                        attributes: ['cod_galeria', 'codigo_interno', 'imagen'],
-                        required: false,
-                    }
-                ]
-            });
+            const [products, total] = await Promise.all([
+                Product.findAll({
+                    where,
+                    limit,
+                    offset,
+                    order,
+                    attributes: [
+                        'cod_producto',
+                        'name', 'slug', 'description', 'short_description', 'price', 'price_web', 'price_cot', 'price_dis', 'stock', 'category', 'keywords', 'brand_id', 'category_id', 'is_active', 'codigo_interno', 'component_type', 'is_featured', 'is_new', 'is_clearance', 'image'
+                    ],
+                    include: [
+                        {
+                            model: Brand,
+                            as: 'productBrand',
+                            attributes: ['id', 'name', 'slug'],
+                        },
+                        {
+                            model: Category,
+                            as: 'productCategory',
+                            attributes: ['id', 'name', 'slug'],
+                        },
+                        {
+                            model: Image,
+                            as: 'images',
+                            attributes: ['cod_galeria', 'codigo_interno', 'imagen'],
+                            required: false,
+                        }
+                    ]
+                }),
+                Product.count({ where })
+            ]);
 
             // Mapear resultados para incluir 'id' como alias de 'cod_producto'
             const mappedProducts = products.map(p => {

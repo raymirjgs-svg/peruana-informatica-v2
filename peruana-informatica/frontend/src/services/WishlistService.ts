@@ -25,13 +25,9 @@ class WishlistService {
     /**
      * Get wishlist analytics (Admin)
      */
-    async getAnalytics(token?: string): Promise<{ success: boolean; data: WishlistAnalytics }> {
+    async getAnalytics(): Promise<{ success: boolean; data: WishlistAnalytics }> {
         try {
-            const response = await fetch(`${API_BASE}/api/admin/wishlists/analytics`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
+            const response = await fetch(`${API_BASE}/api/admin/wishlists/analytics`);
 
             if (!response.ok) {
                 throw new Error('Failed to fetch wishlist analytics');
@@ -47,15 +43,10 @@ class WishlistService {
     /**
      * Get all wishlists (Admin)
      */
-    async getAllWishlists(page: number = 1, limit: number = 20, token?: string) {
+    async getAllWishlists(page: number = 1, limit: number = 20) {
         try {
             const response = await fetch(
-                `${API_BASE}/api/admin/wishlists?page=${page}&limit=${limit}`,
-                {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                }
+                `${API_BASE}/api/admin/wishlists?page=${page}&limit=${limit}`
             );
 
             if (!response.ok) {
@@ -72,15 +63,10 @@ class WishlistService {
     /**
      * Get wishlists by product (Admin)
      */
-    async getWishlistsByProduct(productId: number, token?: string) {
+    async getWishlistsByProduct(productId: number) {
         try {
             const response = await fetch(
-                `${API_BASE}/api/admin/wishlists/product/${productId}`,
-                {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                }
+                `${API_BASE}/api/admin/wishlists/product/${productId}`
             );
 
             if (!response.ok) {

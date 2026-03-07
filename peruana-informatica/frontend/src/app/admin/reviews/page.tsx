@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { MotionWrapper } from '@/components/ui/MotionWrapper';
-import { useSession } from 'next-auth/react';
 import { reviewService } from '@/services/ReviewService';
 import {
     Star,
@@ -19,7 +18,6 @@ import {
 import { toast } from 'sonner';
 
 export default function ReviewsPage() {
-    const { data: session } = useSession();
     const [reviews, setReviews] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [filterStatus, setFilterStatus] = useState<string>('all');
@@ -27,10 +25,9 @@ export default function ReviewsPage() {
     const [totalPages, setTotalPages] = useState(1);
 
     const fetchReviews = async () => {
-        if (!session?.accessToken) return;
         setLoading(true);
         try {
-            const response = await reviewService.getAllReviews(page, 20, filterStatus === 'all' ? undefined : filterStatus, session.accessToken);
+            const response = await reviewService.getAllReviews(page, 20, filterStatus === 'all' ? undefined : filterStatus);
             setReviews(response.reviews);
             setTotalPages(response.pagination.totalPages);
         } catch (error) {
@@ -41,32 +38,28 @@ export default function ReviewsPage() {
     };
 
     useEffect(() => {
-        if (session?.accessToken) {
-            fetchReviews();
-        }
-    }, [session, page, filterStatus]);
+        fetchReviews();
+    }, [page, filterStatus]);
 
     const handleStatusChange = async (id: number, action: 'approve' | 'reject') => {
-        if (!session?.accessToken) return;
         try {
             if (action === 'approve') {
-                await reviewService.approveReview(id, session.accessToken);
+                await reviewService.approveReview(id);
                 toast.success('Reseña aprobada');
             } else {
-                await reviewService.rejectReview(id, session.accessToken);
+                await reviewService.rejectReview(id);
                 toast.success('Reseña rechazada');
             }
-            fetchReviews(); // Refresh list
+            fetchReviews();
         } catch (err) {
             toast.error('Error al actualizar estado');
         }
     };
 
     const handleDelete = async (id: number) => {
-        if (!session?.accessToken) return;
         if (!confirm('¿Estás seguro de eliminar esta reseña?')) return;
         try {
-            await reviewService.deleteReview(id, session.accessToken);
+            await reviewService.deleteReview(id);
             toast.success('Reseña eliminada');
             fetchReviews();
         } catch (err) {

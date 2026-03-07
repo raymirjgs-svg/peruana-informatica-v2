@@ -12,7 +12,7 @@ function useAdminFetchInterceptor() {
     const originalFetch = window.fetch;
     window.fetch = function (input: RequestInfo | URL, init?: RequestInit) {
       const url = typeof input === 'string' ? input : input instanceof URL ? input.href : (input as Request).url;
-      if (url.includes('/api/admin/') || url.includes('/api/blog/admin') || url.includes('/contacts/admin')) {
+      if (url.includes('/api/admin/') || url.includes('/api/blog/admin') || url.includes('/contacts/admin') || url.includes('/reviews/admin')) {
         const token = localStorage.getItem('adminToken');
         if (token) {
           const headers = new Headers(init?.headers);

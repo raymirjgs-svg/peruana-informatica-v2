@@ -5,23 +5,19 @@ import { AdminLayout } from '@/components/admin/AdminLayout';
 import { MotionWrapper } from '@/components/ui/MotionWrapper';
 import { PageHeader } from '@/components/admin/PageHeader';
 import { StatsCard } from '@/components/admin/StatsCard';
-import { useSession } from 'next-auth/react';
 import { wishlistService, WishlistAnalytics } from '@/services/WishlistService';
 import { Heart, TrendingUp, Package, Clock, ShoppingBag } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from 'sonner';
 
 export default function WishlistsPage() {
-    const { data: session } = useSession();
     const [analytics, setAnalytics] = useState<WishlistAnalytics | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchAnalytics = async () => {
-            if (!session?.accessToken) return;
-
             try {
-                const response = await wishlistService.getAnalytics(session.accessToken);
+                const response = await wishlistService.getAnalytics();
                 setAnalytics(response.data);
             } catch (error) {
                 toast.error('Error al cargar análisis');
@@ -31,7 +27,7 @@ export default function WishlistsPage() {
         };
 
         fetchAnalytics();
-    }, [session]);
+    }, []);
 
     if (loading) {
         return (

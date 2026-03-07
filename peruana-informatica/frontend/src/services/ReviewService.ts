@@ -143,18 +143,14 @@ class ReviewService {
     /**
      * Get all reviews (Admin)
      */
-    async getAllReviews(page: number = 1, limit: number = 20, status?: string, token?: string) {
+    async getAllReviews(page: number = 1, limit: number = 20, status?: string) {
         try {
             let url = `${API_BASE}/api/reviews/admin/all?page=${page}&limit=${limit}`;
             if (status) {
                 url += `&status=${status}`;
             }
 
-            const response = await fetch(url, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
+            const response = await fetch(url);
 
             if (!response.ok) {
                 throw new Error('Failed to fetch reviews');
@@ -184,13 +180,10 @@ class ReviewService {
     /**
      * Approve a review (Admin)
      */
-    async approveReview(reviewId: number, token?: string) {
+    async approveReview(reviewId: number) {
         try {
             const response = await fetch(`${API_BASE}/api/reviews/admin/${reviewId}/approve`, {
-                method: 'PATCH',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                method: 'PATCH'
             });
 
             if (!response.ok) {
@@ -207,13 +200,10 @@ class ReviewService {
     /**
      * Reject a review (Admin)
      */
-    async rejectReview(reviewId: number, token?: string) {
+    async rejectReview(reviewId: number) {
         try {
             const response = await fetch(`${API_BASE}/api/reviews/admin/${reviewId}/reject`, {
-                method: 'PATCH',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                method: 'PATCH'
             });
 
             if (!response.ok) {
@@ -230,13 +220,10 @@ class ReviewService {
     /**
      * Delete a review (Admin)
      */
-    async deleteReview(reviewId: number, token?: string) {
+    async deleteReview(reviewId: number) {
         try {
             const response = await fetch(`${API_BASE}/api/reviews/admin/${reviewId}`, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                method: 'DELETE'
             });
 
             if (!response.ok) {

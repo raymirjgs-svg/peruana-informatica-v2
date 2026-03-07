@@ -70,6 +70,40 @@ export default function AdminOrdersPage() {
     fetchOrders();
   }, []);
 
+  const handleApproveOrder = async (orderId: number) => {
+    if (!confirm('¿Aprobar este pedido y permitir al cliente realizar el pago?')) return;
+    try {
+      const response = await adminFetch(`/admin/orders/${orderId}/status`, {
+        method: 'PATCH',
+        body: JSON.stringify({ status: 'processed' })
+      });
+      if (response.ok) {
+        fetchOrders();
+      } else {
+        alert('Error al aprobar pedido');
+      }
+    } catch {
+      alert('Error de conexión');
+    }
+  };
+
+  const handleCancelOrder = async (orderId: number) => {
+    if (!confirm('¿Cancelar este pedido?')) return;
+    try {
+      const response = await adminFetch(`/admin/orders/${orderId}/status`, {
+        method: 'PATCH',
+        body: JSON.stringify({ status: 'cancelled' })
+      });
+      if (response.ok) {
+        fetchOrders();
+      } else {
+        alert('Error al cancelar pedido');
+      }
+    } catch {
+      alert('Error de conexión');
+    }
+  };
+
   const handleVerifyPayment = async (orderId: number, verified: boolean) => {
     try {
       const response = await adminFetch(`/admin/payments/${orderId}/verify`, {
@@ -218,6 +252,26 @@ export default function AdminOrdersPage() {
 
                   {/* Acciones */}
                   <div className="flex flex-wrap gap-2 pt-1">
+                    {/* Paso 1: admin debe aprobar antes de que el cliente pueda pagar */}
+                    {order.status === 'pending' && (
+                      <>
+                        <button onClick={() => handleApproveOrder(order.id)}
+                          className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl transition-colors">
+                          <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                          Aprobar pedido
+                        </button>
+                        <button onClick={() => handleCancelOrder(order.id)}
+                          className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-950/50 rounded-xl transition-colors">
+                          <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" /></svg>
+                          Cancelar pedido
+                        </button>
+                      </>
+                    )}
+                    {/* Paso 2: pedido aprobado, esperando pago del cliente */}
+                    {order.status === 'processed' && !order.payment_proof && order.payment_status === 'pending' && (
+                      <span className="px-3 py-2 text-xs font-medium text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 rounded-xl">Esperando comprobante del cliente</span>
+                    )}
+                    {/* Ver comprobante */}
                     {order.payment_proof && (
                       <a href={`${API_CONFIG.API_BASE_URL}/api/payments/proofs/${order.payment_proof}`} target="_blank" rel="noopener noreferrer"
                         className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-950/50 rounded-xl transition-colors">
@@ -225,6 +279,7 @@ export default function AdminOrdersPage() {
                         Ver comprobante
                       </a>
                     )}
+                    {/* Paso 3: verificar pago */}
                     {order.payment_status === 'pending' && order.payment_proof && (
                       <>
                         <button onClick={() => handleVerifyPayment(order.id, true)}
@@ -239,6 +294,7 @@ export default function AdminOrdersPage() {
                         </button>
                       </>
                     )}
+                    {/* Paso 4: cargar boleta/factura */}
                     {order.payment_status === 'verified' && !order.invoice_file && (
                       <button onClick={() => setSelectedOrder(order)}
                         className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold bg-purple-50 dark:bg-purple-950/30 text-purple-700 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-950/50 rounded-xl transition-colors">
@@ -252,9 +308,6 @@ export default function AdminOrdersPage() {
                         <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" /></svg>
                         Descargar {order.invoice_type === 'factura' ? 'factura' : 'boleta'} · N° {order.invoice_number}
                       </a>
-                    )}
-                    {!order.payment_proof && order.payment_status === 'pending' && (
-                      <span className="px-3 py-2 text-xs font-medium text-gray-400 bg-gray-50 dark:bg-gray-800 rounded-xl">Esperando comprobante del cliente</span>
                     )}
                     {order.payment_status === 'rejected' && (
                       <span className="px-3 py-2 text-xs font-medium text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/30 rounded-xl">Pago rechazado · Cliente debe enviar nuevo comprobante</span>

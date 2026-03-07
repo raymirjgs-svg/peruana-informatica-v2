@@ -96,8 +96,8 @@ export default function InventoryPage() {
   if (loading) {
     return (
       <AdminLayout>
-        <div className="flex justify-center items-center h-screen">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600" />
         </div>
       </AdminLayout>
     );
@@ -105,7 +105,7 @@ export default function InventoryPage() {
 
   return (
     <AdminLayout>
-      <div className="p-6 space-y-8">
+      <div className="space-y-6">
         <PageHeader
           title="Gestión de Inventario"
           description="Control de stock y valorización de productos"
@@ -123,34 +123,10 @@ export default function InventoryPage() {
 
         {/* Stats */}
         <div className="grid gap-6 md:grid-cols-4">
-          <StatsCard
-            title="Total Productos"
-            value={totalProducts.toString()}
-            description="En catálogo"
-            icon={Package}
-            color="blue"
-          />
-          <StatsCard
-            title="Stock Bajo"
-            value={lowStockCount.toString()}
-            description="≤ 10 unidades"
-            icon={AlertTriangle}
-            color="yellow"
-          />
-          <StatsCard
-            title="Agotados"
-            value={outOfStockCount.toString()}
-            description="Stock = 0"
-            icon={TrendingDown}
-            color="red"
-          />
-          <StatsCard
-            title="Valor Inventario"
-            value={`S/ ${totalValue.toFixed(0)}`}
-            description="Valorización total"
-            icon={Package}
-            color="green"
-          />
+          <StatsCard title="Total Productos" value={totalProducts.toString()} description="En catálogo" icon={Package} color="blue" />
+          <StatsCard title="Stock Bajo" value={lowStockCount.toString()} description="≤ 10 unidades" icon={AlertTriangle} color="yellow" />
+          <StatsCard title="Agotados" value={outOfStockCount.toString()} description="Stock = 0" icon={TrendingDown} color="red" />
+          <StatsCard title="Valor Inventario" value={`S/ ${totalValue.toFixed(0)}`} description="Valorización total" icon={Package} color="green" />
         </div>
 
         {/* Alerts */}
@@ -166,7 +142,7 @@ export default function InventoryPage() {
         )}
 
         {/* Filters */}
-        <MotionWrapper className="bg-white/70 dark:bg-gray-900/40 backdrop-blur-xl rounded-2xl border border-gray-100 dark:border-gray-800 p-6 shadow-sm">
+        <MotionWrapper className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-4">
           <div className="flex flex-col md:flex-row gap-4 items-center">
             <div className="relative flex-1 w-full">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -201,42 +177,40 @@ export default function InventoryPage() {
         </MotionWrapper>
 
         {/* Products Table */}
-        <MotionWrapper className="bg-white/70 dark:bg-gray-900/40 backdrop-blur-xl rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden shadow-sm">
+        <MotionWrapper className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Código</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Producto</th>
-                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Stock</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Precio</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Valor Total</th>
+              <thead>
+                <tr className="border-b border-gray-100 dark:border-gray-800">
+                  <th className="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Código</th>
+                  <th className="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Producto</th>
+                  <th className="px-5 py-3 text-center text-xs font-semibold text-gray-400 uppercase tracking-wider">Stock</th>
+                  <th className="px-5 py-3 text-right text-xs font-semibold text-gray-400 uppercase tracking-wider">Precio</th>
+                  <th className="px-5 py-3 text-right text-xs font-semibold text-gray-400 uppercase tracking-wider">Valor Total</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+              <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
                 {filteredProducts.map(product => (
-                  <tr key={product.cod_producto} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
-                    <td className="px-6 py-4 text-sm font-mono text-gray-500">{product.cod_producto}</td>
-                    <td className="px-6 py-4">
-                      <div>
-                        <p className="font-medium text-gray-900 dark:text-white">{product.name}</p>
-                        <p className="text-xs text-gray-500">
-                          {product.productBrand?.name} • {product.productCategory?.name}
-                        </p>
-                      </div>
+                  <tr key={product.cod_producto} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                    <td className="px-5 py-3.5 text-xs font-mono text-gray-400">{product.cod_producto}</td>
+                    <td className="px-5 py-3.5">
+                      <p className="text-sm font-semibold text-gray-900 dark:text-white">{product.name}</p>
+                      <p className="text-xs text-gray-400 mt-0.5">{product.productBrand?.name} · {product.productCategory?.name}</p>
                     </td>
-                    <td className="px-6 py-4 text-center">
-                      <span className={`inline-flex px-3 py-1 rounded-full text-sm font-semibold ${product.stock === 0 ? 'bg-red-100 text-red-700' :
-                        product.stock <= 10 ? 'bg-yellow-100 text-yellow-700' :
-                          'bg-green-100 text-green-700'
-                        }`}>
+                    <td className="px-5 py-3.5 text-center">
+                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${
+                        product.stock === 0 ? 'bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-400' :
+                        product.stock <= 10 ? 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400' :
+                        'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400'
+                      }`}>
+                        <span className={`w-1.5 h-1.5 rounded-full ${product.stock === 0 ? 'bg-red-500' : product.stock <= 10 ? 'bg-amber-500' : 'bg-emerald-500'}`} />
                         {product.stock}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-right text-sm text-gray-900 dark:text-white">
+                    <td className="px-5 py-3.5 text-right text-sm text-gray-700 dark:text-gray-300">
                       S/ {Number(product.price || 0).toFixed(2)}
                     </td>
-                    <td className="px-6 py-4 text-right font-semibold text-gray-900 dark:text-white">
+                    <td className="px-5 py-3.5 text-right text-sm font-bold text-gray-900 dark:text-white">
                       S/ {(product.stock * Number(product.price || 0)).toFixed(2)}
                     </td>
                   </tr>

@@ -69,12 +69,12 @@ export default function ReviewsPage() {
 
     return (
         <AdminLayout>
-            <div className="p-6 md:p-10 space-y-8">
+            <div className="space-y-5">
                 <MotionWrapper>
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div>
-                            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Gestión de Reseñas</h1>
-                            <p className="text-gray-500 dark:text-gray-400">Modera los comentarios y valoraciones de los clientes</p>
+                            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Reseñas</h1>
+                            <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Modera los comentarios y valoraciones de los clientes</p>
                         </div>
                         {/* Filter Tabs */}
                         <div className="flex p-1 bg-gray-100 dark:bg-gray-800 rounded-xl">
@@ -108,7 +108,7 @@ export default function ReviewsPage() {
                             </div>
                         ) : (
                             reviews.map((review) => (
-                                <MotionWrapper key={review.id} className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm p-6 rounded-2xl shadow-sm border border-gray-100/50 dark:border-gray-700/50 hover:shadow-md transition-all">
+                                <MotionWrapper key={review.id} className="bg-white dark:bg-gray-900 p-5 rounded-2xl border border-gray-100 dark:border-gray-800 hover:border-gray-200 dark:hover:border-gray-700 transition-all">
                                     <div className="flex flex-col md:flex-row justify-between gap-6">
                                         {/* Content */}
                                         <div className="flex-1 space-y-3">
@@ -124,11 +124,12 @@ export default function ReviewsPage() {
                                                         Por <span className="font-medium text-gray-900 dark:text-white">{review.customer_name}</span> el {new Date(review.created_at).toLocaleDateString()}
                                                     </p>
                                                 </div>
-                                                <span className={`px-3 py-1 rounded-full text-xs font-semibold
-                                            ${review.status === 'approved' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' :
-                                                        review.status === 'rejected' ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' :
-                                                            'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 animate-pulse'
-                                                    }`}>
+                                                <span className={`px-2.5 py-1 rounded-full text-[11px] font-semibold flex items-center gap-1.5 ${
+                                                    review.status === 'approved' ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400' :
+                                                    review.status === 'rejected' ? 'bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-400' :
+                                                    'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400'
+                                                }`}>
+                                                    <span className={`w-1.5 h-1.5 rounded-full ${review.status === 'approved' ? 'bg-emerald-500' : review.status === 'rejected' ? 'bg-red-500' : 'bg-amber-500 animate-pulse'}`} />
                                                     {review.status === 'approved' ? 'Aprobada' : review.status === 'rejected' ? 'Rechazada' : 'Pendiente'}
                                                 </span>
                                             </div>

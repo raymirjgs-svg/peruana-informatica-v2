@@ -572,26 +572,59 @@ export class ProductController {
                 Brand.findAll({ attributes: ['id', 'name'] })
             ]);
 
+            // Normaliza: uppercase, sin guiones/puntos/espacios extras
+            const normalize = (s: string) => s.toUpperCase().replace(/[-_.]/g, ' ').replace(/\s+/g, ' ').trim();
+
+            // Precompute normalized brand names and tokens
+            const brandTokens = brands.map(b => ({
+                id: b.id,
+                name: b.name,
+                normalized: normalize(b.name),
+                // Also keep short 2-char brands (HP, LG) as exact tokens
+                tokens: normalize(b.name).split(' ').filter(t => t.length >= 2)
+            }));
+
             const inconsistencies: any[] = [];
 
             for (const product of products) {
-                const productName = product.name?.toUpperCase() || '';
+                const productNameNorm = normalize(product.name || '');
                 const currentBrand = (product as any).brand;
+                const currentBrandId = currentBrand?.id || null;
 
-                for (const brand of brands) {
-                    const brandNameUp = brand.name.toUpperCase();
-                    // Skip if already assigned to this brand
-                    if (currentBrand && currentBrand.id === brand.id) continue;
-                    // Check if brand name appears as a word in the product name
-                    const regex = new RegExp(`\\b${brandNameUp.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`);
-                    if (regex.test(productName)) {
+                for (const bt of brandTokens) {
+                    if (currentBrandId === bt.id) continue; // already assigned
+
+                    // Match: all tokens of brand name must appear consecutively in product name
+                    let matched = false;
+
+                    // Strategy 1: exact normalized substring match
+                    if (productNameNorm.includes(bt.normalized)) {
+                        matched = true;
+                    }
+
+                    // Strategy 2: all tokens appear in product name (handles word reorder)
+                    if (!matched && bt.tokens.length >= 2) {
+                        const productTokens = productNameNorm.split(' ');
+                        matched = bt.tokens.every(t => productTokens.includes(t));
+                    }
+
+                    // Strategy 3: single short brand (>=2 chars) as whole word
+                    if (!matched && bt.tokens.length === 1) {
+                        const token = bt.tokens[0];
+                        if (token.length >= 2) {
+                            const re = new RegExp(`(^|\\s)${token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(\\s|$)`);
+                            matched = re.test(productNameNorm);
+                        }
+                    }
+
+                    if (matched) {
                         inconsistencies.push({
                             cod_producto: product.cod_producto,
                             name: product.name,
-                            current_brand_id: currentBrand?.id || null,
+                            current_brand_id: currentBrandId,
                             current_brand_name: currentBrand?.name || 'Sin marca',
-                            suggested_brand_id: brand.id,
-                            suggested_brand_name: brand.name
+                            suggested_brand_id: bt.id,
+                            suggested_brand_name: bt.name
                         });
                         break; // First match wins
                     }

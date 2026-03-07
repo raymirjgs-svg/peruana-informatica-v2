@@ -19,10 +19,10 @@ export function Button({
   const baseClasses = 'font-medium rounded-lg transition-all duration-200 flex items-center justify-center gap-2';
   
   const variantClasses = {
-    primary: 'bg-blue-600 hover:bg-blue-700 text-white shadow-sm hover:shadow-md',
-    secondary: 'bg-gray-200 hover:bg-gray-300 text-gray-800',
-    danger: 'bg-red-600 hover:bg-red-700 text-white shadow-sm hover:shadow-md',
-    success: 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm hover:shadow-md',
+    primary: 'bg-blue-600 hover:bg-blue-700 text-white shadow-sm hover:shadow-md active:scale-95',
+    secondary: 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700',
+    danger: 'bg-red-600 hover:bg-red-700 text-white shadow-sm hover:shadow-md active:scale-95',
+    success: 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm hover:shadow-md active:scale-95',
   };
   
   const sizeClasses = {

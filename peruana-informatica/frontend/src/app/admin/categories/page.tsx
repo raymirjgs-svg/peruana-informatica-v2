@@ -231,32 +231,36 @@ export default function TaxonomyManagePage() {
     )
   );
 
+  const inp = 'w-full px-3.5 py-2.5 text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-gray-100 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors';
+  const lbl = 'block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5';
+
   return (
     <AdminLayout>
-      <div className="p-6 max-w-7xl mx-auto">
+      <div className="space-y-6">
         {/* Header */}
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-800">Gestión de Categorías y Subcategorías</h1>
-            <p className="text-sm text-gray-500 mt-1">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Categorías y Subcategorías</h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
               {categories.length} categoría{categories.length !== 1 ? 's' : ''}
             </p>
           </div>
           <button
             onClick={handleCreateCategory}
-            className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all shadow-lg flex items-center gap-2 font-medium"
+            className="shrink-0 flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl transition-all active:scale-95 shadow-sm"
           >
-            <span className="text-xl">+</span>
+            <span className="text-lg leading-none">+</span>
             Nueva Categoría
           </button>
         </div>
 
         {/* Búsqueda */}
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 mb-6">
+        <div className="relative">
+          <svg className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
           <input
             type="text"
             placeholder="Buscar categorías o subcategorías..."
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+            className="w-full pl-10 pr-4 py-2.5 text-sm bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-gray-100 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -264,104 +268,97 @@ export default function TaxonomyManagePage() {
 
         {/* Lista de Categorías */}
         {loading ? (
-          <div className="text-center py-12">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
+          <div className="flex justify-center py-16">
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600" />
           </div>
         ) : filteredCategories.length === 0 ? (
-          <div className="text-center py-12 bg-white rounded-lg border border-gray-200">
-            <p className="text-gray-500">No se encontraron categorías</p>
+          <div className="text-center py-16 bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800">
+            <p className="text-gray-400 text-sm">No se encontraron categorías</p>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-3">
             {filteredCategories.map(category => {
               const isExpanded = expandedCategories.has(category.id);
               const subcategories = category.subcategories || [];
 
               return (
-                <div key={category.id} className="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
+                <div key={category.id} className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden">
                   {/* Categoría Header */}
-                  <div className="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 border-b border-blue-200">
-                    <div className="flex items-center justify-between">
-                      <button
-                        onClick={() => toggleCategory(category.id)}
-                        className="flex items-center gap-3 flex-1 text-left hover:opacity-80 transition-opacity"
-                      >
-                        <span className={`transition-transform text-blue-600 ${isExpanded ? 'rotate-90' : ''}`}>
-                          ▶
-                        </span>
-                        <div>
-                          <h2 className="text-xl font-bold text-gray-800">{category.name}</h2>
-                          <p className="text-sm text-gray-600">
-                            <code className="bg-blue-100 px-2 py-0.5 rounded">{category.slug}</code>
-                            {" • "}
-                            {subcategories.length} subcategoría{subcategories.length !== 1 ? 's' : ''}
-                          </p>
-                        </div>
-                      </button>
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => handleCreateSubcategory(category.id)}
-                          className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors text-sm font-medium flex items-center gap-1"
-                        >
-                          <span>+</span>
-                          Subcategoría
-                        </button>
-                        <button
-                          onClick={() => handleEditCategory(category)}
-                          className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors text-sm font-medium"
-                        >
-                          Editar
-                        </button>
-                        <button
-                          onClick={() => handleDeleteCategory(category.id)}
-                          className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-sm font-medium"
-                        >
-                          Eliminar
-                        </button>
+                  <div className="px-5 py-4 flex items-center justify-between gap-3">
+                    <button
+                      onClick={() => toggleCategory(category.id)}
+                      className="flex items-center gap-3 flex-1 text-left group"
+                    >
+                      <span className={`text-gray-400 transition-transform duration-200 ${isExpanded ? 'rotate-90' : ''}`}>
+                        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                      </span>
+                      <div>
+                        <h2 className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{category.name}</h2>
+                        <p className="text-xs text-gray-400 mt-0.5 flex items-center gap-2">
+                          <code className="font-mono">{category.slug}</code>
+                          <span>·</span>
+                          <span>{subcategories.length} subcategoría{subcategories.length !== 1 ? 's' : ''}</span>
+                          {category.appears_in_menu && <span className="px-1.5 py-0.5 bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 rounded text-[10px] font-semibold">En menú</span>}
+                        </p>
                       </div>
+                    </button>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <button
+                        onClick={() => handleCreateSubcategory(category.id)}
+                        className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-950/50 rounded-lg transition-colors"
+                      >
+                        + Sub
+                      </button>
+                      <button
+                        onClick={() => handleEditCategory(category)}
+                        className="px-3 py-1.5 text-xs font-semibold bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                      >
+                        Editar
+                      </button>
+                      <button
+                        onClick={() => handleDeleteCategory(category.id)}
+                        className="px-3 py-1.5 text-xs font-semibold bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-950/50 rounded-lg transition-colors"
+                      >
+                        Eliminar
+                      </button>
                     </div>
                   </div>
 
                   {/* Subcategorías */}
                   {isExpanded && (
-                    <div className="p-6 bg-gray-50">
+                    <div className="border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/30 p-4">
                       {subcategories.length === 0 ? (
-                        <p className="text-center text-gray-500 py-4">
-                          No hay subcategorías.
-                          <button
-                            onClick={() => handleCreateSubcategory(category.id)}
-                            className="text-blue-600 hover:underline ml-1"
-                          >
+                        <p className="text-center text-sm text-gray-400 py-3">
+                          No hay subcategorías.{' '}
+                          <button onClick={() => handleCreateSubcategory(category.id)} className="text-blue-600 dark:text-blue-400 hover:underline font-medium">
                             Crear una ahora
                           </button>
                         </p>
                       ) : (
-                        <div className="grid gap-3">
+                        <div className="grid gap-2">
                           {subcategories.map(subcategory => (
-                            <div
-                              key={subcategory.id}
-                              className="flex items-center justify-between p-4 bg-white rounded-lg hover:shadow-md transition-shadow border border-gray-200"
-                            >
-                              <div className="flex-1">
-                                <h3 className="font-semibold text-gray-900">{subcategory.name}</h3>
-                                <p className="text-sm text-gray-500 mt-1">
-                                  Slug: <code className="bg-gray-200 px-2 py-0.5 rounded">{subcategory.slug}</code>
-                                  {" • "}Orden: {subcategory.order}
+                            <div key={subcategory.id} className="flex items-center justify-between px-4 py-3 bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 hover:border-blue-100 dark:hover:border-blue-900 transition-colors">
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-semibold text-gray-900 dark:text-white">{subcategory.name}</p>
+                                <p className="text-xs text-gray-400 mt-0.5 font-mono flex items-center gap-2">
+                                  {subcategory.slug}
+                                  <span className="font-sans text-gray-300 dark:text-gray-600">·</span>
+                                  Orden: {subcategory.order}
                                 </p>
                                 {subcategory.description && (
-                                  <p className="text-sm text-gray-600 mt-1">{subcategory.description}</p>
+                                  <p className="text-xs text-gray-400 mt-1 truncate">{subcategory.description}</p>
                                 )}
                               </div>
-                              <div className="flex gap-2">
+                              <div className="flex items-center gap-1.5 shrink-0 ml-4">
                                 <button
                                   onClick={() => handleEditSubcategory(subcategory)}
-                                  className="px-3 py-1.5 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition-colors text-sm font-medium"
+                                  className="px-3 py-1.5 text-xs font-semibold bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors"
                                 >
                                   Editar
                                 </button>
                                 <button
                                   onClick={() => handleDeleteSubcategory(subcategory.id)}
-                                  className="px-3 py-1.5 bg-red-500 text-white rounded hover:bg-red-600 transition-colors text-sm font-medium"
+                                  className="px-3 py-1.5 text-xs font-semibold bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 hover:bg-red-100 rounded-lg transition-colors"
                                 >
                                   Eliminar
                                 </button>
@@ -380,100 +377,50 @@ export default function TaxonomyManagePage() {
 
         {/* Modal de Categoría */}
         {showCategoryModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto">
-              <h2 className="text-2xl font-bold mb-6 text-gray-800">
-                {editingCategory ? "Editar Categoría" : "Nueva Categoría"}
-              </h2>
-              <form onSubmit={handleSubmitCategory} className="space-y-4">
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-800">
+                <h2 className="text-lg font-bold text-gray-900 dark:text-white">
+                  {editingCategory ? "Editar Categoría" : "Nueva Categoría"}
+                </h2>
+                <button onClick={closeCategoryModal} className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+              </div>
+              <form onSubmit={handleSubmitCategory} className="p-6 space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Nombre *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                    value={categoryForm.name}
-                    onChange={(e) => {
-                      const name = e.target.value;
-                      setCategoryForm({
-                        ...categoryForm,
-                        name,
-                        slug: editingCategory ? categoryForm.slug : generateSlug(name)
-                      });
-                    }}
-                    placeholder="Ej: Laptops"
-                  />
+                  <label className={lbl}>Nombre *</label>
+                  <input type="text" required className={inp} value={categoryForm.name}
+                    onChange={(e) => { const name = e.target.value; setCategoryForm({ ...categoryForm, name, slug: editingCategory ? categoryForm.slug : generateSlug(name) }); }}
+                    placeholder="Ej: Laptops" />
                 </div>
-
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Slug *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none font-mono text-sm"
-                    value={categoryForm.slug}
-                    onChange={(e) => setCategoryForm({ ...categoryForm, slug: e.target.value })}
-                    placeholder="ej: laptops"
-                  />
+                  <label className={lbl}>Slug *</label>
+                  <input type="text" required className={`${inp} font-mono`} value={categoryForm.slug}
+                    onChange={(e) => setCategoryForm({ ...categoryForm, slug: e.target.value })} placeholder="ej: laptops" />
                 </div>
-
-                <div className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    id="appears_in_menu"
-                    className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
-                    checked={categoryForm.appears_in_menu}
-                    onChange={(e) => setCategoryForm({ ...categoryForm, appears_in_menu: e.target.checked })}
-                  />
-                  <label htmlFor="appears_in_menu" className="text-sm font-medium text-gray-700">
-                    Mostrar en menú
-                  </label>
+                <div className="flex items-center gap-2.5">
+                  <input type="checkbox" id="appears_in_menu" className="w-4 h-4 text-blue-600 rounded border-gray-300 dark:border-gray-600"
+                    checked={categoryForm.appears_in_menu} onChange={(e) => setCategoryForm({ ...categoryForm, appears_in_menu: e.target.checked })} />
+                  <label htmlFor="appears_in_menu" className="text-sm font-medium text-gray-700 dark:text-gray-300">Mostrar en menú de navegación</label>
                 </div>
-
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Título SEO
-                  </label>
-                  <input
-                    type="text"
-                    maxLength={160}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                    value={categoryForm.seo_title}
-                    onChange={(e) => setCategoryForm({ ...categoryForm, seo_title: e.target.value })}
-                    placeholder="Título para motores de búsqueda"
-                  />
+                  <label className={lbl}>Título SEO</label>
+                  <input type="text" maxLength={160} className={inp} value={categoryForm.seo_title}
+                    onChange={(e) => setCategoryForm({ ...categoryForm, seo_title: e.target.value })} placeholder="Título para motores de búsqueda" />
                 </div>
-
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Descripción SEO
-                  </label>
-                  <textarea
-                    maxLength={300}
-                    rows={3}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                    value={categoryForm.seo_description}
-                    onChange={(e) => setCategoryForm({ ...categoryForm, seo_description: e.target.value })}
-                    placeholder="Descripción para motores de búsqueda"
-                  />
+                  <label className={lbl}>Descripción SEO</label>
+                  <textarea maxLength={300} rows={3} className={`${inp} resize-none`} value={categoryForm.seo_description}
+                    onChange={(e) => setCategoryForm({ ...categoryForm, seo_description: e.target.value })} placeholder="Descripción para motores de búsqueda" />
                 </div>
-
-                <div className="flex gap-3 pt-4">
-                  <button
-                    type="button"
-                    onClick={closeCategoryModal}
-                    className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
-                  >
+                <div className="flex gap-3 pt-2">
+                  <button type="button" onClick={closeCategoryModal}
+                    className="flex-1 px-4 py-2.5 text-sm font-semibold bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
                     Cancelar
                   </button>
-                  <button
-                    type="submit"
-                    className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
-                  >
+                  <button type="submit"
+                    className="flex-1 px-4 py-2.5 text-sm font-semibold bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-all active:scale-95">
                     {editingCategory ? "Actualizar" : "Crear"}
                   </button>
                 </div>
@@ -484,103 +431,54 @@ export default function TaxonomyManagePage() {
 
         {/* Modal de Subcategoría */}
         {showSubcategoryModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6">
-              <h2 className="text-2xl font-bold mb-6 text-gray-800">
-                {editingSubcategory ? "Editar Subcategoría" : "Nueva Subcategoría"}
-              </h2>
-              <form onSubmit={handleSubmitSubcategory} className="space-y-4">
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 max-w-md w-full">
+              <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-800">
+                <h2 className="text-lg font-bold text-gray-900 dark:text-white">
+                  {editingSubcategory ? "Editar Subcategoría" : "Nueva Subcategoría"}
+                </h2>
+                <button onClick={closeSubcategoryModal} className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+              </div>
+              <form onSubmit={handleSubmitSubcategory} className="p-6 space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Nombre *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                    value={subcategoryForm.name}
-                    onChange={(e) => {
-                      const name = e.target.value;
-                      setSubcategoryForm({
-                        ...subcategoryForm,
-                        name,
-                        slug: editingSubcategory ? subcategoryForm.slug : generateSlug(name)
-                      });
-                    }}
-                    placeholder="Ej: Socket AM5"
-                  />
+                  <label className={lbl}>Nombre *</label>
+                  <input type="text" required className={inp} value={subcategoryForm.name}
+                    onChange={(e) => { const name = e.target.value; setSubcategoryForm({ ...subcategoryForm, name, slug: editingSubcategory ? subcategoryForm.slug : generateSlug(name) }); }}
+                    placeholder="Ej: Socket AM5" />
                 </div>
-
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Slug *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none font-mono text-sm"
-                    value={subcategoryForm.slug}
-                    onChange={(e) => setSubcategoryForm({ ...subcategoryForm, slug: e.target.value })}
-                    placeholder="ej: socket-am5"
-                  />
+                  <label className={lbl}>Slug *</label>
+                  <input type="text" required className={`${inp} font-mono`} value={subcategoryForm.slug}
+                    onChange={(e) => setSubcategoryForm({ ...subcategoryForm, slug: e.target.value })} placeholder="ej: socket-am5" />
                 </div>
-
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Categoría *
-                  </label>
-                  <select
-                    required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                    value={subcategoryForm.category_id}
-                    onChange={(e) => setSubcategoryForm({ ...subcategoryForm, category_id: parseInt(e.target.value) })}
-                  >
+                  <label className={lbl}>Categoría *</label>
+                  <select required className={inp} value={subcategoryForm.category_id}
+                    onChange={(e) => setSubcategoryForm({ ...subcategoryForm, category_id: parseInt(e.target.value) })}>
                     <option value="">Seleccionar categoría...</option>
-                    {categories.map(cat => (
-                      <option key={cat.id} value={cat.id}>{cat.name}</option>
-                    ))}
+                    {categories.map(cat => <option key={cat.id} value={cat.id}>{cat.name}</option>)}
                   </select>
                 </div>
-
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Descripción
-                  </label>
-                  <textarea
-                    rows={2}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                    value={subcategoryForm.description}
-                    onChange={(e) => setSubcategoryForm({ ...subcategoryForm, description: e.target.value })}
-                    placeholder="Descripción opcional"
-                  />
+                  <label className={lbl}>Descripción</label>
+                  <textarea rows={2} className={`${inp} resize-none`} value={subcategoryForm.description}
+                    onChange={(e) => setSubcategoryForm({ ...subcategoryForm, description: e.target.value })} placeholder="Descripción opcional" />
                 </div>
-
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Orden
-                  </label>
-                  <input
-                    type="number"
-                    min="0"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                    value={subcategoryForm.order}
-                    onChange={(e) => setSubcategoryForm({ ...subcategoryForm, order: parseInt(e.target.value) || 0 })}
-                  />
-                  <p className="text-xs text-gray-500 mt-1">Orden de aparición (menor = primero)</p>
+                  <label className={lbl}>Orden</label>
+                  <input type="number" min="0" className={inp} value={subcategoryForm.order}
+                    onChange={(e) => setSubcategoryForm({ ...subcategoryForm, order: parseInt(e.target.value) || 0 })} />
+                  <p className="text-xs text-gray-400 mt-1">Orden de aparición (menor = primero)</p>
                 </div>
-
-                <div className="flex gap-3 pt-4">
-                  <button
-                    type="button"
-                    onClick={closeSubcategoryModal}
-                    className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
-                  >
+                <div className="flex gap-3 pt-2">
+                  <button type="button" onClick={closeSubcategoryModal}
+                    className="flex-1 px-4 py-2.5 text-sm font-semibold bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
                     Cancelar
                   </button>
-                  <button
-                    type="submit"
-                    className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
-                  >
+                  <button type="submit"
+                    className="flex-1 px-4 py-2.5 text-sm font-semibold bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-all active:scale-95">
                     {editingSubcategory ? "Actualizar" : "Crear"}
                   </button>
                 </div>

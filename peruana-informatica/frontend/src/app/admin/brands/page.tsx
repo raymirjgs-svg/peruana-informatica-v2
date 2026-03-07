@@ -113,7 +113,7 @@ export default function BrandsAdminPage() {
 
   return (
     <AdminLayout>
-      <div className="p-6">
+      <div className="space-y-6">
         <PageHeader
           title="Marcas — Carrusel de Logos"
           description="Gestiona qué marcas aparecen en la tira de logos del inicio"
@@ -122,32 +122,32 @@ export default function BrandsAdminPage() {
         />
 
         {/* Stats */}
-        <div className="grid grid-cols-3 gap-4 mb-8">
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700 shadow-sm">
-            <p className="text-xs text-gray-500 uppercase tracking-wide font-medium">Total marcas</p>
+        <div className="grid grid-cols-3 gap-4">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl p-4 border border-gray-100 dark:border-gray-800">
+            <p className="text-xs text-gray-400 uppercase tracking-wide font-semibold">Total marcas</p>
             <p className="text-3xl font-bold text-gray-900 dark:text-white mt-1">{brands.length}</p>
           </div>
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700 shadow-sm">
-            <p className="text-xs text-gray-500 uppercase tracking-wide font-medium">Con logo</p>
+          <div className="bg-white dark:bg-gray-900 rounded-2xl p-4 border border-gray-100 dark:border-gray-800">
+            <p className="text-xs text-gray-400 uppercase tracking-wide font-semibold">Con logo</p>
             <p className="text-3xl font-bold text-blue-600 mt-1">{withLogo}</p>
           </div>
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700 shadow-sm">
-            <p className="text-xs text-gray-500 uppercase tracking-wide font-medium">En carrusel</p>
-            <p className="text-3xl font-bold text-green-600 mt-1">{inCarousel}</p>
+          <div className="bg-white dark:bg-gray-900 rounded-2xl p-4 border border-gray-100 dark:border-gray-800">
+            <p className="text-xs text-gray-400 uppercase tracking-wide font-semibold">En carrusel</p>
+            <p className="text-3xl font-bold text-emerald-600 mt-1">{inCarousel}</p>
           </div>
         </div>
 
         {/* Vista previa mini del carrusel */}
         {inCarousel > 0 && (
-          <div className="mb-6">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-4">
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">
               Vista previa del carrusel ({inCarousel} marcas)
             </p>
-            <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-xl p-4 flex flex-wrap gap-6 items-center overflow-hidden">
+            <div className="flex flex-wrap gap-6 items-center">
               {brands.filter((b) => b.show_in_carousel && b.logo).map((b) => {
                 const src = getLogoSrc(b.logo);
                 return src ? (
-                  <img key={b.id} src={src} alt={b.name} className="h-8 object-contain opacity-70" title={b.name} />
+                  <img key={b.id} src={src} alt={b.name} className="h-7 object-contain opacity-60" title={b.name} />
                 ) : null;
               })}
             </div>
@@ -155,55 +155,53 @@ export default function BrandsAdminPage() {
         )}
 
         {/* Búsqueda */}
-        <div className="relative mb-4">
+        <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
           <input
             type="text"
             placeholder="Buscar marca..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-sm focus:ring-2 focus:ring-blue-500"
+            className="w-full pl-10 pr-4 py-2.5 text-sm bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-gray-100 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
           />
         </div>
 
         {/* Lista */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
-          <div className="p-4 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
-            <h2 className="font-bold text-gray-900 dark:text-white">
-              {filtered.length} marcas
-            </h2>
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden">
+          <div className="px-5 py-3.5 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
+            <p className="text-sm font-semibold text-gray-900 dark:text-white">{filtered.length} marcas</p>
             <p className="text-xs text-gray-400">SVG, PNG, JPG o WebP · máx. 2 MB</p>
           </div>
 
           {loading ? (
-            <div className="p-8 text-center text-gray-400">Cargando...</div>
+            <div className="p-10 text-center text-sm text-gray-400">Cargando...</div>
           ) : (
-            <div className="divide-y divide-gray-100 dark:divide-gray-700">
+            <div className="divide-y divide-gray-100 dark:divide-gray-800">
               {filtered.map((brand) => {
                 const src = getLogoSrc(brand.logo);
                 return (
-                  <div key={brand.id} className="flex items-center gap-4 px-4 py-3">
+                  <div key={brand.id} className="flex items-center gap-4 px-5 py-3 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
 
                     {/* Logo preview */}
-                    <div className="w-16 h-10 flex items-center justify-center bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-100 dark:border-gray-700 flex-shrink-0">
+                    <div className="w-16 h-10 flex items-center justify-center bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shrink-0">
                       {src ? (
                         <img src={src} alt={brand.name} className="max-h-8 max-w-[56px] object-contain" />
                       ) : (
-                        <ImageOff className="h-5 w-5 text-gray-300" />
+                        <ImageOff className="h-4 w-4 text-gray-300 dark:text-gray-600" />
                       )}
                     </div>
 
                     {/* Nombre */}
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold text-gray-900 dark:text-white">{brand.name}</p>
-                      <p className="text-xs text-gray-400">{brand.slug}</p>
+                      <p className="text-xs text-gray-400 font-mono">{brand.slug}</p>
                     </div>
 
                     {/* Estado carrusel */}
-                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium flex-shrink-0 ${
+                    <span className={`shrink-0 text-xs px-2.5 py-1 rounded-full font-semibold ${
                       brand.show_in_carousel
-                        ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-                        : 'bg-gray-100 text-gray-500 dark:bg-gray-700'
+                        ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400'
+                        : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400'
                     }`}>
                       {brand.show_in_carousel ? 'En carrusel' : 'Oculto'}
                     </span>
@@ -270,3 +268,4 @@ export default function BrandsAdminPage() {
     </AdminLayout>
   );
 }
+

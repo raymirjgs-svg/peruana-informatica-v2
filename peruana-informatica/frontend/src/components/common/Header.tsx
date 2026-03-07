@@ -203,7 +203,7 @@ export function Header() {
                 <span>⭐</span> Destacados
               </Link>
               <Link href="/products?clearance=true" className="hover:text-red-400 transition-colors font-medium flex items-center gap-1 hover:bg-white/5 px-3 py-1 rounded-md">
-                <span>🔥</span> Ofertas
+                <span>🔥</span> Remates
               </Link>
             </div>
 
@@ -288,7 +288,7 @@ export function Header() {
                 <span>⭐</span> Destacados
               </Link>
               <Link href="/products?clearance=true" className="block text-lg font-medium text-red-400 py-3 border-b border-gray-800/50 flex items-center gap-3" onClick={() => setMobileMenuOpen(false)}>
-                <span>🔥</span> Ofertas
+                <span>🔥</span> Remates
               </Link>
 
               <div className="pt-4 space-y-2">

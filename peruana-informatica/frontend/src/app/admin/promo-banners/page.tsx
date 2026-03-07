@@ -154,15 +154,15 @@ export default function PromoBannersPage() {
                 <div className="flex items-center gap-3">
                     <LayoutTemplate className="w-8 h-8 text-purple-600" />
                     <div>
-                        <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Banners Publicitarios</h1>
-                        <p className="text-sm text-gray-500">Gestiona los popups y banners promocionales</p>
+                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Banners Publicitarios</h1>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">Gestiona los popups y banners promocionales</p>
                     </div>
                 </div>
 
                 <div className="grid grid-cols-1 xl:grid-cols-5 gap-6">
                     {/* Form */}
                     <div className="xl:col-span-2">
-                        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+                        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6">
                             <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
                                 {editingId ? 'Editar Banner' : 'Nuevo Banner'}
                             </h2>
@@ -306,8 +306,8 @@ export default function PromoBannersPage() {
 
                     {/* Lista */}
                     <div className="xl:col-span-3">
-                        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
-                            <div className="p-4 border-b dark:border-gray-700 flex items-center justify-between">
+                        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800">
+                            <div className="p-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
                                 <h2 className="font-semibold text-gray-800 dark:text-white">
                                     Banners ({banners.length})
                                 </h2>
@@ -321,7 +321,7 @@ export default function PromoBannersPage() {
                                     <p>No hay banners. Crea el primero.</p>
                                 </div>
                             ) : (
-                                <div className="divide-y dark:divide-gray-700">
+                                <div className="divide-y divide-gray-100 dark:divide-gray-800">
                                     {banners.map(banner => (
                                         <div key={banner.id} className={`flex gap-3 p-4 hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors ${editingId === banner.id ? 'bg-purple-50 dark:bg-purple-900/10' : ''}`}>
                                             {/* Thumbnail */}

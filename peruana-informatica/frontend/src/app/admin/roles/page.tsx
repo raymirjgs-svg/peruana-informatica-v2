@@ -64,7 +64,7 @@ export default function RolesPage() {
 
     return (
         <AdminLayout>
-            <div className="p-6 space-y-8">
+            <div className="space-y-5">
                 <PageHeader
                     title="Roles y Permisos"
                     description="Gestiona roles de usuario y sus permisos"

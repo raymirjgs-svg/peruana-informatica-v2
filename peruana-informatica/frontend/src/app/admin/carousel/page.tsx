@@ -249,56 +249,56 @@ export default function AdminCarouselPage() {
 
   return (
     <AdminLayout>
-      <div className="px-6 py-6">
+      <div className="space-y-5">
         {toast && (
           <div className={`fixed top-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg text-white ${toast.type==='success'?'bg-emerald-600':'bg-red-600'} flex items-center gap-2`}>
             <span>{toast.type === 'success' ? '✓' : '⚠'}</span>
             <span>{toast.message}</span>
           </div>
         )}
-        <div className="mb-6 flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-800">Carrusel</h1>
-          <p className="text-gray-500 mt-1">Gestiona los banners principales de tu tienda</p>
-        </div>
-        <Button onClick={() => setShowCreateModal(true)} size="lg">
-          <span className="text-xl">+</span>
-          Nuevo Slide
-        </Button>
-      </div>
-
-      {loading && <p className="text-center py-8 text-gray-500">Cargando slides...</p>}
-      {error && <p className="text-red-600" role="alert">{error}</p>}
-
-      <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
-        {slides.length === 0 && !loading && (
-          <div className="p-8 text-center text-gray-500">No hay slides para mostrar</div>
-        )}
-        {slides.map((s) => (
-          <div key={s.id} className="p-4 border-b border-gray-100 hover:bg-gray-50 transition-colors grid grid-cols-1 md:grid-cols-5 gap-4 items-center">
-            <div className="md:col-span-2">
-              <div className="font-semibold text-gray-800">{s.title}</div>
-              <div className="text-xs text-gray-500 mt-1">{s.description}</div>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/20 shrink-0">
+              <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
             </div>
-            <div className="text-sm">
-              <span className={`px-2 py-1 rounded-full text-xs font-medium ${s.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
-                {s.isActive ? '✓ Activo' : 'Inactivo'}
-              </span>
-            </div>
-            <div className="text-sm text-gray-600">
-              Orden: {s.order}
-            </div>
-            <div className="flex gap-2 justify-end">
-              <Button size="sm" variant="secondary" onClick={() => startEdit(s)}>
-                ✏️ Editar
-              </Button>
-              <Button size="sm" variant="danger" onClick={() => onDelete(s.id)} isLoading={deletingId === s.id}>
-                🗑️ Eliminar
-              </Button>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Carrusel</h1>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Gestiona los banners principales de tu tienda</p>
             </div>
           </div>
-        ))}
-      </div>
+          <Button onClick={() => setShowCreateModal(true)} size="lg">
+            <span className="text-lg">+</span>
+            Nuevo Slide
+          </Button>
+        </div>
+
+        {loading && <div className="flex justify-center py-10"><div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600" /></div>}
+        {error && <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/30 px-4 py-3 rounded-xl" role="alert">{error}</p>}
+
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden">
+          {slides.length === 0 && !loading && (
+            <div className="p-10 text-center text-gray-400 dark:text-gray-500">No hay slides para mostrar</div>
+          )}
+          {slides.map((s) => (
+            <div key={s.id} className="p-4 border-b border-gray-100 dark:border-gray-800 last:border-0 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors grid grid-cols-1 md:grid-cols-5 gap-4 items-center">
+              <div className="md:col-span-2">
+                <div className="font-semibold text-gray-900 dark:text-white">{s.title}</div>
+                <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 truncate">{s.description}</div>
+              </div>
+              <div className="text-sm">
+                <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${s.isActive ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400'}`}>
+                  <span className={`w-1.5 h-1.5 rounded-full ${s.isActive ? 'bg-emerald-500' : 'bg-gray-400'}`} />
+                  {s.isActive ? 'Activo' : 'Inactivo'}
+                </span>
+              </div>
+              <div className="text-sm text-gray-500 dark:text-gray-400">Orden: {s.order}</div>
+              <div className="flex gap-2 justify-end">
+                <Button size="sm" variant="secondary" onClick={() => startEdit(s)}>Editar</Button>
+                <Button size="sm" variant="danger" onClick={() => onDelete(s.id)} isLoading={deletingId === s.id}>Eliminar</Button>
+              </div>
+            </div>
+          ))}
+        </div>
 
       {/* Modal Crear Slide */}
       <Modal isOpen={showCreateModal} onClose={() => setShowCreateModal(false)} title="Crear Nuevo Slide" size="lg">

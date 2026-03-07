@@ -160,10 +160,10 @@ export default function SettingsPage() {
   if (loading) {
     return (
       <AdminLayout>
-        <div className="p-6 flex items-center justify-center min-h-[400px]">
+        <div className="flex items-center justify-center h-64">
           <div className="text-center">
-            <Loader2 className="h-12 w-12 animate-spin text-blue-600 mx-auto" />
-            <p className="mt-4 text-gray-600 dark:text-gray-300">Cargando configuración...</p>
+            <Loader2 className="h-10 w-10 animate-spin text-blue-600 mx-auto" />
+            <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">Cargando configuración...</p>
           </div>
         </div>
       </AdminLayout>
@@ -180,33 +180,27 @@ export default function SettingsPage() {
 
   return (
     <AdminLayout>
-      <div className="p-6 max-w-5xl mx-auto">
+      <div className="max-w-5xl mx-auto space-y-5">
         {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-4 mb-2">
-            <div className="p-3 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl shadow-lg">
-              <Settings className="h-8 w-8 text-white" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
-                Configuración del Sistema
-              </h1>
-              <p className="text-gray-500 dark:text-gray-300 mt-1">
-                Personaliza el funcionamiento y apariencia de tu tienda
-              </p>
-            </div>
+        <div className="flex items-center gap-3">
+          <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20 shrink-0">
+            <Settings className="h-5 w-5 text-white" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Configuración del Sistema</h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Personaliza el funcionamiento y apariencia de tu tienda</p>
           </div>
         </div>
 
         {/* Tabs */}
-        <div className="flex overflow-x-auto gap-2 mb-6 pb-2">
+        <div className="flex overflow-x-auto gap-2 pb-1">
           {tabs.map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all whitespace-nowrap ${activeTab === tab.id
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all whitespace-nowrap ${activeTab === tab.id
                 ? 'bg-blue-600 text-white shadow-md'
-                : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 border border-transparent hover:border-gray-200 dark:hover:border-gray-600'
+                : 'bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 border border-gray-200 dark:border-gray-700'
                 }`}
             >
               <tab.icon className="h-5 w-5" />
@@ -230,7 +224,7 @@ export default function SettingsPage() {
           </div>
         )}
 
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden min-h-[400px]">
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden min-h-[400px]">
 
           {/* PRICING TAB */}
           {activeTab === 'pricing' && (
@@ -580,7 +574,7 @@ export default function SettingsPage() {
           )}
 
           {/* Footer Actions */}
-          <div className="px-6 py-4 bg-gray-50 dark:bg-gray-700/50 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-3">
+          <div className="px-6 py-4 bg-gray-50 dark:bg-gray-900/50 border-t border-gray-100 dark:border-gray-800 flex justify-end gap-3">
             <button
               onClick={handleSave}
               disabled={saving}

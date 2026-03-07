@@ -54,7 +54,7 @@ export default function PagesPage() {
 
   return (
     <AdminLayout>
-      <div className="p-6 space-y-8">
+      <div className="space-y-5">
         <PageHeader
           title="Gestión de Páginas"
           description="Crea y administra el contenido estático de tu sitio web"

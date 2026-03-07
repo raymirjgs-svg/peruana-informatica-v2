@@ -210,7 +210,7 @@ export default function AnnouncementsPage() {
 
   return (
     <AdminLayout>
-      <div className="p-6">
+      <div className="space-y-5">
         <PageHeader
           title="Barra de Anuncios"
           description="Gestiona los mensajes que aparecen en la barra roja superior del sitio"
@@ -227,24 +227,24 @@ export default function AnnouncementsPage() {
         />
 
         {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700 shadow-sm">
-            <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide font-medium">Total</p>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-4">
+            <p className="text-xs text-gray-400 font-semibold uppercase tracking-wide">Total</p>
             <p className="text-3xl font-bold text-gray-900 dark:text-white mt-1">{items.length}</p>
           </div>
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700 shadow-sm">
-            <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide font-medium">Activos</p>
-            <p className="text-3xl font-bold text-green-600 mt-1">{activeCount}</p>
+          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-4">
+            <p className="text-xs text-gray-400 font-semibold uppercase tracking-wide">Activos</p>
+            <p className="text-3xl font-bold text-emerald-600 mt-1">{activeCount}</p>
           </div>
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700 shadow-sm">
-            <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide font-medium">Inactivos</p>
+          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-4">
+            <p className="text-xs text-gray-400 font-semibold uppercase tracking-wide">Inactivos</p>
             <p className="text-3xl font-bold text-gray-400 mt-1">{items.length - activeCount}</p>
           </div>
         </div>
 
         {/* Vista previa */}
         {activeCount > 0 && (
-          <div className="mb-6 rounded-xl overflow-hidden">
+          <div className="rounded-xl overflow-hidden">
             <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Vista previa de la barra</p>
             <div className="bg-gradient-to-r from-red-800 to-red-600 text-white text-xs font-semibold px-4 py-2 flex items-center gap-6 overflow-hidden">
               {items.filter(i => i.is_active).map((i) => (
@@ -259,8 +259,8 @@ export default function AnnouncementsPage() {
         )}
 
         {/* Lista */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
-          <div className="p-4 border-b border-gray-100 dark:border-gray-700">
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800">
+          <div className="p-4 border-b border-gray-100 dark:border-gray-800">
             <h2 className="font-bold text-gray-900 dark:text-white">Anuncios configurados</h2>
           </div>
 
@@ -272,7 +272,7 @@ export default function AnnouncementsPage() {
               <p>No hay anuncios. Crea el primero.</p>
             </div>
           ) : (
-            <div className="divide-y divide-gray-100 dark:divide-gray-700">
+            <div className="divide-y divide-gray-100 dark:divide-gray-800">
               {items.map((item) => (
                 <div
                   key={item.id}

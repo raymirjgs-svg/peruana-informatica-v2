@@ -172,10 +172,10 @@ export default function AdminQuotations() {
   if (loading) {
     return (
       <AdminLayout>
-        <div className="p-6 flex items-center justify-center min-h-[400px]">
+        <div className="flex items-center justify-center h-64">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600 dark:text-gray-300">Cargando cotizaciones...</p>
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mx-auto"></div>
+            <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">Cargando cotizaciones...</p>
           </div>
         </div>
       </AdminLayout>
@@ -184,147 +184,68 @@ export default function AdminQuotations() {
 
   return (
     <AdminLayout>
-      <div className="p-6">
+      <div className="space-y-5">
         {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-4 mb-2">
-            <div className="p-3 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl shadow-lg">
-              <FileText className="h-8 w-8 text-white" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
-                Gestión de Cotizaciones
-              </h1>
-              <p className="text-gray-500 dark:text-gray-300 mt-1">
-                Administra y da seguimiento a las cotizaciones generadas
-              </p>
-            </div>
+        <div className="flex items-center gap-3">
+          <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20 shrink-0">
+            <FileText className="h-5 w-5 text-white" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Cotizaciones</h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Administra y da seguimiento a las cotizaciones generadas</p>
           </div>
         </div>
 
         {/* Métricas */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-lg border border-gray-100 dark:border-gray-700">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Total Cotizaciones</p>
-                <p className="text-3xl font-bold text-gray-900 dark:text-white mt-1">{metrics.total}</p>
-              </div>
-              <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-xl">
-                <FileText className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-              </div>
-            </div>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-4">
+            <p className="text-xs text-gray-400 font-semibold uppercase tracking-wide">Total</p>
+            <p className="text-3xl font-bold text-gray-900 dark:text-white mt-1">{metrics.total}</p>
           </div>
-
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-lg border border-gray-100 dark:border-gray-700">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Hoy</p>
-                <p className="text-3xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">{metrics.today}</p>
-              </div>
-              <div className="p-3 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl">
-                <Calendar className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
-              </div>
-            </div>
+          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-4">
+            <p className="text-xs text-gray-400 font-semibold uppercase tracking-wide">Hoy</p>
+            <p className="text-3xl font-bold text-emerald-600 mt-1">{metrics.today}</p>
           </div>
-
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-lg border border-gray-100 dark:border-gray-700">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Esta Semana</p>
-                <p className="text-3xl font-bold text-purple-600 dark:text-purple-400 mt-1">{metrics.thisWeek}</p>
-              </div>
-              <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-xl">
-                <TrendingUp className="h-6 w-6 text-purple-600 dark:text-purple-400" />
-              </div>
-            </div>
+          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-4">
+            <p className="text-xs text-gray-400 font-semibold uppercase tracking-wide">Esta Semana</p>
+            <p className="text-3xl font-bold text-purple-600 mt-1">{metrics.thisWeek}</p>
           </div>
-
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-lg border border-gray-100 dark:border-gray-700">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Valor Total</p>
-                <p className="text-2xl font-bold text-amber-600 dark:text-amber-400 mt-1">
-                  S/. {metrics.totalValue.toLocaleString('es-PE', { minimumFractionDigits: 2 })}
-                </p>
-              </div>
-              <div className="p-3 bg-amber-100 dark:bg-amber-900/30 rounded-xl">
-                <DollarSign className="h-6 w-6 text-amber-600 dark:text-amber-400" />
-              </div>
-            </div>
+          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-4">
+            <p className="text-xs text-gray-400 font-semibold uppercase tracking-wide">Valor Total</p>
+            <p className="text-xl font-bold text-amber-600 mt-1">
+              S/ {metrics.totalValue.toLocaleString('es-PE', { minimumFractionDigits: 2 })}
+            </p>
           </div>
         </div>
 
         {/* Filtros */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-4 mb-6 shadow-lg border border-gray-100 dark:border-gray-700">
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-4">
           <div className="flex flex-col md:flex-row gap-4">
-            {/* Búsqueda */}
-            <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Buscar por código, cliente, email o empresa..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                />
-              </div>
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Buscar por código, cliente, email o empresa..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2.5 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-gray-900 dark:text-white placeholder:text-gray-400"
+              />
             </div>
-
-            {/* Filtro por fecha */}
-            <div className="flex gap-2">
-              <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-700 rounded-xl p-1">
-                <button
-                  onClick={() => setDateFilter('all')}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${dateFilter === 'all'
-                      ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow'
-                      : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
-                    }`}
-                >
-                  Todas
+            <div className="flex p-1 bg-gray-100 dark:bg-gray-800 rounded-xl">
+              {(['all', 'today', 'week', 'month'] as const).map((f) => (
+                <button key={f} onClick={() => setDateFilter(f)}
+                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${dateFilter === f ? 'bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700'}`}>
+                  {f === 'all' ? 'Todas' : f === 'today' ? 'Hoy' : f === 'week' ? 'Semana' : 'Mes'}
                 </button>
-                <button
-                  onClick={() => setDateFilter('today')}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${dateFilter === 'today'
-                      ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow'
-                      : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
-                    }`}
-                >
-                  Hoy
-                </button>
-                <button
-                  onClick={() => setDateFilter('week')}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${dateFilter === 'week'
-                      ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow'
-                      : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
-                    }`}
-                >
-                  Semana
-                </button>
-                <button
-                  onClick={() => setDateFilter('month')}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${dateFilter === 'month'
-                      ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow'
-                      : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
-                    }`}
-                >
-                  Mes
-                </button>
-              </div>
+              ))}
             </div>
           </div>
-
-          {/* Resultados */}
           <div className="mt-3 flex items-center justify-between text-sm">
             <span className="text-gray-500 dark:text-gray-400">
-              Mostrando <span className="font-semibold text-gray-900 dark:text-white">{filteredQuotations.length}</span> de {quotations.length} cotizaciones
+              <span className="font-semibold text-gray-900 dark:text-white">{filteredQuotations.length}</span> de {quotations.length} cotizaciones
             </span>
             {(searchTerm || dateFilter !== 'all') && (
-              <button
-                onClick={() => { setSearchTerm(''); setDateFilter('all'); }}
-                className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
-              >
+              <button onClick={() => { setSearchTerm(''); setDateFilter('all'); }} className="text-blue-600 dark:text-blue-400 hover:underline font-medium text-xs">
                 Limpiar filtros
               </button>
             )}
@@ -332,15 +253,15 @@ export default function AdminQuotations() {
         </div>
 
         {/* Lista de Cotizaciones */}
-        <div className="space-y-4">
+        <div className="space-y-3">
           {filteredQuotations.map((quotation) => (
             <div
               key={quotation.id || quotation.code}
-              className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden"
+              className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden"
             >
               {/* Header de la cotización */}
               <div
-                className="p-5 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors"
+                className="p-5 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
                 onClick={() => setExpandedId(expandedId === quotation.id ? null : quotation.id)}
               >
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -394,7 +315,7 @@ export default function AdminQuotations() {
 
               {/* Detalles expandidos */}
               {expandedId === quotation.id && (
-                <div className="border-t border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 p-5">
+                <div className="border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/50 p-5">
                   <div className="grid md:grid-cols-2 gap-6">
                     {/* Datos del Cliente */}
                     <div>
@@ -508,15 +429,11 @@ export default function AdminQuotations() {
           ))}
 
           {filteredQuotations.length === 0 && (
-            <div className="bg-white dark:bg-gray-800 rounded-xl p-12 text-center shadow-lg">
-              <FileText className="h-16 w-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                No hay cotizaciones
-              </h3>
-              <p className="text-gray-500 dark:text-gray-400">
-                {searchTerm || dateFilter !== 'all'
-                  ? 'No se encontraron cotizaciones con los filtros aplicados'
-                  : 'Aún no se han generado cotizaciones'}
+            <div className="bg-white dark:bg-gray-900 rounded-2xl border border-dashed border-gray-300 dark:border-gray-700 p-12 text-center">
+              <FileText className="h-12 w-12 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
+              <h3 className="text-base font-semibold text-gray-700 dark:text-gray-300 mb-1">No hay cotizaciones</h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                {searchTerm || dateFilter !== 'all' ? 'No se encontraron cotizaciones con los filtros aplicados' : 'Aún no se han generado cotizaciones'}
               </p>
             </div>
           )}

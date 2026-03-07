@@ -32,8 +32,8 @@ export default function WishlistsPage() {
     if (loading) {
         return (
             <AdminLayout>
-                <div className="flex justify-center items-center h-screen">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                <div className="flex justify-center items-center h-64">
+                    <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
                 </div>
             </AdminLayout>
         );
@@ -41,7 +41,7 @@ export default function WishlistsPage() {
 
     return (
         <AdminLayout>
-            <div className="p-6 space-y-8">
+            <div className="space-y-5">
                 <PageHeader
                     title="Análisis de Favoritos"
                     description="Descubre qué productos desean más tus clientes"
@@ -74,7 +74,7 @@ export default function WishlistsPage() {
                 </div>
 
                 {/* Top Products */}
-                <MotionWrapper className="bg-white/70 dark:bg-gray-900/40 backdrop-blur-xl rounded-2xl border border-gray-100 dark:border-gray-800 p-6 shadow-sm">
+                <MotionWrapper className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6">
                     <div className="flex items-center justify-between mb-6">
                         <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                             <TrendingUp className="h-5 w-5 text-pink-500" />

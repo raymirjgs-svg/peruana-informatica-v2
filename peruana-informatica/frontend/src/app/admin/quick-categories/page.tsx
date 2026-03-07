@@ -227,7 +227,7 @@ export default function QuickCategoriesPage() {
 
   return (
     <AdminLayout>
-      <div className="p-6">
+      <div className="space-y-5">
         <PageHeader
           title="Accesos Rápidos"
           description="Gestiona los iconos de navegación rápida debajo del carrusel principal"

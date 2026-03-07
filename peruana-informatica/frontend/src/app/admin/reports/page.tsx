@@ -48,10 +48,10 @@ export default function ReportsPage() {
   if (loading) {
     return (
       <AdminLayout>
-        <div className="flex justify-center items-center h-screen bg-gray-50/50">
-          <div className="flex flex-col items-center gap-4">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
-            <p className="text-gray-500 animate-pulse">Generando reportes...</p>
+        <div className="flex justify-center items-center h-64">
+          <div className="flex flex-col items-center gap-3">
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600"></div>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Generando reportes...</p>
           </div>
         </div>
       </AdminLayout>
@@ -60,14 +60,14 @@ export default function ReportsPage() {
 
   return (
     <AdminLayout>
-      <div className="p-6 space-y-8 min-h-screen bg-gray-50/50">
+      <div className="space-y-5">
         <PageHeader
           title="Reportes Avanzados"
           description="Inteligencia de negocios y análisis predictivo de ventas"
           icon={BarChart3}
           action={
             <div className="flex items-center gap-3">
-              <div className="flex bg-white rounded-lg p-1 shadow-sm border border-gray-100">
+              <div className="flex bg-white dark:bg-gray-800 rounded-lg p-1 shadow-sm border border-gray-100 dark:border-gray-700">
                 {['7d', '30d', '90d'].map((p) => (
                   <button
                     key={p}
@@ -135,14 +135,14 @@ export default function ReportsPage() {
         {/* Charts Section */}
         <div className="grid gap-6 lg:grid-cols-3">
           {/* Main Sales Chart */}
-          <MotionWrapper delay={0.5} className="lg:col-span-2 bg-white/80 backdrop-blur-xl rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-800">
+          <MotionWrapper delay={0.5} className="lg:col-span-2 bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                   <TrendingUp className="h-5 w-5 text-indigo-500" />
                   Evolución de Ingresos
                 </h2>
-                <p className="text-sm text-gray-500 mt-1">Comportamiento de ventas en el periodo seleccionado</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Comportamiento de ventas en el periodo seleccionado</p>
               </div>
               <div className="h-8 w-8 bg-indigo-50 rounded-lg flex items-center justify-center">
                 <Calendar className="h-4 w-4 text-indigo-600" />
@@ -161,14 +161,14 @@ export default function ReportsPage() {
           </MotionWrapper>
 
           {/* Quick Reports List */}
-          <MotionWrapper delay={0.6} className="bg-white/80 backdrop-blur-xl rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-800">
+          <MotionWrapper delay={0.6} className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6">
             <div className="flex items-center gap-3 mb-6">
               <div className="p-2 bg-blue-50 rounded-lg">
                 <FileText className="h-5 w-5 text-blue-600" />
               </div>
               <div>
-                <h2 className="text-lg font-bold text-gray-900">Reportes Disponibles</h2>
-                <p className="text-xs text-gray-500">Descarga rápida</p>
+                <h2 className="text-lg font-bold text-gray-900 dark:text-white">Reportes Disponibles</h2>
+                <p className="text-xs text-gray-500 dark:text-gray-400">Descarga rápida</p>
               </div>
             </div>
 
@@ -181,7 +181,7 @@ export default function ReportsPage() {
               ].map((report, i) => (
                 <button
                   key={i}
-                  className="w-full group flex items-start gap-4 p-3 rounded-xl hover:bg-gray-50 transition-all border border-transparent hover:border-gray-100 hover:shadow-sm"
+                  className="w-full group flex items-start gap-4 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-all border border-transparent hover:border-gray-100 dark:hover:border-gray-700"
                 >
                   <div className={`mt-1 h-2 w-2 rounded-full bg-${report.color}-500 group-hover:scale-125 transition-transform`} />
                   <div className="text-left flex-1">

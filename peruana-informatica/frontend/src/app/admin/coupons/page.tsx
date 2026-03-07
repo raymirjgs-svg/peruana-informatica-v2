@@ -81,7 +81,7 @@ export default function CouponsPage() {
 
   return (
     <AdminLayout>
-      <div className="p-6">
+      <div className="space-y-5">
         <PageHeader
           title="Cupones de Descuento"
           description="Gestiona cupones y códigos promocionales"
@@ -97,7 +97,7 @@ export default function CouponsPage() {
           }
         />
 
-        <div className="grid gap-6 md:grid-cols-3 mb-8">
+        <div className="grid gap-4 md:grid-cols-3">
           <StatsCard
             title="Cupones Activos"
             value={activeCoupons.toString()}
@@ -121,9 +121,9 @@ export default function CouponsPage() {
           />
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 border border-gray-100 dark:border-gray-700">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Lista de Cupones</h2>
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-5">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-5">
+            <h2 className="text-lg font-bold text-gray-900 dark:text-white">Lista de Cupones</h2>
             <div className="relative w-full md:w-64">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
               <input
@@ -131,7 +131,7 @@ export default function CouponsPage() {
                 placeholder="Buscar cupón..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full pl-10 pr-4 py-2 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
               />
             </div>
           </div>
@@ -143,7 +143,7 @@ export default function CouponsPage() {
           ) : (
             <div className="space-y-4">
               {filteredCoupons.map((coupon) => (
-                <div key={coupon.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-md transition-shadow bg-white dark:bg-gray-800">
+                <div key={coupon.id} className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl p-4 hover:border-gray-200 dark:hover:border-gray-700 transition-all">
                   <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2 flex-wrap">

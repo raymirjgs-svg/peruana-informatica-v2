@@ -61,7 +61,7 @@ export default function DiscountsPage() {
 
   return (
     <AdminLayout>
-      <div className="p-6">
+      <div className="space-y-5">
         <PageHeader
           title="Descuentos y Promociones"
           description="Gestiona descuentos por categoría, producto o porcentaje"
@@ -77,7 +77,7 @@ export default function DiscountsPage() {
           }
         />
 
-        <div className="grid gap-6 md:grid-cols-3 mb-8">
+        <div className="grid gap-4 md:grid-cols-3">
           <StatsCard
             title="Descuentos Activos"
             value={activeCount.toString()}
@@ -94,9 +94,9 @@ export default function DiscountsPage() {
           />
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 border border-gray-100 dark:border-gray-700">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Lista de Descuentos</h2>
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-5">
+          <div className="flex items-center justify-between mb-5">
+            <h2 className="text-lg font-bold text-gray-900 dark:text-white">Lista de Descuentos</h2>
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
               <input
@@ -104,7 +104,7 @@ export default function DiscountsPage() {
                 placeholder="Buscar descuento..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
+                className="pl-10 pr-4 py-2 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
               />
             </div>
           </div>
@@ -116,9 +116,9 @@ export default function DiscountsPage() {
           ) : (
             <div className="grid gap-4 md:grid-cols-2">
               {filteredDiscounts.map(discount => (
-                <div key={discount.id} className={`border-2 rounded-lg p-4 hover:shadow-md transition-shadow relative ${discount.is_active
-                    ? 'border-green-200 bg-green-50 dark:bg-green-900/10 dark:border-green-800'
-                    : 'border-gray-200 bg-gray-50 dark:bg-gray-800 dark:border-gray-700'
+                <div key={discount.id} className={`rounded-2xl p-4 border transition-all relative ${discount.is_active
+                    ? 'border-emerald-200 dark:border-emerald-800/50 bg-emerald-50/50 dark:bg-emerald-950/20'
+                    : 'border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900/50'
                   }`}>
                   <div className="flex items-start justify-between mb-3">
                     <div>

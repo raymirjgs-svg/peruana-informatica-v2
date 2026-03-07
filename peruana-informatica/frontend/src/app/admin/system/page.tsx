@@ -71,16 +71,18 @@ export default function SystemStatusPage() {
 
     return (
         <AdminLayout>
-            <div className="p-6 max-w-7xl mx-auto">
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-                    <div>
-                        <h1 className="text-3xl font-bold text-gray-800 dark:text-white flex items-center gap-3">
-                            <Activity className="h-8 w-8 text-blue-600" />
-                            Estado del Sistema
-                        </h1>
-                        <p className="text-gray-500 dark:text-gray-400 mt-1">
+            <div className="max-w-7xl mx-auto space-y-5">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div className="flex items-center gap-3">
+                        <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/20 shrink-0">
+                            <Activity className="h-5 w-5 text-white" />
+                        </div>
+                        <div>
+                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Estado del Sistema</h1>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
                             Monitoreo en tiempo real de servicios y conexiones
                         </p>
+                        </div>
                     </div>
                     <button
                         onClick={handleRefresh}
@@ -109,7 +111,7 @@ export default function SystemStatusPage() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                             {/* Database Card */}
-                            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                            <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6">
                                 <div className="flex justify-between items-start mb-4">
                                     <div className="flex items-center gap-3">
                                         <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
@@ -139,7 +141,7 @@ export default function SystemStatusPage() {
                             </div>
 
                             {/* Gemini API Card */}
-                            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                            <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6">
                                 <div className="flex justify-between items-start mb-4">
                                     <div className="flex items-center gap-3">
                                         <div className="p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg">
@@ -179,7 +181,7 @@ export default function SystemStatusPage() {
                             </div>
 
                             {/* Google Auth Card */}
-                            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                            <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6">
                                 <div className="flex justify-between items-start mb-4">
                                     <div className="flex items-center gap-3">
                                         <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded-lg">
@@ -214,7 +216,7 @@ export default function SystemStatusPage() {
                             </div>
 
                             {/* External API Card */}
-                            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                            <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6">
                                 <div className="flex justify-between items-start mb-4">
                                     <div className="flex items-center gap-3">
                                         <div className="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
@@ -249,7 +251,7 @@ export default function SystemStatusPage() {
                         </div>
 
                         {/* System Info */}
-                        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6">
                             <h3 className="font-semibold text-lg text-gray-800 dark:text-white mb-6 flex items-center gap-2">
                                 <Server className="h-5 w-5 text-gray-500" />
                                 Recursos del Servidor

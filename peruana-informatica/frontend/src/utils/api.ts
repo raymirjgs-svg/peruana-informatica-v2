@@ -19,10 +19,17 @@ class ApiClient {
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
 
+    // Inject admin JWT for admin endpoints (client-side only)
+    const adminToken = typeof window !== 'undefined' ? localStorage.getItem('adminToken') : null;
+    const authHeader = adminToken && endpoint.includes('/admin/')
+      ? { Authorization: `Bearer ${adminToken}` }
+      : {};
+
     const config: RequestInit = {
       ...options,
       headers: {
         'Content-Type': 'application/json',
+        ...authHeader,
         ...options.headers,
       },
     };

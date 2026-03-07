@@ -287,11 +287,6 @@ const startServer = async () => {
       console.log(chalk.cyan(`📚 API Documentation: `) + chalk.blue.bold(`http://localhost:${PORT}/api-docs`));
       console.log(chalk.cyan(`📊 Health check:      `) + chalk.white(`http://localhost:${PORT}/health\n`));
       console.log(chalk.yellow('⏰ Server will stay running...'));
-
-      // Force process to stay alive
-      setInterval(() => {
-        // console.log('💓 Heartbeat');
-      }, 10000);
     });
 
     // Keep server reference to prevent process exit

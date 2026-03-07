@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import crypto from "crypto";
 
 // Credenciales básicas para desarrollo
 const ADMIN_CREDENTIALS = {
@@ -67,10 +68,8 @@ export const generateSessionToken = (
   res: Response,
   next: NextFunction,
 ) => {
-  // Generar un token simple para la sesión
-  const sessionToken = Buffer.from(`${Date.now()}-${Math.random()}`).toString(
-    "base64",
-  );
+  // Generar un token criptográficamente seguro para la sesión
+  const sessionToken = crypto.randomBytes(32).toString("base64");
   res.setHeader("X-Session-Token", sessionToken);
   next();
 };

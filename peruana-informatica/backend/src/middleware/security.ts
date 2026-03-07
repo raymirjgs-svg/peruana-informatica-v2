@@ -50,10 +50,16 @@ export const sanitizeInput = (req: Request, res: Response, next: NextFunction) =
   };
 
   req.body = sanitize(req.body);
-  // req.query es de solo lectura, no se puede modificar directamente
-  // req.params también es de solo lectura
-  // Solo sanitizamos req.body que es modificable
-  
+
+  // Sanitizar query params (el objeto sí es mutable aunque TypeScript lo marque readonly)
+  if (req.query && typeof req.query === 'object') {
+    const sanitizedQuery: Record<string, any> = {};
+    for (const key in req.query) {
+      sanitizedQuery[key] = sanitize(req.query[key]);
+    }
+    Object.assign(req.query, sanitizedQuery);
+  }
+
   next();
 };
 

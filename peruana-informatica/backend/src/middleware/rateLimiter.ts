@@ -10,6 +10,7 @@ export const apiLimiter = rateLimit({
     },
     standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
     legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+    validate: { xForwardedForHeader: false },
 });
 
 // Strict rate limiter for auth endpoints (login, register)
@@ -23,6 +24,7 @@ export const authLimiter = rateLimit({
     standardHeaders: true,
     legacyHeaders: false,
     skipSuccessfulRequests: true, // Don't count successful requests
+    validate: { xForwardedForHeader: false },
 });
 
 // Moderate limiter for creation endpoints (orders, contact)
@@ -35,6 +37,7 @@ export const createLimiter = rateLimit({
     },
     standardHeaders: true,
     legacyHeaders: false,
+    validate: { xForwardedForHeader: false },
 });
 
 // Very strict limiter for payment endpoints
@@ -47,4 +50,5 @@ export const paymentLimiter = rateLimit({
     },
     standardHeaders: true,
     legacyHeaders: false,
+    validate: { xForwardedForHeader: false },
 });

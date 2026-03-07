@@ -259,13 +259,13 @@ export class ProductController {
                         product: {
                             codigo: articulo.cod_articulo || articulo.id || code,
                             nombre: articulo.nombre || articulo.descripcion || 'Sin nombre',
-                            precio: parseFloat(articulo.pre_web) || parseFloat(articulo.pre_cli) || parseFloat(articulo.pre_cot) || 0,
-                            stock: parseInt(articulo.stock) || 0,
+                            precio: parseFloat(articulo.precio_unitario_soles) || parseFloat(articulo.pre_web) || parseFloat(articulo.pre_cli) || parseFloat(articulo.pre_cot) || 0,
+                            stock: parseFloat(articulo.stock) || 0,
                             marca: articulo.marca || null,
                             categoria: articulo.categoria || null,
-                            pre_cot: parseFloat(articulo.pre_cot) || 0,
-                            pre_cli: parseFloat(articulo.pre_cli) || 0,
-                            pre_web: parseFloat(articulo.pre_web) || 0,
+                            pre_cot: parseFloat(articulo.precio_lista_preferencial_soles) || parseFloat(articulo.pre_cot) || 0,
+                            pre_cli: parseFloat(articulo.precio_lista_premium_soles) || parseFloat(articulo.pre_cli) || 0,
+                            pre_web: parseFloat(articulo.precio_unitario_soles) || parseFloat(articulo.pre_web) || 0,
                             pre_dis: parseFloat(articulo.pre_dis) || 0
                         }
                     });

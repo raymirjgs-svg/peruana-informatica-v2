@@ -55,6 +55,7 @@ services:
       - "127.0.0.1:3001:3001"
     volumes:
       - uploads_data:/app/public/uploads
+      - payment_proofs_data:/app/public/payment-proofs
     depends_on:
       mysql:
         condition: service_healthy
@@ -115,6 +116,7 @@ services:
 volumes:
   mysql_data:
   uploads_data:
+  payment_proofs_data:
   redis_data:
 
 networks:

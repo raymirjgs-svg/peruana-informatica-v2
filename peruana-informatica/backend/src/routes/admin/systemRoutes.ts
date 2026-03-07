@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import { getSystemHealth } from '../../controllers/admin/SystemController';
-import { authenticateAdmin } from '../../middleware/auth';
 
 const router = Router();
 
-router.get('/health-check', authenticateAdmin, getSystemHealth);
+// Route already protected by global JWT middleware in server.ts
+router.get('/health-check', getSystemHealth);
 
 export default router;

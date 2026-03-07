@@ -566,7 +566,7 @@ export class ProductController {
             const [products, brands] = await Promise.all([
                 Product.findAll({
                     attributes: ['cod_producto', 'name', 'brand_id'],
-                    include: [{ model: Brand, as: 'brand', attributes: ['id', 'name'] }],
+                    include: [{ model: Brand, as: 'productBrand', attributes: ['id', 'name'] }],
                     where: { is_active: true }
                 }),
                 Brand.findAll({ attributes: ['id', 'name'] })
@@ -588,7 +588,7 @@ export class ProductController {
 
             for (const product of products) {
                 const productNameNorm = normalize(product.name || '');
-                const currentBrand = (product as any).brand;
+                const currentBrand = (product as any).productBrand;
                 const currentBrandId = currentBrand?.id || null;
 
                 for (const bt of brandTokens) {

@@ -43,8 +43,8 @@ COPY --from=builder /app/public ./public
 # Create uploads directory
 RUN mkdir -p /app/public/uploads
 
-# Chown all files to the 'node' user (included in alpine node images)
-RUN chown -R node:node /app
+# Chown only necessary dirs (avoids slow recursive chown over node_modules)
+RUN chown node:node /app && chown -R node:node /app/dist /app/public
 
 # Switch to non-root user for security
 USER node

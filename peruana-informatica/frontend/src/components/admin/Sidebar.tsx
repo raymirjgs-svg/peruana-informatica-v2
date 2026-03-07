@@ -32,6 +32,7 @@ import {
   Megaphone,
   Tag,
   LayoutGrid,
+  Wand2,
 } from 'lucide-react';
 
 interface MenuItem {
@@ -61,6 +62,7 @@ const menuItems: MenuItem[] = [
     icon: <Package className="h-5 w-5" />,
     children: [
       { name: "Productos", href: "/admin/products", icon: <Package className="h-4 w-4" /> },
+      { name: "Corregir Marcas", href: "/admin/products/brand-fix", icon: <Wand2 className="h-4 w-4" /> },
       { name: "Categorías", href: "/admin/categories", icon: <Tags className="h-4 w-4" /> },
       { name: "Taxonomía", href: "/admin/taxonomy", icon: <Tags className="h-4 w-4" /> },
       { name: "Inventario", href: "/admin/inventory", icon: <Package className="h-4 w-4" /> }

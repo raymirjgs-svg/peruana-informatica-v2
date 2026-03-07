@@ -560,6 +560,77 @@ export class ProductController {
         }
     }
 
+    // GET brand-check — detecta productos con marca inconsistente respecto al nombre
+    async brandCheck(req: Request, res: Response) {
+        try {
+            const [products, brands] = await Promise.all([
+                Product.findAll({
+                    attributes: ['cod_producto', 'name', 'brand_id'],
+                    include: [{ model: Brand, as: 'brand', attributes: ['id', 'name'] }],
+                    where: { is_active: true }
+                }),
+                Brand.findAll({ attributes: ['id', 'name'] })
+            ]);
+
+            const inconsistencies: any[] = [];
+
+            for (const product of products) {
+                const productName = product.name?.toUpperCase() || '';
+                const currentBrand = (product as any).brand;
+
+                for (const brand of brands) {
+                    const brandNameUp = brand.name.toUpperCase();
+                    // Skip if already assigned to this brand
+                    if (currentBrand && currentBrand.id === brand.id) continue;
+                    // Check if brand name appears as a word in the product name
+                    const regex = new RegExp(`\\b${brandNameUp.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`);
+                    if (regex.test(productName)) {
+                        inconsistencies.push({
+                            cod_producto: product.cod_producto,
+                            name: product.name,
+                            current_brand_id: currentBrand?.id || null,
+                            current_brand_name: currentBrand?.name || 'Sin marca',
+                            suggested_brand_id: brand.id,
+                            suggested_brand_name: brand.name
+                        });
+                        break; // First match wins
+                    }
+                }
+            }
+
+            res.json({ total: inconsistencies.length, items: inconsistencies });
+        } catch (error) {
+            console.error('Error in brand-check:', error);
+            res.status(500).json({ error: 'Error al analizar marcas' });
+        }
+    }
+
+    // POST brand-fix — aplica correcciones de marca en lote
+    async brandFix(req: Request, res: Response) {
+        try {
+            const { fixes } = req.body; // [{ cod_producto, brand_id }]
+            if (!Array.isArray(fixes) || fixes.length === 0) {
+                return res.status(400).json({ error: 'Se requiere un array de correcciones' });
+            }
+
+            let updated = 0;
+            for (const fix of fixes) {
+                const { cod_producto, brand_id } = fix;
+                if (!cod_producto || !brand_id) continue;
+                const [count] = await Product.update(
+                    { brand_id },
+                    { where: { cod_producto } }
+                );
+                updated += count;
+            }
+
+            res.json({ success: true, updated });
+        } catch (error) {
+            console.error('Error in brand-fix:', error);
+            res.status(500).json({ error: 'Error al corregir marcas' });
+        }
+    }
+
     // POST sync-all
     async syncAll(req: Request, res: Response) {
         try {

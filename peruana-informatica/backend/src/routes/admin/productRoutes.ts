@@ -29,6 +29,12 @@ router.get('/', [
 // IMPORTANT: must be before /:id or Express matches 'erp-lookup' as an id and returns 400
 router.get('/erp-lookup/:code', productController.erpLookup.bind(productController));
 
+// GET brand-check — detecta productos con marca inconsistente
+router.get('/brand-check', productController.brandCheck.bind(productController));
+
+// POST brand-fix — aplica correcciones de marca en lote
+router.post('/brand-fix', productController.brandFix.bind(productController));
+
 // GET producto por ID
 router.get('/:id', [
   param('id').isInt({ min: 1 }).withMessage('ID debe ser un número entero mayor a 0'),

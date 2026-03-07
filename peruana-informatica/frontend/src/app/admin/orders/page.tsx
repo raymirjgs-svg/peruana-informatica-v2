@@ -1,10 +1,12 @@
 'use client';
 
-
 import { useEffect, useState } from 'react';
 import { AdminLayout } from '@/components/admin/AdminLayout';
+import { Modal } from '@/components/admin/Modal';
+import { StatusBadge } from '@/components/admin/StatusBadge';
 import { API_CONFIG } from '@/config/api';
 import { adminFetch } from '@/lib/adminApi';
+import { ShoppingCart } from 'lucide-react';
 
 interface OrderItem {
   id: number;
@@ -127,123 +129,86 @@ export default function AdminOrdersPage() {
     }
   };
 
-  const getStatusBadge = (status: string) => {
-    const colors = {
-      pending: 'bg-amber-500 text-white',
-      processed: 'bg-emerald-600 text-white',
-      cancelled: 'bg-red-600 text-white'
-    };
-    const labels = {
-      pending: 'Pendiente',
-      processed: 'Procesado',
-      cancelled: 'Cancelado'
-    };
-    return (
-      <span className={`px-3 py-1.5 rounded-full text-sm font-semibold shadow-sm ${colors[status as keyof typeof colors]}`}>
-        {labels[status as keyof typeof labels]}
-      </span>
-    );
-  };
-
-  const getPaymentStatusBadge = (status: string) => {
-    const colors = {
-      pending: 'bg-orange-500 text-white',
-      verified: 'bg-blue-600 text-white',
-      rejected: 'bg-red-600 text-white'
-    };
-    const labels = {
-      pending: 'Pago Pendiente',
-      verified: 'Pago Verificado',
-      rejected: 'Pago Rechazado'
-    };
-    return (
-      <span className={`px-3 py-1.5 rounded-full text-sm font-semibold shadow-sm ${colors[status as keyof typeof colors]}`}>
-        {labels[status as keyof typeof labels]}
-      </span>
-    );
-  };
+  const inp = 'w-full px-3.5 py-2.5 text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-gray-100 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors';
+  const lbl = 'block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5';
 
   return (
     <AdminLayout>
-      <div className="p-6">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Gestión de Pedidos</h1>
-          <p className="text-gray-500 dark:text-gray-300 mt-1">Administra los pedidos de tus clientes</p>
+      <div className="space-y-5">
+        {/* Header */}
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/20 shrink-0">
+              <ShoppingCart className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Pedidos</h1>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{orders.length} pedido{orders.length !== 1 ? 's' : ''}</p>
+            </div>
+          </div>
         </div>
 
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg mb-6">
+          <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/50 text-red-700 dark:text-red-400 px-4 py-3 rounded-xl text-sm">
             {error}
           </div>
         )}
 
         {isLoading ? (
-          <div className="text-center py-12 text-gray-600 dark:text-gray-300">Cargando pedidos...</div>
+          <div className="flex justify-center py-16">
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600" />
+          </div>
+        ) : orders.length === 0 ? (
+          <div className="text-center py-16 bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800">
+            <ShoppingCart className="h-10 w-10 mx-auto text-gray-300 dark:text-gray-600 mb-3" />
+            <p className="text-sm text-gray-400">No hay pedidos registrados</p>
+          </div>
         ) : (
           <div className="space-y-4">
             {orders.map((order) => (
-              <div key={order.id} className="bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden">
-                <div className="p-6">
-                  <div className="flex justify-between items-start mb-4">
-                    <div>
-                      <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Pedido #{order.id}</h3>
-                      <p className="text-gray-600 dark:text-gray-400">
-                        {new Date(order.createdAt).toLocaleString('es-PE')}
-                      </p>
-                    </div>
-                    <div className="flex gap-2">
-                      {getStatusBadge(order.status)}
-                      {getPaymentStatusBadge(order.payment_status)}
-                    </div>
+              <div key={order.id} className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden">
+                {/* Order header */}
+                <div className="px-5 py-4 flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 dark:border-gray-800">
+                  <div>
+                    <p className="font-bold text-gray-900 dark:text-white">Pedido #{order.id}</p>
+                    <p className="text-xs text-gray-400 mt-0.5">{new Date(order.createdAt).toLocaleString('es-PE')}</p>
                   </div>
+                  <div className="flex flex-wrap gap-2">
+                    <StatusBadge status={order.status} label={{ pending: 'Pendiente', processed: 'Procesado', cancelled: 'Cancelado' }[order.status]} size="md" />
+                    <StatusBadge status={order.payment_status} label={{ pending: 'Pago pendiente', verified: 'Pago verificado', rejected: 'Pago rechazado' }[order.payment_status]} size="md" />
+                  </div>
+                </div>
 
-                  <div className="grid md:grid-cols-2 gap-6 mb-4">
-                    {/* Datos del Cliente */}
-                    <div>
-                      <h4 className="font-semibold mb-2 text-gray-800 dark:text-white">Datos del Cliente:</h4>
-                      <div className="space-y-1.5 text-sm">
-                        <p><span className="font-medium text-gray-600 dark:text-gray-400">Nombre:</span> <span className="text-gray-900 dark:text-white">{order.customer_name}</span></p>
-                        <p><span className="font-medium text-gray-600 dark:text-gray-400">Email:</span> <span className="text-blue-600 dark:text-blue-400 font-medium">{order.customer_email}</span></p>
-                        <p><span className="font-medium text-gray-600 dark:text-gray-400">Teléfono:</span> <span className="text-gray-900 dark:text-white">{order.customer_phone}</span></p>
-                        {order.customer_document && (
-                          <p><span className="font-medium text-gray-600 dark:text-gray-400">DNI:</span> <span className="text-gray-900 dark:text-white">{order.customer_document}</span></p>
-                        )}
-                      </div>
+                <div className="p-5 space-y-4">
+                  {/* Info grid */}
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 space-y-1.5">
+                      <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Cliente</p>
+                      <p className="text-sm font-semibold text-gray-900 dark:text-white">{order.customer_name}</p>
+                      <p className="text-sm text-blue-600 dark:text-blue-400">{order.customer_email}</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">{order.customer_phone}</p>
+                      {order.customer_document && <p className="text-sm text-gray-500 dark:text-gray-400">DNI: {order.customer_document}</p>}
                     </div>
-
-                    {/* Datos de Pago */}
-                    <div>
-                      <h4 className="font-semibold mb-2 text-gray-800 dark:text-white">Datos de Pago:</h4>
-                      <div className="space-y-1.5 text-sm">
-                        {order.payment_method && (
-                          <p><span className="font-medium text-gray-600 dark:text-gray-400">Método:</span> <span className="text-gray-900 dark:text-white uppercase font-medium">{order.payment_method}</span></p>
-                        )}
-                        <p><span className="font-medium text-gray-600 dark:text-gray-400">Total:</span> <span className="text-emerald-600 dark:text-emerald-400 font-bold">S/ {parseFloat(order.total_amount).toFixed(2)}</span></p>
-                        <p><span className="font-medium text-gray-600 dark:text-gray-400">Comprobante:</span> <span className="text-gray-900 dark:text-white">{order.invoice_type === 'factura' ? 'Factura' : 'Boleta'}</span></p>
-                        {order.invoice_type === 'factura' && (
-                          <>
-                            <p><span className="font-medium text-gray-600 dark:text-gray-400">RUC:</span> <span className="text-gray-900 dark:text-white font-mono">{order.ruc}</span></p>
-                            <p><span className="font-medium text-gray-600 dark:text-gray-400">Razón Social:</span> <span className="text-gray-900 dark:text-white">{order.business_name}</span></p>
-                          </>
-                        )}
-                        {order.invoice_number && (
-                          <p><span className="font-medium text-gray-600 dark:text-gray-400">N° Comprobante:</span> <span className="text-purple-600 dark:text-purple-400 font-semibold">{order.invoice_number}</span></p>
-                        )}
-                      </div>
+                    <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 space-y-1.5">
+                      <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Pago</p>
+                      {order.payment_method && <p className="text-sm text-gray-500 dark:text-gray-400">Método: <span className="font-medium text-gray-900 dark:text-white uppercase">{order.payment_method}</span></p>}
+                      <p className="text-sm text-gray-500 dark:text-gray-400">Total: <span className="font-bold text-emerald-600 dark:text-emerald-400">S/ {parseFloat(order.total_amount).toFixed(2)}</span></p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">Tipo: {order.invoice_type === 'factura' ? 'Factura' : 'Boleta'}</p>
+                      {order.invoice_type === 'factura' && <><p className="text-sm text-gray-500 dark:text-gray-400">RUC: <span className="font-mono">{order.ruc}</span></p><p className="text-sm text-gray-500 dark:text-gray-400">{order.business_name}</p></>}
+                      {order.invoice_number && <p className="text-sm font-semibold text-purple-600 dark:text-purple-400">N° {order.invoice_number}</p>}
                     </div>
                   </div>
 
                   {/* Productos */}
                   {order.items && order.items.length > 0 && (
-                    <div className="mb-4">
-                      <h4 className="font-semibold mb-2 text-gray-800 dark:text-white">Productos:</h4>
-                      <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                    <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4">
+                      <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Productos</p>
+                      <div className="space-y-2">
                         {order.items.map((item) => (
-                          <div key={item.id} className="flex justify-between text-sm py-2 border-b dark:border-gray-600 last:border-0">
-                            <span className="text-gray-900 dark:text-white">{item.product_name}</span>
-                            <span className="text-gray-700 dark:text-gray-300">
-                              {item.quantity} x S/ {parseFloat(item.price).toFixed(2)} =
-                              S/ {(item.quantity * parseFloat(item.price)).toFixed(2)}
+                          <div key={item.id} className="flex justify-between items-center text-sm py-1.5 border-b border-gray-200 dark:border-gray-700 last:border-0">
+                            <span className="text-gray-700 dark:text-gray-300">{item.product_name}</span>
+                            <span className="text-gray-500 dark:text-gray-400 shrink-0 ml-4">
+                              {item.quantity} × S/ {parseFloat(item.price).toFixed(2)} = <span className="font-semibold text-gray-900 dark:text-white">S/ {(item.quantity * parseFloat(item.price)).toFixed(2)}</span>
                             </span>
                           </div>
                         ))}
@@ -251,258 +216,109 @@ export default function AdminOrdersPage() {
                     </div>
                   )}
 
-                  {/* Acciones - Flujo de Trabajo Mejorado */}
-                  <div className="mt-4 border-t dark:border-gray-700 pt-4">
-                    <h4 className="font-semibold mb-3 text-gray-700 dark:text-gray-200">Acciones del Pedido:</h4>
-
-                    {/* Paso 1: Ver comprobante del cliente */}
+                  {/* Acciones */}
+                  <div className="flex flex-wrap gap-2 pt-1">
                     {order.payment_proof && (
-                      <div className="mb-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
-                        <p className="text-sm font-medium text-blue-900 mb-2">
-                          📎 Paso 1: Revisar Comprobante del Cliente
-                        </p>
-                        <a
-                          href={`${API_CONFIG.API_BASE_URL}/api/payments/proofs/${order.payment_proof}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-block px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-medium"
-                        >
-                          👁️ Ver Comprobante de Pago
-                        </a>
-                      </div>
+                      <a href={`${API_CONFIG.API_BASE_URL}/api/payments/proofs/${order.payment_proof}`} target="_blank" rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-950/50 rounded-xl transition-colors">
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                        Ver comprobante
+                      </a>
                     )}
-
-                    {/* Paso 2: Verificar o rechazar pago */}
                     {order.payment_status === 'pending' && order.payment_proof && (
-                      <div className="mb-3 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
-                        <p className="text-sm font-medium text-yellow-900 mb-2">
-                          ⚠️ Paso 2: Validar el Pago
-                        </p>
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() => handleVerifyPayment(order.id, true)}
-                            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm font-medium flex items-center gap-2"
-                          >
-                            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                            </svg>
-                            Verificar Pago
-                          </button>
-                          <button
-                            onClick={() => handleVerifyPayment(order.id, false)}
-                            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition text-sm font-medium flex items-center gap-2"
-                          >
-                            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                            </svg>
-                            Rechazar Pago
-                          </button>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Paso 3: Generar factura/boleta */}
-                    {order.payment_status === 'verified' && !order.invoice_file && (
-                      <div className="mb-3 p-3 bg-purple-50 rounded-lg border border-purple-200">
-                        <p className="text-sm font-medium text-purple-900 mb-2">
-                          📄 Paso 3: Generar y Cargar Comprobante
-                        </p>
-                        <button
-                          onClick={() => setSelectedOrder(order)}
-                          className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition text-sm font-medium flex items-center gap-2"
-                        >
-                          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clipRule="evenodd" />
-                          </svg>
-                          Generar {order.invoice_type === 'factura' ? 'Factura' : 'Boleta'}
+                      <>
+                        <button onClick={() => handleVerifyPayment(order.id, true)}
+                          className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-950/50 rounded-xl transition-colors">
+                          <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                          Verificar pago
                         </button>
-                        <p className="text-xs text-purple-700 mt-2">
-                          * Se generará el PDF y se enviará automáticamente al cliente por email
-                        </p>
-                      </div>
+                        <button onClick={() => handleVerifyPayment(order.id, false)}
+                          className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-950/50 rounded-xl transition-colors">
+                          <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" /></svg>
+                          Rechazar pago
+                        </button>
+                      </>
                     )}
-
-                    {/* Paso 4: Comprobante generado */}
+                    {order.payment_status === 'verified' && !order.invoice_file && (
+                      <button onClick={() => setSelectedOrder(order)}
+                        className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold bg-purple-50 dark:bg-purple-950/30 text-purple-700 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-950/50 rounded-xl transition-colors">
+                        <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clipRule="evenodd" /></svg>
+                        Cargar {order.invoice_type === 'factura' ? 'factura' : 'boleta'}
+                      </button>
+                    )}
                     {order.invoice_file && (
-                      <div className="mb-3 p-4 bg-emerald-600 rounded-lg shadow-md">
-                        <p className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
-                          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                          </svg>
-                          Comprobante Generado y Enviado
-                        </p>
-                        <div className="flex gap-3 items-center">
-                          <a
-                            href={`${API_CONFIG.API_BASE_URL}/api/admin/payments/invoices/${order.invoice_file}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="px-4 py-2 bg-white text-emerald-700 rounded-lg hover:bg-emerald-50 transition text-sm font-semibold flex items-center gap-2 shadow"
-                          >
-                            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
-                            </svg>
-                            Descargar {order.invoice_type === 'factura' ? 'Factura' : 'Boleta'}
-                          </a>
-                          <span className="px-3 py-1 bg-emerald-700 text-white rounded-full text-xs font-semibold">
-                            N° {order.invoice_number}
-                          </span>
-                        </div>
-                      </div>
+                      <a href={`${API_CONFIG.API_BASE_URL}/api/admin/payments/invoices/${order.invoice_file}`} target="_blank" rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl transition-colors">
+                        <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" /></svg>
+                        Descargar {order.invoice_type === 'factura' ? 'factura' : 'boleta'} · N° {order.invoice_number}
+                      </a>
                     )}
-
-                    {/* Estado: Pago rechazado */}
-                    {order.payment_status === 'rejected' && (
-                      <div className="mb-3 p-3 bg-red-50 rounded-lg border border-red-200">
-                        <p className="text-sm font-medium text-red-900">
-                          ❌ Pago Rechazado
-                        </p>
-                        <p className="text-xs text-red-700 mt-1">
-                          El cliente debe enviar un nuevo comprobante de pago
-                        </p>
-                      </div>
-                    )}
-
-                    {/* Estado: Sin comprobante */}
                     {!order.payment_proof && order.payment_status === 'pending' && (
-                      <div className="mb-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
-                        <p className="text-sm font-medium text-gray-700">
-                          ⏳ Esperando comprobante del cliente
-                        </p>
-                      </div>
+                      <span className="px-3 py-2 text-xs font-medium text-gray-400 bg-gray-50 dark:bg-gray-800 rounded-xl">Esperando comprobante del cliente</span>
+                    )}
+                    {order.payment_status === 'rejected' && (
+                      <span className="px-3 py-2 text-xs font-medium text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/30 rounded-xl">Pago rechazado · Cliente debe enviar nuevo comprobante</span>
                     )}
                   </div>
                 </div>
               </div>
             ))}
-
-            {orders.length === 0 && (
-              <div className="text-center py-12 text-gray-500 dark:text-gray-400">
-                No hay pedidos registrados
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Modal para cargar factura/boleta */}
-        {selectedOrder && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-lg p-6 max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="text-4xl">📄</div>
-                <div>
-                  <h3 className="text-xl font-bold">
-                    Cargar {selectedOrder.invoice_type === 'factura' ? 'Factura' : 'Boleta'}
-                  </h3>
-                  <p className="text-sm text-gray-600">Pedido #{selectedOrder.id}</p>
-                </div>
-              </div>
-
-              {/* Número de comprobante */}
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Número de Comprobante *
-                </label>
-                <input
-                  type="text"
-                  value={invoiceNumber}
-                  onChange={(e) => setInvoiceNumber(e.target.value)}
-                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500"
-                  placeholder={selectedOrder.invoice_type === 'factura' ? 'F001-00001' : 'B001-00001'}
-                />
-                <p className="text-xs text-gray-500 mt-1">
-                  Ingresa el número del comprobante generado en tu sistema de ventas
-                </p>
-              </div>
-
-              {/* Upload de archivo */}
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Archivo PDF del Comprobante *
-                </label>
-                <div className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${invoiceFile ? 'border-green-400 bg-green-50' : 'border-gray-300 hover:border-purple-400 hover:bg-purple-50'
-                  }`}>
-                  <input
-                    type="file"
-                    accept=".pdf"
-                    onChange={(e) => setInvoiceFile(e.target.files?.[0] || null)}
-                    className="hidden"
-                    id="invoice-upload"
-                  />
-                  <label htmlFor="invoice-upload" className="cursor-pointer">
-                    <div className="text-5xl mb-3">{invoiceFile ? '✅' : '📤'}</div>
-                    {invoiceFile ? (
-                      <div>
-                        <p className="text-green-700 font-bold text-lg mb-1">{invoiceFile.name}</p>
-                        <p className="text-sm text-green-600 mb-2">
-                          {(invoiceFile.size / 1024 / 1024).toFixed(2)} MB
-                        </p>
-                        <p className="text-xs text-green-600 bg-green-100 inline-block px-3 py-1 rounded-full">
-                          Clic para cambiar archivo
-                        </p>
-                      </div>
-                    ) : (
-                      <>
-                        <p className="text-gray-700 font-bold text-lg mb-1">Seleccionar PDF</p>
-                        <p className="text-sm text-gray-500 mb-2">
-                          Arrastra el archivo aquí o haz clic para seleccionar
-                        </p>
-                        <p className="text-xs text-gray-400">Máximo 10MB • Solo archivos PDF</p>
-                      </>
-                    )}
-                  </label>
-                </div>
-              </div>
-
-              {/* Información del cliente */}
-              <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                <p className="text-sm font-semibold text-blue-900 mb-2">
-                  📧 El comprobante se enviará a:
-                </p>
-                <div className="space-y-1 text-sm text-blue-800">
-                  <p><strong>Cliente:</strong> {selectedOrder.customer_name}</p>
-                  <p><strong>Email:</strong> {selectedOrder.customer_email}</p>
-                  <p className="text-xs text-blue-700 mt-2 italic">
-                    * El PDF se enviará automáticamente por correo electrónico
-                  </p>
-                </div>
-              </div>
-
-              {/* Botones */}
-              <div className="flex gap-3">
-                <button
-                  onClick={() => {
-                    setSelectedOrder(null);
-                    setInvoiceNumber('');
-                    setInvoiceFile(null);
-                  }}
-                  className="flex-1 px-4 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition font-medium"
-                >
-                  Cancelar
-                </button>
-                <button
-                  onClick={() => handleUploadInvoice(selectedOrder.id)}
-                  disabled={isGeneratingInvoice || !invoiceFile || !invoiceNumber}
-                  className="flex-1 px-4 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition disabled:bg-gray-400 font-medium flex items-center justify-center gap-2"
-                >
-                  {isGeneratingInvoice ? (
-                    <>
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                      Cargando...
-                    </>
-                  ) : (
-                    <>
-                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                      </svg>
-                      Cargar Comprobante
-                    </>
-                  )}
-                </button>
-              </div>
-            </div>
           </div>
         )}
       </div>
+
+      {/* Modal cargar comprobante */}
+      <Modal
+        isOpen={!!selectedOrder}
+        onClose={() => { setSelectedOrder(null); setInvoiceNumber(''); setInvoiceFile(null); }}
+        title={`Cargar ${selectedOrder?.invoice_type === 'factura' ? 'Factura' : 'Boleta'} — Pedido #${selectedOrder?.id}`}
+        size="sm"
+      >
+        {selectedOrder && (
+          <div className="space-y-4">
+            <div>
+              <label className={lbl}>Número de comprobante *</label>
+              <input type="text" value={invoiceNumber} onChange={(e) => setInvoiceNumber(e.target.value)}
+                className={inp} placeholder={selectedOrder.invoice_type === 'factura' ? 'F001-00001' : 'B001-00001'} />
+              <p className="text-xs text-gray-400 mt-1">Número del comprobante de tu sistema de ventas</p>
+            </div>
+            <div>
+              <label className={lbl}>Archivo PDF *</label>
+              <div className={`border-2 border-dashed rounded-xl p-5 text-center transition-colors cursor-pointer ${invoiceFile ? 'border-emerald-400 bg-emerald-50 dark:bg-emerald-950/20' : 'border-gray-200 dark:border-gray-700 hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/20'}`}>
+                <input type="file" accept=".pdf" onChange={(e) => setInvoiceFile(e.target.files?.[0] || null)} className="hidden" id="invoice-upload" />
+                <label htmlFor="invoice-upload" className="cursor-pointer">
+                  {invoiceFile ? (
+                    <div>
+                      <p className="text-sm font-bold text-emerald-700 dark:text-emerald-400">{invoiceFile.name}</p>
+                      <p className="text-xs text-emerald-600 dark:text-emerald-500 mt-1">{(invoiceFile.size / 1024 / 1024).toFixed(2)} MB · Clic para cambiar</p>
+                    </div>
+                  ) : (
+                    <div>
+                      <p className="text-sm font-semibold text-gray-600 dark:text-gray-300">Seleccionar PDF</p>
+                      <p className="text-xs text-gray-400 mt-1">Máx. 10 MB</p>
+                    </div>
+                  )}
+                </label>
+              </div>
+            </div>
+            <div className="bg-blue-50 dark:bg-blue-950/30 rounded-xl p-3 text-sm text-blue-700 dark:text-blue-400">
+              <p className="font-semibold">{selectedOrder.customer_name}</p>
+              <p className="text-xs mt-0.5">{selectedOrder.customer_email}</p>
+              <p className="text-xs mt-1 text-blue-500 dark:text-blue-500">El PDF se enviará automáticamente al cliente</p>
+            </div>
+            <div className="flex gap-3 pt-1">
+              <button onClick={() => { setSelectedOrder(null); setInvoiceNumber(''); setInvoiceFile(null); }}
+                className="flex-1 px-4 py-2.5 text-sm font-semibold bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                Cancelar
+              </button>
+              <button onClick={() => handleUploadInvoice(selectedOrder.id)} disabled={isGeneratingInvoice || !invoiceFile || !invoiceNumber}
+                className="flex-1 px-4 py-2.5 text-sm font-semibold bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                {isGeneratingInvoice ? <><div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />Cargando...</> : 'Cargar comprobante'}
+              </button>
+            </div>
+          </div>
+        )}
+      </Modal>
     </AdminLayout>
   );
 }

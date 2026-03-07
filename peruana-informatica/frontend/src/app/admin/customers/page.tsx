@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import { CustomerService, Customer, CustomerStats } from '@/services/CustomerService';
 import { AdminLayout } from '@/components/admin/AdminLayout';
+import { StatusBadge } from '@/components/admin/StatusBadge';
+import { Users, Search } from 'lucide-react';
 
 export default function CustomersPage() {
     const [customers, setCustomers] = useState<Customer[]>([]);
@@ -74,216 +76,139 @@ export default function CustomersPage() {
         });
     };
 
+    const sel = 'w-full px-3.5 py-2.5 text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors appearance-none';
+
     return (
         <AdminLayout>
-            <div className="p-6 bg-gray-50 min-h-screen">
-                <div className="max-w-7xl mx-auto">
-                    {/* Header */}
-                    <div className="mb-6">
-                        <h1 className="text-3xl font-bold text-gray-900">Gestión de Clientes</h1>
-                        <p className="text-gray-600 mt-1">Administra los clientes registrados en tu tienda</p>
+            <div className="space-y-5">
+                {/* Header */}
+                <div className="flex items-center gap-3">
+                    <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/20 shrink-0">
+                        <Users className="h-5 w-5 text-white" />
                     </div>
-
-                    {/* Stats Cards */}
-                    {stats && (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                            <div className="bg-white rounded-lg shadow p-4">
-                                <div className="text-sm text-gray-600">Total Clientes</div>
-                                <div className="text-2xl font-bold text-gray-900">{stats.total}</div>
-                            </div>
-                            <div className="bg-white rounded-lg shadow p-4">
-                                <div className="text-sm text-gray-600">Clientes Activos</div>
-                                <div className="text-2xl font-bold text-green-600">{stats.active}</div>
-                            </div>
-                            <div className="bg-white rounded-lg shadow p-4">
-                                <div className="text-sm text-gray-600">Bloqueados</div>
-                                <div className="text-2xl font-bold text-red-600">{stats.blocked}</div>
-                            </div>
-                            <div className="bg-white rounded-lg shadow p-4">
-                                <div className="text-sm text-gray-600">Nuevos este mes</div>
-                                <div className="text-2xl font-bold text-blue-600">{stats.newThisMonth}</div>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Filters */}
-                    <div className="bg-white rounded-lg shadow p-4 mb-6">
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Buscar</label>
-                                <input
-                                    type="text"
-                                    placeholder="Buscar por nombre o email..."
-                                    value={search}
-                                    onChange={(e) => {
-                                        setSearch(e.target.value);
-                                        setPage(1);
-                                    }}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Método de registro</label>
-                                <select
-                                    value={authFilter}
-                                    onChange={(e) => {
-                                        setAuthFilter(e.target.value);
-                                        setPage(1);
-                                    }}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                >
-                                    <option value="">Todos</option>
-                                    <option value="google">Google</option>
-                                    <option value="local">Email/Contraseña</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Estado</label>
-                                <select
-                                    value={blockFilter}
-                                    onChange={(e) => {
-                                        setBlockFilter(e.target.value);
-                                        setPage(1);
-                                    }}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                >
-                                    <option value="">Todos</option>
-                                    <option value="false">Activos</option>
-                                    <option value="true">Bloqueados</option>
-                                </select>
-                            </div>
-                        </div>
+                    <div>
+                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Clientes</h1>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Clientes registrados en la tienda</p>
                     </div>
+                </div>
 
-                    {/* Table */}
-                    <div className="bg-white rounded-lg shadow overflow-hidden">
-                        {loading ? (
-                            <div className="p-8 text-center">
-                                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-                                <p className="mt-4 text-gray-600">Cargando clientes...</p>
+                {/* Stats */}
+                {stats && (
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                        {[
+                            { label: 'Total', value: stats.total, color: 'text-gray-900 dark:text-white' },
+                            { label: 'Activos', value: stats.active, color: 'text-emerald-600' },
+                            { label: 'Bloqueados', value: stats.blocked, color: 'text-red-600' },
+                            { label: 'Nuevos este mes', value: stats.newThisMonth, color: 'text-blue-600' },
+                        ].map(s => (
+                            <div key={s.label} className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-4">
+                                <p className="text-xs text-gray-400 font-semibold uppercase tracking-wide">{s.label}</p>
+                                <p className={`text-3xl font-bold mt-1 ${s.color}`}>{s.value}</p>
                             </div>
-                        ) : customers.length === 0 ? (
-                            <div className="p-8 text-center text-gray-500">
-                                No se encontraron clientes
-                            </div>
-                        ) : (
-                            <>
-                                <div className="overflow-x-auto">
-                                    <table className="min-w-full divide-y divide-gray-200">
-                                        <thead className="bg-gray-50">
-                                            <tr>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Método</th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Registrado</th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Último acceso</th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                        ))}
+                    </div>
+                )}
+
+                {/* Filters */}
+                <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <div className="relative">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                            <input type="text" placeholder="Buscar por nombre o email..." value={search}
+                                onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+                                className="w-full pl-10 pr-4 py-2.5 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-gray-100 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors" />
+                        </div>
+                        <select value={authFilter} onChange={(e) => { setAuthFilter(e.target.value); setPage(1); }} className={sel}>
+                            <option value="">Todos los métodos</option>
+                            <option value="google">Google</option>
+                            <option value="local">Email / Contraseña</option>
+                        </select>
+                        <select value={blockFilter} onChange={(e) => { setBlockFilter(e.target.value); setPage(1); }} className={sel}>
+                            <option value="">Todos los estados</option>
+                            <option value="false">Activos</option>
+                            <option value="true">Bloqueados</option>
+                        </select>
+                    </div>
+                </div>
+
+                {/* Table */}
+                <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden">
+                    {loading ? (
+                        <div className="flex flex-col items-center justify-center py-16 gap-3">
+                            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600" />
+                            <p className="text-sm text-gray-400">Cargando clientes...</p>
+                        </div>
+                    ) : customers.length === 0 ? (
+                        <div className="py-16 text-center">
+                            <Users className="h-10 w-10 mx-auto text-gray-300 dark:text-gray-600 mb-3" />
+                            <p className="text-sm text-gray-400">No se encontraron clientes</p>
+                        </div>
+                    ) : (
+                        <>
+                            <div className="overflow-x-auto">
+                                <table className="min-w-full">
+                                    <thead>
+                                        <tr className="border-b border-gray-100 dark:border-gray-800">
+                                            <th className="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Cliente</th>
+                                            <th className="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Email</th>
+                                            <th className="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Método</th>
+                                            <th className="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Registrado</th>
+                                            <th className="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Último acceso</th>
+                                            <th className="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Estado</th>
+                                            <th className="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Acción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+                                        {customers.map((customer) => (
+                                            <tr key={customer.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                                                <td className="px-5 py-3.5">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
+                                                            {customer.first_name?.charAt(0) || '?'}
+                                                        </div>
+                                                        <span className="text-sm font-semibold text-gray-900 dark:text-white">{customer.first_name} {customer.last_name}</span>
+                                                    </div>
+                                                </td>
+                                                <td className="px-5 py-3.5 text-sm text-gray-500 dark:text-gray-400">{customer.email}</td>
+                                                <td className="px-5 py-3.5">
+                                                    <span className="text-xs font-medium text-gray-600 dark:text-gray-300 flex items-center gap-1.5">
+                                                        {customer.auth_provider.includes('google') ? <span className="text-blue-500">G</span> : <span>@</span>}
+                                                        {customer.auth_provider.includes('google') ? 'Google' : 'Email'}
+                                                    </span>
+                                                </td>
+                                                <td className="px-5 py-3.5 text-sm text-gray-400">{formatDate(customer.createdAt)}</td>
+                                                <td className="px-5 py-3.5 text-sm text-gray-400">{customer.last_login ? formatDate(customer.last_login) : '—'}</td>
+                                                <td className="px-5 py-3.5">
+                                                    <StatusBadge status={customer.is_blocked ? 'inactive' : 'active'} label={customer.is_blocked ? 'Bloqueado' : 'Activo'} />
+                                                </td>
+                                                <td className="px-5 py-3.5">
+                                                    <button onClick={() => handleToggleBlock(customer.id)}
+                                                        className={`text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors ${customer.is_blocked ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-100' : 'bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 hover:bg-red-100'}`}>
+                                                        {customer.is_blocked ? 'Desbloquear' : 'Bloquear'}
+                                                    </button>
+                                                </td>
                                             </tr>
-                                        </thead>
-                                        <tbody className="bg-white divide-y divide-gray-200">
-                                            {customers.map((customer) => (
-                                                <tr key={customer.id} className="hover:bg-gray-50">
-                                                    <td className="px-6 py-4 whitespace-nowrap">
-                                                        <div className="text-sm font-medium text-gray-900">
-                                                            {customer.first_name} {customer.last_name}
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap">
-                                                        <div className="text-sm text-gray-500">{customer.email}</div>
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap">
-                                                        <div className="flex items-center gap-2">
-                                                            <span className="text-lg">{getAuthIcon(customer.auth_provider)}</span>
-                                                            <span className="text-sm text-gray-500">
-                                                                {customer.auth_provider.includes('google') ? 'Google' : 'Email'}
-                                                            </span>
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                        {formatDate(customer.createdAt)}
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                        {customer.last_login ? formatDate(customer.last_login) : 'Nunca'}
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap">
-                                                        {customer.is_blocked ? (
-                                                            <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                                                                🔒 Bloqueado
-                                                            </span>
-                                                        ) : (
-                                                            <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                                ✓ Activo
-                                                            </span>
-                                                        )}
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                                        <button
-                                                            onClick={() => handleToggleBlock(customer.id)}
-                                                            className={`${customer.is_blocked
-                                                                ? 'text-green-600 hover:text-green-900'
-                                                                : 'text-red-600 hover:text-red-900'
-                                                                }`}
-                                                        >
-                                                            {customer.is_blocked ? 'Desbloquear' : 'Bloquear'}
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-
-                                {/* Pagination */}
-                                {totalPages > 1 && (
-                                    <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
-                                        <div className="flex-1 flex justify-between sm:hidden">
-                                            <button
-                                                onClick={() => setPage(Math.max(1, page - 1))}
-                                                disabled={page === 1}
-                                                className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
-                                            >
-                                                Anterior
-                                            </button>
-                                            <button
-                                                onClick={() => setPage(Math.min(totalPages, page + 1))}
-                                                disabled={page === totalPages}
-                                                className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
-                                            >
-                                                Siguiente
-                                            </button>
-                                        </div>
-                                        <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-                                            <div>
-                                                <p className="text-sm text-gray-700">
-                                                    Página <span className="font-medium">{page}</span> de{' '}
-                                                    <span className="font-medium">{totalPages}</span>
-                                                </p>
-                                            </div>
-                                            <div>
-                                                <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-                                                    <button
-                                                        onClick={() => setPage(Math.max(1, page - 1))}
-                                                        disabled={page === 1}
-                                                        className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50"
-                                                    >
-                                                        Anterior
-                                                    </button>
-                                                    <button
-                                                        onClick={() => setPage(Math.min(totalPages, page + 1))}
-                                                        disabled={page === totalPages}
-                                                        className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50"
-                                                    >
-                                                        Siguiente
-                                                    </button>
-                                                </nav>
-                                            </div>
-                                        </div>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {totalPages > 1 && (
+                                <div className="px-5 py-3.5 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between">
+                                    <p className="text-sm text-gray-400">Página {page} de {totalPages}</p>
+                                    <div className="flex gap-2">
+                                        <button onClick={() => setPage(Math.max(1, page - 1))} disabled={page === 1}
+                                            className="px-3 py-1.5 text-sm font-medium bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-lg disabled:opacity-40 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                                            Anterior
+                                        </button>
+                                        <button onClick={() => setPage(Math.min(totalPages, page + 1))} disabled={page === totalPages}
+                                            className="px-3 py-1.5 text-sm font-medium bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-lg disabled:opacity-40 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                                            Siguiente
+                                        </button>
                                     </div>
-                                )}
-                            </>
-                        )}
-                    </div>
+                                </div>
+                            )}
+                        </>
+                    )}
                 </div>
             </div>
         </AdminLayout>

@@ -2,6 +2,8 @@
 
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { Button } from '@/components/admin/Button';
+import { StatusBadge } from '@/components/admin/StatusBadge';
+import { Users } from 'lucide-react';
 
 export default function UsersPage() {
   const mockUsers = [
@@ -24,76 +26,72 @@ export default function UsersPage() {
 
   return (
     <AdminLayout>
-      <div className="px-6 py-6">
-        <div className="mb-6 flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-800">Usuarios del Sistema</h1>
-            <p className="text-gray-500 mt-1">Gestiona los accesos al panel de administración</p>
+      <div className="space-y-5">
+        {/* Header */}
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-purple-500/20 shrink-0">
+              <Users className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Usuarios del Sistema</h1>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Accesos al panel de administración</p>
+            </div>
           </div>
-          <Button size="lg">
-            <span className="text-xl">+</span>
-            Nuevo Usuario
-          </Button>
+          <Button size="sm">+ Nuevo Usuario</Button>
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <div className="bg-white border border-gray-200 rounded-xl p-6">
-            <div className="text-sm text-gray-500">Total Usuarios</div>
-            <div className="text-2xl font-bold text-gray-800 mt-1">12</div>
-          </div>
-          <div className="bg-white border border-gray-200 rounded-xl p-6">
-            <div className="text-sm text-gray-500">Administradores</div>
-            <div className="text-2xl font-bold text-purple-600 mt-1">2</div>
-          </div>
-          <div className="bg-white border border-gray-200 rounded-xl p-6">
-            <div className="text-sm text-gray-500">Vendedores</div>
-            <div className="text-2xl font-bold text-blue-600 mt-1">5</div>
-          </div>
-          <div className="bg-white border border-gray-200 rounded-xl p-6">
-            <div className="text-sm text-gray-500">Activos Hoy</div>
-            <div className="text-2xl font-bold text-green-600 mt-1">8</div>
-          </div>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {[
+            { label: 'Total', value: 12, color: 'text-gray-900 dark:text-white' },
+            { label: 'Administradores', value: 2, color: 'text-purple-600' },
+            { label: 'Vendedores', value: 5, color: 'text-blue-600' },
+            { label: 'Activos hoy', value: 8, color: 'text-emerald-600' },
+          ].map(s => (
+            <div key={s.label} className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-4">
+              <p className="text-xs text-gray-400 font-semibold uppercase tracking-wide">{s.label}</p>
+              <p className={`text-3xl font-bold mt-1 ${s.color}`}>{s.value}</p>
+            </div>
+          ))}
         </div>
 
-        {/* Users Table */}
-        <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+        {/* Table */}
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Usuario</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Rol</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Último Acceso</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Acciones</th>
+              <thead>
+                <tr className="border-b border-gray-100 dark:border-gray-800">
+                  <th className="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Usuario</th>
+                  <th className="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Email</th>
+                  <th className="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Rol</th>
+                  <th className="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Último acceso</th>
+                  <th className="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Estado</th>
+                  <th className="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Acciones</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200">
+              <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
                 {mockUsers.map((user) => (
-                  <tr key={user.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4">
-                      <div className="flex items-center">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold mr-3">
+                  <tr key={user.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                    <td className="px-5 py-3.5">
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
                           {user.name.charAt(0)}
                         </div>
-                        <span className="font-medium text-gray-900">{user.name}</span>
+                        <span className="text-sm font-semibold text-gray-900 dark:text-white">{user.name}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-700">{user.email}</td>
-                    <td className="px-6 py-4">
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${roleColors[user.role as keyof typeof roleColors]}`}>
+                    <td className="px-5 py-3.5 text-sm text-gray-500 dark:text-gray-400">{user.email}</td>
+                    <td className="px-5 py-3.5">
+                      <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${roleColors[user.role as keyof typeof roleColors]}`}>
                         {roleLabels[user.role as keyof typeof roleLabels]}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-500">{user.lastLogin}</td>
-                    <td className="px-6 py-4">
-                      <span className="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
-                        Activo
-                      </span>
+                    <td className="px-5 py-3.5 text-sm text-gray-400">{user.lastLogin}</td>
+                    <td className="px-5 py-3.5">
+                      <StatusBadge status={user.status === 'active' ? 'active' : 'inactive'} label={user.status === 'active' ? 'Activo' : 'Inactivo'} />
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-5 py-3.5">
                       <div className="flex gap-2">
                         <Button size="sm" variant="secondary">Editar</Button>
                         <Button size="sm" variant="danger">Desactivar</Button>
@@ -106,9 +104,9 @@ export default function UsersPage() {
           </div>
         </div>
 
-        <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <p className="text-sm text-blue-800">
-            <strong>⚠️ En desarrollo:</strong> Sistema de roles y permisos granulares próximamente.
+        <div className="p-4 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800/50 rounded-2xl">
+          <p className="text-sm text-blue-700 dark:text-blue-400">
+            <strong>En desarrollo:</strong> Sistema de roles y permisos granulares próximamente.
           </p>
         </div>
       </div>

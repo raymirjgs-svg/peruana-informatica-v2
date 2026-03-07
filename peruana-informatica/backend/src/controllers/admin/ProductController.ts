@@ -90,7 +90,7 @@ export class ProductController {
                 offset,
                 order,
                 distinct: true,
-                col: 'cod_producto',
+                col: 'Product.id',
                 attributes: [
                     'cod_producto',
                     'name', 'slug', 'description', 'short_description', 'price', 'price_web', 'price_cot', 'price_dis', 'stock', 'category', 'keywords', 'brand_id', 'category_id', 'is_active', 'codigo_interno', 'component_type', 'is_featured', 'is_new', 'is_clearance', 'image'

@@ -1,5 +1,6 @@
 import { Sequelize } from 'sequelize';
 import dotenv from 'dotenv';
+import { logger } from '../config/logger';
 
 dotenv.config();
 
@@ -11,7 +12,7 @@ export const sequelize = new Sequelize(
     host: process.env.DB_HOST || 'localhost',
     port: parseInt(process.env.DB_PORT || '3306'),
     dialect: 'mysql',
-    logging: process.env.NODE_ENV === 'development' ? console.log : false,
+    logging: process.env.NODE_ENV === 'development' ? (sql: string) => logger.debug(sql) : false,
     pool: {
       max: 10,
       min: 0,
@@ -38,9 +39,9 @@ sequelize.addHook('afterConnect', (connection: any) => {
 export async function connectDatabase() {
   try {
     await sequelize.authenticate();
-    console.log('✅ Base de datos conectada correctamente');
+    logger.info('Base de datos conectada correctamente');
   } catch (error) {
-    console.error('❌ Error conectando a la BD:', error);
+    logger.error('Error conectando a la BD', { error });
     process.exit(1);
   }
 }

@@ -1,4 +1,5 @@
 import Redis from 'ioredis';
+import { logger } from './logger';
 
 let redisClient: Redis | null = null;
 let isRedisAvailable = false;
@@ -9,7 +10,7 @@ let isRedisAvailable = false;
 export function initRedis(): Redis | null {
     // If Redis is disabled or already initialized, return
     if (process.env.REDIS_ENABLED === 'false') {
-        console.log('⚠️ Redis is disabled via environment variable');
+        logger.info('Redis is disabled via environment variable');
         return null;
     }
 
@@ -32,29 +33,29 @@ export function initRedis(): Redis | null {
 
         // Connect manually to handle errors
         redisClient.connect().then(() => {
-            console.log('✅ Redis connected successfully');
+            logger.info('Redis connected successfully');
             isRedisAvailable = true;
         }).catch((error) => {
-            console.warn('⚠️ Redis connection failed. Running without cache:', error.message);
+            logger.warn('Redis connection failed. Running without cache', { error: error.message });
             isRedisAvailable = false;
             redisClient = null;
         });
 
         // Handle connection errors
         redisClient.on('error', (error) => {
-            console.warn('⚠️ Redis error:', error.message);
+            logger.warn('Redis error', { error: error.message });
             isRedisAvailable = false;
         });
 
         // Handle reconnection
         redisClient.on('connect', () => {
-            console.log('✅ Redis reconnected');
+            logger.info('Redis reconnected');
             isRedisAvailable = true;
         });
 
         return redisClient;
     } catch (error) {
-        console.error('⚠️ Failed to initialize Redis:', error);
+        logger.error('Failed to initialize Redis', { error });
         return null;
     }
 }
@@ -83,7 +84,7 @@ export async function setCache(key: string, value: any, ttlSeconds: number = 300
         const serialized = JSON.stringify(value);
         await redisClient!.setex(key, ttlSeconds, serialized);
     } catch (error) {
-        console.warn('⚠️ Failed to set cache:', error);
+        logger.warn('Failed to set cache', { error });
     }
 }
 
@@ -99,7 +100,7 @@ export async function getCache<T>(key: string): Promise<T | null> {
 
         return JSON.parse(cached) as T;
     } catch (error) {
-        console.warn('⚠️ Failed to get cache:', error);
+        logger.warn('Failed to get cache', { error });
         return null;
     }
 }
@@ -113,7 +114,7 @@ export async function deleteCache(key: string): Promise<void> {
     try {
         await redisClient!.del(key);
     } catch (error) {
-        console.warn('⚠️ Failed to delete cache:', error);
+        logger.warn('Failed to delete cache', { error });
     }
 }
 
@@ -129,7 +130,7 @@ export async function deleteCachePattern(pattern: string): Promise<void> {
             await redisClient!.del(...keys);
         }
     } catch (error) {
-        console.warn('⚠️ Failed to delete cache pattern:', error);
+        logger.warn('Failed to delete cache pattern', { error });
     }
 }
 
@@ -141,9 +142,9 @@ export async function clearAllCache(): Promise<void> {
 
     try {
         await redisClient!.flushdb();
-        console.log('✅ All cache cleared');
+        logger.info('All cache cleared');
     } catch (error) {
-        console.warn('⚠️ Failed to clear all cache:', error);
+        logger.warn('Failed to clear all cache', { error });
     }
 }
 
@@ -155,6 +156,6 @@ export async function closeRedis(): Promise<void> {
         await redisClient.quit();
         redisClient = null;
         isRedisAvailable = false;
-        console.log('✅ Redis connection closed');
+        logger.info('Redis connection closed');
     }
 }

@@ -273,7 +273,7 @@ export default function AdminOrdersPage() {
                     )}
                     {/* Ver comprobante */}
                     {order.payment_proof && (
-                      <a href={`${API_CONFIG.API_BASE_URL}/api/payments/proofs/${order.payment_proof}`} target="_blank" rel="noopener noreferrer"
+                      <a href={`${API_CONFIG.API_BASE_URL}${order.payment_proof}`} target="_blank" rel="noopener noreferrer"
                         className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-950/50 rounded-xl transition-colors">
                         <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                         Ver comprobante

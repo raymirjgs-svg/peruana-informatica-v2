@@ -244,7 +244,7 @@ export function Navbar() {
               >
                 <span className="relative z-10 flex items-center gap-1.5 text-sm">
                   <span className="text-red-500">🔥</span>
-                  Ofertas
+                  Remates
                 </span>
                 <div className="absolute inset-0 bg-gradient-to-r from-red-600/0 via-red-600/20 to-red-600/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               </Link>

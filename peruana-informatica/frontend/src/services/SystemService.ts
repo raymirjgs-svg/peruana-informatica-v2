@@ -65,9 +65,7 @@ class SystemService {
 
     static async getHealth(): Promise<SystemHealth> {
         try {
-            const response = await fetch(`${this.API_BASE}/api/admin/system/health-check`, {
-                headers: this.getAuthHeaders(),
-            });
+            const response = await fetch(`${this.API_BASE}/api/admin/system/health-check`);
 
             const data = await response.json();
 

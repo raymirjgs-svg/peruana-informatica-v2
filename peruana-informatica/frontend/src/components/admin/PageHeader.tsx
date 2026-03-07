@@ -11,23 +11,21 @@ interface PageHeaderProps {
 
 export function PageHeader({ title, description, icon: Icon, action }: PageHeaderProps) {
   return (
-    <div className="mb-8">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          {Icon && (
-            <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
-              <Icon className="h-6 w-6 text-white" />
-            </div>
-          )}
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{title}</h1>
-            {description && (
-              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{description}</p>
-            )}
+    <div className="flex items-start justify-between gap-4 mb-8">
+      <div className="flex items-center gap-4 min-w-0">
+        {Icon && (
+          <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/20 shrink-0">
+            <Icon className="h-5 w-5 text-white" />
           </div>
+        )}
+        <div className="min-w-0">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white leading-tight">{title}</h1>
+          {description && (
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{description}</p>
+          )}
         </div>
-        {action && <div>{action}</div>}
       </div>
+      {action && <div className="shrink-0">{action}</div>}
     </div>
   );
 }

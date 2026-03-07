@@ -32,7 +32,7 @@ export const paymentController = {
             
             // Payment Proof (if uploaded)
             if (file) {
-                order.payment_proof = `/uploads/${file.filename}`;
+                order.payment_proof = `/payment-proofs/${file.filename}`;
             }
 
             // Card details (if applicable)

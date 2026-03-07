@@ -10,8 +10,7 @@ const router = express.Router();
 // Configurar almacenamiento
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        // Use process.cwd() to target 'backend/public/uploads' reliably
-        const uploadDir = path.join(process.cwd(), 'public', 'uploads');
+        const uploadDir = path.join(process.cwd(), 'public', 'payment-proofs');
         if (!fs.existsSync(uploadDir)) {
             fs.mkdirSync(uploadDir, { recursive: true });
         }

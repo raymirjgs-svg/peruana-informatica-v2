@@ -5,12 +5,7 @@ import { AdminLayout } from '@/components/admin/AdminLayout';
 import { Modal } from '@/components/admin/Modal';
 import { Button } from '@/components/admin/Button';
 import Link from 'next/link';
-
-function getApiBase() {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
-  const trimmed = baseUrl.replace(/\/+$/, "");
-  return trimmed.endsWith("/api") ? trimmed : `${trimmed}/api`;
-}
+import { adminFetch, getAdminApiBase } from '@/lib/adminApi';
 
 type Brand = { id: number; name: string; slug: string } | null;
 type Category = { id: number; name: string; slug: string } | null;
@@ -128,8 +123,7 @@ export default function AdminProductsPage() {
       if (filterStock) params.set('stock_filter', filterStock);
       if (sortBy) params.set('sort', sortBy);
       if (sortOrder) params.set('order', sortOrder);
-      const url = `${getApiBase()}/admin/products?${params.toString()}`;
-      const res = await fetch(url);
+      const res = await adminFetch(`/admin/products?${params.toString()}`);
       const json = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(json?.error || `Error ${res.status}`);
       setData(json as ProductsResponse);
@@ -198,7 +192,7 @@ export default function AdminProductsPage() {
     if (!confirm('¿Sincronizar precios y stock de TODOS los productos con el ERP? Esto puede tomar varios minutos.')) return;
     setSyncingAll(true);
     try {
-      const res = await fetch(`${getApiBase()}/admin/products/sync-all`, { method: 'POST' });
+      const res = await adminFetch('/admin/products/sync-all', { method: 'POST' });
       const json = await res.json();
       if (!res.ok) throw new Error(json?.error || 'Error al sincronizar');
       showToast(`Sincronización completada: ${json.updated || 0} productos actualizados`, 'success');
@@ -227,8 +221,8 @@ export default function AdminProductsPage() {
         await reloadProducts();
         // Cargar categorías y marcas desde admin
         const [catRes, brandRes] = await Promise.all([
-          fetch(`${getApiBase()}/categories`),
-          fetch(`${getApiBase()}/brands`)
+          adminFetch('/categories'),
+          adminFetch('/brands')
         ]);
         const catsRes = await catRes.json().catch(() => []);
         const brsRes = await brandRes.json().catch(() => []);
@@ -278,7 +272,7 @@ export default function AdminProductsPage() {
     setSearchError(null);
 
     try {
-      const res = await fetch(`${getApiBase()}/admin/products/erp-lookup/${searchCode.trim()}`);
+      const res = await adminFetch(`/admin/products/erp-lookup/${searchCode.trim()}`);
       const json = await res.json();
 
       if (!res.ok) throw new Error(json.error || 'Error al buscar producto');
@@ -345,7 +339,7 @@ export default function AdminProductsPage() {
   useEffect(() => {
     if (form.category_id) {
       setLoadingSubcategories(true);
-      fetch(`${getApiBase()}/categories/${form.category_id}`)
+      adminFetch(`/categories/${form.category_id}`)
         .then(res => res.json())
         .then(data => {
           if (data && data.subCategories) {
@@ -369,7 +363,7 @@ export default function AdminProductsPage() {
     if (bulkCategory) {
       setLoadingBulkSubcategories(true);
       setBulkSubcategories([]); // Reset subcategories when category changes
-      fetch(`${getApiBase()}/categories/${bulkCategory}`)
+      adminFetch(`/categories/${bulkCategory}`)
         .then(res => res.json())
         .then(data => {
           if (data && data.subCategories) {
@@ -394,7 +388,7 @@ export default function AdminProductsPage() {
     formData.append('image', file);
 
     try {
-      const res = await fetch(`${getApiBase()}/admin/upload`, {
+      const res = await adminFetch('/admin/upload', {
         method: 'POST',
         body: formData
       });
@@ -472,9 +466,8 @@ export default function AdminProductsPage() {
         }
       }
 
-      const res = await fetch(`${getApiBase()}/admin/products`, {
+      const res = await adminFetch('/admin/products', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
       const json = await res.json().catch(() => ({}));
@@ -495,7 +488,7 @@ export default function AdminProductsPage() {
     setError(null);
     try {
       setDeletingId(id);
-      const res = await fetch(`${getApiBase()}/admin/products/${id}`, { method: 'DELETE' });
+      const res = await adminFetch(`/admin/products/${id}`, { method: 'DELETE' });
       const json = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(json?.error || `Error ${res.status}`);
       await reloadProducts();
@@ -599,9 +592,8 @@ export default function AdminProductsPage() {
       if (editForm.seo_title) payload.seo_title = editForm.seo_title;
       if (editForm.seo_description) payload.seo_description = editForm.seo_description;
 
-      const res = await fetch(`${getApiBase()}/admin/products/${id}`, {
+      const res = await adminFetch(`/admin/products/${id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
       const json = await res.json().catch(() => ({}));
@@ -619,9 +611,7 @@ export default function AdminProductsPage() {
 
   const toggleActive = async (id: number) => {
     try {
-      const res = await fetch(`${getApiBase()}/admin/products/${id}/toggle-active`, {
-        method: 'PATCH',
-      });
+      const res = await adminFetch(`/admin/products/${id}/toggle-active`, { method: 'PATCH' });
       const json = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(json?.error || `Error ${res.status}`);
       await reloadProducts();
@@ -671,9 +661,8 @@ export default function AdminProductsPage() {
       if (bulkRamType) payload.ram_type = bulkRamType;
       if (bulkFormFactor) payload.form_factor = bulkFormFactor;
 
-      const res = await fetch(`${getApiBase()}/admin/products/bulk-update`, {
+      const res = await adminFetch('/admin/products/bulk-update', {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
       const json = await res.json().catch(() => ({}));

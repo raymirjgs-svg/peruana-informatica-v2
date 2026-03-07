@@ -160,8 +160,14 @@ router.put('/:id', [
       });
     }
 
-    const updateData: any = { ...req.body };
-    
+    // Allowlist de campos permitidos para evitar mass assignment
+    const { name, appears_in_menu, seo_title, seo_description } = req.body;
+    const updateData: any = {};
+    if (name !== undefined) updateData.name = name;
+    if (appears_in_menu !== undefined) updateData.appears_in_menu = appears_in_menu;
+    if (seo_title !== undefined) updateData.seo_title = seo_title;
+    if (seo_description !== undefined) updateData.seo_description = seo_description;
+
     // Si se actualiza el nombre, generar nuevo slug
     if (req.body.name && req.body.name !== category.name) {
       const baseSlug = req.body.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');

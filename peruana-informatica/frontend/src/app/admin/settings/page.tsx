@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { AdminLayout } from '@/components/admin/AdminLayout';
+import { adminFetch } from '@/lib/adminApi';
 import {
 
   Settings,
@@ -86,10 +87,8 @@ export default function SettingsPage() {
     announcement_bar_color: '#1e40af' // blue-800
   });
 
-  const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-
   useEffect(() => {
-    fetch(`${apiBase}/api/admin/settings`)
+    adminFetch('/admin/settings')
       .then(res => res.json())
       .then(data => {
         setSettings(prev => ({ ...prev, ...data }));
@@ -112,9 +111,8 @@ export default function SettingsPage() {
     try {
       // Save all settings concurrently
       const promises = Object.entries(settings).map(([key, value]) =>
-        fetch(`${apiBase}/api/admin/settings/${key}`, {
+        adminFetch(`/admin/settings/${key}`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ value: String(value) })
         })
       );

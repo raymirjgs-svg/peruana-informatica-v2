@@ -5,6 +5,7 @@ import { useEffect, useState, useRef } from 'react';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { useSettings } from '@/context/SettingsContext';
 import { API_CONFIG } from '@/config/api';
+import { adminFetch } from '@/lib/adminApi';
 import { toast } from 'sonner';
 import {
   Building2,
@@ -89,7 +90,7 @@ export default function CompanySettingsPage() {
   const fetchSettings = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${API_CONFIG.API_BASE_URL}/api/admin/company-settings`);
+      const response = await adminFetch('/admin/company-settings');
       if (response.ok) {
         const data = await response.json();
         setFormData({
@@ -141,9 +142,8 @@ export default function CompanySettingsPage() {
 
     try {
       // 1. Update text fields first
-      const res = await fetch(`${API_CONFIG.API_BASE_URL}/api/admin/company-settings`, {
+      const res = await adminFetch('/admin/company-settings', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
 
@@ -155,7 +155,7 @@ export default function CompanySettingsPage() {
         const logoData = new FormData();
         logoData.append('logo', logoFile);
 
-        const resLogo = await fetch(`${API_CONFIG.API_BASE_URL}/api/admin/company-settings/upload-logo`, {
+        const resLogo = await adminFetch('/admin/company-settings/upload-logo', {
           method: 'POST',
           body: logoData,
         });
@@ -172,7 +172,7 @@ export default function CompanySettingsPage() {
         const favData = new FormData();
         favData.append('favicon', faviconFile);
 
-        const resFav = await fetch(`${API_CONFIG.API_BASE_URL}/api/admin/company-settings/upload-favicon`, {
+        const resFav = await adminFetch('/admin/company-settings/upload-favicon', {
           method: 'POST',
           body: favData,
         });

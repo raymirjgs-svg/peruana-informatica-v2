@@ -4,12 +4,7 @@ import React, { useEffect, useState } from "react";
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { Modal } from '@/components/admin/Modal';
 import { Button } from '@/components/admin/Button';
-
-function getApiBase() {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
-  const trimmed = baseUrl.replace(/\/+$/, "");
-  return trimmed.endsWith("/api") ? trimmed : `${trimmed}/api`;
-}
+import { adminFetch } from '@/lib/adminApi';
 
 type Slide = {
   id: number;
@@ -72,7 +67,7 @@ export default function AdminCarouselPage() {
       const formData = new FormData();
       formData.append('image', file);
 
-      const res = await fetch(`${getApiBase()}/admin/carousel/upload`, {
+      const res = await adminFetch('/admin/carousel/upload', {
         method: 'POST',
         body: formData,
       });
@@ -109,7 +104,7 @@ export default function AdminCarouselPage() {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`${getApiBase()}/admin/carousel`);
+        const res = await adminFetch('/admin/carousel');
         const json = await res.json().catch(() => ({}));
         if (!res.ok) throw new Error(json?.error || `Error ${res.status}`);
         setSlides(json as Slide[]);
@@ -125,7 +120,7 @@ export default function AdminCarouselPage() {
   const reload = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${getApiBase()}/admin/carousel`);
+      const res = await adminFetch('/admin/carousel');
       const json = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(json?.error || `Error ${res.status}`);
       setSlides(json as Slide[]);
@@ -158,7 +153,7 @@ export default function AdminCarouselPage() {
     }
     try {
       setCreating(true);
-      const res = await fetch(`${getApiBase()}/admin/carousel`, {
+      const res = await adminFetch('/admin/carousel', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
@@ -217,7 +212,7 @@ export default function AdminCarouselPage() {
     }
     try {
       setUpdatingId(id);
-      const res = await fetch(`${getApiBase()}/admin/carousel/${id}`, {
+      const res = await adminFetch(`/admin/carousel/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(editForm),
@@ -240,7 +235,7 @@ export default function AdminCarouselPage() {
     setError(null);
     try {
       setDeletingId(id);
-      const res = await fetch(`${getApiBase()}/admin/carousel/${id}`, { method: 'DELETE' });
+      const res = await adminFetch(`/admin/carousel/${id}`, { method: 'DELETE' });
       const json = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(json?.error || `Error ${res.status}`);
       await reload();

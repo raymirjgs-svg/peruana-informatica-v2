@@ -2,6 +2,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { BrandService, Brand } from '@/services/BrandService';
 import { CategoryService, Category } from '@/services/CategoryService';
@@ -13,6 +14,7 @@ import { useCompare } from '@/hooks/useCompare';
 import { getProductImageUrl } from '@/utils/images';
 
 export function Navbar() {
+  const router = useRouter();
   const [categories, setCategories] = useState<Category[]>([]);
   const [brands, setBrands] = useState<Brand[]>([]);
   const [categoriesOpen, setCategoriesOpen] = useState(false);
@@ -63,7 +65,8 @@ export function Navbar() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchTerm.trim()) {
-      window.location.href = `/products?search=${encodeURIComponent(searchTerm.trim())}`;
+      setShowSuggestions(false);
+      router.push(`/products?search=${encodeURIComponent(searchTerm.trim())}`);
     }
   };
 
@@ -474,8 +477,8 @@ export function Navbar() {
                         )}
                       </div>
                     )}
-                    {/* Overlay invisible para cerrar al hacer click fuera (opcional, o confiar en onBlur/Focus pero es tricky) */}
-                    {showSuggestions && <div className="fixed inset-0 z-40 bg-transparent" onClick={() => setShowSuggestions(false)} style={{ display: 'none' }} />} {/* Hacky */}
+                    {/* Overlay para cerrar sugerencias al hacer click fuera */}
+                    {showSuggestions && <div className="fixed inset-0 z-40 bg-transparent" onClick={() => setShowSuggestions(false)} />}
                   </form>
                 )}
               </div>
@@ -616,7 +619,7 @@ export function Navbar() {
                 ⭐ Destacados
               </Link>
               <Link href="/products?clearance=true" className="block py-2 hover:text-red-300 transition" onClick={() => setMobileMenuOpen(false)}>
-                🔥 Ofertas
+                🔥 Remates
               </Link>
               <Link href="/track-order" className="block py-2 hover:text-amber-300 transition" onClick={() => setMobileMenuOpen(false)}>
                 📦 Rastrear Pedido

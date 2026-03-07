@@ -4,6 +4,7 @@
 import { useEffect, useState } from 'react';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { API_CONFIG } from '@/config/api';
+import { adminFetch } from '@/lib/adminApi';
 
 interface OrderItem {
   id: number;
@@ -46,7 +47,7 @@ export default function AdminOrdersPage() {
 
   const fetchOrders = async () => {
     try {
-      const response = await fetch(`${API_CONFIG.API_BASE_URL}/api/admin/orders`);
+      const response = await adminFetch('/admin/orders');
       const data = await response.json();
 
       if (!response.ok) {
@@ -69,11 +70,8 @@ export default function AdminOrdersPage() {
 
   const handleVerifyPayment = async (orderId: number, verified: boolean) => {
     try {
-      const response = await fetch(`${API_CONFIG.API_BASE_URL}/api/admin/payments/${orderId}/verify`, {
+      const response = await adminFetch(`/admin/payments/${orderId}/verify`, {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json'
-        },
         body: JSON.stringify({ verified, verified_by: 'Admin' })
       });
 
@@ -106,7 +104,7 @@ export default function AdminOrdersPage() {
       formData.append('invoice_file', invoiceFile);
       formData.append('invoice_number', invoiceNumber);
 
-      const response = await fetch(`${API_CONFIG.API_BASE_URL}/api/admin/payments/${orderId}/upload-invoice`, {
+      const response = await adminFetch(`/admin/payments/${orderId}/upload-invoice`, {
         method: 'POST',
         body: formData
       });

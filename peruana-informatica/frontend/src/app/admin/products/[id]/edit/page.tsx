@@ -5,12 +5,7 @@ import { useRouter, useParams } from 'next/navigation';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { ProductForm, ProductFormData } from '@/components/admin/products/ProductForm';
 import { toast } from 'sonner';
-
-function getApiBase() {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
-  const trimmed = baseUrl.replace(/\/+$/, "");
-  return trimmed.endsWith("/api") ? trimmed : `${trimmed}/api`;
-}
+import { adminFetch } from '@/lib/adminApi';
 
 export default function EditProductPage() {
   const router = useRouter();
@@ -26,7 +21,7 @@ export default function EditProductPage() {
       if (!productId) return;
 
       try {
-        const res = await fetch(`${getApiBase()}/admin/products/${productId}`);
+        const res = await adminFetch(`/admin/products/${productId}`);
         const json = await res.json();
 
         if (!res.ok) {
@@ -84,9 +79,8 @@ export default function EditProductPage() {
       if (data.seo_description) payload.seo_description = data.seo_description;
       if (data.subcategory_ids) payload.subcategory_ids = data.subcategory_ids;
 
-      const res = await fetch(`${getApiBase()}/admin/products/${productId}`, {
+      const res = await adminFetch(`/admin/products/${productId}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
 

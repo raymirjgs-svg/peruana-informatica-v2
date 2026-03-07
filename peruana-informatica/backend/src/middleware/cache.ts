@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { getCache, setCache, isRedisReady, deleteCachePattern } from '../config/redis';
+import { logger } from '../config/logger';
 
 /**
  * Cache keys constants
@@ -75,11 +76,11 @@ export function cacheMiddleware(keyPrefix: string, ttl: number = 300) {
             const cached = await getCache(cacheKey);
 
             if (cached) {
-                console.log(`✅ Cache HIT: ${cacheKey}`);
+                logger.debug(`Cache HIT: ${cacheKey}`);
                 return res.json(cached);
             }
 
-            console.log(`❌ Cache MISS: ${cacheKey}`);
+            logger.debug(`Cache MISS: ${cacheKey}`);
 
             // Store original json method
             const originalJson = res.json.bind(res);
@@ -88,7 +89,7 @@ export function cacheMiddleware(keyPrefix: string, ttl: number = 300) {
             res.json = function (data: any) {
                 // Cache the response
                 setCache(cacheKey, data, ttl).catch((error) => {
-                    console.warn('Failed to cache response:', error);
+                    logger.warn('Failed to cache response', { error });
                 });
 
                 // Call original json method
@@ -97,7 +98,7 @@ export function cacheMiddleware(keyPrefix: string, ttl: number = 300) {
 
             next();
         } catch (error) {
-            console.error('Cache middleware error:', error);
+            logger.error('Cache middleware error', { error });
             next();
         }
     };
@@ -129,7 +130,7 @@ export function cacheSuccessMiddleware(keyPrefix: string, ttl: number = 300) {
         // Check cache
         const cached = await getCache(cacheKey);
         if (cached) {
-            console.log(`✅ Cache HIT: ${cacheKey}`);
+            logger.debug(`Cache HIT: ${cacheKey}`);
             return res.json(cached);
         }
 

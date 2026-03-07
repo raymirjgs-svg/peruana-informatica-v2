@@ -228,6 +228,7 @@ app.use("/api/cart", cartRoutes); // Rutas de carrito
 
 // Manejo de errores (debe ir al final)
 app.use(notFoundHandler);
+app.use(errorLogger);
 app.use(errorHandler);
 
 // Iniciar servidor

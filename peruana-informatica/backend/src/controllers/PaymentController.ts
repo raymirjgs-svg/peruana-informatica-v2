@@ -26,9 +26,9 @@ export const paymentController = {
                 return res.status(404).json({ error: 'Pedido no encontrado' });
             }
 
-            // Update payment details
-            order.payment_method = payment_method;
-            order.invoice_type = invoice_type;
+            // Update payment details (only if provided)
+            if (payment_method) order.payment_method = payment_method;
+            if (invoice_type) order.invoice_type = invoice_type;
             
             // Payment Proof (if uploaded)
             if (file) {

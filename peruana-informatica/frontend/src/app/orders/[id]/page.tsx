@@ -232,7 +232,7 @@ export default function OrderDetailPage() {
               <input
                 ref={fileInputRef}
                 type="file"
-                accept="image/jpeg,image/jpg,image/png,image/webp"
+                accept="image/jpeg,image/jpg,image/png,image/webp,application/pdf"
                 onChange={(e) => setProofFile(e.target.files?.[0] || null)}
                 className="hidden"
                 id="proof-upload"
@@ -244,7 +244,7 @@ export default function OrderDetailPage() {
                 {proofFile ? (
                   <span className="text-sm font-semibold text-green-700">{proofFile.name} — {(proofFile.size / 1024).toFixed(0)} KB · Clic para cambiar</span>
                 ) : (
-                  <span className="text-sm text-gray-500">Clic para seleccionar imagen (JPG, PNG · máx. 5 MB)</span>
+                  <span className="text-sm text-gray-500">Clic para seleccionar imagen o PDF (JPG, PNG, PDF · máx. 5 MB)</span>
                 )}
               </label>
               {proofFile && (

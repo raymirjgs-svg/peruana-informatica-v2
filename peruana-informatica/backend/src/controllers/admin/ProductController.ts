@@ -638,7 +638,7 @@ export class ProductController {
         }
     }
 
-    // POST brand-fix — aplica correcciones de marca en lote
+    // POST brand-fix — aplica correcciones de marca en lote (agrupado por brand_id)
     async brandFix(req: Request, res: Response) {
         try {
             const { fixes } = req.body; // [{ cod_producto, brand_id }]
@@ -646,13 +646,20 @@ export class ProductController {
                 return res.status(400).json({ error: 'Se requiere un array de correcciones' });
             }
 
-            let updated = 0;
+            // Group by brand_id for bulk UPDATE per brand (much faster)
+            const byBrand: Record<number, number[]> = {};
             for (const fix of fixes) {
                 const { cod_producto, brand_id } = fix;
                 if (!cod_producto || !brand_id) continue;
+                if (!byBrand[brand_id]) byBrand[brand_id] = [];
+                byBrand[brand_id].push(cod_producto);
+            }
+
+            let updated = 0;
+            for (const [brandId, productIds] of Object.entries(byBrand)) {
                 const [count] = await Product.update(
-                    { brand_id },
-                    { where: { cod_producto } }
+                    { brand_id: Number(brandId) },
+                    { where: { cod_producto: { [Op.in]: productIds } } }
                 );
                 updated += count;
             }

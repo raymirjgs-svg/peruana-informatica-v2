@@ -50,7 +50,7 @@ export default function BlogPage() {
 
   // Obtener imagen por defecto
   const getDefaultImage = (slug: string) => {
-    return `/images/no-image.svg`;
+    return `/no-image.svg`;
   };
 
   // Dar like a un post

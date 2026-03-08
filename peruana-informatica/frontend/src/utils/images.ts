@@ -11,7 +11,7 @@ const getBaseUrl = () => process.env.NEXT_PUBLIC_API_URL || 'http://localhost:30
  */
 export function getProductImageUrl(imagePath?: string | null, placeholder?: string): string {
     if (!imagePath || imagePath.trim() === '') {
-        return placeholder || '/images/no-image.svg';
+        return placeholder || '/no-image.svg';
     }
     if (imagePath.startsWith('http')) return imagePath;
     return `${getBaseUrl()}/images/products/${imagePath}`;

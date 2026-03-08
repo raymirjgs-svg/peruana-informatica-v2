@@ -79,7 +79,7 @@ export default function BlogPostPage() {
     if (post?.featured_image) {
       return post.featured_image;
     }
-    return `/images/no-image.svg`;
+    return `/no-image.svg`;
   };
 
   const handleLike = async () => {

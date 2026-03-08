@@ -149,7 +149,7 @@ export function ProductImageManager({ productId, onImagesUpdate }: ProductImageM
                     className="w-full h-full object-cover"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
-                      target.src = "/images/no-image.svg";
+                      target.src = "/no-image.svg";
                     }}
                   />
                 ) : (

@@ -28,7 +28,7 @@ export async function generateMetadata({
     const rawDesc: string = p.seo_description || p.description || "";
     const title = `${rawTitle} | Peruana Informática`;
     const description = rawDesc.toString().substring(0, 160);
-    const image = p.image || `/images/no-image.svg`;
+    const image = p.image || `/no-image.svg`;
     const urlBase = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
     const url = `${urlBase}/products/${slug}`;
 
@@ -77,7 +77,7 @@ export default async function ProductSlugLayout({
       const siteUrl =
         process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
       const url = `${siteUrl}/products/${slug}`;
-      const image = p.image || `/images/no-image.svg`;
+      const image = p.image || `/no-image.svg`;
       jsonLd = [
         {
           "@context": "https://schema.org",

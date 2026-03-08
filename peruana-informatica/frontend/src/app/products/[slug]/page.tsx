@@ -32,7 +32,7 @@ export default function ProductDetailPage() {
     ? product.images.map(img => img.imagen.startsWith('http') ? img.imagen : `${apiUrl}/images/products/${img.imagen}`)
     : product?.image
       ? [product.image.startsWith('http') ? product.image : `${apiUrl}/images/products/${product.image}`]
-      : ['/images/no-image.svg'];
+      : ['/no-image.svg'];
 
   useEffect(() => {
     const loadData = async () => {
@@ -144,10 +144,10 @@ export default function ProductDetailPage() {
             <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
               <div className="h-[380px] flex items-center justify-center p-6">
                 <img
-                  src={productImages[selectedImage] || '/images/no-image.svg'}
+                  src={productImages[selectedImage] || '/no-image.svg'}
                   alt={product.name}
                   className="max-w-full max-h-full object-contain"
-                  onError={(e) => { (e.target as HTMLImageElement).src = '/images/no-image.svg'; }}
+                  onError={(e) => { (e.target as HTMLImageElement).src = '/no-image.svg'; }}
                 />
               </div>
 
@@ -168,7 +168,7 @@ export default function ProductDetailPage() {
                         src={img}
                         alt={`Vista ${idx + 1}`}
                         className="w-full h-full object-contain p-1"
-                        onError={(e) => { (e.target as HTMLImageElement).src = '/images/no-image.svg'; }}
+                        onError={(e) => { (e.target as HTMLImageElement).src = '/no-image.svg'; }}
                       />
                     </button>
                   ))}

@@ -54,6 +54,7 @@ services:
     ports:
       - "127.0.0.1:3001:3001"
     volumes:
+      - /var/www/images/products:/app/public/images/products
       - uploads_data:/app/public/uploads
       - payment_proofs_data:/app/public/payment-proofs
     depends_on:

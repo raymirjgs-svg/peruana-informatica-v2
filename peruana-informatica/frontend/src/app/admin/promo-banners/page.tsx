@@ -202,7 +202,7 @@ export default function PromoBannersPage() {
                                                 src={formData.image_url}
                                                 alt="Preview"
                                                 className="w-full h-full object-cover"
-                                                onError={e => { (e.target as HTMLImageElement).src = '/images/no-image.svg'; }}
+                                                onError={e => { (e.target as HTMLImageElement).src = '/no-image.svg'; }}
                                             />
                                             <button
                                                 type="button"
@@ -330,7 +330,7 @@ export default function PromoBannersPage() {
                                                     src={banner.image_url}
                                                     alt={banner.title}
                                                     className="w-full h-full object-cover"
-                                                    onError={e => { (e.target as HTMLImageElement).src = '/images/no-image.svg'; }}
+                                                    onError={e => { (e.target as HTMLImageElement).src = '/no-image.svg'; }}
                                                 />
                                             </div>
 

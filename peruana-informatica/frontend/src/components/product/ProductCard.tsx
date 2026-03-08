@@ -48,7 +48,7 @@ export const ProductCard = memo(function ProductCard({ product }: ProductCardPro
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
       return `${apiUrl}/images/products/${encodeURIComponent(product.image)}`;
     }
-    return '/images/no-image.svg';
+    return '/no-image.svg';
   };
 
   const imgSrc = getImageSrc();
@@ -86,7 +86,7 @@ export const ProductCard = memo(function ProductCard({ product }: ProductCardPro
             src={imgSrc}
             alt={product.name}
             className="w-full h-full object-contain p-3 group-hover:scale-105 transition-transform duration-500"
-            onError={(e) => { e.currentTarget.src = '/images/no-image.svg'; }}
+            onError={(e) => { e.currentTarget.src = '/no-image.svg'; }}
           />
         )}
 

@@ -131,7 +131,7 @@ export function SearchBar() {
                                                         alt={product.name}
                                                         className="w-full h-full object-contain p-1 group-hover:scale-110 transition-transform duration-300"
                                                         onError={(e) => {
-                                                            (e.target as HTMLImageElement).src = '/images/no-image.svg';
+                                                            (e.target as HTMLImageElement).src = '/no-image.svg';
                                                         }}
                                                     />
                                                 );

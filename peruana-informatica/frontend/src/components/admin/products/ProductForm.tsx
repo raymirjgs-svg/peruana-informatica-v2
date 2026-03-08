@@ -464,7 +464,7 @@ export function ProductForm({ initialData, productId, onSubmit, isSubmitting, is
                       src={mainImage.startsWith('http') ? mainImage : `/uploads/${mainImage}`}
                       alt="Preview"
                       className="h-24 w-24 object-cover rounded-lg border"
-                      onError={(e) => (e.target as HTMLImageElement).src = '/images/no-image.svg'}
+                      onError={(e) => (e.target as HTMLImageElement).src = '/no-image.svg'}
                     />
                   </div>
                 )}

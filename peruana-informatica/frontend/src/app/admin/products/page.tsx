@@ -86,8 +86,8 @@ export default function AdminProductsPage() {
   const [filterCategoryId, setFilterCategoryId] = useState<number | undefined>(undefined);
   const [filterBrandId, setFilterBrandId] = useState<number | undefined>(undefined);
   const [filterStock, setFilterStock] = useState<string>(""); // "all", "low", "out", "available"
-  const [sortBy, setSortBy] = useState<string>("name");
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [sortBy, setSortBy] = useState<string>("cod_producto");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [viewMode, setViewMode] = useState<"list" | "grid">("list");
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(20);

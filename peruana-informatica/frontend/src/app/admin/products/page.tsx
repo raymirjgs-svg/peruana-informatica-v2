@@ -136,12 +136,12 @@ export default function AdminProductsPage() {
 
   // Obtener URL de imagen del producto
   const getProductImageUrl = (product: Product) => {
-    if (!product.images || product.images.length === 0) return null;
-    const img = product.images?.[0]?.imagen;
+    const baseUrl = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001').replace(/\/api\/?$/, '');
+    // Prefer gallery images, fallback to main image field
+    const img = product.images?.[0]?.imagen || (product as any).image;
     if (!img) return null;
     if (img.startsWith('http')) return img;
-    const baseUrl = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001').replace(/\/api\/?$/, '');
-    return `${baseUrl}/uploads/${encodeURIComponent(img)}`;
+    return `${baseUrl}/images/products/${encodeURIComponent(img)}`;
   };
 
   // Exportar a CSV

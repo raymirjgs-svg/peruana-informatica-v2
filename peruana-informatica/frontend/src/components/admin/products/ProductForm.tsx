@@ -368,13 +368,43 @@ export function ProductForm({ initialData, productId, onSubmit, isSubmitting, is
               {!erpData && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Código Interno (opcional)
+                    Código Interno {isEdit ? '(ERP)' : '(opcional)'}
                   </label>
-                  <input
-                    {...register('codigo_interno')}
-                    className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                    placeholder="SKU-001"
-                  />
+                  <div className="flex gap-2">
+                    <input
+                      {...register('codigo_interno')}
+                      className="flex-1 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                      placeholder={isEdit ? 'Código ERP (ej: 20230)' : 'SKU-001'}
+                    />
+                    {isEdit && (
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          const code = watch('codigo_interno')?.trim();
+                          if (!code) { toast.error('Ingresa un código ERP primero'); return; }
+                          setSearchingCode(true);
+                          try {
+                            const res = await fetch(`${getApiBase()}/admin/products/erp-lookup/${code}`);
+                            const json = await res.json();
+                            if (json.found && json.source === 'erp') {
+                              setValue('price', json.product.precio);
+                              setValue('stock', json.product.stock);
+                              toast.success(`ERP: S/. ${json.product.precio} — Stock: ${json.product.stock}`);
+                            } else if (json.found && json.source === 'db') {
+                              toast.error('Ese código ya pertenece a otro producto');
+                            } else {
+                              toast.error('Código no encontrado en el ERP');
+                            }
+                          } catch { toast.error('Error al conectar con el ERP'); }
+                          finally { setSearchingCode(false); }
+                        }}
+                        disabled={searchingCode}
+                        className="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 text-sm whitespace-nowrap"
+                      >
+                        {searchingCode ? '⏳' : '🔄 Sync ERP'}
+                      </button>
+                    )}
+                  </div>
                 </div>
               )}
 

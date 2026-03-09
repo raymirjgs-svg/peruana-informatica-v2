@@ -70,6 +70,7 @@ export default function EditProductPage() {
         is_clearance: data.is_clearance,
       };
 
+      if (data.codigo_interno) payload.codigo_interno = data.codigo_interno;
       if (data.description) payload.description = data.description;
       if (data.category_id) payload.category_id = data.category_id;
       if (data.brand_id) payload.brand_id = data.brand_id;

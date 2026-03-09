@@ -312,7 +312,7 @@ export class ProductController {
                 counter++;
             }
 
-            // Generar codigo_interno único
+            // Usar codigo_interno del body (ERP code) si viene, si no generar uno único
             const generateCodigoInterno = async (): Promise<string> => {
                 const timestamp = Date.now().toString().slice(-8);
                 const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
@@ -325,7 +325,7 @@ export class ProductController {
                 return codigo;
             };
 
-            const codigo_interno = await generateCodigoInterno();
+            const codigo_interno = req.body.codigo_interno?.trim() || await generateCodigoInterno();
 
             const product = await Product.create({
                 name,
@@ -362,6 +362,25 @@ export class ProductController {
                     sub_category_id: subId
                 }));
                 await ProductSubCategory.bulkCreate(subcategoryRecords);
+            }
+
+            // Auto-sincronizar precio y stock desde ERP si tiene código válido
+            try {
+                const erpResult = await PeruanaInformaticaService.consultarArticulo(String(product.codigo_interno));
+                if (erpResult?.success && erpResult.data) {
+                    const articulo = erpResult.data;
+                    const newStock = parseInt(articulo.stock) || 0;
+                    const newPrice = parseFloat(articulo.precio_unitario_soles) || parseFloat(articulo.precio) || parseFloat(articulo.pre_cli) || 0;
+                    if (newStock > 0 || newPrice > 0) {
+                        await Product.update(
+                            { stock: newStock, price: newPrice },
+                            { where: { cod_producto: product.cod_producto } }
+                        );
+                    }
+                }
+            } catch (erpErr) {
+                // No bloquear creación si el ERP falla
+                console.warn(`ERP sync skipped for new product ${product.codigo_interno}:`, erpErr);
             }
 
             const newProduct = await Product.findByPk(product.cod_producto, {

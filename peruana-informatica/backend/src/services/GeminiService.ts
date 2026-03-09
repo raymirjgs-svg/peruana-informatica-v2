@@ -296,7 +296,8 @@ META_DESC: [descripción SEO de 150 caracteres]`;
     } catch (error) {
       console.error("❌ Error generating blog image:", error);
       // Fallback
-      return `https://picsum.photos/seed/${encodeURIComponent(title)}/1280/720`;
+      const kw = title.toLowerCase().replace(/[^a-z0-9 ]/g, ' ').split(/\s+/).filter(w => w.length > 3).slice(0, 5).join(' ');
+      return `https://image.pollinations.ai/prompt/${encodeURIComponent('technology blog ' + kw + ' professional 4k no text')}?width=1280&height=720&nologo=true&seed=${Math.floor(Math.random()*999999)}&model=flux`;
     }
   }
 

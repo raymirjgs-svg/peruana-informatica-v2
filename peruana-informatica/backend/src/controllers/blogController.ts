@@ -963,7 +963,7 @@ Las gaming laptops consumen mucha energía:
 Invertir en una laptop gaming es una decisión importante. Evalúa tus necesidades, presupuesto y los juegos que planeas jugar. En Peruana Informática te asesoramos para encontrar el equipo perfecto.
 
 ¿Necesitas ayuda? ¡Contáctanos para recomendaciones personalizadas!`,
-          featured_image: "https://picsum.photos/seed/gaming-laptop/800/400",
+          featured_image: "https://image.pollinations.ai/prompt/professional%20technology%20blog%20about%20gaming%20laptop%202024%20modern%20design%204k%20no%20text?width=1280&height=720&nologo=true&seed=481234&model=flux",
           meta_title:
             "Mejores Laptops Gaming 2024 - Guía de Compra | Peruana Informática",
           meta_description:
@@ -1159,7 +1159,7 @@ Elige uno con:
 ¿Necesitas componentes? En Peruana Informática tenemos todo lo que necesitas con asesoría personalizada.
 
 ¡Disfruta tu nueva PC! 🎮`,
-          featured_image: "https://picsum.photos/seed/pc-build/800/400",
+          featured_image: "https://image.pollinations.ai/prompt/professional%20technology%20blog%20about%20gaming%20pc%20build%20components%20modern%204k%20no%20text?width=1280&height=720&nologo=true&seed=725891&model=flux",
           meta_title: "Cómo Armar una PC Gamer - Guía Completa 2024",
           meta_description:
             "Guía paso a paso para armar tu primera PC gamer. Aprende a ensamblar componentes, instalar software y troubleshooting común.",
@@ -1363,7 +1363,7 @@ En 2024, un SSD es prácticamente obligatorio como disco principal. Los HDD aún
 - Prioriza SSD en tu presupuesto
 
 ¿Necesitas ayuda eligiendo? En Peruana Informática te asesoramos según tu caso específico.`,
-          featured_image: "https://picsum.photos/seed/storage/800/400",
+          featured_image: "https://image.pollinations.ai/prompt/professional%20technology%20blog%20about%20ssd%20storage%20nvme%20speed%20comparison%204k%20no%20text?width=1280&height=720&nologo=true&seed=312748&model=flux",
           meta_title: "SSD vs HDD 2024: ¿Cuál Elegir? Comparativa Completa",
           meta_description:
             "Comparativa detallada SSD vs HDD 2024. Velocidad, precio, durabilidad. Descubre cuál es mejor para tu PC.",

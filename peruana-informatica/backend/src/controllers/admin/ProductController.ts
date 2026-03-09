@@ -417,6 +417,24 @@ export class ProductController {
 
             await product.update(updates);
 
+            // Si cambió el codigo_interno, re-sincronizar precio y stock desde ERP
+            const newCode = updates.codigo_interno?.trim();
+            if (newCode && newCode !== product.getDataValue('codigo_interno')) {
+                try {
+                    const erpResult = await PeruanaInformaticaService.consultarArticulo(newCode);
+                    if (erpResult?.success && erpResult.data) {
+                        const articulo = erpResult.data;
+                        const newStock = parseInt(articulo.stock) || 0;
+                        const newPrice = parseFloat(articulo.precio_unitario_soles) || parseFloat(articulo.precio) || parseFloat(articulo.pre_cli) || 0;
+                        if (newStock > 0 || newPrice > 0) {
+                            await product.update({ stock: newStock, price: newPrice });
+                        }
+                    }
+                } catch (erpErr) {
+                    console.warn(`ERP sync skipped on update for ${newCode}:`, erpErr);
+                }
+            }
+
             // Actualizar subcategorías si se proporcionan
             if (subcategory_ids && Array.isArray(subcategory_ids)) {
                 if (product.codigo_interno) {

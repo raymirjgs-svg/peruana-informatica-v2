@@ -313,8 +313,8 @@ router.get('/slug/:slug', cacheSuccessMiddleware('product-slug', 600), [
         is_active: 1  // Solo productos activos
       },
       attributes: [
-        'cod_producto', 'name', 'slug', 'description', 'short_description', 'price', 'price_web', 'price_cot', 'price_dis', 'stock', 'category', 'keywords', 'brand_id', 'category_id', 'estado', 'codigo_interno',
-        'component_type', 'socket_type', 'ram_type', 'form_factor', 'tdp_watts', 'has_integrated_graphics', 'component_specs'
+        'cod_producto', 'name', 'slug', 'description', 'short_description', 'price', 'price_web', 'price_cot', 'price_dis', 'stock', 'image', 'category', 'keywords', 'brand_id', 'category_id', 'estado', 'codigo_interno',
+        'is_new', 'is_featured', 'is_clearance', 'component_type', 'socket_type', 'ram_type', 'form_factor', 'tdp_watts', 'has_integrated_graphics', 'component_specs'
       ],
 
       include: [

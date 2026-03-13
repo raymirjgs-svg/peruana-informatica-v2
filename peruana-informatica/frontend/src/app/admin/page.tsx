@@ -84,7 +84,7 @@ export default function AdminDashboardPage() {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-              {greeting}, {session?.user?.username || 'Admin'} 👋
+              {greeting}, Admin 👋
             </h1>
             <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
               Resumen general de tu tienda

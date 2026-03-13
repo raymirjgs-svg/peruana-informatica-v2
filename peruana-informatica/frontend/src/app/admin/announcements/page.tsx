@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { Megaphone, Plus, Trash2, Edit, Power, GripVertical, CheckCircle, XCircle, Save, X } from 'lucide-react';
 import { PageHeader } from '@/components/admin/PageHeader';
 import { AdminLayout } from '@/components/admin/AdminLayout';
-import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 
 import { API_CONFIG } from '@/config/api';
@@ -154,12 +153,11 @@ function AnnouncementModal({
 }
 
 export default function AnnouncementsPage() {
-  const { data: session } = useSession();
   const [items, setItems] = useState<Announcement[]>([]);
   const [loading, setLoading] = useState(true);
   const [modalItem, setModalItem] = useState<Announcement | null | undefined>(undefined);
 
-  const token = session?.accessToken ?? '';
+  const token = typeof window !== 'undefined' ? (localStorage.getItem('adminToken') ?? '') : '';
 
   const fetchItems = async () => {
     try {
@@ -176,8 +174,8 @@ export default function AnnouncementsPage() {
   };
 
   useEffect(() => {
-    if (token) fetchItems();
-  }, [token]);
+    fetchItems();
+  }, []);
 
   const handleToggle = async (item: Announcement) => {
     try {

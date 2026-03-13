@@ -5,7 +5,6 @@ import { AdminLayout } from '@/components/admin/AdminLayout';
 import { MotionWrapper } from '@/components/ui/MotionWrapper';
 import { PageHeader } from '@/components/admin/PageHeader';
 import { StatsCard } from '@/components/admin/StatsCard';
-import { useSession } from 'next-auth/react';
 import { Package, AlertTriangle, TrendingDown, Search, Download } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -19,7 +18,6 @@ interface Product {
 }
 
 export default function InventoryPage() {
-  const { data: session } = useSession();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -27,13 +25,13 @@ export default function InventoryPage() {
 
   useEffect(() => {
     const fetchInventory = async () => {
-      // Cargar sin autenticación para evitar bloqueo
       try {
         const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
         const headers: HeadersInit = {};
 
-        if (session?.accessToken) {
-          headers['Authorization'] = `Bearer ${session.accessToken}`;
+        const token = typeof window !== 'undefined' ? (localStorage.getItem('adminToken') ?? '') : '';
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
         }
 
         const response = await fetch(`${API_BASE}/api/admin/products`, { headers });
@@ -50,7 +48,7 @@ export default function InventoryPage() {
     };
 
     fetchInventory();
-  }, [session]);
+  }, []);
 
   // Filter products
   const filteredProducts = products.filter(p => {

@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { LayoutGrid, Plus, Trash2, Edit, Power, Save, X, CheckCircle, XCircle } from 'lucide-react';
 import { PageHeader } from '@/components/admin/PageHeader';
 import { AdminLayout } from '@/components/admin/AdminLayout';
-import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 
 import { API_CONFIG } from '@/config/api';
@@ -171,12 +170,11 @@ function CategoryModal({
 }
 
 export default function QuickCategoriesPage() {
-  const { data: session } = useSession();
   const [items, setItems] = useState<QuickCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [modalItem, setModalItem] = useState<QuickCategory | null | undefined>(undefined);
 
-  const token = session?.accessToken ?? '';
+  const token = typeof window !== 'undefined' ? (localStorage.getItem('adminToken') ?? '') : '';
 
   const fetchItems = async () => {
     try {

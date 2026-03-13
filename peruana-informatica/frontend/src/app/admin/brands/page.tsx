@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from 'react';
 import { Tag, Search, Upload, Trash2, Eye, EyeOff, ImageOff } from 'lucide-react';
 import { PageHeader } from '@/components/admin/PageHeader';
 import { AdminLayout } from '@/components/admin/AdminLayout';
-import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 
 import { API_CONFIG } from '@/config/api';
@@ -19,14 +18,13 @@ interface Brand {
 }
 
 export default function BrandsAdminPage() {
-  const { data: session } = useSession();
   const [brands, setBrands] = useState<Brand[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [uploading, setUploading] = useState<number | null>(null);
   const fileRefs = useRef<Record<number, HTMLInputElement | null>>({});
 
-  const token = session?.accessToken ?? '';
+  const token = typeof window !== 'undefined' ? (localStorage.getItem('adminToken') ?? '') : '';
 
   const fetchBrands = async () => {
     try {

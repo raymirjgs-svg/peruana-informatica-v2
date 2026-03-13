@@ -5,12 +5,10 @@ import { useRouter } from 'next/navigation';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { PageForm } from '@/components/admin/PageForm';
 import { pageService, CreatePageData } from '@/services/PageService';
-import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 import { useParams } from 'next/navigation';
 
 export default function EditPagePage() {
-    const { data: session } = useSession();
     const router = useRouter();
     const params = useParams();
     const id = Number(params?.id);
@@ -21,9 +19,10 @@ export default function EditPagePage() {
 
     useEffect(() => {
         const fetchPage = async () => {
-            if (!id || !session?.accessToken) return;
+            const token = typeof window !== 'undefined' ? (localStorage.getItem('adminToken') ?? '') : '';
+            if (!id || !token) return;
             try {
-                const response = await pageService.getPageById(id, session.accessToken);
+                const response = await pageService.getPageById(id, token);
                 setInitialData(response.data);
             } catch (error) {
                 toast.error('Error al cargar la página');
@@ -33,20 +32,19 @@ export default function EditPagePage() {
             }
         };
 
-        if (session?.accessToken) {
-            fetchPage();
-        }
-    }, [id, session, router]);
+        fetchPage();
+    }, [id, router]);
 
     const handleSubmit = async (data: CreatePageData) => {
-        if (!session?.accessToken) {
+        const token = typeof window !== 'undefined' ? (localStorage.getItem('adminToken') ?? '') : '';
+        if (!token) {
             toast.error('Sesión no válida');
             return;
         }
 
         setIsSubmitting(true);
         try {
-            await pageService.updatePage(id, data, session.accessToken);
+            await pageService.updatePage(id, data, token);
             toast.success('Página actualizada exitosamente');
             router.push('/admin/pages');
         } catch (error: any) {

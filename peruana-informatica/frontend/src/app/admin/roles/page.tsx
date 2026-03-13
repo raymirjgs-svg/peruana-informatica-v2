@@ -4,13 +4,11 @@ import { useState, useEffect } from 'react';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { MotionWrapper } from '@/components/ui/MotionWrapper';
 import { PageHeader } from '@/components/admin/PageHeader';
-import { useSession } from 'next-auth/react';
 import { roleService, Role, Permission } from '@/services/RoleService';
 import { Shield, Plus, Edit, Trash2, Check } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function RolesPage() {
-    const { data: session } = useSession();
     const [roles, setRoles] = useState<Role[]>([]);
     const [permissions, setPermissions] = useState<{ all: Permission[]; grouped: Record<string, Permission[]> }>({ all: [], grouped: {} });
     const [loading, setLoading] = useState(true);
@@ -19,12 +17,13 @@ export default function RolesPage() {
 
     useEffect(() => {
         const fetchData = async () => {
-            if (!session?.accessToken) return;
+            const token = typeof window !== 'undefined' ? (localStorage.getItem('adminToken') ?? '') : '';
+            if (!token) return;
 
             try {
                 const [rolesRes, permsRes] = await Promise.all([
-                    roleService.getAllRoles(session.accessToken),
-                    roleService.getAllPermissions(session.accessToken)
+                    roleService.getAllRoles(token),
+                    roleService.getAllPermissions(token)
                 ]);
 
                 setRoles(rolesRes.data);
@@ -37,14 +36,15 @@ export default function RolesPage() {
         };
 
         fetchData();
-    }, [session]);
+    }, []);
 
     const handleDelete = async (id: number) => {
         if (!confirm('¿Eliminar este rol?')) return;
-        if (!session?.accessToken) return;
+        const token = typeof window !== 'undefined' ? (localStorage.getItem('adminToken') ?? '') : '';
+        if (!token) return;
 
         try {
-            await roleService.deleteRole(id, session.accessToken);
+            await roleService.deleteRole(id, token);
             setRoles(roles.filter(r => r.id !== id));
             toast.success('Rol eliminado');
         } catch (error: any) {

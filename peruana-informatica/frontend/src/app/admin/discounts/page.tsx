@@ -5,13 +5,11 @@ import { Percent, Plus, Search, Tag, TrendingDown, Edit, Trash2, Calendar, Check
 import { PageHeader } from '@/components/admin/PageHeader';
 import { StatsCard } from '@/components/admin/StatsCard';
 import { AdminLayout } from '@/components/admin/AdminLayout';
-import { useSession } from 'next-auth/react';
 import { discountService, type Discount } from '@/services/DiscountService';
 import { DiscountModal } from '@/components/admin/discounts/DiscountModal';
 import { toast } from 'sonner';
 
 export default function DiscountsPage() {
-  const { data: session } = useSession();
   const [discounts, setDiscounts] = useState<Discount[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -19,9 +17,10 @@ export default function DiscountsPage() {
   const [selectedDiscount, setSelectedDiscount] = useState<Discount | null>(null);
 
   const fetchDiscounts = async () => {
-    if (!session?.accessToken) return;
+    const token = typeof window !== 'undefined' ? (localStorage.getItem('adminToken') ?? '') : '';
+    if (!token) return;
     try {
-      const data = await discountService.getAllDiscounts(session.accessToken);
+      const data = await discountService.getAllDiscounts(token);
       setDiscounts(data);
     } catch (error) {
       toast.error('Error al cargar descuentos');
@@ -31,15 +30,16 @@ export default function DiscountsPage() {
   };
 
   useEffect(() => {
-    if (session?.accessToken) fetchDiscounts();
-  }, [session]);
+    fetchDiscounts();
+  }, []);
 
   const handleDelete = async (id: number) => {
     if (!confirm('¿Eliminar esta promoción?')) return;
-    if (!session?.accessToken) return;
+    const token = typeof window !== 'undefined' ? (localStorage.getItem('adminToken') ?? '') : '';
+    if (!token) return;
 
     try {
-      await discountService.deleteDiscount(id, session.accessToken);
+      await discountService.deleteDiscount(id, token);
       toast.success('Descuento eliminado');
       fetchDiscounts();
     } catch (error) {
@@ -173,7 +173,7 @@ export default function DiscountsPage() {
         onClose={() => setIsModalOpen(false)}
         onSuccess={() => fetchDiscounts()}
         discountToEdit={selectedDiscount}
-        token={session?.accessToken || ''}
+        token={typeof window !== 'undefined' ? (localStorage.getItem('adminToken') ?? '') : ''}
       />
     </AdminLayout>
   );

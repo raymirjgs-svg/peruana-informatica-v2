@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useSession } from 'next-auth/react';
 import { BarChart3, TrendingUp, DollarSign, Package, FileText, Download, Calendar, Activity } from 'lucide-react';
 import { PageHeader } from '@/components/admin/PageHeader';
 import { StatsCard } from '@/components/admin/StatsCard';
@@ -12,15 +11,14 @@ import { SalesChart } from '@/components/admin/SalesChart';
 import { toast } from 'sonner';
 
 export default function ReportsPage() {
-  const { data: session, status } = useSession();
   const [loading, setLoading] = useState(true);
   const [kpis, setKpis] = useState<KPIs | null>(null);
   const [salesData, setSalesData] = useState<SalesDataPoint[]>([]);
   const [period, setPeriod] = useState('30d');
 
   useEffect(() => {
-    if (status === 'loading') return;
-    if (status === 'unauthenticated' || !session?.accessToken) {
+    const token = typeof window !== 'undefined' ? (localStorage.getItem('adminToken') ?? '') : '';
+    if (!token) {
       setLoading(false);
       return;
     }
@@ -29,8 +27,8 @@ export default function ReportsPage() {
       setLoading(true);
       try {
         const [kpisRes, salesRes] = await Promise.all([
-          analyticsService.getKPIs(session.accessToken),
-          analyticsService.getSalesOverview(period, session.accessToken)
+          analyticsService.getKPIs(token),
+          analyticsService.getSalesOverview(period, token)
         ]);
 
         setKpis(kpisRes.data);
@@ -43,7 +41,7 @@ export default function ReportsPage() {
     };
 
     loadData();
-  }, [session, status, period]);
+  }, [period]);
 
   if (loading) {
     return (

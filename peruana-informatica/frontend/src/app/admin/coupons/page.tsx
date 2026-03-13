@@ -5,13 +5,11 @@ import { Ticket, Plus, Search, Calendar, Percent, Trash2, Edit, Power, CheckCirc
 import { PageHeader } from '@/components/admin/PageHeader';
 import { StatsCard } from '@/components/admin/StatsCard';
 import { AdminLayout } from '@/components/admin/AdminLayout';
-import { useSession } from 'next-auth/react';
 import { couponService, type Coupon } from '@/services/CouponService';
 import { CouponModal } from '@/components/admin/coupons/CouponModal';
 import { toast } from 'sonner';
 
 export default function CouponsPage() {
-  const { data: session } = useSession();
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -21,9 +19,10 @@ export default function CouponsPage() {
   const [selectedCoupon, setSelectedCoupon] = useState<Coupon | null>(null);
 
   const fetchCoupons = async () => {
-    if (!session?.accessToken) return;
+    const token = typeof window !== 'undefined' ? (localStorage.getItem('adminToken') ?? '') : '';
+    if (!token) return;
     try {
-      const data = await couponService.getAllCoupons(session.accessToken);
+      const data = await couponService.getAllCoupons(token);
       setCoupons(data);
     } catch (error) {
       toast.error('Error al cargar cupones');
@@ -33,10 +32,8 @@ export default function CouponsPage() {
   };
 
   useEffect(() => {
-    if (session?.accessToken) {
-      fetchCoupons();
-    }
-  }, [session]);
+    fetchCoupons();
+  }, []);
 
   const handleOpenModal = (coupon?: Coupon) => {
     setSelectedCoupon(coupon || null);
@@ -45,10 +42,11 @@ export default function CouponsPage() {
 
   const handleDelete = async (id: number) => {
     if (!confirm('¿Estás seguro de eliminar este cupón?')) return;
-    if (!session?.accessToken) return;
+    const token = typeof window !== 'undefined' ? (localStorage.getItem('adminToken') ?? '') : '';
+    if (!token) return;
 
     try {
-      await couponService.deleteCoupon(id, session.accessToken);
+      await couponService.deleteCoupon(id, token);
       toast.success('Cupón eliminado');
       fetchCoupons();
     } catch (error) {
@@ -57,12 +55,13 @@ export default function CouponsPage() {
   };
 
   const handleToggleStatus = async (id: number) => {
-    if (!session?.accessToken) return;
+    const token = typeof window !== 'undefined' ? (localStorage.getItem('adminToken') ?? '') : '';
+    if (!token) return;
     try {
       const coupon = coupons.find(c => c.id === id);
       if (!coupon) return;
       const newStatus = !coupon.is_active;
-      await couponService.toggleStatus(id, newStatus, session.accessToken);
+      await couponService.toggleStatus(id, newStatus, token);
       toast.success('Estado actualizado');
       fetchCoupons();
     } catch (error) {
@@ -222,7 +221,7 @@ export default function CouponsPage() {
         onClose={() => setIsModalOpen(false)}
         onSuccess={() => fetchCoupons()}
         couponToEdit={selectedCoupon}
-        token={session?.accessToken || ''}
+        token={typeof window !== 'undefined' ? (localStorage.getItem('adminToken') ?? '') : ''}
       />
     </AdminLayout>
   );

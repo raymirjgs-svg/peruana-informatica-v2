@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { StatsCard } from '@/components/admin/StatsCard';
 import { MotionWrapper } from '@/components/ui/MotionWrapper';
@@ -21,7 +20,6 @@ import { toast } from 'sonner';
 import Link from 'next/link';
 
 export default function AdminDashboardPage() {
-  const { data: session, status } = useSession();
   const [kpis, setKpis] = useState<KPIs | null>(null);
   const [salesData, setSalesData] = useState<SalesDataPoint[]>([]);
   const [topProducts, setTopProducts] = useState<TopProduct[]>([]);
@@ -37,8 +35,8 @@ export default function AdminDashboardPage() {
   }, []);
 
   useEffect(() => {
-    if (status === 'loading') return;
-    if (status === 'unauthenticated' || !session?.accessToken) {
+    const token = typeof window !== 'undefined' ? (localStorage.getItem('adminToken') ?? '') : '';
+    if (!token) {
       setLoading(false);
       return;
     }
@@ -47,9 +45,9 @@ export default function AdminDashboardPage() {
       setLoading(true);
       try {
         const [kpisRes, salesRes, productsRes] = await Promise.all([
-          analyticsService.getKPIs(session.accessToken),
-          analyticsService.getSalesOverview(period, session.accessToken),
-          analyticsService.getTopProducts(5, session.accessToken)
+          analyticsService.getKPIs(token),
+          analyticsService.getSalesOverview(period, token),
+          analyticsService.getTopProducts(5, token)
         ]);
 
         setKpis(kpisRes.data);
@@ -64,9 +62,9 @@ export default function AdminDashboardPage() {
     };
 
     loadAnalytics();
-  }, [session, status, period]);
+  }, [period]);
 
-  if (status === 'loading' || (status === 'authenticated' && loading)) {
+  if (loading) {
     return (
       <AdminLayout>
         <div className="flex justify-center items-center h-96">

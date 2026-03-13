@@ -242,9 +242,9 @@ export default function AnnouncementsPage() {
 
         {/* Vista previa */}
         {activeCount > 0 && (
-          <div className="rounded-xl overflow-hidden">
+          <div className="rounded-xl overflow-hidden max-w-full">
             <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Vista previa de la barra</p>
-            <div className="bg-gradient-to-r from-red-800 to-red-600 text-white text-xs font-semibold px-4 py-2 flex items-center gap-6 overflow-hidden">
+            <div className="bg-gradient-to-r from-red-800 to-red-600 text-white text-xs font-semibold px-4 py-2 flex items-center gap-6 overflow-x-hidden max-w-full">
               {items.filter(i => i.is_active).map((i) => (
                 <span key={i.id} className="flex items-center gap-1.5 whitespace-nowrap">
                   <span>{i.icon}</span>

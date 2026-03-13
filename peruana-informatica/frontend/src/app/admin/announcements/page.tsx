@@ -242,16 +242,21 @@ export default function AnnouncementsPage() {
 
         {/* Vista previa */}
         {activeCount > 0 && (
-          <div className="rounded-xl overflow-hidden max-w-full">
+          <div className="rounded-xl overflow-hidden">
             <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Vista previa de la barra</p>
-            <div className="bg-gradient-to-r from-red-800 to-red-600 text-white text-xs font-semibold px-4 py-2 flex items-center gap-6 overflow-x-hidden max-w-full">
-              {items.filter(i => i.is_active).map((i) => (
-                <span key={i.id} className="flex items-center gap-1.5 whitespace-nowrap">
-                  <span>{i.icon}</span>
-                  <span>{i.text}</span>
-                  <span className="text-red-300/50 ml-4">◆</span>
-                </span>
-              ))}
+            <div
+              className="bg-gradient-to-r from-red-800 to-red-600 text-white text-xs font-semibold py-2 overflow-hidden"
+              style={{ height: '30px' }}
+            >
+              <div className="flex items-center h-full animate-ticker" style={{ width: 'max-content' }}>
+                {[...items.filter(i => i.is_active), ...items.filter(i => i.is_active)].map((i, idx) => (
+                  <span key={idx} className="flex items-center gap-1.5 px-8 whitespace-nowrap">
+                    <span>{i.icon}</span>
+                    <span>{i.text}</span>
+                    <span className="text-red-300/50 ml-8">◆</span>
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
         )}

@@ -14,15 +14,16 @@ router.get('/status', (req: Request, res: Response) => {
 
 /**
  * @route POST /api/sync/force
- * @desc Fuerza una sincronización inmediata ignorando el cooldown
+ * @desc Inicia una sincronización inmediata en background (no bloquea)
  */
-router.post('/force', async (req: Request, res: Response) => {
-    try {
-        const result = await SyncService.forceSyncProducts();
-        res.json({ success: true, data: result });
-    } catch (error: any) {
-        res.status(500).json({ success: false, message: error.message });
+router.post('/force', (req: Request, res: Response) => {
+    const status = SyncService.getSyncStatus();
+    if (status.isSyncing) {
+        return res.json({ success: true, message: 'Sync ya en progreso', data: status });
     }
+    // Ejecutar en background sin bloquear la respuesta HTTP
+    SyncService.forceSyncProducts().catch(err => console.error('Force sync error:', err));
+    res.json({ success: true, message: 'Sync iniciado en background', data: SyncService.getSyncStatus() });
 });
 
 /**

@@ -28,6 +28,11 @@ const emptyForm = {
   imageUrl: '',
   isActive: true,
   order: 0,
+  showTitle: true,
+  showDescription: true,
+  showButton: true,
+  textPosition: 'left' as 'left' | 'center' | 'right',
+  titleSize: 'lg' as 'sm' | 'md' | 'lg' | 'xl',
 };
 
 const inputCls = "w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none";
@@ -121,6 +126,52 @@ function SlideModal({
                 <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
               </div>
               <input className={inputCls} placeholder="https://ejemplo.com/imagen.jpg" value={form.imageUrl} onChange={e => setForm({ ...form, imageUrl: e.target.value })} />
+            </div>
+          </div>
+
+          {/* Personalización */}
+          <div className="border border-gray-200 dark:border-gray-700 rounded-xl p-4 space-y-4">
+            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Personalización del contenido</p>
+
+            {/* Visibilidad de elementos */}
+            <div className="grid grid-cols-3 gap-3">
+              {([['showTitle', 'Mostrar título'], ['showDescription', 'Mostrar descripción'], ['showButton', 'Mostrar botón']] as const).map(([key, label]) => (
+                <label key={key} className="flex flex-col items-center gap-2 cursor-pointer p-3 rounded-xl border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                  <div
+                    onClick={() => setForm({ ...form, [key]: !(form as any)[key] })}
+                    className={`relative w-10 h-5 rounded-full transition-colors ${(form as any)[key] ? 'bg-emerald-500' : 'bg-gray-300 dark:bg-gray-600'}`}
+                  >
+                    <span className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${(form as any)[key] ? 'translate-x-5' : 'translate-x-0'}`} />
+                  </div>
+                  <span className="text-xs text-gray-600 dark:text-gray-400 text-center leading-tight">{label}</span>
+                </label>
+              ))}
+            </div>
+
+            {/* Posición del texto */}
+            <div>
+              <label className={labelCls}>Posición del texto</label>
+              <div className="grid grid-cols-3 gap-2">
+                {([['left', '← Izquierda'], ['center', '↔ Centro'], ['right', '→ Derecha']] as const).map(([val, lbl]) => (
+                  <button key={val} type="button" onClick={() => setForm({ ...form, textPosition: val })}
+                    className={`py-2 px-3 rounded-lg text-xs font-medium transition-colors border ${form.textPosition === val ? 'bg-blue-600 text-white border-blue-600' : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:border-blue-400'}`}>
+                    {lbl}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Tamaño del título */}
+            <div>
+              <label className={labelCls}>Tamaño del título</label>
+              <div className="grid grid-cols-4 gap-2">
+                {([['sm', 'Pequeño'], ['md', 'Mediano'], ['lg', 'Grande'], ['xl', 'Extra']] as const).map(([val, lbl]) => (
+                  <button key={val} type="button" onClick={() => setForm({ ...form, titleSize: val })}
+                    className={`py-2 px-2 rounded-lg text-xs font-medium transition-colors border ${form.titleSize === val ? 'bg-blue-600 text-white border-blue-600' : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:border-blue-400'}`}>
+                    {lbl}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -282,7 +333,7 @@ export default function AdminCarouselPage() {
 
   const startEdit = (s: Slide) => {
     setEditingId(s.id);
-    setEditForm({ title: s.title, description: s.description, buttonText: s.buttonText, buttonUrl: s.buttonUrl, backgroundColor: s.backgroundColor || 'from-blue-500 to-blue-700', imageUrl: s.imageUrl || '', isActive: s.isActive, order: s.order });
+    setEditForm({ title: s.title, description: s.description, buttonText: s.buttonText, buttonUrl: s.buttonUrl, backgroundColor: s.backgroundColor || 'from-blue-500 to-blue-700', imageUrl: s.imageUrl || '', isActive: s.isActive, order: s.order, showTitle: s.showTitle !== false, showDescription: s.showDescription !== false, showButton: s.showButton !== false, textPosition: (s.textPosition as any) || 'left', titleSize: (s.titleSize as any) || 'lg' });
     setShowEdit(true);
   };
 

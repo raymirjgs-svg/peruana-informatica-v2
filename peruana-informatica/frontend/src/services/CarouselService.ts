@@ -3,6 +3,11 @@
 // ============================================
 
 export interface CarouselSlide {
+  showTitle?: boolean;
+  showDescription?: boolean;
+  showButton?: boolean;
+  textPosition?: 'left' | 'center' | 'right';
+  titleSize?: 'sm' | 'md' | 'lg' | 'xl';
   id: number;
   title: string;
   description: string;

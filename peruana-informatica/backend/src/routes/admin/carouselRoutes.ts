@@ -77,7 +77,7 @@ router.get('/active', async (req: Request, res: Response) => {
     const slides = await Carousel.findAll({
       where: { isActive: true },
       order: [['order', 'ASC'], ['id', 'ASC']],
-      attributes: ['id', 'title', 'description', 'buttonText', 'buttonUrl', 'backgroundColor', 'imageUrl']
+      attributes: ['id', 'title', 'description', 'buttonText', 'buttonUrl', 'backgroundColor', 'imageUrl', 'showTitle', 'showDescription', 'showButton', 'textPosition', 'titleSize']
     });
 
     res.json(slides);

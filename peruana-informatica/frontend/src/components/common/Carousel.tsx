@@ -141,85 +141,96 @@ export function Carousel() {
           )}
 
           {/* Slide content */}
-          <div className="absolute inset-0 flex items-center z-10">
-            <div className="w-full px-10 md:px-20 max-w-3xl">
-              {/* Label badge */}
-              <div
-                className="inline-flex items-center gap-2 mb-4 px-3 py-1 rounded-full text-xs font-bold tracking-widest uppercase"
-                style={{
-                  backgroundColor: `${accentColor}20`,
-                  border: `1px solid ${accentColor}60`,
-                  color: accentColor,
-                  opacity: index === currentSlide ? 1 : 0,
-                  transform: index === currentSlide ? 'translateY(0)' : 'translateY(10px)',
-                  transition: 'opacity 0.5s ease 0.2s, transform 0.5s ease 0.2s',
-                }}
-              >
-                <span
-                  className="w-1.5 h-1.5 rounded-full animate-pulse"
-                  style={{ backgroundColor: accentColor }}
-                />
-                {slideLabels[index % slideLabels.length]}
+          {(() => {
+            const showTitle = s.showTitle !== false;
+            const showDesc = s.showDescription !== false;
+            const showBtn = s.showButton !== false;
+            const pos = s.textPosition || 'left';
+            const titleSizeMap = { sm: 'text-2xl md:text-3xl', md: 'text-3xl md:text-4xl', lg: 'text-4xl md:text-5xl', xl: 'text-5xl md:text-6xl' };
+            const titleClass = titleSizeMap[s.titleSize || 'lg'];
+            const alignClass = pos === 'center' ? 'items-center text-center' : pos === 'right' ? 'items-end text-right' : 'items-start text-left';
+            const accentOrigin = pos === 'center' ? 'center' : pos === 'right' ? 'right' : 'left';
+            return (
+              <div className="absolute inset-0 flex items-center z-10">
+                <div className={`w-full px-10 md:px-20 flex flex-col ${alignClass}`} style={{ maxWidth: pos === 'center' ? '100%' : '768px' }}>
+                  {/* Label badge */}
+                  <div
+                    className="inline-flex items-center gap-2 mb-4 px-3 py-1 rounded-full text-xs font-bold tracking-widest uppercase"
+                    style={{
+                      backgroundColor: `${accentColor}20`,
+                      border: `1px solid ${accentColor}60`,
+                      color: accentColor,
+                      opacity: index === currentSlide ? 1 : 0,
+                      transform: index === currentSlide ? 'translateY(0)' : 'translateY(10px)',
+                      transition: 'opacity 0.5s ease 0.2s, transform 0.5s ease 0.2s',
+                    }}
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: accentColor }} />
+                    {slideLabels[index % slideLabels.length]}
+                  </div>
+
+                  {showTitle && (
+                    <h2
+                      className={`${titleClass} font-black text-white mb-4 leading-tight`}
+                      style={{
+                        opacity: index === currentSlide ? 1 : 0,
+                        transform: index === currentSlide ? 'translateY(0)' : 'translateY(15px)',
+                        transition: 'opacity 0.6s ease 0.35s, transform 0.6s ease 0.35s',
+                        textShadow: '0 2px 20px rgba(0,0,0,0.5)',
+                      }}
+                    >
+                      {s.title}
+                    </h2>
+                  )}
+
+                  <div
+                    className="h-1 w-16 rounded-full mb-4"
+                    style={{
+                      backgroundColor: accentColor,
+                      opacity: index === currentSlide ? 1 : 0,
+                      transform: index === currentSlide ? 'scaleX(1)' : 'scaleX(0)',
+                      transformOrigin: accentOrigin,
+                      transition: 'opacity 0.4s ease 0.5s, transform 0.4s ease 0.5s',
+                    }}
+                  />
+
+                  {showDesc && (
+                    <p
+                      className="text-base md:text-lg text-white/75 mb-8 leading-relaxed max-w-xl"
+                      style={{
+                        opacity: index === currentSlide ? 1 : 0,
+                        transform: index === currentSlide ? 'translateY(0)' : 'translateY(10px)',
+                        transition: 'opacity 0.6s ease 0.55s, transform 0.6s ease 0.55s',
+                      }}
+                    >
+                      {s.description}
+                    </p>
+                  )}
+
+                  {showBtn && (
+                    <div
+                      style={{
+                        opacity: index === currentSlide ? 1 : 0,
+                        transform: index === currentSlide ? 'translateY(0)' : 'translateY(10px)',
+                        transition: 'opacity 0.6s ease 0.7s, transform 0.6s ease 0.7s',
+                      }}
+                    >
+                      <a
+                        href={s.buttonUrl}
+                        className="inline-flex items-center gap-3 px-7 py-3.5 rounded-lg font-bold text-sm tracking-wide text-white transition-all duration-200 hover:gap-4 hover:shadow-lg active:scale-95"
+                        style={{ backgroundColor: accentColor, boxShadow: `0 4px 20px ${accentColor}50` }}
+                      >
+                        {s.buttonText}
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                        </svg>
+                      </a>
+                    </div>
+                  )}
+                </div>
               </div>
-
-              <h2
-                className="text-4xl md:text-5xl font-black text-white mb-4 leading-tight"
-                style={{
-                  opacity: index === currentSlide ? 1 : 0,
-                  transform: index === currentSlide ? 'translateY(0)' : 'translateY(15px)',
-                  transition: 'opacity 0.6s ease 0.35s, transform 0.6s ease 0.35s',
-                  textShadow: '0 2px 20px rgba(0,0,0,0.5)',
-                }}
-              >
-                {s.title}
-              </h2>
-
-              {/* Accent line under title */}
-              <div
-                className="h-1 w-16 rounded-full mb-4"
-                style={{
-                  backgroundColor: accentColor,
-                  opacity: index === currentSlide ? 1 : 0,
-                  transform: index === currentSlide ? 'scaleX(1)' : 'scaleX(0)',
-                  transformOrigin: 'left',
-                  transition: 'opacity 0.4s ease 0.5s, transform 0.4s ease 0.5s',
-                }}
-              />
-
-              <p
-                className="text-base md:text-lg text-white/75 mb-8 leading-relaxed max-w-xl"
-                style={{
-                  opacity: index === currentSlide ? 1 : 0,
-                  transform: index === currentSlide ? 'translateY(0)' : 'translateY(10px)',
-                  transition: 'opacity 0.6s ease 0.55s, transform 0.6s ease 0.55s',
-                }}
-              >
-                {s.description}
-              </p>
-
-              <div
-                style={{
-                  opacity: index === currentSlide ? 1 : 0,
-                  transform: index === currentSlide ? 'translateY(0)' : 'translateY(10px)',
-                  transition: 'opacity 0.6s ease 0.7s, transform 0.6s ease 0.7s',
-                }}
-              >
-                <a
-                  href={s.buttonUrl}
-                  className="inline-flex items-center gap-3 px-7 py-3.5 rounded-lg font-bold text-sm tracking-wide text-white transition-all duration-200 hover:gap-4 hover:shadow-lg active:scale-95"
-                  style={{
-                    backgroundColor: accentColor,
-                    boxShadow: `0 4px 20px ${accentColor}50`,
-                  }}
-                >
-                  {s.buttonText}
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                  </svg>
-                </a>
-              </div>
-            </div>
-          </div>
+            );
+          })()}
         </div>
       ))}
 

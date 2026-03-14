@@ -11,6 +11,11 @@ export interface CarouselAttributes {
   imageUrl?: string;
   isActive: boolean;
   order: number;
+  showTitle?: boolean;
+  showDescription?: boolean;
+  showButton?: boolean;
+  textPosition?: 'left' | 'center' | 'right';
+  titleSize?: 'sm' | 'md' | 'lg' | 'xl';
   created_at?: Date;
   updated_at?: Date;
 }
@@ -25,6 +30,11 @@ export class Carousel extends Model<CarouselAttributes> implements CarouselAttri
   public imageUrl?: string;
   public isActive!: boolean;
   public order!: number;
+  public showTitle!: boolean;
+  public showDescription!: boolean;
+  public showButton!: boolean;
+  public textPosition!: 'left' | 'center' | 'right';
+  public titleSize!: 'sm' | 'md' | 'lg' | 'xl';
   public readonly created_at!: Date;
   public readonly updated_at!: Date;
 }
@@ -68,6 +78,26 @@ Carousel.init(
     order: {
       type: DataTypes.INTEGER,
       defaultValue: 0,
+    },
+    showTitle: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+    },
+    showDescription: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+    },
+    showButton: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+    },
+    textPosition: {
+      type: DataTypes.ENUM('left', 'center', 'right'),
+      defaultValue: 'left',
+    },
+    titleSize: {
+      type: DataTypes.ENUM('sm', 'md', 'lg', 'xl'),
+      defaultValue: 'lg',
     },
   },
   {

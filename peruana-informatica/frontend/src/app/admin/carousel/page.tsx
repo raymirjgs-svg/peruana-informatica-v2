@@ -17,6 +17,11 @@ type Slide = {
   imageUrl?: string;
   isActive: boolean;
   order: number;
+  showTitle?: boolean;
+  showDescription?: boolean;
+  showButton?: boolean;
+  textPosition?: 'left' | 'center' | 'right';
+  titleSize?: 'sm' | 'md' | 'lg' | 'xl';
 };
 
 const emptyForm = {

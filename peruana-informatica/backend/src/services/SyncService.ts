@@ -6,7 +6,21 @@ import { PeruanaInformaticaService } from './PeruanaInformaticaService';
 export class SyncService {
     private static isSyncing = false;
     private static lastSyncTime = 0;
-    private static SYNC_INTERVAL_MS = 30 * 60 * 1000; // 30 minutes cooldown
+    private static SYNC_INTERVAL_MS = 60 * 60 * 1000; // 1 hour cooldown
+
+    static getSyncStatus() {
+        return {
+            isSyncing: this.isSyncing,
+            lastSyncTime: this.lastSyncTime > 0 ? this.lastSyncTime : null,
+            nextSyncTime: this.lastSyncTime > 0 ? this.lastSyncTime + this.SYNC_INTERVAL_MS : null,
+            intervalMs: this.SYNC_INTERVAL_MS,
+        };
+    }
+
+    static async forceSyncProducts() {
+        this.lastSyncTime = 0; // bypass cooldown
+        return this.syncProducts();
+    }
 
     static async syncProducts() {
         // Prevent concurrent syncs and respect cooldown

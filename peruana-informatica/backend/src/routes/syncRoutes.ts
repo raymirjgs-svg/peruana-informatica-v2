@@ -1,7 +1,29 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import { SyncController } from '../controllers/SyncController';
+import { SyncService } from '../services/SyncService';
 
 const router = Router();
+
+/**
+ * @route GET /api/sync/status
+ * @desc Retorna el estado actual del sync ERP (último sync, próximo sync, si está en progreso)
+ */
+router.get('/status', (req: Request, res: Response) => {
+    res.json({ success: true, data: SyncService.getSyncStatus() });
+});
+
+/**
+ * @route POST /api/sync/force
+ * @desc Fuerza una sincronización inmediata ignorando el cooldown
+ */
+router.post('/force', async (req: Request, res: Response) => {
+    try {
+        const result = await SyncService.forceSyncProducts();
+        res.json({ success: true, data: result });
+    } catch (error: any) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
 
 /**
  * @route POST /api/sync/token

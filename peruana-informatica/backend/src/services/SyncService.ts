@@ -6,7 +6,11 @@ import { PeruanaInformaticaService } from './PeruanaInformaticaService';
 export class SyncService {
     private static isSyncing = false;
     private static lastSyncTime = 0;
-    private static SYNC_INTERVAL_MS = 60 * 60 * 1000; // 1 hour cooldown
+    private static SYNC_INTERVAL_MS = 10 * 60 * 1000; // 10 minutes cooldown
+
+    // Per-product cache: codigo_interno → timestamp of last sync
+    private static productCache: Map<string, number> = new Map();
+    private static PRODUCT_CACHE_MS = 60 * 1000; // 60 seconds per product
 
     static getSyncStatus() {
         return {
@@ -20,6 +24,39 @@ export class SyncService {
     static async forceSyncProducts() {
         this.lastSyncTime = 0; // bypass cooldown
         return this.syncProducts();
+    }
+
+    /**
+     * Syncs a single product's price/stock from ERP.
+     * Uses a 60-second per-product cache to avoid hammering the ERP on every page view.
+     * Returns true if prices were updated.
+     */
+    static async syncSingleProduct(codigoInterno: string): Promise<boolean> {
+        const now = Date.now();
+        const lastSync = this.productCache.get(codigoInterno) ?? 0;
+        if (now - lastSync < this.PRODUCT_CACHE_MS) return false; // cached
+
+        try {
+            const syncData = await PeruanaInformaticaService.obtenerStockYPrecio(codigoInterno);
+            if (!syncData) return false;
+
+            await Product.update(
+                {
+                    price: syncData.pre_cli,
+                    price_web: syncData.pre_web,
+                    price_cot: syncData.pre_cot,
+                    price_dis: syncData.pre_dis,
+                    stock: syncData.stock,
+                },
+                { where: { codigo_interno: codigoInterno } as any }
+            );
+
+            this.productCache.set(codigoInterno, now);
+            return true;
+        } catch (err: any) {
+            console.error(`SyncService.syncSingleProduct error for ${codigoInterno}:`, err.message);
+            return false;
+        }
     }
 
     static async syncProducts() {

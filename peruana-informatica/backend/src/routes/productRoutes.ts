@@ -75,7 +75,7 @@ router.get('/utils/suggestions', searchRateLimit, [
 });
 
 // GET todos los productos con filtros y paginación
-router.get('/', searchRateLimit, cacheSuccessMiddleware('products', 300), [
+router.get('/', searchRateLimit, cacheSuccessMiddleware('products', 60), [
   query('page').optional().isInt({ min: 1 }).withMessage('Página debe ser un número mayor a 0'),
   query('limit').optional().isInt({ min: 1, max: 100 }).withMessage('Límite debe estar entre 1 y 100'),
   query('search').optional().isLength({ min: 1, max: 100 }).withMessage('Búsqueda debe tener entre 1 y 100 caracteres'),
@@ -303,10 +303,23 @@ router.get('/:id', cacheSuccessMiddleware('product', 600), [
 });
 
 // GET producto por slug
-router.get('/slug/:slug', cacheSuccessMiddleware('product-slug', 600), [
+router.get('/slug/:slug', cacheSuccessMiddleware('product-slug', 60), [
   param('slug').isLength({ min: 1, max: 255 }).withMessage('Slug inválido'),
 ], validateRequest, async (req: Request, res: Response) => {
   try {
+    // Pre-fetch to get codigo_interno for real-time ERP sync
+    const codigoInterno = await Product.findOne({
+      where: { slug: req.params.slug, is_active: 1 },
+      attributes: ['codigo_interno'],
+    }).then(p => p?.codigo_interno ?? null);
+
+    if (codigoInterno) {
+      // Non-blocking: sync price from ERP, ignore errors
+      SyncService.syncSingleProduct(codigoInterno).catch(() => {});
+      // Small wait to let ERP update land before reading from DB
+      await new Promise(r => setTimeout(r, 300));
+    }
+
     const product = await Product.findOne({
       where: {
         slug: req.params.slug,

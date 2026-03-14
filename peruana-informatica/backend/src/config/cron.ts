@@ -21,8 +21,8 @@ export class CronJobScheduler {
             }
         });
 
-        // Sync ERP prices and stock every hour
-        cron.schedule('0 * * * *', async () => {
+        // Sync ERP prices and stock every 10 minutes
+        cron.schedule('*/10 * * * *', async () => {
             logger.info('Running scheduled ERP price/stock sync...');
             try {
                 const result = await SyncService.forceSyncProducts();

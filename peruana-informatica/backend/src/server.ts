@@ -37,6 +37,7 @@ import adminPaymentRoutes from "./routes/admin/paymentRoutes"; // Rutas admin de
 import uploadRoutes from "./routes/admin/uploadRoutes"; // Rutas de subida de archivos
 import externalApiRoutes from "./routes/externalApiRoutes"; // Rutas para API Externa
 import syncRoutes from "./routes/syncRoutes"; // Rutas para sincronización con API Externa
+import { runMigrations } from "./scripts/runMigrations"; // Auto-migraciones seguras al arrancar
 import clientRoutes from "./routes/clientRoutes"; // Rutas para clientes (consulta y descarga)
 import companySettingsRoutes from "./routes/companySettingsRoutes"; // Rutas públicas de configuración de empresa
 import globalSettingsRoutes from "./routes/globalSettingsRoutes"; // Rutas públicas de configuración global
@@ -257,6 +258,11 @@ const startServer = async () => {
       const tableNames = tables.slice(0, 5).map((t: any) => Object.values(t)[0]);
       console.log(chalk.gray(`   Primeras tablas: ${tableNames.join(', ')}...`));
       console.log(chalk.green('✅ Estructura de BD validada correctamente\n'));
+
+      // Run safe column migrations (idempotent — safe to run every startup)
+      console.log(chalk.cyan('🔄 Ejecutando migraciones de columnas...'));
+      const dbName = process.env.DB_NAME || 'peruana_informatica';
+      await runMigrations(sequelize, dbName);
 
     } catch (error) {
       console.error(chalk.red('❌ Error validando BD:'), error);

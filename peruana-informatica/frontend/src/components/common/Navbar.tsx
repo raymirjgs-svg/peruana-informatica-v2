@@ -108,14 +108,6 @@ export function Navbar() {
               </span>
             </div>
             <div className="flex items-center gap-4">
-              <span className="text-gray-300 flex items-center gap-1.5">
-                <svg className="w-3.5 h-3.5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
-                  <path d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1.05a2.5 2.5 0 014.9 0H10a1 1 0 001-1V5a1 1 0 00-1-1H3zM14 7a1 1 0 00-1 1v6.05A2.5 2.5 0 0115.95 16H17a1 1 0 001-1v-5a1 1 0 00-.293-.707l-2-2A1 1 0 0015 7h-1z" />
-                </svg>
-                <span className="hidden md:inline">Envío gratis en compras mayores a S/. 100</span>
-                <span className="md:hidden">Envío gratis +S/.100</span>
-              </span>
               <div className="hidden md:flex items-center gap-2">
                 <span className="text-gray-500">|</span>
                 <a href="#" className="text-gray-400 hover:text-blue-400 transition" title="Facebook">

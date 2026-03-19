@@ -31,8 +31,8 @@ const defaultSlides: CarouselSlide[] = [
   },
   {
     id: 3,
-    title: 'Envío Gratis a Todo el Perú',
-    description: 'En compras mayores a S/. 100. Llegamos en 2-3 días hábiles con seguimiento en tiempo real.',
+    title: 'Despacho a Todo el Perú',
+    description: 'Llegamos en 2-3 días hábiles con seguimiento en tiempo real. Consulta cobertura y tarifas.',
     buttonText: 'Comprar Ahora',
     buttonUrl: '/products',
     backgroundColor: 'from-[#0d1b2a] to-[#1b263b]',
@@ -42,7 +42,7 @@ const defaultSlides: CarouselSlide[] = [
 
 // Accent colors per slide index
 const slideAccents = ['#dc2626', '#ef4444', '#3b82f6'];
-const slideLabels = ['CATÁLOGO 2026', 'OFERTA ESPECIAL', 'ENVÍO GRATIS'];
+const slideLabels = ['CATÁLOGO 2026', 'OFERTA ESPECIAL', 'DESPACHO NACIONAL'];
 
 export function Carousel() {
   const [slides, setSlides] = useState<CarouselSlide[]>(defaultSlides);

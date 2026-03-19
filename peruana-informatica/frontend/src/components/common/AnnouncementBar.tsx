@@ -6,7 +6,7 @@ import { API_CONFIG } from '@/config/api';
 const BACKEND_URL = API_CONFIG.API_BASE_URL;
 
 const FALLBACK_MESSAGES = [
-  { id: 1, icon: '🚚', text: 'Envío gratis en compras mayores a S/. 100' },
+  { id: 1, icon: '🚚', text: 'Despacho a todo el Perú — Consulta cobertura y tarifas' },
   { id: 2, icon: '✅', text: 'Garantía oficial del fabricante en todos los productos' },
   { id: 3, icon: '📞', text: 'Soporte técnico — Escríbenos al WhatsApp: +51 988 552 455' },
   { id: 4, icon: '🔥', text: 'Remates con hasta 70% de descuento — ¡Stock limitado!' },

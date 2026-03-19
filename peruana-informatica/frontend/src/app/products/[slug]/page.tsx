@@ -448,7 +448,7 @@ export default function ProductDetailPage() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8l1 12h12l1-12M10 12v4M14 12v4" />
                     </svg>
                   ),
-                  text: 'Envío gratis a Lima Metropolitana',
+                  text: 'Despacho a Lima Metropolitana y todo el Perú',
                 },
                 {
                   icon: (

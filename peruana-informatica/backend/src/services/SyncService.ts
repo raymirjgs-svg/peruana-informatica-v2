@@ -40,16 +40,16 @@ export class SyncService {
             const syncData = await PeruanaInformaticaService.obtenerStockYPrecio(codigoInterno);
             if (!syncData) return false;
 
-            await Product.update(
-                {
-                    price: syncData.pre_cli,
-                    price_web: syncData.pre_web,
-                    price_cot: syncData.pre_cot,
-                    price_dis: syncData.pre_dis,
-                    stock: syncData.stock,
-                },
-                { where: { codigo_interno: codigoInterno } as any }
-            );
+            const updateData: any = {
+                price: syncData.pre_cli,
+                price_web: syncData.pre_web,
+                price_cot: syncData.pre_cot,
+                price_dis: syncData.pre_dis,
+                stock: syncData.stock,
+            };
+            if (syncData.nombre) updateData.name = syncData.nombre;
+
+            await Product.update(updateData, { where: { codigo_interno: codigoInterno } as any });
 
             this.productCache.set(codigoInterno, now);
             return true;
@@ -115,20 +115,24 @@ export class SyncService {
                             console.log(`[SYNC DEBUG 15953] API: Cli=${newPrice}, Web=${newPriceWeb}, Dis=${newPriceDis}`);
                         }
 
+                        const newName = syncData.nombre || null;
                         if (
                             Number(product.price) !== newPrice ||
                             Number(product.price_web) !== newPriceWeb ||
                             Number(product.price_cot) !== newPriceCot ||
                             Number(product.price_dis) !== newPriceDis ||
-                            product.stock !== newStock
+                            product.stock !== newStock ||
+                            (newName && product.name !== newName)
                         ) {
-                            await product.update({
+                            const updateFields: any = {
                                 price: newPrice,
                                 price_web: newPriceWeb,
                                 price_cot: newPriceCot,
                                 price_dis: newPriceDis,
-                                stock: newStock
-                            });
+                                stock: newStock,
+                            };
+                            if (newName) updateFields.name = newName;
+                            await product.update(updateFields);
                             updatedCount++;
                             // console.log(`SyncService: Updated ${product.codigo_interno}: Stock=${newStock}, Web=${newPriceWeb}`);
                         }

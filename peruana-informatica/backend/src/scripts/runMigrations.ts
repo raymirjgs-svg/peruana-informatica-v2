@@ -18,6 +18,8 @@ const MIGRATIONS: ColumnMigration[] = [
   { table: 'carousel', column: 'show_button',      definition: 'TINYINT(1) NOT NULL DEFAULT 1' },
   { table: 'carousel', column: 'text_position',    definition: "ENUM('left','center','right') NOT NULL DEFAULT 'left'" },
   { table: 'carousel', column: 'title_size',       definition: "ENUM('sm','md','lg','xl') NOT NULL DEFAULT 'lg'" },
+  // Product video (added 2026-03-23)
+  { table: 'products',  column: 'video_url',        definition: 'VARCHAR(500) NULL DEFAULT NULL' },
 ];
 
 export async function runMigrations(sequelize: Sequelize, dbName: string): Promise<void> {

@@ -118,11 +118,36 @@ export default function ProductDetailPage() {
   const priceList = Number(product.price || 0);
   const priceDis = Number(product.priceDis || 0);
 
+  const getEmbedUrl = (url: string): string | null => {
+    try {
+      const u = new URL(url);
+      // YouTube: youtube.com/watch?v=ID or youtu.be/ID
+      if (u.hostname.includes('youtube.com')) {
+        const v = u.searchParams.get('v');
+        if (v) return `https://www.youtube.com/embed/${v}`;
+      }
+      if (u.hostname === 'youtu.be') {
+        const id = u.pathname.slice(1);
+        if (id) return `https://www.youtube.com/embed/${id}`;
+      }
+      // Vimeo: vimeo.com/ID
+      if (u.hostname.includes('vimeo.com')) {
+        const id = u.pathname.replace(/\//g, '');
+        if (id) return `https://player.vimeo.com/video/${id}`;
+      }
+      // Anything else: return as-is (assume it's already embeddable)
+      return url;
+    } catch {
+      return null;
+    }
+  };
+
   const tabs = [
     { id: 'description', label: 'Descripción' },
     { id: 'specifications', label: 'Especificaciones' },
     { id: 'reviews', label: 'Reseñas' },
     { id: 'shipping', label: 'Envío' },
+    ...(product.video_url ? [{ id: 'video', label: 'Video' }] : []),
   ];
 
   return (
@@ -241,6 +266,23 @@ export default function ProductDetailPage() {
                     <ProductReviews productId={product.id} />
                   </div>
                 )}
+
+                {activeTab === 'video' && product.video_url && (() => {
+                  const embedUrl = getEmbedUrl(product.video_url);
+                  return embedUrl ? (
+                    <div className="aspect-video w-full rounded-xl overflow-hidden bg-black">
+                      <iframe
+                        src={embedUrl}
+                        title={`Video: ${product.name}`}
+                        className="w-full h-full"
+                        allowFullScreen
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      />
+                    </div>
+                  ) : (
+                    <p className="text-sm text-gray-500">No se pudo cargar el video.</p>
+                  );
+                })()}
 
                 {activeTab === 'shipping' && (
                   <div className="space-y-6">

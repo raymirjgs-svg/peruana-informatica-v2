@@ -46,6 +46,7 @@ export default function EditProductPage() {
           is_featured: product.is_featured || false,
           is_new: product.is_new || false,
           is_clearance: product.is_clearance || false,
+          video_url: product.video_url || '',
         });
       } catch (error: any) {
         toast.error(error.message || 'Error al cargar el producto');
@@ -79,6 +80,7 @@ export default function EditProductPage() {
       if (data.seo_title) payload.seo_title = data.seo_title;
       if (data.seo_description) payload.seo_description = data.seo_description;
       if (data.subcategory_ids) payload.subcategory_ids = data.subcategory_ids;
+      payload.video_url = data.video_url || null;
 
       const res = await adminFetch(`/admin/products/${productId}`, {
         method: 'PUT',

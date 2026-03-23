@@ -29,6 +29,7 @@ export class Product {
   is_new?: boolean;
   is_clearance?: boolean;
   brand?: string;
+  video_url?: string | null;
 
   constructor(
     id: number,

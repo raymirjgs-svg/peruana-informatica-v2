@@ -141,6 +141,7 @@ export class ProductService {
     product.is_featured = isTrue(item.is_featured);
     product.is_new = isTrue(item.is_new);
     product.is_clearance = isTrue(item.is_clearance);
+    product.video_url = item.video_url || null;
 
     // Marca
     if (typeof item.productBrand === 'object' && item.productBrand?.name) {

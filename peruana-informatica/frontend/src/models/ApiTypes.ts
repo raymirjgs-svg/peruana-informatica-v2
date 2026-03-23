@@ -55,6 +55,9 @@ export interface RawProduct {
     is_new?: boolean | number | string;
     is_clearance?: boolean | number | string;
 
+    // Video
+    video_url?: string | null;
+
     // Timestamps
     created_at?: string;
     updated_at?: string;

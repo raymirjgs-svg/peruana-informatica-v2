@@ -222,6 +222,8 @@ router.get('/', searchRateLimit, cacheSuccessMiddleware('products', 60), [
       limit,
       offset,
       order,
+      distinct: true,
+      col: 'cod_producto',
       attributes: [
         'cod_producto', 'name', 'slug', 'description', 'short_description', 'price', 'price_web', 'price_cot', 'price_dis', 'stock', 'category', 'keywords', 'brand_id', 'category_id', 'estado', 'codigo_interno',
         'component_type', 'socket_type', 'ram_type', 'form_factor', 'tdp_watts', 'has_integrated_graphics', 'component_specs', 'is_featured', 'is_new', 'is_clearance', 'image', 'video_url'

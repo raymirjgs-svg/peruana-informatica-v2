@@ -123,10 +123,13 @@ export default function ProductDetailPage() {
   const getEmbedUrl = (url: string): string | null => {
     try {
       const u = new URL(url);
-      // YouTube: youtube.com/watch?v=ID or youtu.be/ID
+      // YouTube: youtube.com/watch?v=ID, youtube.com/shorts/ID, or youtu.be/ID
       if (u.hostname.includes('youtube.com')) {
         const v = u.searchParams.get('v');
         if (v) return `https://www.youtube.com/embed/${v}`;
+        // Shorts: /shorts/ID
+        const shortsMatch = u.pathname.match(/\/shorts\/([^/?]+)/);
+        if (shortsMatch) return `https://www.youtube.com/embed/${shortsMatch[1]}`;
       }
       if (u.hostname === 'youtu.be') {
         const id = u.pathname.slice(1);

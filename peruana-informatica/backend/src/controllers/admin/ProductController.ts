@@ -300,7 +300,7 @@ export class ProductController {
     // POST crear producto
     async createProduct(req: Request, res: Response) {
         try {
-            const { name, description, price, stock, category_id, brand_id, image, keywords, component_type, additional_images, subcategory_ids } = req.body;
+            const { name, description, price, stock, category_id, brand_id, image, keywords, component_type, additional_images, subcategory_ids, video_url } = req.body;
 
             // Generar slug único
             const baseSlug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
@@ -341,7 +341,8 @@ export class ProductController {
                 codigo_interno,
                 seo_title: req.body.seo_title ?? null,
                 seo_description: req.body.seo_description ?? null,
-                component_type: component_type || null
+                component_type: component_type || null,
+                video_url: video_url || null
             });
 
             // Guardar imágenes adicionales

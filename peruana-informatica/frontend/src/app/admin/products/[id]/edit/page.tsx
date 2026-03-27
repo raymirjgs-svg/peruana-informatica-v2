@@ -14,6 +14,8 @@ export default function EditProductPage() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [initialData, setInitialData] = useState<ProductFormData | undefined>(undefined);
+  const [initialGalleryImages, setInitialGalleryImages] = useState<string[]>([]);
+  const [existingGalleryIds, setExistingGalleryIds] = useState<Array<{id: number, url: string}>>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -39,7 +41,7 @@ export default function EditProductPage() {
           category_id: product.category_id || product.productCategory?.id,
           subcategory_ids: product.subcategory_ids || [],
           brand_id: product.brand_id || product.productBrand?.id,
-          image: product.image || product.images?.[0]?.imagen || '',
+          image: product.image || '',
           keywords: product.keywords || '',
           seo_title: product.seo_title || '',
           seo_description: product.seo_description || '',
@@ -48,6 +50,13 @@ export default function EditProductPage() {
           is_clearance: product.is_clearance || false,
           video_url: product.video_url || '',
         });
+
+        // Store existing gallery images for sync on save
+        const gallery: Array<{id: number, url: string}> = (product.images || [])
+          .filter((img: any) => img.imagen)
+          .map((img: any) => ({ id: img.cod_galeria, url: img.imagen }));
+        setExistingGalleryIds(gallery);
+        setInitialGalleryImages(gallery.map(g => g.url));
       } catch (error: any) {
         toast.error(error.message || 'Error al cargar el producto');
         router.push('/admin/products');
@@ -75,7 +84,7 @@ export default function EditProductPage() {
       if (data.description) payload.description = data.description;
       if (data.category_id) payload.category_id = data.category_id;
       if (data.brand_id) payload.brand_id = data.brand_id;
-      if (data.image) payload.image = data.image;
+      payload.image = data.image || '';
       if (data.keywords) payload.keywords = data.keywords;
       if (data.seo_title) payload.seo_title = data.seo_title;
       if (data.seo_description) payload.seo_description = data.seo_description;
@@ -88,9 +97,26 @@ export default function EditProductPage() {
       });
 
       const json = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(json?.error || `Error ${res.status}`);
 
-      if (!res.ok) {
-        throw new Error(json?.error || `Error ${res.status}`);
+      // Sync gallery images: delete removed, add new
+      const newGalleryUrls = data.additional_images || [];
+      const token = typeof window !== 'undefined' ? localStorage.getItem('adminToken') : null;
+      const headers: Record<string, string> = { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) };
+      const apiBase = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001').replace(/\/+$/, '');
+
+      // Delete existing gallery images not in new list
+      for (const existing of existingGalleryIds) {
+        if (!newGalleryUrls.includes(existing.url)) {
+          await fetch(`${apiBase}/api/admin/images/${existing.id}`, { method: 'DELETE', headers }).catch(() => {});
+        }
+      }
+      // Add new gallery images not in existing list
+      const existingUrls = existingGalleryIds.map(g => g.url);
+      for (const url of newGalleryUrls) {
+        if (!existingUrls.includes(url)) {
+          await fetch(`${apiBase}/api/admin/images/product/${productId}`, { method: 'POST', headers, body: JSON.stringify({ imagen: url }) }).catch(() => {});
+        }
       }
 
       toast.success('Producto actualizado exitosamente');
@@ -117,6 +143,7 @@ export default function EditProductPage() {
       <div className="p-6">
         <ProductForm
           initialData={initialData}
+          initialGalleryImages={initialGalleryImages}
           productId={productId}
           onSubmit={handleSubmit}
           isSubmitting={isSubmitting}

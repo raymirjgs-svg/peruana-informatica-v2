@@ -8,7 +8,6 @@ import { Loader2, Save, ArrowLeft, Upload, X, Search } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'sonner';
-import { ProductImageManager } from './ProductImageManager';
 import { RichTextEditor } from '@/components/admin/RichTextEditor';
 
 function getApiBase() {
@@ -40,20 +39,22 @@ export type ProductFormData = z.infer<typeof productSchema>;
 
 interface ProductFormProps {
   initialData?: ProductFormData;
+  initialGalleryImages?: string[];
   productId?: number;
   onSubmit: (data: ProductFormData & { additional_images?: string[] }) => Promise<void>;
   isSubmitting: boolean;
   isEdit?: boolean;
 }
 
-export function ProductForm({ initialData, productId, onSubmit, isSubmitting, isEdit }: ProductFormProps) {
+export function ProductForm({ initialData, initialGalleryImages, productId, onSubmit, isSubmitting, isEdit }: ProductFormProps) {
   const router = useRouter();
   const [categories, setCategories] = useState<Array<{ id: number; name: string }>>([]);
   const [brands, setBrands] = useState<Array<{ id: number; name: string }>>([]);
   const [subcategories, setSubcategories] = useState<Array<{ id: number; name: string }>>([]);
   const [loadingSubcategories, setLoadingSubcategories] = useState(false);
-  const [additionalImages, setAdditionalImages] = useState<string[]>([]);
+  const [allImages, setAllImages] = useState<string[]>([]);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [dragIdx, setDragIdx] = useState<number | null>(null);
 
   // ERP Search state (only for create mode)
   const [showErpSearch, setShowErpSearch] = useState(!isEdit);
@@ -77,7 +78,6 @@ export function ProductForm({ initialData, productId, onSubmit, isSubmitting, is
 
   const categoryId = watch('category_id');
   const selectedSubcategories = watch('subcategory_ids') || [];
-  const mainImage = watch('image');
 
   // Load categories and brands on mount
   useEffect(() => {
@@ -95,7 +95,12 @@ export function ProductForm({ initialData, productId, onSubmit, isSubmitting, is
         if (brandRes.ok) setBrands(brs.map((b: any) => ({ id: b.id, name: b.name })));
 
         // Reset form AFTER options are in the DOM so selects can find their matching option
-        if (initialData) reset(initialData);
+        if (initialData) {
+          reset(initialData);
+          const main = initialData.image ? [initialData.image] : [];
+          const gallery = initialGalleryImages || [];
+          setAllImages([...main, ...gallery.filter(u => u && u !== initialData.image)]);
+        }
       } catch (err) {
         console.error('Error loading categories/brands:', err);
       }
@@ -182,33 +187,36 @@ export function ProductForm({ initialData, productId, onSubmit, isSubmitting, is
     }
   };
 
-  const handleMainImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setUploadingImage(true);
-      const url = await handleFileUpload(e.target.files[0]);
-      setUploadingImage(false);
-      if (url) setValue('image', url);
-    }
-  };
-
-  const handleAdditionalImagesUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImagesUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       setUploadingImage(true);
       const newUrls: string[] = [];
-      const files = Array.from(e.target.files);
-      for (const file of files) {
+      for (const file of Array.from(e.target.files)) {
         const url = await handleFileUpload(file);
         if (url) newUrls.push(url);
       }
-      setAdditionalImages([...additionalImages, ...newUrls]);
+      setAllImages(prev => [...prev, ...newUrls]);
       setUploadingImage(false);
     }
   };
+
+  const handleDragStart = (idx: number) => setDragIdx(idx);
+  const handleDragOver = (e: React.DragEvent, idx: number) => {
+    e.preventDefault();
+    if (dragIdx === null || dragIdx === idx) return;
+    const imgs = [...allImages];
+    const [moved] = imgs.splice(dragIdx, 1);
+    imgs.splice(idx, 0, moved);
+    setAllImages(imgs);
+    setDragIdx(idx);
+  };
+  const handleDragEnd = () => setDragIdx(null);
 
   const handleFormSubmit = async (data: ProductFormData) => {
     await onSubmit({
       ...data,
-      additional_images: additionalImages.filter(url => url.trim() !== '')
+      image: allImages[0] || '',
+      additional_images: allImages.slice(1).filter(u => u.trim() !== '')
     });
   };
 
@@ -465,101 +473,69 @@ export function ProductForm({ initialData, productId, onSubmit, isSubmitting, is
 
           {/* Images */}
           <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-6 shadow-sm">
-            <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Imágenes</h3>
+            <h3 className="text-lg font-semibold mb-1 text-gray-900 dark:text-white">Imágenes</h3>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">Arrastra para reordenar. La primera imagen es la principal.</p>
 
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Imagen Principal
-                </label>
-                <div className="flex gap-2">
-                  <input
-                    {...register('image')}
-                    className="flex-1 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                    placeholder="https://..."
-                  />
-                  <label className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer transition-colors">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={handleMainImageUpload}
-                    />
-                    {uploadingImage ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
-                    Subir
-                  </label>
-                </div>
-                {mainImage && (
-                  <div className="mt-2">
-                    <img
-                      src={mainImage.startsWith('http') ? mainImage : `/uploads/${mainImage}`}
-                      alt="Preview"
-                      className="h-24 w-24 object-cover rounded-lg border"
-                      onError={(e) => (e.target as HTMLImageElement).src = '/no-image.svg'}
-                    />
-                  </div>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Imágenes Adicionales
-                </label>
-                <div className="space-y-2">
-                  {additionalImages.map((url, idx) => (
-                    <div key={idx} className="flex gap-2 items-center">
-                      <input
-                        className="flex-1 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm"
-                        placeholder="https://..."
-                        value={url}
-                        onChange={(e) => {
-                          const newImages = [...additionalImages];
-                          newImages[idx] = e.target.value;
-                          setAdditionalImages(newImages);
-                        }}
+            {/* Drag-and-drop grid */}
+            {allImages.length > 0 && (
+              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 mb-4">
+                {allImages.map((url, idx) => (
+                  <div
+                    key={idx}
+                    draggable
+                    onDragStart={() => handleDragStart(idx)}
+                    onDragOver={(e) => handleDragOver(e, idx)}
+                    onDragEnd={handleDragEnd}
+                    className={`relative group rounded-lg border-2 overflow-hidden cursor-grab active:cursor-grabbing transition-all ${
+                      dragIdx === idx ? 'opacity-50 scale-95' : 'opacity-100'
+                    } ${idx === 0 ? 'border-blue-500' : 'border-gray-200 dark:border-gray-700'}`}
+                  >
+                    <div className="aspect-square bg-gray-100 dark:bg-gray-800">
+                      <img
+                        src={url}
+                        alt={`Imagen ${idx + 1}`}
+                        className="w-full h-full object-cover"
+                        onError={(e) => { (e.target as HTMLImageElement).src = '/no-image.svg'; }}
                       />
-                      {url && (
-                        <img src={url} alt="" className="h-8 w-8 object-cover rounded border" />
-                      )}
-                      <button
-                        type="button"
-                        onClick={() => setAdditionalImages(additionalImages.filter((_, i) => i !== idx))}
-                        className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg"
-                      >
-                        <X className="h-4 w-4" />
-                      </button>
                     </div>
-                  ))}
-
-                  <div className="flex gap-2">
+                    {idx === 0 && (
+                      <span className="absolute top-1 left-1 bg-blue-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">
+                        Principal
+                      </span>
+                    )}
                     <button
                       type="button"
-                      onClick={() => setAdditionalImages([...additionalImages, ''])}
-                      className="px-3 py-2 text-sm text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
+                      onClick={() => setAllImages(allImages.filter((_, i) => i !== idx))}
+                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                     >
-                      + Agregar URL
+                      <X className="h-3 w-3" />
                     </button>
-                    <label className="px-3 py-2 text-sm text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg cursor-pointer transition-colors">
-                      <input
-                        type="file"
-                        accept="image/*"
-                        multiple
-                        className="hidden"
-                        onChange={handleAdditionalImagesUpload}
-                      />
-                      {uploadingImage ? 'Subiendo...' : '+ Subir archivos'}
-                    </label>
                   </div>
-                </div>
+                ))}
               </div>
+            )}
 
-              {/* Image Manager for edit mode */}
-              {isEdit && productId && (
-                <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
-                  <ProductImageManager productId={productId} />
-                </div>
-              )}
+            {/* Add image URL */}
+            <div className="flex gap-2 mb-2">
+              <input
+                type="url"
+                placeholder="https://... agregar URL de imagen"
+                className="flex-1 px-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 outline-none"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const val = (e.target as HTMLInputElement).value.trim();
+                    if (val) { setAllImages(prev => [...prev, val]); (e.target as HTMLInputElement).value = ''; }
+                  }
+                }}
+              />
+              <label className="flex items-center gap-1.5 px-3 py-2 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer transition-colors whitespace-nowrap">
+                <input type="file" accept="image/*" multiple className="hidden" onChange={handleImagesUpload} />
+                {uploadingImage ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+                Subir
+              </label>
             </div>
+            <p className="text-xs text-gray-400">Pega una URL y presiona Enter, o sube archivos directamente.</p>
           </div>
 
           {/* SEO */}

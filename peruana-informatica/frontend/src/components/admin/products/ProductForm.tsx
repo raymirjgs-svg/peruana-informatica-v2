@@ -206,6 +206,7 @@ export function ProductForm({ initialData, initialGalleryImages, productId, onSu
     if (dragIdx === null || dragIdx === idx) return;
     const imgs = [...allImages];
     const [moved] = imgs.splice(dragIdx, 1);
+    if (!moved) return;
     imgs.splice(idx, 0, moved);
     setAllImages(imgs);
     setDragIdx(idx);

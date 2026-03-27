@@ -180,23 +180,20 @@ export class ProductService {
 
     // Imágenes
     product.images = [];
+    // Imagen principal (campo image de la tabla products)
+    const mainImg = fixUrl(item.image || item.imagen);
+    product.image = mainImg || '';
+
     if (item.images && Array.isArray(item.images) && item.images.length > 0) {
       product.images = item.images.map(img => ({
         cod_galeria: img.cod_galeria || 0,
         imagen: fixUrl(img.imagen || img.url) || ''
       })).filter(img => img.imagen !== ''); // Filtrar imágenes vacías
 
-      const firstImg = product.images[0]?.imagen;
-      if (firstImg) {
-        product.image = fixUrl(firstImg) || '';
-      } else {
-        product.image = '';
+      // Fallback: si no hay imagen principal, usar la primera de galería
+      if (!product.image && product.images[0]?.imagen) {
+        product.image = product.images[0].imagen;
       }
-    } else if (item.image || item.imagen) {
-      const mainImg = fixUrl(item.image || item.imagen);
-      product.image = mainImg || '';
-    } else {
-      product.image = '';
     }
 
     return product;

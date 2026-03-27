@@ -28,11 +28,13 @@ export default function ProductDetailPage() {
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
-  const productImages = product?.images && product.images.length > 0
-    ? product.images.map(img => img.imagen.startsWith('http') ? img.imagen : `${apiUrl}/images/products/${img.imagen}`)
-    : product?.image
-      ? [product.image.startsWith('http') ? product.image : `${apiUrl}/images/products/${product.image}`]
-      : ['/no-image.svg'];
+  const toAbsolute = (url: string) => url.startsWith('http') ? url : `${apiUrl}/images/products/${url}`;
+  const mainImg = product?.image ? toAbsolute(product.image) : null;
+  const galleryImgs = product?.images && product.images.length > 0
+    ? product.images.map(img => toAbsolute(img.imagen))
+    : [];
+  const allImgs = mainImg ? [mainImg, ...galleryImgs.filter(u => u !== mainImg)] : galleryImgs;
+  const productImages = allImgs.length > 0 ? allImgs : ['/no-image.svg'];
 
   useEffect(() => {
     const loadData = async () => {

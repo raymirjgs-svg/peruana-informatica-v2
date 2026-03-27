@@ -376,7 +376,7 @@ export default function ProductDetailPage() {
                 <span className="text-2xl font-bold text-gray-500">Consultar precio</span>
               )}
 
-              {settings?.show_distributor_price_in_detail && priceDis > 0 && (
+              {settings?.show_distributor_price_in_detail && priceDis > 0 && Math.abs(priceDis - priceList) > 1 && (
                 <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 flex flex-wrap items-center gap-x-2 gap-y-1">
                   <span className="text-xs text-gray-500">Precio distribuidor:</span>
                   <span className="text-sm font-bold text-gray-700 dark:text-gray-300 tabular-nums">

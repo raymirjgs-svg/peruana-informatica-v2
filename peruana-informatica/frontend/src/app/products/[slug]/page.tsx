@@ -380,7 +380,7 @@ export default function ProductDetailPage() {
                 <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 flex flex-wrap items-center gap-x-2 gap-y-1">
                   <span className="text-xs text-gray-500">Precio distribuidor:</span>
                   <span className="text-sm font-bold text-gray-700 dark:text-gray-300 tabular-nums">
-                    S/. {Math.ceil(priceDis).toFixed(2)}
+                    S/. {priceDis.toFixed(2)}
                   </span>
                   <a
                     href={`https://wa.me/51${(settings.company_whatsapp || '988552455').replace(/\D/g, '')}`}

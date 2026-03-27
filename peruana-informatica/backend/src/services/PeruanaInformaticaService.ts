@@ -289,10 +289,12 @@ export class PeruanaInformaticaService {
             // precio_lista_preferencial_soles -> pre_web (y pre_cot)
             // precio_lista_premium_soles -> pre_dis
 
-            const precioUnitario = parseFloat(articulo.precio_unitario_soles) || 0;
-            const precioPreferencial = parseFloat(articulo.precio_lista_preferencial_soles) || 0;
-            const precioPremium = parseFloat(articulo.precio_lista_premium_soles) || 0;
-            const precioBase = parseFloat(articulo.precio) || 0; // Fallback antiguo
+            const round50 = (n: number) => n > 0 ? Math.ceil(n / 0.5) * 0.5 : 0;
+
+            const precioUnitario = round50(parseFloat(articulo.precio_unitario_soles) || 0);
+            const precioPreferencial = round50(parseFloat(articulo.precio_lista_preferencial_soles) || 0);
+            const precioPremium = round50(parseFloat(articulo.precio_lista_premium_soles) || 0);
+            const precioBase = round50(parseFloat(articulo.precio) || 0); // Fallback antiguo
 
             return {
                 // Stock

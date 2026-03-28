@@ -39,6 +39,80 @@ export type ProductFormData = z.infer<typeof productSchema>;
 
 export type ProductSpec = { key: string; value: string };
 
+// --- Alibaba Video Extractor ---
+function AlbabaVideoExtractor({ onExtracted, getApiBase }: { onExtracted: (url: string) => void; getApiBase: () => string }) {
+  const [show, setShow] = useState(false);
+  const [aliUrl, setAliUrl] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<{ videos: string[]; recommended: string } | null>(null);
+  const [error, setError] = useState('');
+
+  const handleExtract = async () => {
+    if (!aliUrl.trim()) return;
+    setLoading(true);
+    setResult(null);
+    setError('');
+    try {
+      const res = await fetch(`${getApiBase()}/admin/upload/extract-video?url=${encodeURIComponent(aliUrl.trim())}`);
+      const json = await res.json();
+      if (!res.ok || !json.found) {
+        setError(json.message || json.error || 'No se encontró video en esa página.');
+      } else {
+        setResult(json);
+      }
+    } catch {
+      setError('Error de conexión al intentar extraer el video.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (!show) {
+    return (
+      <button type="button" onClick={() => setShow(true)}
+        className="text-xs text-blue-600 hover:text-blue-800 underline">
+        ¿Video de Alibaba / AliExpress? Extraer enlace automáticamente
+      </button>
+    );
+  }
+
+  return (
+    <div className="p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-lg space-y-2">
+      <p className="text-xs font-medium text-amber-800 dark:text-amber-300">Pega la URL de la página del producto de Alibaba o AliExpress:</p>
+      <div className="flex gap-2">
+        <input
+          type="url"
+          value={aliUrl}
+          onChange={e => setAliUrl(e.target.value)}
+          placeholder="https://www.alibaba.com/product-detail/..."
+          className="flex-1 px-3 py-1.5 text-sm rounded-lg border border-amber-300 dark:border-amber-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-amber-400 outline-none"
+        />
+        <button type="button" onClick={handleExtract} disabled={loading || !aliUrl.trim()}
+          className="px-3 py-1.5 text-sm bg-amber-500 text-white rounded-lg hover:bg-amber-600 disabled:opacity-50">
+          {loading ? '...' : 'Extraer'}
+        </button>
+        <button type="button" onClick={() => { setShow(false); setAliUrl(''); setResult(null); setError(''); }}
+          className="px-2 py-1.5 text-gray-500 hover:text-gray-700">
+          <X className="h-4 w-4" />
+        </button>
+      </div>
+      {error && <p className="text-xs text-red-600">{error}</p>}
+      {result && (
+        <div className="space-y-1">
+          <p className="text-xs text-green-700 dark:text-green-400 font-medium">Videos encontrados — haz clic para usar:</p>
+          {result.videos.map((v, i) => (
+            <button key={i} type="button"
+              onClick={() => { onExtracted(v); setShow(false); setResult(null); setAliUrl(''); toast.success('URL de video aplicada'); }}
+              className="block w-full text-left text-xs px-2 py-1.5 rounded bg-white dark:bg-gray-800 border border-green-300 dark:border-green-700 text-green-700 dark:text-green-300 hover:bg-green-50 dark:hover:bg-green-900/30 truncate">
+              {v}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 interface ProductFormProps {
   initialData?: ProductFormData;
   initialGalleryImages?: string[];
@@ -620,20 +694,24 @@ export function ProductForm({ initialData, initialGalleryImages, initialSpecific
           {/* Video */}
           <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-6 shadow-sm">
             <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Video del Producto</h3>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                URL del Video (YouTube, Vimeo, etc.)
-              </label>
-              <input
-                {...register('video_url')}
-                type="url"
-                placeholder="https://www.youtube.com/watch?v=..."
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-              />
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                Soportado: <strong>YouTube</strong> (youtube.com, youtu.be, Shorts), <strong>Vimeo</strong>, <strong>Bilibili</strong>, o enlace directo <strong>.mp4</strong>.<br/>
-                Videos de Alibaba/AliExpress no son embebibles — sube el video a YouTube primero.
-              </p>
+            <div className="space-y-3">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  URL del Video
+                </label>
+                <input
+                  {...register('video_url')}
+                  type="url"
+                  placeholder="https://www.youtube.com/watch?v=... o https://cdn.ejemplo.com/video.mp4"
+                  className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                />
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  Soportado: <strong>YouTube</strong>, <strong>Vimeo</strong>, <strong>Bilibili</strong>, enlace directo <strong>.mp4</strong>
+                </p>
+              </div>
+
+              {/* Extractor de video de Alibaba/AliExpress */}
+              <AlbabaVideoExtractor onExtracted={(url) => setValue('video_url', url)} getApiBase={getApiBase} />
             </div>
           </div>
 

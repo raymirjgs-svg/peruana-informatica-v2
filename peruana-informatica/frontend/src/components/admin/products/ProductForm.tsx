@@ -328,6 +328,18 @@ export function ProductForm({ initialData, initialGalleryImages, initialSpecific
       const match = line.match(/^(.+?)\t+(.+)$/) || line.match(/^(.+?)\s{3,}(.+)$/);
       if (match && match[1] && match[2]) {
         parsed.push({ key: match[1].trim(), value: match[2].trim() });
+      } else if (line.includes(' / ')) {
+        // Format: "Clave / Valor / Clave / Valor ..." (alternating pairs separated by " / ")
+        const parts = line.split(' / ').map(p => p.trim()).filter(p => p.length > 0);
+        for (let i = 0; i < parts.length; i += 2) {
+          const k = parts[i];
+          const v = parts[i + 1];
+          if (k && v !== undefined) {
+            parsed.push({ key: k, value: v });
+          } else if (k) {
+            parsed.push({ key: k, value: '' });
+          }
+        }
       } else if (parsed.length > 0) {
         // Continuation line — append to previous value
         const last = parsed[parsed.length - 1];
@@ -752,7 +764,9 @@ export function ProductForm({ initialData, initialGalleryImages, initialSpecific
             {showBulkImport && (
               <div className="mb-4 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
                 <p className="text-xs text-blue-700 dark:text-blue-300 mb-2 font-medium">
-                  Pega el texto con especificaciones. Cada línea debe tener el formato: <code className="bg-blue-100 dark:bg-blue-800 px-1 rounded">NOMBRE    VALOR</code> (separado por tab o varios espacios).
+                  Pega el texto con especificaciones. Formatos aceptados:<br />
+                  • Tab/espacios: <code className="bg-blue-100 dark:bg-blue-800 px-1 rounded">NOMBRE    VALOR</code> (una spec por línea)<br />
+                  • Separado por " / ": <code className="bg-blue-100 dark:bg-blue-800 px-1 rounded">Clave / Valor / Clave / Valor ...</code>
                 </p>
                 <textarea
                   value={bulkText}

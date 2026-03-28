@@ -58,6 +58,9 @@ export interface RawProduct {
     // Video
     video_url?: string | null;
 
+    // Specifications
+    specifications?: Array<{key: string; value: string}> | null;
+
     // Timestamps
     created_at?: string;
     updated_at?: string;

@@ -235,34 +235,18 @@ export default function ProductDetailPage() {
                 {activeTab === 'specifications' && (
                   <div>
                     <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4">Especificaciones Técnicas</h3>
-                    <div className="space-y-2">
-                      {product.description && (() => {
-                        const specs: { label: string; value: string }[] = [];
-                        const cleanDescription = product.description.replace(/<[^>]*>/g, ' ');
-                        const patterns = [
-                          { label: 'Marca', regex: /Marca\s*[:\-]?\s*([^\s].*?)(?=\s*[A-Z]|$)/i },
-                          { label: 'Modelo', regex: /Modelo\s*[:\-]?\s*([^\s].*?)(?=\s*[A-Z]|$)/i },
-                          { label: 'Procesador', regex: /(Intel|AMD|Apple).*?(i[3579]|Ryzen|Core|M\d+|Celeron|Pentium)[^\s]*/i },
-                          { label: 'RAM', regex: /(\d+)\s*(GB|GB DDR4|GB DDR5|GB RAM)/i },
-                          { label: 'Almacenamiento', regex: /(\d+)\s*(GB|TB)\s*(SSD|HDD|NVMe)/i },
-                          { label: 'Pantalla', regex: /(\d+\.?\d*)[""]/ },
-                          { label: 'Gráficos', regex: /(NVIDIA|AMD|Intel).*?(GTX|RTX|HD|UHD|Iris|Arc|Radeon|GeForce)[^\s]*/i },
-                        ];
-                        patterns.forEach(pattern => {
-                          const match = cleanDescription.match(pattern.regex);
-                          if (match) specs.push({ label: pattern.label, value: match[0].trim() });
-                        });
-                        if (specs.length > 0) {
-                          return specs.map((spec, i) => (
-                            <div key={i} className="flex gap-4 py-2.5 border-b border-gray-100 dark:border-gray-800 last:border-0">
-                              <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 w-32 flex-none">{spec.label}</dt>
-                              <dd className="text-sm text-gray-900 dark:text-gray-100">{spec.value}</dd>
-                            </div>
-                          ));
-                        }
-                        return <p className="text-sm text-gray-500">Sin especificaciones detalladas disponibles.</p>;
-                      })()}
-                    </div>
+                    {product.specifications && product.specifications.length > 0 ? (
+                      <dl className="space-y-0">
+                        {product.specifications.map((spec, i) => (
+                          <div key={i} className="flex gap-4 py-2.5 border-b border-gray-100 dark:border-gray-800 last:border-0">
+                            <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 w-40 flex-none">{spec.key}</dt>
+                            <dd className="text-sm text-gray-900 dark:text-gray-100">{spec.value}</dd>
+                          </div>
+                        ))}
+                      </dl>
+                    ) : (
+                      <p className="text-sm text-gray-500">Sin especificaciones detalladas disponibles.</p>
+                    )}
                   </div>
                 )}
 

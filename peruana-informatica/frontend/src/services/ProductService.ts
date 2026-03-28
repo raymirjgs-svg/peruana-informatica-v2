@@ -142,6 +142,7 @@ export class ProductService {
     product.is_new = isTrue(item.is_new);
     product.is_clearance = isTrue(item.is_clearance);
     product.video_url = item.video_url || null;
+    product.specifications = Array.isArray(item.specifications) ? item.specifications : undefined;
 
     // Marca
     if (typeof item.productBrand === 'object' && item.productBrand?.name) {

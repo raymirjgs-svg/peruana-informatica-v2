@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { AdminLayout } from '@/components/admin/AdminLayout';
-import { ProductForm, ProductFormData } from '@/components/admin/products/ProductForm';
+import { ProductForm, ProductFormData, ProductSpec } from '@/components/admin/products/ProductForm';
 import { toast } from 'sonner';
 import { adminFetch } from '@/lib/adminApi';
 
@@ -15,6 +15,7 @@ export default function EditProductPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [initialData, setInitialData] = useState<ProductFormData | undefined>(undefined);
   const [initialGalleryImages, setInitialGalleryImages] = useState<string[]>([]);
+  const [initialSpecifications, setInitialSpecifications] = useState<ProductSpec[]>([]);
   const [existingGalleryIds, setExistingGalleryIds] = useState<Array<{id: number, url: string}>>([]);
   const [loading, setLoading] = useState(true);
 
@@ -51,6 +52,11 @@ export default function EditProductPage() {
           video_url: product.video_url || '',
         });
 
+        // Load specifications
+        if (Array.isArray(product.specifications)) {
+          setInitialSpecifications(product.specifications);
+        }
+
         // Store existing gallery images for sync on save
         const gallery: Array<{id: number, url: string}> = (product.images || [])
           .filter((img: any) => img.imagen)
@@ -68,7 +74,7 @@ export default function EditProductPage() {
     fetchProduct();
   }, [productId, router]);
 
-  const handleSubmit = async (data: ProductFormData & { additional_images?: string[] }) => {
+  const handleSubmit = async (data: ProductFormData & { additional_images?: string[]; specifications?: ProductSpec[] }) => {
     setIsSubmitting(true);
     try {
       const payload: any = {
@@ -90,6 +96,7 @@ export default function EditProductPage() {
       if (data.seo_description) payload.seo_description = data.seo_description;
       if (data.subcategory_ids) payload.subcategory_ids = data.subcategory_ids;
       payload.video_url = data.video_url || null;
+      payload.specifications = data.specifications || [];
 
       const res = await adminFetch(`/admin/products/${productId}`, {
         method: 'PUT',
@@ -144,6 +151,7 @@ export default function EditProductPage() {
         <ProductForm
           initialData={initialData}
           initialGalleryImages={initialGalleryImages}
+          initialSpecifications={initialSpecifications}
           productId={productId}
           onSubmit={handleSubmit}
           isSubmitting={isSubmitting}

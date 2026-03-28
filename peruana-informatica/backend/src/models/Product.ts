@@ -43,11 +43,12 @@ export interface ProductAttributes {
   is_new?: boolean;
   is_clearance?: boolean;
   video_url?: string | null;
+  specifications?: Array<{key: string; value: string}> | null;
 }
 
 export type ProductCreationAttributes = Optional<
   ProductAttributes,
-  'cod_producto' | 'short_description' | 'stock' | 'category' | 'image' | 'keywords' | 'brand_id' | 'category_id' | 'is_active' | 'estado' | 'seo_title' | 'seo_description' | 'codigo_interno' | 'created_at' | 'updated_at' | 'component_type' | 'socket_type' | 'ram_type' | 'form_factor' | 'tdp_watts' | 'has_integrated_graphics' | 'component_specs' | 'is_featured' | 'is_new' | 'is_clearance' | 'video_url'
+  'cod_producto' | 'short_description' | 'stock' | 'category' | 'image' | 'keywords' | 'brand_id' | 'category_id' | 'is_active' | 'estado' | 'seo_title' | 'seo_description' | 'codigo_interno' | 'created_at' | 'updated_at' | 'component_type' | 'socket_type' | 'ram_type' | 'form_factor' | 'tdp_watts' | 'has_integrated_graphics' | 'component_specs' | 'is_featured' | 'is_new' | 'is_clearance' | 'video_url' | 'specifications'
 >;
 
 export class Product extends Model<ProductAttributes, ProductCreationAttributes> implements ProductAttributes {
@@ -86,6 +87,7 @@ export class Product extends Model<ProductAttributes, ProductCreationAttributes>
   public is_new!: boolean;
   public is_clearance!: boolean;
   public video_url!: string | null;
+  public specifications!: Array<{key: string; value: string}> | null;
 
   // Association with images
   public readonly images?: Image[];
@@ -273,6 +275,11 @@ Product.init(
       type: DataTypes.STRING(500),
       allowNull: true,
       field: 'video_url'
+    },
+    specifications: {
+      type: DataTypes.JSON,
+      allowNull: true,
+      field: 'specifications'
     }
   },
   {

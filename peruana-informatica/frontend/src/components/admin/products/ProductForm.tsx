@@ -37,16 +37,19 @@ const productSchema = z.object({
 
 export type ProductFormData = z.infer<typeof productSchema>;
 
+export type ProductSpec = { key: string; value: string };
+
 interface ProductFormProps {
   initialData?: ProductFormData;
   initialGalleryImages?: string[];
+  initialSpecifications?: ProductSpec[];
   productId?: number;
-  onSubmit: (data: ProductFormData & { additional_images?: string[] }) => Promise<void>;
+  onSubmit: (data: ProductFormData & { additional_images?: string[]; specifications?: ProductSpec[] }) => Promise<void>;
   isSubmitting: boolean;
   isEdit?: boolean;
 }
 
-export function ProductForm({ initialData, initialGalleryImages, productId, onSubmit, isSubmitting, isEdit }: ProductFormProps) {
+export function ProductForm({ initialData, initialGalleryImages, initialSpecifications, productId, onSubmit, isSubmitting, isEdit }: ProductFormProps) {
   const router = useRouter();
   const [categories, setCategories] = useState<Array<{ id: number; name: string }>>([]);
   const [brands, setBrands] = useState<Array<{ id: number; name: string }>>([]);
@@ -55,6 +58,7 @@ export function ProductForm({ initialData, initialGalleryImages, productId, onSu
   const [allImages, setAllImages] = useState<string[]>([]);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [dragIdx, setDragIdx] = useState<number | null>(null);
+  const [specs, setSpecs] = useState<ProductSpec[]>(initialSpecifications || []);
 
   // ERP Search state (only for create mode)
   const [showErpSearch, setShowErpSearch] = useState(!isEdit);
@@ -100,6 +104,9 @@ export function ProductForm({ initialData, initialGalleryImages, productId, onSu
           const main = initialData.image ? [initialData.image] : [];
           const gallery = initialGalleryImages || [];
           setAllImages([...main, ...gallery.filter(u => u && u !== initialData.image)]);
+          if (initialSpecifications && initialSpecifications.length > 0) {
+            setSpecs(initialSpecifications);
+          }
         }
       } catch (err) {
         console.error('Error loading categories/brands:', err);
@@ -217,9 +224,15 @@ export function ProductForm({ initialData, initialGalleryImages, productId, onSu
     await onSubmit({
       ...data,
       image: allImages[0] || '',
-      additional_images: allImages.slice(1).filter(u => u.trim() !== '')
+      additional_images: allImages.slice(1).filter(u => u.trim() !== ''),
+      specifications: specs.filter(s => s.key.trim() !== '')
     });
   };
+
+  const addSpec = () => setSpecs(prev => [...prev, { key: '', value: '' }]);
+  const removeSpec = (idx: number) => setSpecs(prev => prev.filter((_, i) => i !== idx));
+  const updateSpec = (idx: number, field: 'key' | 'value', val: string) =>
+    setSpecs(prev => prev.map((s, i) => i === idx ? { ...s, [field]: val } : s));
 
   const toggleSubcategory = (id: number) => {
     const current = selectedSubcategories || [];
@@ -597,6 +610,55 @@ export function ProductForm({ initialData, initialGalleryImages, productId, onSu
                 Si se ingresa, aparecerá una pestaña "Video" en la página del producto.
               </p>
             </div>
+          </div>
+
+          {/* Specifications */}
+          <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-6 shadow-sm">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Especificaciones Técnicas</h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Aparecen en la pestaña "Especificaciones" del producto.</p>
+              </div>
+              <button
+                type="button"
+                onClick={addSpec}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                + Agregar
+              </button>
+            </div>
+
+            {specs.length === 0 ? (
+              <p className="text-sm text-gray-400 italic">Sin especificaciones. Haz clic en "Agregar" para añadir.</p>
+            ) : (
+              <div className="space-y-2">
+                {specs.map((spec, idx) => (
+                  <div key={idx} className="flex gap-2 items-center">
+                    <input
+                      type="text"
+                      value={spec.key}
+                      onChange={e => updateSpec(idx, 'key', e.target.value)}
+                      placeholder="Nombre (ej: Procesador)"
+                      className="w-40 flex-none px-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 outline-none"
+                    />
+                    <input
+                      type="text"
+                      value={spec.value}
+                      onChange={e => updateSpec(idx, 'value', e.target.value)}
+                      placeholder="Valor (ej: Intel Core i7-12700H)"
+                      className="flex-1 px-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 outline-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeSpec(idx)}
+                      className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 

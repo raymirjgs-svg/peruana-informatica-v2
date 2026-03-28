@@ -155,7 +155,7 @@ export class ProductController {
                 attributes: [
                     'cod_producto',
                     'name', 'slug', 'description', 'short_description', 'price', 'price_web', 'price_cot', 'price_dis', 'stock', 'category', 'keywords', 'brand_id', 'category_id', 'is_active', 'codigo_interno', 'component_type', 'is_featured', 'is_new', 'is_clearance', 'image',
-                    'seo_title', 'seo_description', 'video_url'
+                    'seo_title', 'seo_description', 'video_url', 'specifications'
                 ],
                 include: [
                     {
@@ -342,7 +342,8 @@ export class ProductController {
                 seo_title: req.body.seo_title ?? null,
                 seo_description: req.body.seo_description ?? null,
                 component_type: component_type || null,
-                video_url: video_url || null
+                video_url: video_url || null,
+                specifications: req.body.specifications || null
             });
 
             // Guardar imágenes adicionales

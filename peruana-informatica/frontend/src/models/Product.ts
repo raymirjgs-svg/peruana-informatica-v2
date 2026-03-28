@@ -30,6 +30,7 @@ export class Product {
   is_clearance?: boolean;
   brand?: string;
   video_url?: string | null;
+  specifications?: Array<{key: string; value: string}>;
 
   constructor(
     id: number,

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { AdminLayout } from '@/components/admin/AdminLayout';
-import { ProductForm, ProductFormData } from '@/components/admin/products/ProductForm';
+import { ProductForm, ProductFormData, ProductSpec } from '@/components/admin/products/ProductForm';
 import { toast } from 'sonner';
 import { adminFetch } from '@/lib/adminApi';
 
@@ -11,7 +11,7 @@ export default function NewProductPage() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async (data: ProductFormData & { additional_images?: string[] }) => {
+  const handleSubmit = async (data: ProductFormData & { additional_images?: string[]; specifications?: ProductSpec[] }) => {
     setIsSubmitting(true);
     try {
       const payload: any = {
@@ -25,7 +25,8 @@ export default function NewProductPage() {
         seo_title: data.seo_title || undefined,
         seo_description: data.seo_description || undefined,
         subcategory_ids: data.subcategory_ids || [],
-        additional_images: data.additional_images || []
+        additional_images: data.additional_images || [],
+        specifications: data.specifications || []
       };
 
       if (data.category_id) payload.category_id = data.category_id;

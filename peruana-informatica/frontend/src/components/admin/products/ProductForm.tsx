@@ -631,7 +631,8 @@ export function ProductForm({ initialData, initialGalleryImages, initialSpecific
                 className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
               />
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                Si se ingresa, aparecerá una pestaña "Video" en la página del producto.
+                Soportado: <strong>YouTube</strong> (youtube.com, youtu.be, Shorts), <strong>Vimeo</strong>, <strong>Bilibili</strong>, o enlace directo <strong>.mp4</strong>.<br/>
+                Videos de Alibaba/AliExpress no son embebibles — sube el video a YouTube primero.
               </p>
             </div>
           </div>

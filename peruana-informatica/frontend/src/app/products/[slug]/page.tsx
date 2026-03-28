@@ -120,32 +120,43 @@ export default function ProductDetailPage() {
   const priceList = Number(product.price || 0);
   const priceDis = Number(product.priceDis || 0);
 
-  const getEmbedUrl = (url: string): string | null => {
+  // Returns { type: 'iframe'|'video', url: string } or null
+  const getVideoEmbed = (url: string): { type: 'iframe' | 'video'; url: string } | null => {
     try {
       const u = new URL(url);
+      // Direct video file (mp4, webm, ogg)
+      if (/\.(mp4|webm|ogg)(\?.*)?$/i.test(u.pathname)) {
+        return { type: 'video', url };
+      }
       // YouTube: youtube.com/watch?v=ID, youtube.com/shorts/ID, or youtu.be/ID
       if (u.hostname.includes('youtube.com')) {
         const v = u.searchParams.get('v');
-        if (v) return `https://www.youtube.com/embed/${v}`;
-        // Shorts: /shorts/ID
+        if (v) return { type: 'iframe', url: `https://www.youtube.com/embed/${v}` };
         const shortsMatch = u.pathname.match(/\/shorts\/([^/?]+)/);
-        if (shortsMatch) return `https://www.youtube.com/embed/${shortsMatch[1]}`;
+        if (shortsMatch) return { type: 'iframe', url: `https://www.youtube.com/embed/${shortsMatch[1]}` };
       }
       if (u.hostname === 'youtu.be') {
         const id = u.pathname.slice(1);
-        if (id) return `https://www.youtube.com/embed/${id}`;
+        if (id) return { type: 'iframe', url: `https://www.youtube.com/embed/${id}` };
       }
-      // Vimeo: vimeo.com/ID
+      // Vimeo
       if (u.hostname.includes('vimeo.com')) {
         const id = u.pathname.replace(/\//g, '');
-        if (id) return `https://player.vimeo.com/video/${id}`;
+        if (id) return { type: 'iframe', url: `https://player.vimeo.com/video/${id}` };
       }
-      // Anything else: return as-is (assume it's already embeddable)
-      return url;
+      // Bilibili: bilibili.com/video/BVxxx or b23.tv/xxx
+      if (u.hostname.includes('bilibili.com') || u.hostname === 'b23.tv') {
+        const bvMatch = u.pathname.match(/\/(BV[a-zA-Z0-9]+)/);
+        if (bvMatch) return { type: 'iframe', url: `https://player.bilibili.com/player.html?bvid=${bvMatch[1]}&page=1` };
+      }
+      // Unknown platform — don't embed
+      return null;
     } catch {
       return null;
     }
   };
+  // Legacy alias used below
+  const getEmbedUrl = (url: string): string | null => getVideoEmbed(url)?.url ?? null;
 
   const tabs = [
     { id: 'description', label: 'Descripción' },
@@ -257,19 +268,25 @@ export default function ProductDetailPage() {
                 )}
 
                 {activeTab === 'video' && product.video_url && (() => {
-                  const embedUrl = getEmbedUrl(product.video_url);
-                  return embedUrl ? (
+                  const embed = getVideoEmbed(product.video_url);
+                  if (!embed) return <p className="text-sm text-gray-500">No se pudo cargar el video. Asegúrate de usar una URL de YouTube, Vimeo, Bilibili o un enlace directo .mp4.</p>;
+                  if (embed.type === 'video') {
+                    return (
+                      <div className="aspect-video w-full rounded-xl overflow-hidden bg-black">
+                        <video src={embed.url} controls className="w-full h-full" />
+                      </div>
+                    );
+                  }
+                  return (
                     <div className="aspect-video w-full rounded-xl overflow-hidden bg-black">
                       <iframe
-                        src={embedUrl}
+                        src={embed.url}
                         title={`Video: ${product.name}`}
                         className="w-full h-full"
                         allowFullScreen
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       />
                     </div>
-                  ) : (
-                    <p className="text-sm text-gray-500">No se pudo cargar el video.</p>
                   );
                 })()}
 

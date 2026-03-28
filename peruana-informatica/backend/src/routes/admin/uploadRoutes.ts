@@ -67,63 +67,102 @@ router.get('/extract-video', async (req: Request, res: Response) => {
     let pageUrl: URL;
     try { pageUrl = new URL(rawUrl); } catch { return res.status(400).json({ error: 'URL inválida' }); }
 
-    const fetchPage = (url: URL): Promise<string> => new Promise((resolve, reject) => {
+    const fetchRaw = (url: URL, extraHeaders: Record<string, string> = {}): Promise<string> => new Promise((resolve, reject) => {
         const lib = url.protocol === 'https:' ? https : http;
         const options = {
             hostname: url.hostname,
             path: url.pathname + url.search,
             headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
                 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-                'Accept-Language': 'en-US,en;q=0.5',
+                'Accept-Language': 'en-US,en;q=0.9',
+                'Accept-Encoding': 'identity',
+                'Cache-Control': 'no-cache',
+                ...extraHeaders,
             },
-            timeout: 10000,
+            timeout: 12000,
         };
-        const req2 = lib.get(options, (r) => {
+        const r2 = lib.get(options, (r) => {
             if (r.statusCode && r.statusCode >= 300 && r.statusCode < 400 && r.headers.location) {
-                try {
-                    const redir = new URL(r.headers.location, url.origin);
-                    resolve(fetchPage(redir));
-                } catch { reject(new Error('Redirect error')); }
+                try { resolve(fetchRaw(new URL(r.headers.location, url.origin))); } catch { reject(new Error('Redirect error')); }
                 return;
             }
             let data = '';
             r.setEncoding('utf8');
-            r.on('data', chunk => { data += chunk; if (data.length > 500000) r.destroy(); });
+            r.on('data', chunk => { data += chunk; if (data.length > 800000) r.destroy(); });
             r.on('end', () => resolve(data));
             r.on('error', reject);
         });
-        req2.on('timeout', () => { req2.destroy(); reject(new Error('Timeout')); });
-        req2.on('error', reject);
+        r2.on('timeout', () => { r2.destroy(); reject(new Error('Timeout')); });
+        r2.on('error', reject);
     });
 
-    try {
-        const html = await fetchPage(pageUrl);
+    const extractVideos = (html: string): string[] => {
+        const found = new Set<string>();
 
-        // Patterns to find video URLs in page source
+        // 1. Decode unicode escapes (\u002F → /)
+        const decoded = html.replace(/\\u([\dA-Fa-f]{4})/g, (_, h) => String.fromCharCode(parseInt(h, 16)));
+
         const videoPatterns = [
-            // Direct CDN mp4 URLs (Alibaba / AliExpress CDN)
-            /https?:\/\/(?:sc\d*|video|v)\.alicdn\.com\/[^\s"'<>]+\.mp4[^\s"'<>]*/gi,
-            /https?:\/\/[^\s"'<>]*\.alicdn\.com\/[^\s"'<>]*\.mp4[^\s"'<>]*/gi,
-            // Generic mp4 in quoted strings
-            /"(https?:\/\/[^\s"]+\.mp4[^"]*)"/gi,
-            /'(https?:\/\/[^\s']+\.mp4[^']*)'/gi,
-            // videoUrl patterns in JSON
-            /["'](?:videoUrl|video_url|src|url)["']\s*:\s*["'](https?:\/\/[^\s"']+\.mp4[^"']*)/gi,
+            // Alibaba / AliExpress CDN video files
+            /https?:\/\/(?:sc\d*|v|video|img)\.alicdn\.com\/[^\s"'<>\\]+?\.mp4(?:[^\s"'<>\\]*)?/gi,
+            /https?:\/\/[^\s"'<>\\]+?\.alicdn\.com\/[^\s"'<>\\]+?\.mp4(?:[^\s"'<>\\]*)?/gi,
+            // JSON-style video fields (with or without quotes)
+            /"(?:videoUrl|video_url|videoSrc|video_src|mediaUrl|media_url|url|src)"\s*:\s*"(https?:\/\/[^"]+?\.mp4[^"]*)"/gi,
+            // Generic quoted mp4 URLs in any source
+            /"(https?:\/\/[^"]{10,}\.mp4[^"]*)"/gi,
+            /'(https?:\/\/[^']{10,}\.mp4[^']*)'/gi,
+            // AliExpress / 1688 specific
+            /https?:\/\/(?:ae\d*|gw)\.alicdn\.com\/[^\s"'<>]+?\.mp4/gi,
+            /https?:\/\/(?:[a-z0-9-]+)\.oss-[a-z0-9-]+\.aliyuncs\.com\/[^\s"'<>]+?\.mp4/gi,
         ];
 
-        const found = new Set<string>();
         for (const pattern of videoPatterns) {
-            const matches = html.matchAll(pattern);
-            for (const m of matches) {
-                const url = (m[1] || m[0]).replace(/\\u002F/g, '/').replace(/\\/g, '');
-                if (url.startsWith('http')) found.add(url);
+            for (const m of decoded.matchAll(pattern)) {
+                const url = (m[1] || m[0]).trim().replace(/["\\']+$/g, '');
+                if (url.startsWith('http') && url.includes('.mp4')) found.add(url);
+            }
+        }
+        return [...found].slice(0, 8);
+    };
+
+    try {
+        // Attempt 1: fetch product page directly
+        let html = '';
+        try { html = await fetchRaw(pageUrl); } catch { /* fall through */ }
+        let videos = extractVideos(html);
+
+        // Attempt 2: try Alibaba JSON offering API (product detail JSON endpoint)
+        if (videos.length === 0 && pageUrl.hostname.includes('alibaba.com')) {
+            const idMatch = pageUrl.pathname.match(/_(\d{10,})\.html/) || pageUrl.search.match(/offerId=(\d+)/);
+            const offerId = idMatch?.[1];
+            if (offerId) {
+                try {
+                    const jsonUrl = new URL(`https://www.alibaba.com/offerdetail/${offerId}.json`);
+                    const jsonHtml = await fetchRaw(jsonUrl, { 'Accept': 'application/json' });
+                    videos = extractVideos(jsonHtml);
+                } catch { /* fall through */ }
             }
         }
 
-        const videos = [...found].slice(0, 5);
+        // Attempt 3: AliExpress product JSON
+        if (videos.length === 0 && pageUrl.hostname.includes('aliexpress.com')) {
+            const idMatch = pageUrl.pathname.match(/\/item\/(\d+)/) || pageUrl.search.match(/productId=(\d+)/);
+            const productId = idMatch?.[1];
+            if (productId) {
+                try {
+                    const jsonUrl = new URL(`https://www.aliexpress.com/item/${productId}.html`);
+                    const ae = await fetchRaw(jsonUrl, { 'Referer': 'https://www.aliexpress.com/' });
+                    videos = extractVideos(ae);
+                } catch { /* fall through */ }
+            }
+        }
+
         if (videos.length === 0) {
-            return res.json({ found: false, message: 'No se encontró ningún video en esa página. Intenta obtener el enlace directo del .mp4 desde el navegador.' });
+            return res.json({
+                found: false,
+                message: 'No se encontró video automáticamente (Alibaba carga los videos con JavaScript). Instrucciones manuales: abre la página en Chrome → presiona F12 → pestaña "Red/Network" → filtra por "mp4" → recarga la página → copia la URL que aparezca.'
+            });
         }
 
         return res.json({ found: true, videos, recommended: videos[0] });

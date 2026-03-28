@@ -96,7 +96,16 @@ function AlbabaVideoExtractor({ onExtracted, getApiBase }: { onExtracted: (url: 
           <X className="h-4 w-4" />
         </button>
       </div>
-      {error && <p className="text-xs text-red-600">{error}</p>}
+      {error && (
+        <div className="text-xs text-amber-800 dark:text-amber-300 bg-amber-100 dark:bg-amber-900/30 rounded p-2 space-y-1">
+          <p className="font-medium">{error}</p>
+          {error.includes('manuale') || error.includes('JavaScript') ? null : (
+            <p className="text-gray-600 dark:text-gray-400">
+              Alternativa manual: abre la página en Chrome → F12 → pestaña <strong>Red</strong> → filtra por <strong>mp4</strong> → recarga → copia la URL del video.
+            </p>
+          )}
+        </div>
+      )}
       {result && (
         <div className="space-y-1">
           <p className="text-xs text-green-700 dark:text-green-400 font-medium">Videos encontrados — haz clic para usar:</p>

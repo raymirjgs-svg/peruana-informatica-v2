@@ -234,6 +234,30 @@ export function ProductForm({ initialData, initialGalleryImages, initialSpecific
   const updateSpec = (idx: number, field: 'key' | 'value', val: string) =>
     setSpecs(prev => prev.map((s, i) => i === idx ? { ...s, [field]: val } : s));
 
+  const [showBulkImport, setShowBulkImport] = useState(false);
+  const [bulkText, setBulkText] = useState('');
+
+  const parseBulkSpecs = () => {
+    const lines = bulkText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+    const parsed: ProductSpec[] = [];
+    for (const line of lines) {
+      // Split by tab or 3+ spaces
+      const match = line.match(/^(.+?)\t+(.+)$/) || line.match(/^(.+?)\s{3,}(.+)$/);
+      if (match) {
+        parsed.push({ key: match[1].trim(), value: match[2].trim() });
+      } else if (parsed.length > 0) {
+        // Continuation line — append to previous value
+        const last = parsed[parsed.length - 1];
+        if (last) last.value = last.value ? last.value + ' / ' + line : line;
+      } else {
+        parsed.push({ key: line, value: '' });
+      }
+    }
+    setSpecs(prev => [...prev, ...parsed]);
+    setBulkText('');
+    setShowBulkImport(false);
+  };
+
   const toggleSubcategory = (id: number) => {
     const current = selectedSubcategories || [];
     const newIds = current.includes(id)
@@ -619,14 +643,55 @@ export function ProductForm({ initialData, initialGalleryImages, initialSpecific
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Especificaciones Técnicas</h3>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Aparecen en la pestaña "Especificaciones" del producto.</p>
               </div>
-              <button
-                type="button"
-                onClick={addSpec}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                + Agregar
-              </button>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowBulkImport(v => !v)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                >
+                  Importar en lote
+                </button>
+                <button
+                  type="button"
+                  onClick={addSpec}
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  + Agregar
+                </button>
+              </div>
             </div>
+
+            {showBulkImport && (
+              <div className="mb-4 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                <p className="text-xs text-blue-700 dark:text-blue-300 mb-2 font-medium">
+                  Pega el texto con especificaciones. Cada línea debe tener el formato: <code className="bg-blue-100 dark:bg-blue-800 px-1 rounded">NOMBRE    VALOR</code> (separado por tab o varios espacios).
+                </p>
+                <textarea
+                  value={bulkText}
+                  onChange={e => setBulkText(e.target.value)}
+                  rows={8}
+                  className="w-full px-3 py-2 text-sm font-mono rounded-lg border border-blue-300 dark:border-blue-700 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 outline-none resize-y"
+                  placeholder={"TIPO    IMPRESORA MULTIFUNCIONAL TINTA\nMARCA    EPSON\nMODELO    ECOTANK L4360\n..."}
+                />
+                <div className="flex gap-2 mt-2">
+                  <button
+                    type="button"
+                    onClick={parseBulkSpecs}
+                    disabled={!bulkText.trim()}
+                    className="px-4 py-1.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
+                  >
+                    Importar
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setShowBulkImport(false); setBulkText(''); }}
+                    className="px-4 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 transition-colors"
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              </div>
+            )}
 
             {specs.length === 0 ? (
               <p className="text-sm text-gray-400 italic">Sin especificaciones. Haz clic en "Agregar" para añadir.</p>

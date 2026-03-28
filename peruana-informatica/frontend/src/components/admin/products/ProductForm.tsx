@@ -243,7 +243,7 @@ export function ProductForm({ initialData, initialGalleryImages, initialSpecific
     for (const line of lines) {
       // Split by tab or 3+ spaces
       const match = line.match(/^(.+?)\t+(.+)$/) || line.match(/^(.+?)\s{3,}(.+)$/);
-      if (match) {
+      if (match && match[1] && match[2]) {
         parsed.push({ key: match[1].trim(), value: match[2].trim() });
       } else if (parsed.length > 0) {
         // Continuation line — append to previous value

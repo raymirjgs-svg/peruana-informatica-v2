@@ -14,12 +14,32 @@ export interface CompanySettings {
     linkedin_url?: string;
     logo_url?: string;
     show_distributor_price_in_detail?: boolean;
+    // Shipping & returns
+    shipping_standard_title?: string;
+    shipping_standard_subtitle?: string;
+    shipping_standard_badge?: string;
+    shipping_express_title?: string;
+    shipping_express_subtitle?: string;
+    shipping_express_badge?: string;
+    return_policy_lines?: string;
 }
 
 import { API_CONFIG } from '../config/api';
 
 export class SettingsService {
     private static readonly API_BASE = API_CONFIG.API_BASE_URL;
+
+    static async getGlobalSettings(): Promise<Record<string, string>> {
+        try {
+            const response = await fetch(`${this.API_BASE}/api/settings`, {
+                next: { revalidate: 60 },
+            } as RequestInit);
+            if (!response.ok) throw new Error('Error fetching global settings');
+            return await response.json();
+        } catch {
+            return {};
+        }
+    }
 
     static async getPublicSettings(): Promise<CompanySettings> {
         try {

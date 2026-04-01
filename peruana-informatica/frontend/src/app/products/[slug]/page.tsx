@@ -22,6 +22,7 @@ export default function ProductDetailPage() {
   const [activeTab, setActiveTab] = useState('description');
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
   const [settings, setSettings] = useState<CompanySettings | null>(null);
+  const [globalSettings, setGlobalSettings] = useState<Record<string, string>>({});
 
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const { addItem } = useCart();
@@ -39,8 +40,12 @@ export default function ProductDetailPage() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const settingsData = await SettingsService.getPublicSettings();
+        const [settingsData, globalSettingsData] = await Promise.all([
+          SettingsService.getPublicSettings(),
+          SettingsService.getGlobalSettings(),
+        ]);
         setSettings(settingsData);
+        setGlobalSettings(globalSettingsData);
       } catch (error) {
         console.error('Error loading settings:', error);
       }
@@ -290,42 +295,55 @@ export default function ProductDetailPage() {
                   );
                 })()}
 
-                {activeTab === 'shipping' && (
-                  <div className="space-y-6">
-                    <div>
-                      <h4 className="font-bold text-gray-900 dark:text-gray-100 mb-3">Opciones de Envío</h4>
-                      <div className="space-y-2">
-                        {[
-                          { title: 'Envío Estándar', subtitle: '2–5 días hábiles · Lima y provincias · Pago en Destino', badge: 'GRATIS' },
-                          { title: 'Envío Express', subtitle: '24–48 h · Solo Lima Metropolitana', badge: 'S/. 15' },
-                        ].map((opt) => (
-                          <div key={opt.title} className="flex items-center justify-between p-3.5 rounded-lg border border-gray-200 dark:border-gray-700">
-                            <div>
-                              <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">{opt.title}</p>
-                              <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{opt.subtitle}</p>
+                {activeTab === 'shipping' && (() => {
+                  const shippingOptions = [
+                    {
+                      title: globalSettings.shipping_standard_title || 'Envío Estándar',
+                      subtitle: globalSettings.shipping_standard_subtitle || '2–5 días hábiles · Lima y provincias',
+                      badge: globalSettings.shipping_standard_badge || 'GRATIS',
+                    },
+                    {
+                      title: globalSettings.shipping_express_title || 'Envío Express',
+                      subtitle: globalSettings.shipping_express_subtitle || '24–48 h · Solo Lima Metropolitana',
+                      badge: globalSettings.shipping_express_badge || 'S/. 15',
+                    },
+                  ].filter(opt => opt.title);
+                  const returnLines = (globalSettings.return_policy_lines || 'Producto en condiciones originales con embalaje y accesorios')
+                    .split('\n').map(l => l.trim()).filter(l => l.length > 0);
+                  return (
+                    <div className="space-y-6">
+                      <div>
+                        <h4 className="font-bold text-gray-900 dark:text-gray-100 mb-3">Opciones de Envío</h4>
+                        <div className="space-y-2">
+                          {shippingOptions.map((opt) => (
+                            <div key={opt.title} className="flex items-center justify-between p-3.5 rounded-lg border border-gray-200 dark:border-gray-700">
+                              <div>
+                                <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">{opt.title}</p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{opt.subtitle}</p>
+                              </div>
+                              <span className="text-xs font-bold text-gray-700 dark:text-gray-300 flex-none ml-4">{opt.badge}</span>
                             </div>
-                            <span className="text-xs font-bold text-gray-700 dark:text-gray-300 flex-none ml-4">{opt.badge}</span>
-                          </div>
-                        ))}
+                          ))}
+                        </div>
                       </div>
+                      {returnLines.length > 0 && (
+                        <div>
+                          <h4 className="font-bold text-gray-900 dark:text-gray-100 mb-3">Política de Devoluciones</h4>
+                          <ul className="space-y-2.5 text-sm text-gray-600 dark:text-gray-400">
+                            {returnLines.map((item) => (
+                              <li key={item} className="flex items-start gap-2.5">
+                                <svg className="w-4 h-4 text-emerald-500 mt-0.5 flex-none" fill="currentColor" viewBox="0 0 20 20">
+                                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                </svg>
+                                {item}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
                     </div>
-                    <div>
-                      <h4 className="font-bold text-gray-900 dark:text-gray-100 mb-3">Política de Devoluciones</h4>
-                      <ul className="space-y-2.5 text-sm text-gray-600 dark:text-gray-400">
-                        {[
-                          'Producto en condiciones originales con embalaje y accesorios',
-                        ].map((item) => (
-                          <li key={item} className="flex items-start gap-2.5">
-                            <svg className="w-4 h-4 text-emerald-500 mt-0.5 flex-none" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                            </svg>
-                            {item}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                )}
+                  );
+                })()}
               </div>
             </div>
           </div>

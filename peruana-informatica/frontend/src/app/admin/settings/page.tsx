@@ -21,7 +21,8 @@ import {
   Eye,
   EyeOff,
   ShoppingCart,
-  CreditCard
+  CreditCard,
+  Truck
 } from 'lucide-react';
 
 interface PriceOption {
@@ -95,7 +96,16 @@ export default function SettingsPage() {
     payment_holder: '',
     payment_yape_phone: '',
     payment_plin_phone: '',
-    payment_methods_enabled: 'transferencia,yape,plin,tarjeta'
+    payment_methods_enabled: 'transferencia,yape,plin,tarjeta',
+
+    // Shipping & Returns
+    shipping_standard_title: 'Envío Estándar',
+    shipping_standard_subtitle: '2–5 días hábiles · Lima y provincias',
+    shipping_standard_badge: 'GRATIS',
+    shipping_express_title: 'Envío Express',
+    shipping_express_subtitle: '24–48 h · Solo Lima Metropolitana',
+    shipping_express_badge: 'S/. 15',
+    return_policy_lines: 'Producto en condiciones originales con embalaje y accesorios',
   });
 
   useEffect(() => {
@@ -188,6 +198,7 @@ export default function SettingsPage() {
     { id: 'home', label: 'Home Page', icon: LayoutTemplate },
     { id: 'announcement', label: 'Anuncios', icon: Megaphone },
     { id: 'payment', label: 'Pagos', icon: CreditCard },
+    { id: 'shipping', label: 'Envío', icon: Truck },
   ];
 
   return (
@@ -713,6 +724,85 @@ export default function SettingsPage() {
                     />
                   </div>
                 </div>
+              </div>
+            </div>
+          )}
+
+          {/* SHIPPING TAB */}
+          {activeTab === 'shipping' && (
+            <div className="p-6">
+              <div className="mb-6 pb-6 border-b border-gray-100 dark:border-gray-700">
+                <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-2">Envío y Devoluciones</h2>
+                <p className="text-gray-500 dark:text-gray-400">Configura los textos que se muestran en la ficha de cada producto.</p>
+              </div>
+
+              {/* Envío Estándar */}
+              <div className="mb-8">
+                <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Envío Estándar</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Título</label>
+                    <input type="text" value={settings.shipping_standard_title}
+                      onChange={e => handleSettingChange('shipping_standard_title', e.target.value)}
+                      placeholder="Envío Estándar"
+                      className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Descripción</label>
+                    <input type="text" value={settings.shipping_standard_subtitle}
+                      onChange={e => handleSettingChange('shipping_standard_subtitle', e.target.value)}
+                      placeholder="2–5 días hábiles · Lima y provincias"
+                      className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Badge (precio/etiqueta)</label>
+                    <input type="text" value={settings.shipping_standard_badge}
+                      onChange={e => handleSettingChange('shipping_standard_badge', e.target.value)}
+                      placeholder="GRATIS"
+                      className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Envío Express */}
+              <div className="mb-8">
+                <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Envío Express</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Título</label>
+                    <input type="text" value={settings.shipping_express_title}
+                      onChange={e => handleSettingChange('shipping_express_title', e.target.value)}
+                      placeholder="Envío Express"
+                      className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Descripción</label>
+                    <input type="text" value={settings.shipping_express_subtitle}
+                      onChange={e => handleSettingChange('shipping_express_subtitle', e.target.value)}
+                      placeholder="24–48 h · Solo Lima Metropolitana"
+                      className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Badge (precio/etiqueta)</label>
+                    <input type="text" value={settings.shipping_express_badge}
+                      onChange={e => handleSettingChange('shipping_express_badge', e.target.value)}
+                      placeholder="S/. 15"
+                      className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Política de Devoluciones */}
+              <div>
+                <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Política de Devoluciones</h3>
+                <p className="text-xs text-gray-400 dark:text-gray-500 mb-3">Una línea por ítem. Cada línea aparece como un punto en la ficha del producto.</p>
+                <textarea
+                  value={settings.return_policy_lines}
+                  onChange={e => handleSettingChange('return_policy_lines', e.target.value)}
+                  rows={5}
+                  placeholder={'Producto en condiciones originales con embalaje y accesorios\nDevolución dentro de los 7 días de recibido'}
+                  className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 font-mono text-sm resize-y"
+                />
               </div>
             </div>
           )}

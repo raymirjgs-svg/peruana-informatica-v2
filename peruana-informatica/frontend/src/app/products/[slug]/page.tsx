@@ -296,9 +296,8 @@ export default function ProductDetailPage() {
                       <h4 className="font-bold text-gray-900 dark:text-gray-100 mb-3">Opciones de Envío</h4>
                       <div className="space-y-2">
                         {[
-                          { title: 'Envío Estándar', subtitle: '2–5 días hábiles · Lima y provincias', badge: 'GRATIS' },
+                          { title: 'Envío Estándar', subtitle: '2–5 días hábiles · Lima y provincias · Pago en Destino', badge: 'GRATIS' },
                           { title: 'Envío Express', subtitle: '24–48 h · Solo Lima Metropolitana', badge: 'S/. 15' },
-                          { title: 'Recojo en Tienda', subtitle: 'Disponible en 2 horas · Av. Tecnología 123', badge: 'GRATIS' },
                         ].map((opt) => (
                           <div key={opt.title} className="flex items-center justify-between p-3.5 rounded-lg border border-gray-200 dark:border-gray-700">
                             <div>
@@ -314,9 +313,7 @@ export default function ProductDetailPage() {
                       <h4 className="font-bold text-gray-900 dark:text-gray-100 mb-3">Política de Devoluciones</h4>
                       <ul className="space-y-2.5 text-sm text-gray-600 dark:text-gray-400">
                         {[
-                          '30 días para devoluciones, sin preguntas',
                           'Producto en condiciones originales con embalaje y accesorios',
-                          'Recogemos en tu domicilio sin costo adicional',
                         ].map((item) => (
                           <li key={item} className="flex items-start gap-2.5">
                             <svg className="w-4 h-4 text-emerald-500 mt-0.5 flex-none" fill="currentColor" viewBox="0 0 20 20">

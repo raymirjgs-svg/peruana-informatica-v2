@@ -106,24 +106,19 @@ export default function EditProductPage() {
       const json = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(json?.error || `Error ${res.status}`);
 
-      // Sync gallery images: delete removed, add new
+      // Sync gallery images: delete ALL existing, then recreate in correct order
       const newGalleryUrls = data.additional_images || [];
       const token = typeof window !== 'undefined' ? localStorage.getItem('adminToken') : null;
       const headers: Record<string, string> = { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) };
       const apiBase = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001').replace(/\/+$/, '');
 
-      // Delete existing gallery images not in new list
+      // Delete all existing gallery images to preserve new order on re-insert
       for (const existing of existingGalleryIds) {
-        if (!newGalleryUrls.includes(existing.url)) {
-          await fetch(`${apiBase}/api/admin/images/${existing.id}`, { method: 'DELETE', headers }).catch(() => {});
-        }
+        await fetch(`${apiBase}/api/admin/images/${existing.id}`, { method: 'DELETE', headers }).catch(() => {});
       }
-      // Add new gallery images not in existing list
-      const existingUrls = existingGalleryIds.map(g => g.url);
+      // Re-insert all gallery images in the correct order (sequential to preserve order via auto_increment)
       for (const url of newGalleryUrls) {
-        if (!existingUrls.includes(url)) {
-          await fetch(`${apiBase}/api/admin/images/product/${productId}`, { method: 'POST', headers, body: JSON.stringify({ imagen: url }) }).catch(() => {});
-        }
+        await fetch(`${apiBase}/api/admin/images/product/${productId}`, { method: 'POST', headers, body: JSON.stringify({ imagen: url }) }).catch(() => {});
       }
 
       toast.success('Producto actualizado exitosamente');

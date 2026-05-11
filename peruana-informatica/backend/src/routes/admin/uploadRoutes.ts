@@ -91,7 +91,8 @@ router.get('/list', (req: Request, res: Response) => {
 // DELETE /delete/:filename — elimina una imagen subida
 router.delete('/delete/:filename', (req: Request, res: Response) => {
     try {
-        const filename = path.basename(req.params.filename); // prevent path traversal
+        const rawName = req.params.filename as string;
+        const filename = path.basename(rawName); // prevent path traversal
         const filePath = path.join(__dirname, '../../../public/images/products', filename);
         if (!fs.existsSync(filePath)) {
             return res.status(404).json({ error: 'Imagen no encontrada' });

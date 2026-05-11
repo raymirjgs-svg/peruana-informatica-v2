@@ -59,6 +59,51 @@ router.post('/', upload.single('image'), (req: Request, res: Response) => {
     }
 });
 
+// GET /list — lista imágenes subidas en public/images/products/
+router.get('/list', (req: Request, res: Response) => {
+    try {
+        const uploadDir = path.join(__dirname, '../../../public/images/products');
+        if (!fs.existsSync(uploadDir)) {
+            return res.json({ images: [] });
+        }
+        const files = fs.readdirSync(uploadDir)
+            .filter(f => /\.(jpg|jpeg|png|webp|gif)$/i.test(f))
+            .map(f => {
+                const stat = fs.statSync(path.join(uploadDir, f));
+                return { filename: f, size: stat.size, created: stat.birthtime };
+            })
+            .sort((a, b) => b.created.getTime() - a.created.getTime());
+
+        const baseUrl = process.env.FRONTEND_URL || process.env.API_URL || 'http://localhost';
+        const images = files.map(f => ({
+            filename: f.filename,
+            url: `${baseUrl}/images/products/${f.filename}`,
+            size: f.size,
+            created: f.created,
+        }));
+        res.json({ images });
+    } catch (error: any) {
+        console.error('Error listing images:', error);
+        res.status(500).json({ error: error.message || 'Error al listar imágenes' });
+    }
+});
+
+// DELETE /delete/:filename — elimina una imagen subida
+router.delete('/delete/:filename', (req: Request, res: Response) => {
+    try {
+        const filename = path.basename(req.params.filename); // prevent path traversal
+        const filePath = path.join(__dirname, '../../../public/images/products', filename);
+        if (!fs.existsSync(filePath)) {
+            return res.status(404).json({ error: 'Imagen no encontrada' });
+        }
+        fs.unlinkSync(filePath);
+        res.json({ success: true });
+    } catch (error: any) {
+        console.error('Error deleting image:', error);
+        res.status(500).json({ error: error.message || 'Error al eliminar imagen' });
+    }
+});
+
 // GET /extract-video?url=... — extrae URL de video de una página de producto
 router.get('/extract-video', async (req: Request, res: Response) => {
     const rawUrl = req.query.url as string;
@@ -104,15 +149,20 @@ router.get('/extract-video', async (req: Request, res: Response) => {
         const decoded = html.replace(/\\u([\dA-Fa-f]{4})/g, (_, h) => String.fromCharCode(parseInt(h, 16)));
 
         const videoPatterns = [
-            // Alibaba / AliExpress CDN video files
+            // Alibaba Video CDN (main pattern: gv.videocdn.alibaba.com)
+            /https?:\/\/(?:gv\.|[a-z0-9-]*)videocdn\.alibaba\.com\/[^\s"'<>\\]+?\.mp4(?:\?[^\s"'<>\\]*)?/gi,
+            // Alibaba / AliExpress static CDN
             /https?:\/\/(?:sc\d*|v|video|img)\.alicdn\.com\/[^\s"'<>\\]+?\.mp4(?:[^\s"'<>\\]*)?/gi,
             /https?:\/\/[^\s"'<>\\]+?\.alicdn\.com\/[^\s"'<>\\]+?\.mp4(?:[^\s"'<>\\]*)?/gi,
             // JSON-style video fields (with or without quotes)
             /"(?:videoUrl|video_url|videoSrc|video_src|mediaUrl|media_url|url|src)"\s*:\s*"(https?:\/\/[^"]+?\.mp4[^"]*)"/gi,
+            // HTML src attribute with mp4
+            /src="(https?:\/\/[^"]+?\.mp4[^"]*)"/gi,
+            /src='(https?:\/\/[^']+?\.mp4[^']*)'/gi,
             // Generic quoted mp4 URLs in any source
             /"(https?:\/\/[^"]{10,}\.mp4[^"]*)"/gi,
             /'(https?:\/\/[^']{10,}\.mp4[^']*)'/gi,
-            // AliExpress / 1688 specific
+            // AliExpress / 1688 / Aliyun OSS
             /https?:\/\/(?:ae\d*|gw)\.alicdn\.com\/[^\s"'<>]+?\.mp4/gi,
             /https?:\/\/(?:[a-z0-9-]+)\.oss-[a-z0-9-]+\.aliyuncs\.com\/[^\s"'<>]+?\.mp4/gi,
         ];

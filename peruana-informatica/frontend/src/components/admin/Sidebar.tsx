@@ -84,6 +84,7 @@ const menuItems: MenuItem[] = [
     name: "Contenido",
     icon: <ImageIcon className="h-5 w-5" />,
     children: [
+      { name: "Biblioteca de Imágenes", href: "/admin/media", icon: <ImageIcon className="h-4 w-4" /> },
       { name: "Blog", href: "/admin/blog", icon: <FileText className="h-4 w-4" /> },
       { name: "Carrusel", href: "/admin/carousel", icon: <ImageIcon className="h-4 w-4" /> },
       { name: "Marcas / Logos", href: "/admin/brands", icon: <Tag className="h-4 w-4" /> },

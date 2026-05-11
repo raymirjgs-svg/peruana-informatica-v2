@@ -20,6 +20,9 @@ const MIGRATIONS: ColumnMigration[] = [
   { table: 'carousel', column: 'title_size',       definition: "ENUM('sm','md','lg','xl') NOT NULL DEFAULT 'lg'" },
   // Product video (added 2026-03-23)
   { table: 'products',  column: 'video_url',        definition: 'VARCHAR(500) NULL DEFAULT NULL' },
+  // Category SEO fields (added 2026-05-11)
+  { table: 'categories', column: 'seo_title',       definition: 'VARCHAR(160) NULL DEFAULT NULL' },
+  { table: 'categories', column: 'seo_description', definition: 'VARCHAR(300) NULL DEFAULT NULL' },
 ];
 
 export async function runMigrations(sequelize: Sequelize, dbName: string): Promise<void> {

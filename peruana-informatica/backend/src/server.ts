@@ -128,11 +128,11 @@ app.use(cors({
 // Middleware de seguridad
 app.use(securityHeaders);
 app.use(apiRateLimit);
-app.use(sanitizeInput);
 
-// Middleware básico
+// Middleware básico — must be before sanitizeInput so req.body is populated
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+app.use(sanitizeInput);
 
 // Request logging
 app.use(requestLogger);

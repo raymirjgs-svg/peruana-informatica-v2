@@ -22,12 +22,22 @@ export interface WishlistAnalytics {
 }
 
 class WishlistService {
+    private getHeaders() {
+        const token = typeof window !== 'undefined' ? localStorage.getItem('adminToken') : null;
+        return {
+            'Content-Type': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        };
+    }
+
     /**
      * Get wishlist analytics (Admin)
      */
     async getAnalytics(): Promise<{ success: boolean; data: WishlistAnalytics }> {
         try {
-            const response = await fetch(`${API_BASE}/api/admin/wishlists/analytics`);
+            const response = await fetch(`${API_BASE}/api/admin/wishlists/analytics`, {
+                headers: this.getHeaders()
+            });
 
             if (!response.ok) {
                 throw new Error('Failed to fetch wishlist analytics');
@@ -46,7 +56,8 @@ class WishlistService {
     async getAllWishlists(page: number = 1, limit: number = 20) {
         try {
             const response = await fetch(
-                `${API_BASE}/api/admin/wishlists?page=${page}&limit=${limit}`
+                `${API_BASE}/api/admin/wishlists?page=${page}&limit=${limit}`,
+                { headers: this.getHeaders() }
             );
 
             if (!response.ok) {
@@ -66,7 +77,8 @@ class WishlistService {
     async getWishlistsByProduct(productId: number) {
         try {
             const response = await fetch(
-                `${API_BASE}/api/admin/wishlists/product/${productId}`
+                `${API_BASE}/api/admin/wishlists/product/${productId}`,
+                { headers: this.getHeaders() }
             );
 
             if (!response.ok) {

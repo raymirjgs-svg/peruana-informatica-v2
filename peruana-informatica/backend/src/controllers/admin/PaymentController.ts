@@ -129,16 +129,23 @@ export const generateInvoice = async (req: Request, res: Response) => {
         doc.text('─'.repeat(80));
         doc.moveDown();
 
-        // Totals
-        const subtotal = parseFloat(order.total_amount.toString());
-        const igv = subtotal * 0.18;
-        const total = subtotal;
+        // Totals — total_amount is IGV-inclusive
+        const total = parseFloat(order.total_amount.toString());
+        const subtotal = total / 1.18;
+        const igv = total - subtotal;
 
-        doc.text(`Subtotal: S/ ${(subtotal / 1.18).toFixed(2)}`, { align: 'right' });
-        doc.text(`IGV (18%): S/ ${(igv / 1.18).toFixed(2)}`, { align: 'right' });
+        doc.text(`Subtotal: S/ ${subtotal.toFixed(2)}`, { align: 'right' });
+        doc.text(`IGV (18%): S/ ${igv.toFixed(2)}`, { align: 'right' });
         doc.fontSize(12).text(`TOTAL: S/ ${total.toFixed(2)}`, { align: 'right', underline: true });
 
         doc.end();
+
+        stream.on('error', (err) => {
+            console.error('Error writing invoice PDF:', err);
+            if (!res.headersSent) {
+                res.status(500).json({ error: 'Error al escribir el comprobante' });
+            }
+        });
 
         // Wait for PDF to be written
         stream.on('finish', async () => {
@@ -179,7 +186,12 @@ export const downloadInvoice = async (req: Request, res: Response) => {
             return res.status(400).json({ error: 'Nombre de archivo requerido' });
         }
 
-        const filepath = path.join(__dirname, '../../../uploads/invoices', filename);
+        const invoiceDir = path.join(__dirname, '../../../uploads/invoices');
+        const safeFilename = path.basename(filename);
+        const filepath = path.join(invoiceDir, safeFilename);
+        if (!filepath.startsWith(invoiceDir + path.sep) && filepath !== invoiceDir) {
+            return res.status(400).json({ error: 'Nombre de archivo inválido' });
+        }
 
         if (!fs.existsSync(filepath)) {
             return res.status(404).json({ error: 'Comprobante no encontrado' });

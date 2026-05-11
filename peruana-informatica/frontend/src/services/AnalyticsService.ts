@@ -39,7 +39,7 @@ class AnalyticsService {
         try {
             const response = await fetch(`${API_BASE}/api/admin/analytics/kpis`, {
                 headers: {
-                    'Authorization': `Bearer ${token}`
+                    ...(token ? { 'Authorization': `Bearer ${token}` } : {})
                 }
             });
 
@@ -58,7 +58,7 @@ class AnalyticsService {
         try {
             const response = await fetch(`${API_BASE}/api/admin/analytics/sales-overview?period=${period}`, {
                 headers: {
-                    'Authorization': `Bearer ${token}`
+                    ...(token ? { 'Authorization': `Bearer ${token}` } : {})
                 }
             });
 
@@ -77,7 +77,7 @@ class AnalyticsService {
         try {
             const response = await fetch(`${API_BASE}/api/admin/analytics/top-products?limit=${limit}`, {
                 headers: {
-                    'Authorization': `Bearer ${token}`
+                    ...(token ? { 'Authorization': `Bearer ${token}` } : {})
                 }
             });
 
@@ -96,7 +96,7 @@ class AnalyticsService {
         try {
             const response = await fetch(`${API_BASE}/api/admin/analytics/payment-methods`, {
                 headers: {
-                    'Authorization': `Bearer ${token}`
+                    ...(token ? { 'Authorization': `Bearer ${token}` } : {})
                 }
             });
 
@@ -115,7 +115,7 @@ class AnalyticsService {
         try {
             const response = await fetch(`${API_BASE}/api/admin/analytics/recent-orders?limit=${limit}`, {
                 headers: {
-                    'Authorization': `Bearer ${token}`
+                    ...(token ? { 'Authorization': `Bearer ${token}` } : {})
                 }
             });
 
@@ -134,7 +134,7 @@ class AnalyticsService {
         try {
             const response = await fetch(`${API_BASE}/api/admin/analytics/conversion`, {
                 headers: {
-                    'Authorization': `Bearer ${token}`
+                    ...(token ? { 'Authorization': `Bearer ${token}` } : {})
                 }
             });
 

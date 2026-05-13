@@ -9,9 +9,14 @@ interface PaginationProps {
   currentPage: number;
   totalPages: number;
   basePath?: string;
+  searchParams?: Record<string, string>;
 }
 
-export function Pagination({ currentPage, totalPages, basePath = '/products' }: PaginationProps) {
+export function Pagination({ currentPage, totalPages, basePath = '/products', searchParams = {} }: PaginationProps) {
+  const buildUrl = (page: number) => {
+    const params = new URLSearchParams({ ...searchParams, page: page.toString() });
+    return `${basePath}?${params.toString()}`;
+  };
   if (totalPages <= 1) return null;
 
   const pages: (number | string)[] = [];
@@ -38,7 +43,7 @@ export function Pagination({ currentPage, totalPages, basePath = '/products' }: 
       {/* Botón Anterior */}
       {currentPage > 1 ? (
         <Link
-          href={`${basePath}?page=${currentPage - 1}`}
+          href={buildUrl(currentPage - 1)}
           className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 transition font-semibold"
         >
           ← Anterior
@@ -69,7 +74,7 @@ export function Pagination({ currentPage, totalPages, basePath = '/products' }: 
           return (
             <Link
               key={pageNum}
-              href={`${basePath}?page=${pageNum}`}
+              href={buildUrl(pageNum)}
               className={`px-4 py-2 rounded-lg font-semibold transition ${
                 isActive
                   ? 'bg-blue-600 text-white'
@@ -85,7 +90,7 @@ export function Pagination({ currentPage, totalPages, basePath = '/products' }: 
       {/* Botón Siguiente */}
       {currentPage < totalPages ? (
         <Link
-          href={`${basePath}?page=${currentPage + 1}`}
+          href={buildUrl(currentPage + 1)}
           className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 transition font-semibold"
         >
           Siguiente →

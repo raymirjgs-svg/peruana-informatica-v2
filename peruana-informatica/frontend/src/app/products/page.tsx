@@ -222,7 +222,22 @@ function ProductsContent() {
           ) : products.length > 0 ? (
             <>
               <ProductGrid products={products} />
-              <Pagination currentPage={currentPage} totalPages={totalPages} basePath="/products" />
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                basePath="/products"
+                searchParams={{
+                  ...(categoryFilter && { category: categoryFilter }),
+                  ...(brandFilter && { brand: brandFilter }),
+                  ...(searchQuery && { search: searchQuery }),
+                  ...(sortBy && { sort: sortBy }),
+                  ...(minPrice && { minPrice }),
+                  ...(maxPrice && { maxPrice }),
+                  ...(isNew && { new: 'true' }),
+                  ...(isFeatured && { featured: 'true' }),
+                  ...(isClearance && { clearance: 'true' }),
+                }}
+              />
             </>
           ) : (
             <div className="text-center py-12 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">

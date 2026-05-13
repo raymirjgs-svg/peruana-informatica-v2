@@ -8,6 +8,13 @@ const nextConfig: NextConfig = {
   // Fix NextAuth compatibility with Next.js 15
   serverExternalPackages: ["@auth/core"],
 
+  // Aumentar límite de Server Actions para subida de imágenes
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '10mb',
+    },
+  },
+
   /* 
    * Configuración de imágenes optimizada
    * Habilitar optimización solo en producción

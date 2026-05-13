@@ -31,6 +31,15 @@ export function ProductFilters() {
   const [minPrice, setMinPrice] = useState(searchParams.get('minPrice') || '');
   const [maxPrice, setMaxPrice] = useState(searchParams.get('maxPrice') || '');
 
+  // Sync filter state when URL params change (e.g. browser back/forward)
+  useEffect(() => {
+    setSelectedCategory(searchParams.get('category') || '');
+    setSelectedBrand(searchParams.get('brand') || '');
+    setSortBy(searchParams.get('sort') || '');
+    setMinPrice(searchParams.get('minPrice') || '');
+    setMaxPrice(searchParams.get('maxPrice') || '');
+  }, [searchParams]);
+
   // Cargar categorías y marcas
   useEffect(() => {
     const loadData = async () => {
@@ -63,11 +72,14 @@ export function ProductFilters() {
     if (minPrice) params.set('minPrice', minPrice);
     if (maxPrice) params.set('maxPrice', maxPrice);
 
-    // Mantener la búsqueda si existe
+    // Preservar params de contexto (búsqueda, flags especiales)
     const search = searchParams.get('search');
     if (search) params.set('search', search);
+    if (searchParams.get('new') === 'true') params.set('new', 'true');
+    if (searchParams.get('featured') === 'true') params.set('featured', 'true');
+    if (searchParams.get('clearance') === 'true') params.set('clearance', 'true');
 
-    params.set('page', '1'); // Resetear a página 1
+    params.set('page', '1');
 
     router.push(`/products?${params.toString()}`);
     setShowFilters(false);

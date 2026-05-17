@@ -30,6 +30,7 @@ import pdfQuotationRoutes from "./routes/pdfQuotationRoutes";  // Ruta para PDF 
 import orderRoutes from "./routes/orderRoutes"; // Nuevas rutas de pedidos
 import adminOrderRoutes from "./routes/admin/orderRoutes"; // Nuevas rutas de pedidos ADMIN
 import adminSettingRoutes from "./routes/admin/settingRoutes"; // Rutas de configuración
+import adminPaymentSettingsRoutes from "./routes/admin/paymentSettingsRoutes"; // Rutas de configuración de pasarelas de pago
 import adminSystemRoutes from "./routes/admin/systemRoutes"; // Rutas de sistema
 import cotizadorRoutes from "./routes/cotizadorRoutes"; // Rutas de Cotizador
 import paymentRoutes from "./routes/paymentRoutes"; // Rutas de pagos
@@ -207,6 +208,7 @@ app.use("/api/admin/upload", uploadRoutes);
 app.use("/api/admin/orders", adminOrderRoutes);
 app.use("/api/admin/payments", adminPaymentRoutes); // Rutas admin de pagos
 app.use("/api/admin/settings", adminSettingRoutes);
+app.use("/api/admin/payment-settings", adminPaymentSettingsRoutes);
 app.use("/api/admin/company-settings", adminCompanySettingsRoutes); // Rutas admin de configuración de empresa
 app.use("/api/admin/reviews", adminReviewRoutes); // Rutas admin de reseñas
 app.use("/api/admin/coupons", adminCouponRoutes); // Rutas admin de cupones

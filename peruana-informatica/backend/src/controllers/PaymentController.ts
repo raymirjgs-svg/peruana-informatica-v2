@@ -7,6 +7,15 @@ import { CartItem } from '../models/CartItem';
 import { Product } from '../models/Product';
 import { sequelize } from '../database/connection';
 import { User } from '../models/User';
+import { Setting } from '../models/Setting';
+
+async function getPaymentSetting(key: string, envFallback?: string): Promise<string> {
+    try {
+        const row = await Setting.findByPk(key);
+        if (row?.value) return row.value;
+    } catch {}
+    return envFallback ?? '';
+}
 
 // Initialize MP
 const client = new MercadoPagoConfig({
@@ -252,10 +261,10 @@ export const paymentController = {
                 return res.status(400).json({ success: false, error: 'Faltan parámetros requeridos' });
             }
 
-            const secretKey = process.env.CULQI_SECRET_KEY;
+            const secretKey = await getPaymentSetting('culqi_secret_key', process.env.CULQI_SECRET_KEY);
             if (!secretKey) {
-                console.error('CULQI_SECRET_KEY no configurada');
-                return res.status(500).json({ success: false, error: 'Pasarela de pago no configurada' });
+                console.error('culqi_secret_key no configurada (ni en BD ni en env)');
+                return res.status(500).json({ success: false, error: 'Pasarela de pago no configurada. Configúrela en Admin → Pasarelas de Pago.' });
             }
 
             const order = await Order.findByPk(orderId);

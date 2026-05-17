@@ -33,6 +33,7 @@ import {
   Tag,
   LayoutGrid,
   Wand2,
+  CreditCard,
 } from 'lucide-react';
 
 interface MenuItem {
@@ -98,6 +99,7 @@ const menuItems: MenuItem[] = [
     icon: <Settings className="h-5 w-5" />,
     children: [
       { name: "Empresa y Logos", href: "/admin/company-settings", icon: <Settings className="h-4 w-4" /> },
+      { name: "Pasarelas de Pago", href: "/admin/payment-settings", icon: <CreditCard className="h-4 w-4" /> },
       { name: "Clientes", href: "/admin/customers", icon: <Users className="h-4 w-4" /> },
       { name: "Usuarios", href: "/admin/users", icon: <Users className="h-4 w-4" /> },
       { name: "Configuración", href: "/admin/settings", icon: <Settings className="h-4 w-4" /> },

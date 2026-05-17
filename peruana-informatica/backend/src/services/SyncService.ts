@@ -1,6 +1,7 @@
 import fs from 'fs';
 import { Op } from 'sequelize';
 import { Product } from '../models/Product';
+import { Brand } from '../models/Brand';
 import { PeruanaInformaticaService } from './PeruanaInformaticaService';
 
 export class SyncService {
@@ -11,6 +12,21 @@ export class SyncService {
     // Per-product cache: codigo_interno → timestamp of last sync
     private static productCache: Map<string, number> = new Map();
     private static PRODUCT_CACHE_MS = 60 * 1000; // 60 seconds per product
+
+    // Brand cache: name (uppercase) → brand_id, to avoid repeated DB lookups per sync run
+    private static brandCache: Map<string, number> = new Map();
+
+    private static async resolveBrandId(marcaName: string | null | undefined): Promise<number | null> {
+        if (!marcaName) return null;
+        const key = marcaName.toUpperCase().trim();
+        if (this.brandCache.has(key)) return this.brandCache.get(key)!;
+        const [brand] = await Brand.findOrCreate({
+            where: { name: key },
+            defaults: { name: key, slug: Brand.generateSlug(key) }
+        });
+        this.brandCache.set(key, brand.id);
+        return brand.id;
+    }
 
     static getSyncStatus() {
         return {
@@ -48,6 +64,8 @@ export class SyncService {
                 stock: syncData.stock,
             };
             if (syncData.nombre) updateData.name = syncData.nombre;
+            const brandId = await this.resolveBrandId(syncData.marca);
+            if (brandId) updateData.brand_id = brandId;
 
             await Product.update(updateData, { where: { codigo_interno: codigoInterno } as any });
 
@@ -69,6 +87,7 @@ export class SyncService {
         }
 
         this.isSyncing = true;
+        this.brandCache.clear(); // reset per-run cache
         let updatedCount = 0;
         let errorCount = 0;
 
@@ -116,13 +135,16 @@ export class SyncService {
                         }
 
                         const newName = syncData.nombre || null;
+                        const newBrandId = await this.resolveBrandId(syncData.marca);
+
                         if (
                             Number(product.price) !== newPrice ||
                             Number(product.price_web) !== newPriceWeb ||
                             Number(product.price_cot) !== newPriceCot ||
                             Number(product.price_dis) !== newPriceDis ||
                             product.stock !== newStock ||
-                            (newName && product.name !== newName)
+                            (newName && product.name !== newName) ||
+                            (newBrandId && (product as any).brand_id !== newBrandId)
                         ) {
                             const updateFields: any = {
                                 price: newPrice,
@@ -132,9 +154,9 @@ export class SyncService {
                                 stock: newStock,
                             };
                             if (newName) updateFields.name = newName;
+                            if (newBrandId) updateFields.brand_id = newBrandId;
                             await product.update(updateFields);
                             updatedCount++;
-                            // console.log(`SyncService: Updated ${product.codigo_interno}: Stock=${newStock}, Web=${newPriceWeb}`);
                         }
                     } else {
                         // Product not found in API or error

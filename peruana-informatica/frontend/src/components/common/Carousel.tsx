@@ -16,8 +16,7 @@ const defaultSlides: CarouselSlide[] = [
     description: 'Laptops, procesadores, monitores y más. Todo con garantía oficial y envío rápido a todo el Perú.',
     buttonText: 'Explorar Catálogo',
     buttonUrl: '/products',
-    imageUrl: '/images/banners/banner1.jpg',
-    backgroundColor: 'from-[#0a0a0a] to-[#1a1a2e]',
+    backgroundColor: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%)',
     order: 0,
   },
   {
@@ -26,7 +25,7 @@ const defaultSlides: CarouselSlide[] = [
     description: 'Descuentos exclusivos en equipos seleccionados. Precios directos del distribuidor oficial.',
     buttonText: 'Ver Ofertas',
     buttonUrl: '/products?clearance=true',
-    backgroundColor: 'from-[#1a0000] to-[#3d0000]',
+    backgroundColor: 'linear-gradient(135deg, #1a0000 0%, #3d0000 100%)',
     order: 1,
   },
   {
@@ -35,7 +34,7 @@ const defaultSlides: CarouselSlide[] = [
     description: 'Llegamos en 2-3 días hábiles con seguimiento en tiempo real. Consulta cobertura y tarifas.',
     buttonText: 'Comprar Ahora',
     buttonUrl: '/products',
-    backgroundColor: 'from-[#0d1b2a] to-[#1b263b]',
+    backgroundColor: 'linear-gradient(135deg, #0d1b2a 0%, #1b263b 100%)',
     order: 2,
   },
 ];

@@ -137,7 +137,10 @@ export function Carousel() {
               <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
             </>
           ) : (
-            <div className={`absolute inset-0 bg-gradient-to-br ${s.backgroundColor || 'from-[#0a0a0a] to-[#1a1a2e]'}`} />
+            <div
+              className="absolute inset-0"
+              style={{ background: s.backgroundColor || 'linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%)' }}
+            />
           )}
 
           {/* Slide content */}

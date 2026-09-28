@@ -23,7 +23,7 @@ services:
       context: ./peruana-informatica/frontend
       dockerfile: Dockerfile.prod
       args:
-        - NEXT_PUBLIC_API_URL=http://200.58.98.122
+        - NEXT_PUBLIC_API_URL=https://peruanadeinformatica.com.pe
         - NEXT_PUBLIC_CULQI_PUBLIC_KEY=${NEXT_PUBLIC_CULQI_PUBLIC_KEY:-}
     container_name: peruana_frontend
     env_file:
@@ -31,7 +31,7 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3000
-      - NEXT_PUBLIC_API_URL=http://200.58.98.122
+      - NEXT_PUBLIC_API_URL=https://peruanadeinformatica.com.pe
     ports:
       - "127.0.0.1:3000:3000"
     depends_on:
@@ -62,6 +62,11 @@ services:
       - "127.0.0.1:3001:3001"
     volumes:
       - uploads_data_local:/app/public/uploads
+      - /var/www/images/products:/app/public/images/products
+      - /var/www/images/carousel:/app/public/images/carousel
+      - /var/www/images/blog:/app/public/images/blog
+      - /var/www/images/brands:/app/public/images/brands
+      - /var/www/images/banners:/app/public/images/banners
     depends_on:
       mysql:
         condition: service_healthy

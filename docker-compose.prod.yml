@@ -57,6 +57,7 @@ services:
       - /var/www/images/products:/app/public/images/products
       - uploads_data:/app/public/uploads
       - payment_proofs_data:/app/public/payment-proofs
+      - carousel_data:/app/public/images/carousel
     depends_on:
       mysql:
         condition: service_healthy
@@ -118,6 +119,7 @@ volumes:
   mysql_data:
   uploads_data:
   payment_proofs_data:
+  carousel_data:
   redis_data:
 
 networks:

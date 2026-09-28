@@ -27,6 +27,52 @@ const validateRequest = (req: Request, res: Response, next: NextFunction) => {
   next();
 };
 
+
+// GET resolve-slug: busca producto activo cuyo slug comience con el prefijo dado
+// (cubre URLs antiguas/truncadas indexadas por buscadores) - Debe ir antes de /:id
+router.get('/resolve-slug', searchRateLimit, cacheSuccessMiddleware('resolve-slug', 600), [
+  query('slug').isLength({ min: 3, max: 300 }).withMessage('Slug inválido'),
+], validateRequest, async (req: Request, res: Response) => {
+  try {
+    const prefix = (req.query.slug as string).trim();
+    if (!prefix) {
+      return res.status(400).json({ error: 'Slug requerido' });
+    }
+    const matches = await Product.findAll({
+      where: {
+        slug: { [Op.like]: `${prefix}%` },
+        is_active: 1
+      },
+      attributes: ['cod_producto', 'name', 'slug'],
+      limit: 2,
+    });
+    if (matches.length !== 1) {
+      return res.status(404).json({
+        error: 'Producto no encontrado',
+        code: 'PRODUCT_NOT_FOUND',
+        timestamp: new Date().toISOString()
+      });
+    }
+    const canonical = matches[0]?.slug;
+    if (!canonical) {
+      return res.status(404).json({
+        error: 'Producto no encontrado',
+        code: 'PRODUCT_NOT_FOUND',
+        timestamp: new Date().toISOString()
+      });
+    }
+    res.json({ success: true, slug: canonical });
+  } catch (error) {
+    console.error('Error resolving slug:', error);
+    res.status(500).json({
+      error: 'Error interno del servidor',
+      code: 'SLUG_RESOLVE_ERROR',
+      timestamp: new Date().toISOString(),
+      details: error instanceof Error ? error.message : String(error)
+    });
+  }
+});
+
 // GET todos los productos con filtros y paginación
 // GET /suggestions - Autocomplete endpoint (Must be defined check before generic /:id or /)
 router.get('/utils/suggestions', searchRateLimit, [

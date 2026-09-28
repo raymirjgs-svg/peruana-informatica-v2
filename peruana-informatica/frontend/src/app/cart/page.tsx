@@ -616,8 +616,8 @@ export default function CartPage() {
                       </div>
                     )}
                     {/* Simplified payment details for brevity in restoration, logic remains */}
-                    {paymentMethod === 'yape' && <div className="p-4 bg-purple-50 text-purple-800 rounded">Yape: 987 654 321 - PERUANA INFORMATICA</div>}
-                    {paymentMethod === 'plin' && <div className="p-4 bg-green-50 text-green-800 rounded">Plin: 987 654 321 - PERUANA INFORMATICA</div>}
+                    {paymentMethod === 'yape' && <div className="p-4 bg-purple-50 text-purple-800 rounded">Yape: 988 552 455 - PERUANA INFORMATICA</div>}
+                    {paymentMethod === 'plin' && <div className="p-4 bg-green-50 text-green-800 rounded">Plin: 988 552 455 - PERUANA INFORMATICA</div>}
 
                     {paymentMethod === 'tarjeta' && (
                       <div className="space-y-4">

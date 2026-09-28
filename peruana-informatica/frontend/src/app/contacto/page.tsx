@@ -85,8 +85,8 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <p className="font-semibold">Teléfono</p>
-                  <p className="text-blue-100">+51 1 234-5678</p>
-                  <p className="text-blue-100">+51 987-654-321</p>
+                  <p className="text-blue-100">(054) 226796</p>
+                  <p className="text-blue-100">988 552 455</p>
                 </div>
               </div>
 

@@ -145,7 +145,7 @@ export function LocalBusinessSchema() {
     name: 'Peruana Informática',
     description: 'Tienda de tecnología y equipos informáticos',
     url: SITE_URL,
-    telephone: '+51-1-234-5678',
+    telephone: '+51-54-226796',
     address: {
       '@type': 'PostalAddress',
       streetAddress: 'Av. Principal 123',

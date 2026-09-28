@@ -357,7 +357,7 @@ export default function HomePage() {
                     </svg>
                   ),
                   title: 'Llámanos',
-                  lines: ['+51 1 234-5678', '+51 987-654-321'],
+                  lines: ['(054) 226796', '988 552 455'],
                 },
                 {
                   color: '#8b5cf6',
@@ -377,7 +377,7 @@ export default function HomePage() {
                     </svg>
                   ),
                   title: 'WhatsApp',
-                  lines: ['+51 987-654-321', 'Respuesta inmediata'],
+                  lines: ['988 552 455', 'Respuesta inmediata'],
                 },
                 {
                   color: '#ef4444',

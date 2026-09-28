@@ -53,7 +53,25 @@ export default function ProductDetailPage() {
       if (!slug) return;
       const productService = new ProductService();
       const decodedSlug = decodeURIComponent(slug);
-      const prod = await productService.getProductBySlug(decodedSlug);
+      let prod = await productService.getProductBySlug(decodedSlug);
+
+      // Fallback: slug viejo/truncado indexado por buscadores -> redirigir al slug canónico
+      if (!prod) {
+        try {
+          const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+          const resolveRes = await fetch(`${apiUrl}/api/products/resolve-slug?slug=${encodeURIComponent(decodedSlug)}`, { cache: 'no-store' });
+          if (resolveRes.ok) {
+            const resolveData = await resolveRes.json();
+            if (resolveData?.success && resolveData.slug && resolveData.slug !== decodedSlug) {
+              window.location.replace(`/products/${resolveData.slug}`);
+              return;
+            }
+          }
+        } catch {
+          // si falla, mostrar 404 normal
+        }
+      }
+
       setProduct(prod);
 
       if (prod && prod.category) {
@@ -429,7 +447,7 @@ export default function ProductDetailPage() {
             <div className="grid grid-cols-2 gap-2">
               <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-3">
                 <p className="text-[11px] text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-0.5">Stock</p>
-                <p className="text-base font-bold text-gray-900 dark:text-gray-100">{product.stock} uds.</p>
+                <p className="text-base font-bold text-gray-900 dark:text-gray-100">{product.stock > 5 ? ">5" : product.stock} uds.</p>
               </div>
               <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-3">
                 <p className="text-[11px] text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-0.5">Categoría</p>
@@ -456,7 +474,7 @@ export default function ProductDetailPage() {
                 >
                   +
                 </button>
-                <span className="text-xs text-gray-400 ml-1">({product.stock} disp.)</span>
+                <span className="text-xs text-gray-400 ml-1">({product.stock > 5 ? ">5" : product.stock} disp.)</span>
               </div>
             </div>
 

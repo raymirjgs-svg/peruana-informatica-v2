@@ -90,10 +90,17 @@ export default function HomePage() {
 
   const { settings } = useSettings();
 
-  // Solo direcciones reales: si no hay ninguna, el bloque "Visítanos" no se renderiza
-  // en vez de mostrar una dirección inventada.
+  // Direcciones reales: company_address es la fuente canónica (ej: "Tienda A\nTienda B").
+  // Se separan por línea y se deduplican; store_address solo como fallback.
+  // Si no hay ninguna, el bloque "Visítanos" no se renderiza en vez de mostrar una
+  // dirección inventada.
   const storeAddresses = Array.from(
-    new Set([settings?.store_address, settings?.company_address].filter((a): a is string => !!a?.trim()))
+    new Set(
+      (settings?.company_address || settings?.store_address || '')
+        .split('\n')
+        .map((line) => line.trim())
+        .filter(Boolean)
+    )
   );
 
   useEffect(() => {

@@ -10,6 +10,7 @@ import { Product } from '@/models/Product';
 import { ProductCardSkeleton } from '@/components/product/ProductCardSkeleton';
 
 import { API_CONFIG } from '@/config/api';
+import { useSettings } from '@/context/SettingsContext';
 
 const BACKEND_URL = API_CONFIG.API_BASE_URL;
 
@@ -86,6 +87,14 @@ export default function HomePage() {
   const [clearanceProducts, setClearanceProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [quickCategories, setQuickCategories] = useState(FALLBACK_QUICK_CATEGORIES);
+
+  const { settings } = useSettings();
+
+  // Solo direcciones reales: si no hay ninguna, el bloque "Visítanos" no se renderiza
+  // en vez de mostrar una dirección inventada.
+  const storeAddresses = Array.from(
+    new Set([settings?.store_address, settings?.company_address].filter((a): a is string => !!a?.trim()))
+  );
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -388,9 +397,9 @@ export default function HomePage() {
                     </svg>
                   ),
                   title: 'Visítanos',
-                  lines: ['Av. Tecnología 123', 'Lima, Perú 15001'],
+                  lines: storeAddresses,
                 },
-              ].map((contact) => (
+              ].filter((contact) => contact.lines.length > 0).map((contact) => (
                 <div
                   key={contact.title}
                   className="flex flex-col items-center text-center p-5 rounded-xl border transition-all duration-200 hover:border-white/20"

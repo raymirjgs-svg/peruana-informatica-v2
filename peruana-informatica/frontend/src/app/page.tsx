@@ -10,7 +10,6 @@ import { Product } from '@/models/Product';
 import { ProductCardSkeleton } from '@/components/product/ProductCardSkeleton';
 
 import { API_CONFIG } from '@/config/api';
-import { useSettings } from '@/context/SettingsContext';
 
 const BACKEND_URL = API_CONFIG.API_BASE_URL;
 
@@ -88,20 +87,30 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true);
   const [quickCategories, setQuickCategories] = useState(FALLBACK_QUICK_CATEGORIES);
 
-  const { settings } = useSettings();
+  const [storeAddresses, setStoreAddresses] = useState<string[]>([]);
 
-  // Direcciones reales: company_address es la fuente canónica (ej: "Tienda A\nTienda B").
-  // Se separan por línea y se deduplican; store_address solo como fallback.
-  // Si no hay ninguna, el bloque "Visítanos" no se renderiza en vez de mostrar una
-  // dirección inventada.
-  const storeAddresses = Array.from(
-    new Set(
-      (settings?.company_address || settings?.store_address || '')
-        .split('\n')
-        .map((line) => line.trim())
-        .filter(Boolean)
-    )
-  );
+  // Direcciones reales de tienda: se leen de /api/company-settings (endpoint público que
+  // alimenta el panel admin). NO se usa SettingsContext porque éste lee /api/settings
+  // (mapa plano) que no incluye company_address/store_address.
+  // company_address es la fuente canónica (ej: "Tienda A\nTienda B"); store_address solo fallback.
+  // Se separan por línea, se recortan y se deduplican. Si no hay ninguna, el bloque
+  // "Visítanos" no se renderiza en vez de mostrar una dirección inventada.
+  useEffect(() => {
+    let alive = true;
+    fetch(`${BACKEND_URL}/api/company-settings`)
+      .then((r) => r.json())
+      .then((s: { company_address?: string; store_address?: string }) => {
+        if (!alive) return;
+        const raw = s?.company_address || s?.store_address || '';
+        setStoreAddresses(
+          Array.from(new Set(raw.split('\n').map((line) => line.trim()).filter(Boolean)))
+        );
+      })
+      .catch(() => {/* sin direcciones: el bloque no se renderiza */ });
+    return () => {
+      alive = false;
+    };
+  }, []);
 
   useEffect(() => {
     const loadProducts = async () => {

@@ -19,13 +19,24 @@ export const paymentController = {
     async uploadProof(req: Request, res: Response) {
         try {
             const { orderId } = req.params;
-            const { payment_method, invoice_type } = req.body;
             const file = req.file;
 
             const order = await Order.findByPk(orderId);
             if (!order) {
                 return res.status(404).json({ error: 'Pedido no encontrado' });
             }
+
+            const userId = (req as any).user?.id;
+            const isOwner = order.user_id != null && userId != null && String(order.user_id) === String(userId);
+            const providedTrackingCode = req.body?.tracking_code;
+            const hasValidTrackingCode = !!order.tracking_code && !!providedTrackingCode &&
+                String(order.tracking_code) === String(providedTrackingCode);
+
+            if (!isOwner && !hasValidTrackingCode) {
+                return res.status(403).json({ error: 'No autorizado para subir el comprobante de este pedido' });
+            }
+
+            const { payment_method, invoice_type } = req.body || {};
 
             // Update payment details
             order.payment_method = payment_method;

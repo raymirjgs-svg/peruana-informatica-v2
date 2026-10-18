@@ -19,18 +19,7 @@ export const checkPermission = (requiredPermission: string) => {
                 });
             }
 
-            // Get user with role and permissions
-            const user = await User.findByPk(userId, {
-                include: [{
-                    model: Role,
-                    as: 'role',
-                    include: [{
-                        model: Permission,
-                        as: 'permissions',
-                        attributes: ['slug']
-                    }]
-                }]
-            });
+            const user = await User.findByPk(userId);
 
             if (!user) {
                 return res.status(404).json({
@@ -39,13 +28,22 @@ export const checkPermission = (requiredPermission: string) => {
                 });
             }
 
-            // Super admin bypasses all permission checks
-            if ((user as any).role?.slug === 'super-admin') {
+            const role = user.role
+                ? await Role.findOne({
+                    where: { slug: user.role },
+                    include: [{
+                        model: Permission,
+                        as: 'permissions',
+                        attributes: ['slug']
+                    }]
+                })
+                : null;
+
+            if (role?.slug === 'super-admin') {
                 return next();
             }
 
-            // Check if user has required permission
-            const permissions = (user as any).role?.permissions || [];
+            const permissions = (role as any)?.permissions || [];
             const hasPermission = permissions.some(
                 (p: any) => p.slug === requiredPermission
             );
@@ -84,17 +82,7 @@ export const checkAnyPermission = (requiredPermissions: string[]) => {
                 });
             }
 
-            const user = await User.findByPk(userId, {
-                include: [{
-                    model: Role,
-                    as: 'role',
-                    include: [{
-                        model: Permission,
-                        as: 'permissions',
-                        attributes: ['slug']
-                    }]
-                }]
-            });
+            const user = await User.findByPk(userId);
 
             if (!user) {
                 return res.status(404).json({
@@ -103,13 +91,22 @@ export const checkAnyPermission = (requiredPermissions: string[]) => {
                 });
             }
 
-            // Super admin bypasses
-            if ((user as any).role?.slug === 'super-admin') {
+            const role = user.role
+                ? await Role.findOne({
+                    where: { slug: user.role },
+                    include: [{
+                        model: Permission,
+                        as: 'permissions',
+                        attributes: ['slug']
+                    }]
+                })
+                : null;
+
+            if (role?.slug === 'super-admin') {
                 return next();
             }
 
-            // Check if user has any of the required permissions
-            const permissions = (user as any).role?.permissions || [];
+            const permissions = (role as any)?.permissions || [];
             const hasAnyPermission = requiredPermissions.some(reqPerm =>
                 permissions.some((p: any) => p.slug === reqPerm)
             );
@@ -147,15 +144,9 @@ export const checkRole = (requiredRole: string) => {
                 });
             }
 
-            const user = await User.findByPk(userId, {
-                include: [{
-                    model: Role,
-                    as: 'role',
-                    attributes: ['slug']
-                }]
-            });
+            const user = await User.findByPk(userId);
 
-            if (!user || (user as any).role?.slug !== requiredRole) {
+            if (!user || user.role !== requiredRole) {
                 return res.status(403).json({
                     success: false,
                     message: 'Acceso denegado'

@@ -185,7 +185,15 @@ router.put('/:id', [
       });
     }
 
-    await slide.update(req.body);
+    const allowedFields = ['title', 'description', 'buttonText', 'buttonUrl', 'backgroundColor', 'imageUrl', 'isActive', 'order'];
+    const updates: any = {};
+    allowedFields.forEach(field => {
+      if (req.body[field] !== undefined) {
+        updates[field] = req.body[field];
+      }
+    });
+
+    await slide.update(updates);
 
     res.json(slide);
   } catch (error) {

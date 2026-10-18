@@ -70,6 +70,15 @@ export const generateInvoice = async (req: Request, res: Response) => {
             return res.status(400).json({ error: 'El pago debe estar verificado primero' });
         }
 
+        if (!invoice_number || !/^[A-Za-z0-9-]+$/.test(String(invoice_number))) {
+            return res.status(400).json({ error: 'Número de comprobante inválido' });
+        }
+
+        const existingInvoice = await Order.findOne({ where: { invoice_number: String(invoice_number) } });
+        if (existingInvoice && existingInvoice.id !== order.id) {
+            return res.status(400).json({ error: 'El número de comprobante ya está en uso' });
+        }
+
         // Create invoices directory
         const invoiceDir = path.join(__dirname, '../../../uploads/invoices');
         if (!fs.existsSync(invoiceDir)) {
@@ -179,7 +188,16 @@ export const downloadInvoice = async (req: Request, res: Response) => {
             return res.status(400).json({ error: 'Nombre de archivo requerido' });
         }
 
-        const filepath = path.join(__dirname, '../../../uploads/invoices', filename);
+        if (!/^[A-Za-z0-9._-]+\.pdf$/.test(filename)) {
+            return res.status(400).json({ error: 'Nombre de archivo inválido' });
+        }
+
+        const invoiceDir = path.resolve(__dirname, '../../../uploads/invoices');
+        const filepath = path.resolve(invoiceDir, filename);
+
+        if (!filepath.startsWith(invoiceDir + path.sep)) {
+            return res.status(400).json({ error: 'Ruta de archivo inválida' });
+        }
 
         if (!fs.existsSync(filepath)) {
             return res.status(404).json({ error: 'Comprobante no encontrado' });

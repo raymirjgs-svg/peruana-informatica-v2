@@ -111,7 +111,6 @@ export class PromoBannerController {
     async updateBanner(req: Request, res: Response) {
         try {
             const { id } = req.params;
-            const updateData = req.body;
 
             const banner = await PromoBanner.findByPk(id);
 
@@ -121,6 +120,23 @@ export class PromoBannerController {
                     message: 'Banner no encontrado'
                 });
             }
+
+            const allowedFields = [
+                'title',
+                'description',
+                'image_url',
+                'coupon_code',
+                'show_as_popup',
+                'popup_delay',
+                'is_active',
+                'priority'
+            ];
+            const updateData: any = {};
+            allowedFields.forEach(field => {
+                if (req.body[field] !== undefined) {
+                    updateData[field] = req.body[field];
+                }
+            });
 
             if (updateData.coupon_code) {
                 updateData.coupon_code = updateData.coupon_code.toUpperCase();

@@ -1,6 +1,7 @@
 import { Category } from './Category';
 import { SubCategory } from './SubCategory';
 import { Product } from './Product';
+import { setupRoleAssociations } from './RolePermission';
 
 export function initAssociations() {
     // Definir SOLO las relaciones que faltan y son necesarias para la taxonomía
@@ -76,6 +77,9 @@ export function initAssociations() {
     CompatibilityRule.belongsTo(AttributeValue, { foreignKey: 'source_value_id', as: 'sourceValue' });
     CompatibilityRule.belongsTo(Attribute, { foreignKey: 'target_attribute_id', as: 'targetAttribute' });
     CompatibilityRule.belongsTo(AttributeValue, { foreignKey: 'target_value_id', as: 'targetValue' });
+
+    // Roles & Permissions (User.belongsTo(Role), Role.belongsToMany(Permission))
+    setupRoleAssociations();
 
     console.log('✅ Asociaciones de taxonomía inicializadas');
 }

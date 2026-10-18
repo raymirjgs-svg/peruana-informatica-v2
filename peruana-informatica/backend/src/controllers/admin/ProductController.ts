@@ -385,13 +385,48 @@ export class ProductController {
     async updateProduct(req: Request, res: Response) {
         try {
             const productId = parseInt(req.params.id as string);
-            const { subcategory_ids, ...updates } = req.body;
+            const { subcategory_ids } = req.body;
 
             const product = await Product.findByPk(productId);
 
             if (!product) {
                 return res.status(404).json({ error: 'Producto no encontrado' });
             }
+
+            const allowedFields = [
+                'name',
+                'description',
+                'short_description',
+                'price',
+                'price_dis',
+                'price_cot',
+                'price_web',
+                'stock',
+                'image',
+                'keywords',
+                'brand_id',
+                'category_id',
+                'is_active',
+                'estado',
+                'seo_title',
+                'seo_description',
+                'component_type',
+                'socket_type',
+                'ram_type',
+                'form_factor',
+                'tdp_watts',
+                'has_integrated_graphics',
+                'component_specs',
+                'is_featured',
+                'is_new',
+                'is_clearance'
+            ];
+            const updates: any = {};
+            allowedFields.forEach(field => {
+                if (req.body[field] !== undefined) {
+                    updates[field] = req.body[field];
+                }
+            });
 
             await product.update(updates);
 

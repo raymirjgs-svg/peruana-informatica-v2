@@ -112,6 +112,10 @@ export class RoleController {
                 return res.status(404).json({ error: 'Rol no encontrado' });
             }
 
+            if (role.slug === 'super-admin' || role.is_default) {
+                return res.status(403).json({ error: 'No se puede modificar un rol protegido del sistema' });
+            }
+
             await role.update({ name, slug, description });
 
             // Update permissions manually if provided
@@ -157,6 +161,10 @@ export class RoleController {
             const role = await Role.findByPk(id);
             if (!role) {
                 return res.status(404).json({ error: 'Rol no encontrado' });
+            }
+
+            if (role.slug === 'super-admin' || role.is_default) {
+                return res.status(403).json({ error: 'No se puede eliminar un rol protegido del sistema' });
             }
 
             // Check if role is in use
@@ -219,14 +227,60 @@ export class RoleController {
             const { userId, roleId } = req.body;
             const adminId = (req as any).user?.id;
 
+            if (!adminId) {
+                return res.status(401).json({ error: 'Usuario no autenticado' });
+            }
+
+            if (String(userId) === String(adminId)) {
+                return res.status(403).json({ error: 'No puedes asignarte un rol a ti mismo' });
+            }
+
             const user = await User.findByPk(userId);
             if (!user) {
                 return res.status(404).json({ error: 'Usuario no encontrado' });
             }
 
-            const role = await Role.findByPk(roleId);
+            const role = await Role.findByPk(roleId, {
+                include: [{
+                    model: Permission,
+                    as: 'permissions',
+                    attributes: ['slug']
+                }]
+            });
             if (!role) {
                 return res.status(404).json({ error: 'Rol no encontrado' });
+            }
+
+            const caller = await User.findByPk(adminId);
+
+            const callerRole = caller?.role
+                ? await Role.findOne({
+                    where: { slug: caller.role },
+                    include: [{
+                        model: Permission,
+                        as: 'permissions',
+                        attributes: ['slug']
+                    }]
+                })
+                : null;
+
+            if (callerRole?.slug !== 'super-admin') {
+                const callerPermissions = ((callerRole as any)?.permissions || []).map((p: any) => p.slug);
+
+                if (!callerPermissions.includes('manage-users')) {
+                    return res.status(403).json({ error: 'No tienes permiso para asignar roles' });
+                }
+
+                if (role.slug === 'super-admin' || (role as any).is_default) {
+                    return res.status(403).json({ error: 'No puedes asignar un rol protegido del sistema' });
+                }
+
+                const targetPermissions = ((role as any).permissions || []).map((p: any) => p.slug);
+                const isEscalation = targetPermissions.some((p: string) => !callerPermissions.includes(p));
+
+                if (isEscalation) {
+                    return res.status(403).json({ error: 'No puedes asignar un rol con más privilegios que el tuyo' });
+                }
             }
 
             await user.update({ role_id: roleId });

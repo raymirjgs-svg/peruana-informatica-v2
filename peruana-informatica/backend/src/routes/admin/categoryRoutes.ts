@@ -164,7 +164,13 @@ router.put('/:id', [
       });
     }
 
-    const updateData: any = { ...req.body };
+    const allowedFields = ['name', 'appears_in_menu', 'seo_title', 'seo_description'];
+    const updateData: any = {};
+    allowedFields.forEach(field => {
+      if (req.body[field] !== undefined) {
+        updateData[field] = req.body[field];
+      }
+    });
     
     // Si se actualiza el nombre, generar nuevo slug
     if (req.body.name && req.body.name !== category.name) {

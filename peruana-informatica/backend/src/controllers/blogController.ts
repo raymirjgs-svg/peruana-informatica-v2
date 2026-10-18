@@ -368,7 +368,37 @@ export class BlogController {
         });
       }
 
-      await post.update(req.body);
+      const allowedFields = [
+        "title",
+        "slug",
+        "excerpt",
+        "content",
+        "featured_image",
+        "meta_title",
+        "meta_description",
+        "meta_keywords",
+        "author_name",
+        "author_email",
+        "status",
+        "scheduled_at",
+        "is_featured",
+        "tags",
+        "categories",
+        "ai_generated",
+        "ai_prompt",
+        "ai_model",
+      ];
+      const updates: any = {};
+      allowedFields.forEach(field => {
+        if (req.body[field] !== undefined) {
+          updates[field] = req.body[field];
+        }
+      });
+      if (updates.scheduled_at) {
+        updates.scheduled_at = new Date(updates.scheduled_at);
+      }
+
+      await post.update(updates);
 
       console.log("✅ Blog post updated successfully");
 

@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import { paymentController } from '../controllers/PaymentController';
 import { authenticateToken } from '../middleware/authMiddleware';
 import multer from 'multer';
@@ -6,6 +6,13 @@ import path from 'path';
 import fs from 'fs';
 
 const router = express.Router();
+
+const optionalAuthenticateToken = (req: Request, res: Response, next: NextFunction) => {
+    if (req.headers.authorization) {
+        return authenticateToken(req, res, next);
+    }
+    next();
+};
 
 // Configurar almacenamiento
 const storage = multer.diskStorage({
@@ -48,6 +55,6 @@ router.post('/webhook', paymentController.receiveWebhook);
 
 // Upload Payment Proof (Public/Generic)
 // Move dynamic route to the end to avoid conflict with static routes like 'create-preference'
-router.post('/:orderId/upload-proof', upload.single('payment_proof'), paymentController.uploadProof);
+router.post('/:orderId/upload-proof', optionalAuthenticateToken, upload.single('payment_proof'), paymentController.uploadProof);
 
 export default router;

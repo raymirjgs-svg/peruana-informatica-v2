@@ -4,11 +4,12 @@ import { User } from '../../models/User';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { requireJwtSecret } from '../../config/env';
+import { authLimiter } from '../../middleware/rateLimiter';
 
 const router = express.Router();
 
 // POST /api/admin/login - Login del administrador
-router.post('/login', [
+router.post('/login', authLimiter, [
   body('email').isEmail().withMessage('Email válido es requerido'),
   body('password').notEmpty().withMessage('Contraseña es requerida'),
 ], async (req: Request, res: Response) => {
@@ -45,9 +46,9 @@ router.post('/login', [
 
     // Verificar que sea admin
     if (user.role !== 'admin') {
-      return res.status(403).json({
-        error: 'Acceso denegado',
-        message: 'No tienes permisos de administrador'
+      return res.status(401).json({
+        error: 'Credenciales inválidas',
+        message: 'Email o contraseña incorrectos'
       });
     }
 

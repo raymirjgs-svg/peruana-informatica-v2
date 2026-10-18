@@ -312,6 +312,10 @@ export default function CartPage() {
       formData.append('payment_method', paymentMethod);
       formData.append('invoice_type', invoiceType);
 
+      if (trackingCode) {
+        formData.append('tracking_code', trackingCode);
+      }
+
       if (paymentProof) {
         formData.append('payment_proof', paymentProof);
       }

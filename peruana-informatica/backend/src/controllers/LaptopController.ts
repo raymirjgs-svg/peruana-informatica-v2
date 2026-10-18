@@ -178,7 +178,8 @@ export const getLaptopSubcategories = async (req: Request, res: Response) => {
         through: { attributes: [] },
         attributes: [],
         where: {
-          is_active: true
+          is_active: true,
+          stock: { [Op.gt]: 0 }
         },
         required: true
       }],
@@ -205,7 +206,8 @@ export const getLaptopProcessors = async (req: Request, res: Response) => {
         through: { attributes: [] },
         attributes: [],
         where: {
-          is_active: true
+          is_active: true,
+          stock: { [Op.gt]: 0 }
         },
         required: true
       }],
@@ -228,7 +230,7 @@ export const getLaptopRamOptions = async (req: Request, res: Response) => {
         as: 'products',
         through: { attributes: [] },
         attributes: [],
-        where: { is_active: true },
+        where: { is_active: true, stock: { [Op.gt]: 0 } },
         required: true
       }],
       order: [['order', 'ASC']]
@@ -249,7 +251,7 @@ export const getLaptopStorageOptions = async (req: Request, res: Response) => {
         as: 'products',
         through: { attributes: [] },
         attributes: [],
-        where: { is_active: true },
+        where: { is_active: true, stock: { [Op.gt]: 0 } },
         required: true
       }],
       order: [['order', 'ASC']]

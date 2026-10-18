@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
-import { MercadoPagoConfig, Preference } from 'mercadopago';
+import { MercadoPagoConfig, Preference, Payment } from 'mercadopago';
+import crypto from 'crypto';
 import { Order } from '../models/Order';
 import { OrderItem } from '../models/OrderItem';
 import { Cart } from '../models/Cart';
@@ -246,19 +247,78 @@ export const paymentController = {
     // Webhook
     async receiveWebhook(req: Request, res: Response) {
         try {
-            const { query } = req;
-            const topic = query.topic || query.type;
-            const paymentId = query.id || query['data.id'];
+            const topic = (req.query.type || req.query.topic || req.body?.type || req.body?.action) as string | undefined;
+            const paymentId = (req.query['data.id'] || req.query.id || req.body?.data?.id) as string | undefined;
 
-            if (topic === 'payment') {
-                // Check status with MP (optional but recommended verification)
-                // const payment = await new Payment(client).get({ id: paymentId });
-                // For now, simpler implementation:
-                // Find order by external_reference if passed in webhook, usually we need to query MP
-
-                // Logic to update order status would go here
-                console.log('Webhook received for payment:', paymentId);
+            // Only handle payment notifications
+            if (!topic || !topic.includes('payment')) {
+                return res.sendStatus(200);
             }
+
+            if (!paymentId) {
+                return res.sendStatus(200);
+            }
+
+            // Verify signature when the secret is configured
+            const secret = process.env.MP_WEBHOOK_SECRET;
+            if (secret) {
+                const signature = req.headers['x-signature'] as string | undefined;
+                const requestId = req.headers['x-request-id'] as string | undefined;
+
+                if (!signature || !requestId) {
+                    console.warn('Webhook rechazado: faltan headers de firma');
+                    return res.sendStatus(401);
+                }
+
+                const parts = signature.split(',').reduce<Record<string, string>>((acc, part) => {
+                    const [k, v] = part.split('=');
+                    if (k && v) acc[k.trim()] = v.trim();
+                    return acc;
+                }, {});
+
+                const ts = parts['ts'];
+                const v1 = parts['v1'];
+                const manifest = `id:${paymentId};request-id:${requestId};ts:${ts};`;
+                const expected = crypto.createHmac('sha256', secret).update(manifest).digest('hex');
+
+                if (!ts || !v1 || expected !== v1) {
+                    console.warn('Webhook rechazado: firma inválida');
+                    return res.sendStatus(401);
+                }
+            }
+
+            // Fetch the payment from MercadoPago to confirm its real status
+            const payment = await new Payment(client).get({ id: paymentId });
+            const orderId = payment.external_reference;
+
+            if (!orderId) {
+                return res.sendStatus(200);
+            }
+
+            const order = await Order.findByPk(orderId);
+            if (!order) {
+                return res.sendStatus(200);
+            }
+
+            // Idempotency: ignore an already-verified approved payment
+            if (order.payment_status === 'verified' && payment.status === 'approved') {
+                return res.sendStatus(200);
+            }
+
+            if (payment.status === 'approved') {
+                order.payment_status = 'verified';
+                order.payment_verified_at = new Date();
+                order.payment_verified_by = 'mercadopago';
+                if (order.status === 'pending' || order.status === 'pending_approval') {
+                    order.status = 'processed';
+                }
+            } else if (payment.status === 'rejected' || payment.status === 'cancelled') {
+                order.payment_status = 'rejected';
+            } else {
+                order.payment_status = 'pending';
+            }
+
+            await order.save();
 
             res.sendStatus(200);
         } catch (error) {

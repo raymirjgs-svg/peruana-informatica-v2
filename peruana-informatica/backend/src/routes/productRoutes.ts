@@ -43,6 +43,7 @@ router.get('/utils/suggestions', searchRateLimit, [
     const products = await Product.findAll({
       where: {
         is_active: 1,
+        stock: { [Op.gt]: 0 }, // Solo productos con stock positivo
         [Op.or]: [
           { name: { [Op.like]: `%${q}%` } },
           { category: { [Op.like]: `%${q}%` } },
@@ -250,7 +251,8 @@ router.get('/:id', [
     const product = await Product.findOne({
       where: {
         cod_producto: req.params.id,
-        is_active: 1  // Solo productos activos
+        is_active: 1,  // Solo productos activos
+        stock: { [Op.gt]: 0 } // Solo productos con stock
       },
       attributes: [
         'cod_producto', 'name', 'slug', 'description', 'short_description', 'price', 'price_web', 'price_cot', 'price_dis', 'stock', 'category', 'keywords', 'brand_id', 'category_id', 'estado', 'codigo_interno',
@@ -303,7 +305,8 @@ router.get('/slug/:slug', [
     const product = await Product.findOne({
       where: {
         slug: req.params.slug,
-        is_active: 1  // Solo productos activos
+        is_active: 1,  // Solo productos activos
+        stock: { [Op.gt]: 0 } // Solo productos con stock
       },
       attributes: [
         'cod_producto', 'name', 'slug', 'description', 'short_description', 'price', 'price_web', 'price_cot', 'price_dis', 'stock', 'category', 'keywords', 'brand_id', 'category_id', 'estado', 'codigo_interno',

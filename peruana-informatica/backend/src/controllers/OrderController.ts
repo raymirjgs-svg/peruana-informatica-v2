@@ -6,6 +6,7 @@ import { sequelize } from '../database/connection';
 import { EmailService } from '../services/EmailService';
 
 import { Setting } from '../models/Setting';
+import { Coupon } from '../models/Coupon';
 import { generateTrackingCode } from '../utils/trackingCode';
 
 async function createOrderWithTrackingCode(values: any, transaction: any) {
@@ -27,7 +28,7 @@ export const createOrder = async (req: Request, res: Response) => {
     const t = await sequelize.transaction();
 
     try {
-        const { customer_name, customer_email, customer_phone, customer_document, items } = req.body;
+        const { customer_name, customer_email, customer_phone, customer_document, items, coupon_code } = req.body;
 
         if (!items || !Array.isArray(items) || items.length === 0) {
             await t.rollback();
@@ -61,6 +62,30 @@ export const createOrder = async (req: Request, res: Response) => {
             });
         }
 
+        // 1.b Apply coupon server-side (never trust client-computed totals)
+        const subtotal = totalAmount;
+        let discountAmount = 0;
+        let coupon: Coupon | null = null;
+
+        if (coupon_code) {
+            coupon = await Coupon.findOne({ where: { code: String(coupon_code).toUpperCase() } });
+
+            if (!coupon) {
+                await t.rollback();
+                return res.status(400).json({ error: 'El cupón ingresado no existe' });
+            }
+
+            const validation = coupon.isValid(subtotal);
+            if (!validation.valid) {
+                await t.rollback();
+                return res.status(400).json({ error: validation.message || 'Cupón inválido' });
+            }
+
+            discountAmount = Math.round(coupon.calculateDiscount(subtotal) * 100) / 100;
+        }
+
+        totalAmount = Math.max(0, Math.round((subtotal - discountAmount) * 100) / 100);
+
         // Determine Checkout Mode
         const checkoutModeSetting = await Setting.findByPk('checkout_mode');
         const checkoutMode = checkoutModeSetting?.value || 'direct';
@@ -73,6 +98,8 @@ export const createOrder = async (req: Request, res: Response) => {
             customer_phone,
             customer_document,
             total_amount: totalAmount,
+            coupon_code: coupon ? coupon.code : null,
+            discount_amount: discountAmount,
             status: initialStatus
         }, t);
 
@@ -85,6 +112,10 @@ export const createOrder = async (req: Request, res: Response) => {
                 price: pItem.price,
                 quantity: pItem.quantity
             }, { transaction: t });
+        }
+
+        if (coupon) {
+            await coupon.update({ current_uses: coupon.current_uses + 1 }, { transaction: t });
         }
 
         await t.commit();
@@ -110,6 +141,9 @@ export const createOrder = async (req: Request, res: Response) => {
             message: 'Pedido creado correctamente',
             order_id: order.id,
             tracking_code: order.tracking_code,
+            total_amount: order.total_amount,
+            discount_amount: order.discount_amount,
+            coupon_code: order.coupon_code,
             status: order.status
         });
 

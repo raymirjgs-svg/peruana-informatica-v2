@@ -11,6 +11,8 @@ export class Order extends Model {
     public total_amount!: number;
     public status!: string; // 'pending', 'processed', 'cancelled'
     public tracking_code?: string; // Código opaco público para seguimiento
+    public coupon_code?: string; // Cupón aplicado al pedido
+    public discount_amount?: number; // Descuento aplicado
 
     // Payment fields
     public payment_method?: string; // 'efectivo', 'transferencia', 'tarjeta', 'yape', 'plin'
@@ -75,6 +77,15 @@ Order.init(
             type: DataTypes.STRING(20),
             allowNull: true,
             unique: true,
+        },
+        coupon_code: {
+            type: DataTypes.STRING(50),
+            allowNull: true,
+        },
+        discount_amount: {
+            type: DataTypes.DECIMAL(10, 2),
+            allowNull: false,
+            defaultValue: 0,
         },
         status: {
             type: DataTypes.STRING(50),

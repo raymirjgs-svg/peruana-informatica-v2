@@ -1,4 +1,5 @@
 import { API_CONFIG } from '@/config/api';
+import { getAdminAuthHeaders } from '@/lib/adminAuth';
 
 export interface Customer {
     id: number;
@@ -54,6 +55,7 @@ export class CustomerService {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
+                ...getAdminAuthHeaders(),
             },
             cache: 'no-store'
         });
@@ -70,6 +72,7 @@ export class CustomerService {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
+                ...getAdminAuthHeaders(),
             },
             cache: 'no-store'
         });
@@ -86,6 +89,7 @@ export class CustomerService {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
+                ...getAdminAuthHeaders(),
             }
         });
 
@@ -101,6 +105,7 @@ export class CustomerService {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
+                ...getAdminAuthHeaders(),
             },
             cache: 'no-store'
         });
@@ -117,6 +122,7 @@ export class CustomerService {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
+                ...getAdminAuthHeaders(),
             },
             cache: 'no-store'
         });

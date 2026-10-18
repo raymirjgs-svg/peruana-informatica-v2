@@ -3,8 +3,12 @@ import { Product } from '../models/Product';
 import { Brand } from '../models/Brand';
 import { Category } from '../models/Category';
 import { Op } from 'sequelize';
+import { authenticateToken, requireAdmin } from '../middleware/authMiddleware';
 
 const router = express.Router();
+
+// All routes require admin authentication
+router.use(authenticateToken, requireAdmin);
 
 // Dashboard principal
 router.get('/', async (req: Request, res: Response) => {

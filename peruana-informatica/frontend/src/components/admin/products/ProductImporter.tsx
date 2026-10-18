@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { Button } from '../Button';
+import { getAdminAuthHeaders } from '@/lib/adminAuth';
 
 interface ImportResult {
     success: boolean;
@@ -72,6 +73,7 @@ export function ProductImporter() {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    ...getAdminAuthHeaders(),
                 },
                 body: JSON.stringify(jsonData)
             });

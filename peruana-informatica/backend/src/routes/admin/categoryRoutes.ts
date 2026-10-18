@@ -2,8 +2,12 @@ import express, { Request, Response } from 'express';
 import { body, param, validationResult } from 'express-validator';
 import { Category } from '../../models/Category';
 import { Product } from '../../models/Product';
+import { authenticateToken, requireAdmin } from '../../middleware/authMiddleware';
 
 const router = express.Router();
+
+// All routes require admin authentication
+router.use(authenticateToken, requireAdmin);
 
 // Middleware de validación
 const validateRequest = (req: Request, res: Response, next: any) => {

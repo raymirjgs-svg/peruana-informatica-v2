@@ -2,6 +2,8 @@
 // services/CarouselService.ts
 // ============================================
 
+import { getAdminAuthHeaders } from '@/lib/adminAuth';
+
 export interface CarouselSlide {
   id: number;
   title: string;
@@ -54,6 +56,7 @@ export class CarouselService {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
+          ...getAdminAuthHeaders(),
         },
       });
 
@@ -78,6 +81,7 @@ export class CarouselService {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
+          ...getAdminAuthHeaders(),
         },
       });
 
@@ -102,6 +106,7 @@ export class CarouselService {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...getAdminAuthHeaders(),
         },
         body: JSON.stringify(slideData),
       });
@@ -127,6 +132,7 @@ export class CarouselService {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          ...getAdminAuthHeaders(),
         },
         body: JSON.stringify(slideData),
       });
@@ -152,6 +158,7 @@ export class CarouselService {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
+          ...getAdminAuthHeaders(),
         },
       });
 
@@ -173,6 +180,7 @@ export class CarouselService {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          ...getAdminAuthHeaders(),
         },
         body: JSON.stringify({ slides }),
       });

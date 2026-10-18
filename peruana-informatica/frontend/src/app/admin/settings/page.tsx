@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { AdminLayout } from '@/components/admin/AdminLayout';
+import { getAdminAuthHeaders } from '@/lib/adminAuth';
 import {
 
   Settings,
@@ -89,7 +90,7 @@ export default function SettingsPage() {
   const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
   useEffect(() => {
-    fetch(`${apiBase}/api/admin/settings`)
+    fetch(`${apiBase}/api/admin/settings`, { headers: { ...getAdminAuthHeaders() } })
       .then(res => res.json())
       .then(data => {
         setSettings(prev => ({ ...prev, ...data }));
@@ -114,7 +115,7 @@ export default function SettingsPage() {
       const promises = Object.entries(settings).map(([key, value]) =>
         fetch(`${apiBase}/api/admin/settings/${key}`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', ...getAdminAuthHeaders() },
           body: JSON.stringify({ value: String(value) })
         })
       );

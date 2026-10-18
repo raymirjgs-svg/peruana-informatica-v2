@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import { ProductService } from '@/services/ProductService';
 import { Product } from '@/models/Product';
 import { AdminLayout } from '@/components/admin/AdminLayout';
+import { getAdminAuthHeaders } from '@/lib/adminAuth';
 
 interface Brand {
   id: number;
@@ -88,9 +89,9 @@ export default function TaxonomyPage() {
       // Remove /api if present to avoid double slash if API_URL has it
       const base = API_URL.endsWith('/api') ? API_URL.slice(0, -4) : API_URL;
 
-      const response = await fetch(`${base}/api/taxonomy/assign`, {
+      const response = await fetch(`${base}/api/admin/taxonomy/assign`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...getAdminAuthHeaders() },
         body: JSON.stringify({
           productId: codigoInterno ? undefined : productId,
           codigoInterno: codigoInterno,
@@ -128,9 +129,9 @@ export default function TaxonomyPage() {
       // Remove /api if present to avoid double slash if API_URL has it
       const base = API_URL.endsWith('/api') ? API_URL.slice(0, -4) : API_URL;
 
-      const response = await fetch(`${base}/api/taxonomy/bulk-assign`, {
+      const response = await fetch(`${base}/api/admin/taxonomy/bulk-assign`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...getAdminAuthHeaders() },
         body: JSON.stringify({
           productIds: bulkFormData.productIds,
           brandName: bulkFormData.brandName || undefined,

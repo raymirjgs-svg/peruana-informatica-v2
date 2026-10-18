@@ -1,7 +1,11 @@
 import express, { Request, Response } from 'express';
 import { Brand } from '../../models/Brand';
+import { authenticateToken, requireAdmin } from '../../middleware/authMiddleware';
 
 const router = express.Router();
+
+// All routes require admin authentication
+router.use(authenticateToken, requireAdmin);
 
 // GET todas las marcas
 router.get('/', async (req: Request, res: Response) => {

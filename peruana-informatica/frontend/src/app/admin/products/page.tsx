@@ -5,6 +5,7 @@ import { AdminLayout } from '@/components/admin/AdminLayout';
 import { Modal } from '@/components/admin/Modal';
 import { Button } from '@/components/admin/Button';
 import { ProductImageManager } from '@/components/admin/products/ProductImageManager';
+import { getAdminAuthHeaders } from '@/lib/adminAuth';
 
 function getApiBase() {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
@@ -129,7 +130,7 @@ export default function AdminProductsPage() {
       if (sortBy) params.set('sort', sortBy);
       if (sortOrder) params.set('order', sortOrder);
       const url = `${getApiBase()}/admin/products?${params.toString()}`;
-      const res = await fetch(url);
+      const res = await fetch(url, { headers: { ...getAdminAuthHeaders() } });
       const json = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(json?.error || `Error ${res.status}`);
       setData(json as ProductsResponse);
@@ -198,7 +199,7 @@ export default function AdminProductsPage() {
     if (!confirm('¿Sincronizar precios y stock de TODOS los productos con el ERP? Esto puede tomar varios minutos.')) return;
     setSyncingAll(true);
     try {
-      const res = await fetch(`${getApiBase()}/admin/products/sync-all`, { method: 'POST' });
+      const res = await fetch(`${getApiBase()}/admin/products/sync-all`, { method: 'POST', headers: { ...getAdminAuthHeaders() } });
       const json = await res.json();
       if (!res.ok) throw new Error(json?.error || 'Error al sincronizar');
       showToast(`Sincronización completada: ${json.updated || 0} productos actualizados`, 'success');
@@ -227,8 +228,8 @@ export default function AdminProductsPage() {
         await reloadProducts();
         // Cargar categorías y marcas desde admin
         const [catRes, brandRes] = await Promise.all([
-          fetch(`${getApiBase()}/admin/categories`),
-          fetch(`${getApiBase()}/admin/brands`)
+          fetch(`${getApiBase()}/admin/categories`, { headers: { ...getAdminAuthHeaders() } }),
+          fetch(`${getApiBase()}/admin/brands`, { headers: { ...getAdminAuthHeaders() } })
         ]);
         const cats = await catRes.json().catch(() => []);
         const brs = await brandRes.json().catch(() => []);
@@ -276,7 +277,7 @@ export default function AdminProductsPage() {
     setSearchError(null);
 
     try {
-      const res = await fetch(`${getApiBase()}/admin/products/erp-lookup/${searchCode.trim()}`);
+      const res = await fetch(`${getApiBase()}/admin/products/erp-lookup/${searchCode.trim()}`, { headers: { ...getAdminAuthHeaders() } });
       const json = await res.json();
 
       if (!res.ok) throw new Error(json.error || 'Error al buscar producto');
@@ -394,6 +395,7 @@ export default function AdminProductsPage() {
     try {
       const res = await fetch(`${getApiBase()}/admin/upload`, {
         method: 'POST',
+        headers: { ...getAdminAuthHeaders() },
         body: formData
       });
       const data = await res.json();
@@ -472,7 +474,7 @@ export default function AdminProductsPage() {
 
       const res = await fetch(`${getApiBase()}/admin/products`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...getAdminAuthHeaders() },
         body: JSON.stringify(payload)
       });
       const json = await res.json().catch(() => ({}));
@@ -493,7 +495,7 @@ export default function AdminProductsPage() {
     setError(null);
     try {
       setDeletingId(id);
-      const res = await fetch(`${getApiBase()}/admin/products/${id}`, { method: 'DELETE' });
+      const res = await fetch(`${getApiBase()}/admin/products/${id}`, { method: 'DELETE', headers: { ...getAdminAuthHeaders() } });
       const json = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(json?.error || `Error ${res.status}`);
       await reloadProducts();
@@ -599,7 +601,7 @@ export default function AdminProductsPage() {
 
       const res = await fetch(`${getApiBase()}/admin/products/${id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...getAdminAuthHeaders() },
         body: JSON.stringify(payload)
       });
       const json = await res.json().catch(() => ({}));
@@ -619,6 +621,7 @@ export default function AdminProductsPage() {
     try {
       const res = await fetch(`${getApiBase()}/admin/products/${id}/toggle-active`, {
         method: 'PATCH',
+        headers: { ...getAdminAuthHeaders() },
       });
       const json = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(json?.error || `Error ${res.status}`);
@@ -671,7 +674,7 @@ export default function AdminProductsPage() {
 
       const res = await fetch(`${getApiBase()}/admin/products/bulk-update`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...getAdminAuthHeaders() },
         body: JSON.stringify(payload)
       });
       const json = await res.json().catch(() => ({}));

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { API_CONFIG } from '@/config/api';
+import { getAdminAuthHeaders } from '@/lib/adminAuth';
 import {
   Building2,
   Phone,
@@ -75,7 +76,9 @@ export default function CompanySettingsPage() {
   const fetchSettings = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${API_CONFIG.API_BASE_URL}/admin/company-settings`);
+      const response = await fetch(`${API_CONFIG.API_BASE_URL}/api/admin/company-settings`, {
+        headers: { ...getAdminAuthHeaders() },
+      });
       const data = await response.json();
       setSettings(data);
       setFormData({
@@ -119,10 +122,11 @@ export default function CompanySettingsPage() {
     setMessage(null);
 
     try {
-      const response = await fetch(`${API_CONFIG.API_BASE_URL}/admin/company-settings`, {
+      const response = await fetch(`${API_CONFIG.API_BASE_URL}/api/admin/company-settings`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          ...getAdminAuthHeaders(),
         },
         body: JSON.stringify(formData),
       });

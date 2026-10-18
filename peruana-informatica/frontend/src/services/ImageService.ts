@@ -1,4 +1,5 @@
 import { ProductImage } from '@/models/Product';
+import { getAdminAuthHeaders } from '@/lib/adminAuth';
 
 export class ImageService {
   private baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
@@ -9,7 +10,9 @@ export class ImageService {
 
   async getImagesByProduct(productId: number): Promise<ProductImage[]> {
     try {
-      const response = await fetch(`${this.apiBase}/admin/images/product/${productId}`);
+      const response = await fetch(`${this.apiBase}/admin/images/product/${productId}`, {
+        headers: { ...getAdminAuthHeaders() },
+      });
       
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
@@ -30,6 +33,7 @@ export class ImageService {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...getAdminAuthHeaders(),
         },
         body: JSON.stringify({ imagen: imageUrl }),
       });
@@ -51,6 +55,7 @@ export class ImageService {
     try {
       const response = await fetch(`${this.apiBase}/admin/images/${imageId}`, {
         method: 'DELETE',
+        headers: { ...getAdminAuthHeaders() },
       });
 
       if (!response.ok) {

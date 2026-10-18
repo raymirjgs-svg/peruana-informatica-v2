@@ -4,8 +4,17 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 import { Carousel } from '../../models/Carousel';
+import { authenticateToken, requireAdmin } from '../../middleware/authMiddleware';
 
 const router = express.Router();
+
+// All routes require admin authentication, except the public /active endpoint (home carousel)
+router.use((req, res, next) => {
+    if (req.method === 'GET' && req.path === '/active') {
+        return next();
+    }
+    authenticateToken(req, res, () => requireAdmin(req, res, next));
+});
 
 // Configuración de multer para subir imágenes
 const uploadDir = path.join(__dirname, '../../../public/images/carousel');

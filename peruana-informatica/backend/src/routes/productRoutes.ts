@@ -217,7 +217,7 @@ router.get('/', searchRateLimit, [
       order,
       attributes: [
         'cod_producto', 'name', 'slug', 'description', 'short_description', 'price', 'price_web', 'price_cot', 'price_dis', 'stock', 'category', 'keywords', 'brand_id', 'category_id', 'estado', 'codigo_interno',
-        'component_type', 'socket_type', 'ram_type', 'form_factor', 'tdp_watts', 'has_integrated_graphics', 'component_specs', 'is_featured', 'is_new', 'is_clearance'
+        'component_type', 'socket_type', 'ram_type', 'form_factor', 'tdp_watts', 'has_integrated_graphics', 'component_specs', 'is_featured', 'is_new', 'is_clearance', 'average_rating', 'review_count'
       ],
       include: [
         { model: Brand, as: 'productBrand', attributes: ['id', 'name', 'slug'], required: false },
@@ -254,7 +254,7 @@ router.get('/:id', [
       },
       attributes: [
         'cod_producto', 'name', 'slug', 'description', 'short_description', 'price', 'price_web', 'price_cot', 'price_dis', 'stock', 'category', 'keywords', 'brand_id', 'category_id', 'estado', 'codigo_interno',
-        'component_type', 'socket_type', 'ram_type', 'form_factor', 'tdp_watts', 'has_integrated_graphics', 'component_specs'
+        'component_type', 'socket_type', 'ram_type', 'form_factor', 'tdp_watts', 'has_integrated_graphics', 'component_specs', 'average_rating', 'review_count'
       ],
 
       include: [
@@ -307,7 +307,7 @@ router.get('/slug/:slug', [
       },
       attributes: [
         'cod_producto', 'name', 'slug', 'description', 'short_description', 'price', 'price_web', 'price_cot', 'price_dis', 'stock', 'category', 'keywords', 'brand_id', 'category_id', 'estado', 'codigo_interno',
-        'component_type', 'socket_type', 'ram_type', 'form_factor', 'tdp_watts', 'has_integrated_graphics', 'component_specs'
+        'component_type', 'socket_type', 'ram_type', 'form_factor', 'tdp_watts', 'has_integrated_graphics', 'component_specs', 'average_rating', 'review_count'
       ],
 
       include: [

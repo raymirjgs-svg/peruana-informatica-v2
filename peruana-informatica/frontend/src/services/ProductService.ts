@@ -6,6 +6,7 @@ import {
   safeAsync,
 } from '@/lib/errors';
 import { API_CONFIG } from '@/config/api';
+import { cleanHtmlText } from '@/utils/text';
 
 export class ProductService {
   private baseUrl = API_CONFIG.BASE_URL;
@@ -149,6 +150,22 @@ export class ProductService {
       product.brand = item.brand.name;
     } else if (typeof item.brand === 'string') {
       product.brand = item.brand;
+    }
+
+    const parseNum = (v: number | string | null | undefined): number | null => {
+      if (typeof v === 'number') return isNaN(v) ? null : v;
+      if (typeof v === 'string' && v.trim() !== '') return parseFloat(v) || 0;
+      return null;
+    };
+
+    const ratingCount = parseNum(item.review_count);
+    if (ratingCount !== null && ratingCount > 0) {
+      product.rating = { average: parseNum(item.average_rating) ?? 0, count: ratingCount };
+    }
+
+    const cleanedShortDescription = cleanHtmlText(item.short_description);
+    if (cleanedShortDescription !== '') {
+      product.shortDescription = cleanedShortDescription;
     }
 
     // Fix URLs Helper

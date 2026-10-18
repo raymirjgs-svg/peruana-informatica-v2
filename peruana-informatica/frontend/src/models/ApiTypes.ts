@@ -17,6 +17,7 @@ export interface RawProduct {
     url_amigable?: string; // Legacy
     description?: string;
     descripcion?: string; // Legacy
+    short_description?: string;
 
     // Precios
     price?: number;
@@ -31,6 +32,10 @@ export interface RawProduct {
     // Inventario
     stock?: number;
     stock_actual?: number; // Legacy
+
+    // Reviews
+    average_rating?: number | string | null;
+    review_count?: number | string | null;
 
     // Categoría (puede ser string ID, string nombre, u objeto)
     category?: string | { name: string; id?: number };

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import QuotationForm from './components/QuotationForm';
 import apiClient from '@/utils/api';
+import { cleanHtmlText } from '@/utils/text';
 
 interface SubCategory {
   id: number;
@@ -17,6 +18,7 @@ interface Product {
   name: string;
   slug: string;
   description: string;
+  short_description?: string | null;
   price: number | string;
   stock: number;
   codigo_interno: string;
@@ -84,7 +86,7 @@ export default function LaptopQuotation() {
         setLoading(true);
 
         // Fetch laptops with subcategories using API parameters
-        const laptopsData: Product[] = await apiClient.getCotizadorLaptops({
+        const laptopsData: Product[] = (await apiClient.getCotizadorLaptops({
           minPrice: filters.minPrice,
           maxPrice: filters.maxPrice,
           subcategory: filters.subcategory,
@@ -92,7 +94,10 @@ export default function LaptopQuotation() {
           processor: filters.processor,
           ram: filters.ram,
           storage: filters.storage
-        }) as Product[];
+        }) as Product[]).map((laptop) => ({
+          ...laptop,
+          short_description: cleanHtmlText(laptop.short_description),
+        }));
         setLaptops(laptopsData);
         setFilteredLaptops(laptopsData);
 
@@ -594,7 +599,9 @@ export default function LaptopQuotation() {
                         )}
 
                         <p className="text-gray-700 text-sm mb-4 line-clamp-2">
-                          {laptop.description ? (
+                          {laptop.short_description ? (
+                            laptop.short_description
+                          ) : laptop.description ? (
                             // Remove HTML tags from description and show only text
                             laptop.description.replace(/<[^>]*>/g, '').substring(0, 100) +
                             (laptop.description.replace(/<[^>]*>/g, '').length > 100 ? '...' : '')

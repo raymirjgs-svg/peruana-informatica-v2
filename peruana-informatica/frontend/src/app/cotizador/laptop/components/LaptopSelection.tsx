@@ -59,7 +59,7 @@ export default function LaptopSelection({ onSelect, selectedLaptop }: LaptopSele
             id: product.cod_producto,
             name: product.name,
             slug: product.slug,
-            description: product.description,
+            description: product.shortDescription || '',
             price: typeof product.price === 'string' ? parseFloat(product.price) : product.price,
             stock: product.stock || 0,
             specifications: {

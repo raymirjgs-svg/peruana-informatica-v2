@@ -51,3 +51,10 @@ temp_build/
 # --- UPLOADS (PRODUCCIÓN) ---
 **/public/uploads/*
 !**/public/uploads/.gitkeep
+
+# --- GRAPHIFY ---
+graphify-out/
+
+# --- TEST ARTIFACTS (ruido para grafo) ---
+**/playwright-report/
+**/test-results/

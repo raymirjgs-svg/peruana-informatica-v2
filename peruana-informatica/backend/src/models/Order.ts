@@ -10,6 +10,7 @@ export class Order extends Model {
     public user_id?: number; // Relación con usuario registrado
     public total_amount!: number;
     public status!: string; // 'pending', 'processed', 'cancelled'
+    public tracking_code?: string; // Código opaco público para seguimiento
 
     // Payment fields
     public payment_method?: string; // 'efectivo', 'transferencia', 'tarjeta', 'yape', 'plin'
@@ -69,6 +70,11 @@ Order.init(
         total_amount: {
             type: DataTypes.DECIMAL(10, 2),
             allowNull: false,
+        },
+        tracking_code: {
+            type: DataTypes.STRING(20),
+            allowNull: true,
+            unique: true,
         },
         status: {
             type: DataTypes.STRING(50),

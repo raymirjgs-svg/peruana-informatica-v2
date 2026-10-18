@@ -1,12 +1,13 @@
 import { Router } from 'express';
-import { getOrderByIdForClient, downloadClientInvoice } from '../controllers/ClientController';
+import {
+    getOrderByTrackingCode,
+    downloadInvoiceByTrackingCode,
+} from '../controllers/ClientController';
 
 const router = Router();
 
-// Ruta para que el cliente consulte su pedido
-router.get('/orders/:id', getOrderByIdForClient);
-
-// Ruta para que el cliente descargue su comprobante
-router.get('/orders/:id/invoice', downloadClientInvoice);
+// Seguimiento público por código opaco (el código es el secreto del cliente)
+router.get('/orders/track/:code/invoice', downloadInvoiceByTrackingCode);
+router.get('/orders/track/:code', getOrderByTrackingCode);
 
 export default router;

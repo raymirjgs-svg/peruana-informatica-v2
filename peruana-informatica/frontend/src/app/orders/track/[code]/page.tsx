@@ -13,6 +13,7 @@ interface OrderItem {
 
 interface Order {
   id: number;
+  tracking_code?: string;
   customer_name: string;
   customer_email: string;
   total_amount: string;
@@ -27,9 +28,9 @@ interface Order {
   createdAt: string;
 }
 
-export default function OrderDetailPage() {
+export default function OrderTrackingPage() {
   const params = useParams();
-  const orderId = params.id as string;
+  const code = params.code as string;
 
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
@@ -38,13 +39,13 @@ export default function OrderDetailPage() {
 
   useEffect(() => {
     fetchOrder();
-  }, [orderId]);
+  }, [code]);
 
   const fetchOrder = async () => {
     try {
       setLoading(true);
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-      const response = await fetch(`${apiUrl}/api/client/orders/${orderId}`);
+      const response = await fetch(`${apiUrl}/api/client/orders/track/${code}`);
 
       if (!response.ok) {
         throw new Error('Pedido no encontrado');
@@ -63,7 +64,7 @@ export default function OrderDetailPage() {
     try {
       setDownloading(true);
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-      const response = await fetch(`${apiUrl}/api/client/orders/${orderId}/invoice`);
+      const response = await fetch(`${apiUrl}/api/client/orders/track/${code}/invoice`);
 
       if (!response.ok) {
         throw new Error('Comprobante no disponible');
@@ -73,7 +74,7 @@ export default function OrderDetailPage() {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = order?.invoice_file || `comprobante-${orderId}.pdf`;
+      a.download = order?.invoice_file || `comprobante-${code}.pdf`;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
@@ -145,7 +146,7 @@ export default function OrderDetailPage() {
         <Link href="/" className="text-blue-600 hover:text-blue-800 mb-4 inline-block">
           ← Volver al inicio
         </Link>
-        <h1 className="text-3xl font-bold text-gray-800">Pedido #{order.id}</h1>
+        <h1 className="text-3xl font-bold text-gray-800">Pedido {order.tracking_code || `#${order.id}`}</h1>
         <p className="text-gray-600">
           Realizado el {new Date(order.createdAt).toLocaleDateString('es-PE', {
             year: 'numeric',
@@ -240,8 +241,8 @@ export default function OrderDetailPage() {
       <div className="bg-white shadow-lg rounded-lg p-6 mb-6">
         <h2 className="text-xl font-semibold mb-4">Productos</h2>
         <div className="space-y-3">
-          {order.items.map((item) => (
-            <div key={item.id} className="flex justify-between items-center py-3 border-b last:border-b-0">
+          {order.items.map((item, index) => (
+            <div key={index} className="flex justify-between items-center py-3 border-b last:border-b-0">
               <div className="flex-1">
                 <p className="font-medium">{item.product_name}</p>
                 <p className="text-sm text-gray-600">Cantidad: {item.quantity}</p>

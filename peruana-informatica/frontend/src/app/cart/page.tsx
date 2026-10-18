@@ -33,6 +33,7 @@ export default function CartPage() {
   // Estados del flujo
   const [step, setStep] = useState<'cart' | 'customer' | 'payment' | 'success'>('cart');
   const [orderId, setOrderId] = useState<number | null>(null);
+  const [trackingCode, setTrackingCode] = useState<string | null>(null);
   const [orderTotal, setOrderTotal] = useState<number>(0);
   const [checkoutMode, setCheckoutMode] = useState<'direct' | 'approval'>('direct');
 
@@ -256,6 +257,7 @@ export default function CartPage() {
 
       if (response.ok) {
         setOrderId(data.order_id);
+        setTrackingCode(data.tracking_code ?? null);
         setOrderTotal(finalTotal);
 
         if (data.status === 'pending_approval' || checkoutMode === 'approval') {
@@ -378,8 +380,8 @@ export default function CartPage() {
 
             <div className="px-8 -mt-6 relative z-10">
               <div className={`rounded-2xl p-6 text-center shadow-lg ${checkoutMode === 'approval' ? 'bg-gradient-to-r from-amber-500 to-orange-500' : 'bg-gradient-to-r from-blue-600 to-indigo-600'}`}>
-                <p className="text-white/80 text-sm uppercase tracking-wide mb-1">Número de Pedido</p>
-                <p className="text-4xl font-bold text-white">#{orderId}</p>
+                <p className="text-white/80 text-sm uppercase tracking-wide mb-1">Código de Seguimiento</p>
+                <p className="text-4xl font-bold text-white">{trackingCode ?? `#${orderId}`}</p>
               </div>
             </div>
 
@@ -422,7 +424,7 @@ export default function CartPage() {
                   <span className="text-2xl">💡</span>
                   <div>
                     <p className="font-semibold text-amber-800">Consejo</p>
-                    <p className="text-amber-700 text-sm">Guarda tu número de pedido <strong>#{orderId}</strong> para consultar su estado</p>
+                    <p className="text-amber-700 text-sm">Guarda tu código de seguimiento <strong>{trackingCode ?? `#${orderId}`}</strong> para consultar su estado</p>
                   </div>
                 </div>
               </div>
@@ -436,7 +438,7 @@ export default function CartPage() {
                   Volver al inicio
                 </Link>
                 <Link
-                  href={`/orders/${orderId}`}
+                  href={`/orders/track/${trackingCode ?? orderId}`}
                   className="flex-1 bg-white border-2 border-gray-300 text-gray-700 px-8 py-4 rounded-xl hover:border-blue-500 hover:text-blue-600 transition-all duration-300 font-semibold text-center flex items-center justify-center gap-2"
                 >
                   <Search className="w-5 h-5" />

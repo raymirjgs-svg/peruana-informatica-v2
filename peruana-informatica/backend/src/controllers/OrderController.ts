@@ -6,6 +6,22 @@ import { sequelize } from '../database/connection';
 import { EmailService } from '../services/EmailService';
 
 import { Setting } from '../models/Setting';
+import { generateTrackingCode } from '../utils/trackingCode';
+
+async function createOrderWithTrackingCode(values: any, transaction: any) {
+    for (let attempt = 0; attempt < 8; attempt++) {
+        try {
+            return await Order.create(
+                { ...values, tracking_code: generateTrackingCode() },
+                { transaction }
+            );
+        } catch (error: any) {
+            if (error?.name === 'SequelizeUniqueConstraintError') continue;
+            throw error;
+        }
+    }
+    throw new Error('No se pudo generar un código de seguimiento único');
+}
 
 export const createOrder = async (req: Request, res: Response) => {
     const t = await sequelize.transaction();
@@ -51,14 +67,14 @@ export const createOrder = async (req: Request, res: Response) => {
         const initialStatus = checkoutMode === 'approval' ? 'pending_approval' : 'pending';
 
         // 2. Create Order
-        const order = await Order.create({
+        const order = await createOrderWithTrackingCode({
             customer_name,
             customer_email,
             customer_phone,
             customer_document,
             total_amount: totalAmount,
             status: initialStatus
-        }, { transaction: t });
+        }, t);
 
         // 3. Create OrderItems
         for (const pItem of processedItems) {
@@ -93,6 +109,7 @@ export const createOrder = async (req: Request, res: Response) => {
             success: true,
             message: 'Pedido creado correctamente',
             order_id: order.id,
+            tracking_code: order.tracking_code,
             status: order.status
         });
 

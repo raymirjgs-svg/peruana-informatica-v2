@@ -49,7 +49,7 @@ export const emailTemplates = {
                     <div class="container">
                         <div class="header">
                             <h1>¡Gracias por tu pedido!</h1>
-                            <span class="order-id">Pedido #${order.id}</span>
+                            <span class="order-id">Código de seguimiento: ${order.tracking_code || `#${order.id}`}</span>
                         </div>
                         
                         <div class="content">
@@ -96,6 +96,15 @@ export const emailTemplates = {
                                 </ol>
                             </div>
 
+                            <div class="cta-box" style="background:#eff6ff; border-color:#bfdbfe;">
+                                <h3 class="cta-title" style="color:#1e40af;">📦 Sigue tu pedido</h3>
+                                <p style="margin:0 0 12px 0; color:#1e40af; font-size:14px;">
+                                    Tu código de seguimiento es
+                                    <strong style="font-family:'Courier New', monospace;">${order.tracking_code || `#${order.id}`}</strong>
+                                </p>
+                                <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/track-order" style="display:inline-block; background:#2563eb; color:#ffffff; text-decoration:none; padding:10px 20px; border-radius:8px; font-weight:600; font-size:14px;">Rastrear mi pedido</a>
+                            </div>
+
                             <div class="bank-details">
                                 <div class="bank-title">Datos Bancarios (BCP)</div>
                                 <div class="bank-row"><span>Cuenta Corriente</span><strong>191-1234567-0-00</strong></div>
@@ -129,6 +138,7 @@ export const emailTemplates = {
             </head>
             <body>
                 <h1>🔔 Nuevo Pedido #${order.id}</h1>
+                <p>Código de seguimiento: <strong>${order.tracking_code || '—'}</strong></p>
                 <p>Cliente: ${order.customer_name}</p>
                 <p>Total: S/ ${parseFloat(order.total_amount).toFixed(2)}</p>
                 <pre>${itemsList}</pre>
@@ -147,7 +157,7 @@ export const emailTemplates = {
             </head>
             <body>
                 <h1>✅ Pago Verificado</h1>
-                <p>Hola ${order.customer_name}, tu pago para el pedido #${order.id} ha sido aprobado.</p>
+                <p>Hola ${order.customer_name}, tu pago para el pedido #${order.id} (${order.tracking_code || '—'}) ha sido aprobado.</p>
             </body>
             </html>
         `;

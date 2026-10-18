@@ -4,13 +4,13 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function TrackOrderPage() {
-    const [orderId, setOrderId] = useState('');
+    const [code, setCode] = useState('');
     const router = useRouter();
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
-        if (orderId.trim()) {
-            router.push(`/orders/${orderId.trim()}`);
+        if (code.trim()) {
+            router.push(`/orders/track/${code.trim()}`);
         }
     };
 
@@ -24,7 +24,7 @@ export default function TrackOrderPage() {
                     Rastrea tu Pedido
                 </h2>
                 <p className="mt-2 text-center text-sm text-gray-600">
-                    Ingresa el número de pedido que recibiste en tu confirmación de compra
+                    Ingresa el código de seguimiento que recibiste en tu confirmación de compra
                 </p>
             </div>
 
@@ -32,19 +32,19 @@ export default function TrackOrderPage() {
                 <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
                     <form className="space-y-6" onSubmit={handleSearch}>
                         <div>
-                            <label htmlFor="orderId" className="block text-sm font-medium text-gray-700">
-                                Número de Pedido
+                            <label htmlFor="code" className="block text-sm font-medium text-gray-700">
+                                Código de Seguimiento
                             </label>
                             <div className="mt-1 relative rounded-md shadow-sm">
                                 <input
-                                    id="orderId"
-                                    name="orderId"
+                                    id="code"
+                                    name="code"
                                     type="text"
                                     required
-                                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                    placeholder="Ej: 1024"
-                                    value={orderId}
-                                    onChange={(e) => setOrderId(e.target.value)}
+                                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm uppercase"
+                                    placeholder="Ej: PX-95TW4-9V2ZV"
+                                    value={code}
+                                    onChange={(e) => setCode(e.target.value)}
                                 />
                             </div>
                         </div>
@@ -53,7 +53,7 @@ export default function TrackOrderPage() {
                             <button
                                 type="submit"
                                 className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
-                                disabled={!orderId.trim()}
+                                disabled={!code.trim()}
                             >
                                 Buscar Pedido
                             </button>

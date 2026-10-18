@@ -5,6 +5,12 @@ import { useEffect, useState } from 'react';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { API_CONFIG } from '@/config/api';
 
+const getAuthHeaders = (): Record<string, string> => {
+  if (typeof window === 'undefined') return {};
+  const token = localStorage.getItem('adminToken');
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
+
 interface OrderItem {
   id: number;
   product_name: string;
@@ -46,9 +52,11 @@ export default function AdminOrdersPage() {
 
   const fetchOrders = async () => {
     try {
-      const response = await fetch(`${API_CONFIG.API_BASE_URL}/admin/orders`);
+      const response = await fetch(`${API_CONFIG.API_BASE_URL}/api/admin/orders`, {
+        headers: getAuthHeaders()
+      });
       const data = await response.json();
-      setOrders(data);
+      setOrders(Array.isArray(data) ? data : []);
     } catch (error) {
       setError('Error al cargar pedidos');
     } finally {
@@ -62,10 +70,11 @@ export default function AdminOrdersPage() {
 
   const handleVerifyPayment = async (orderId: number, verified: boolean) => {
     try {
-      const response = await fetch(`${API_CONFIG.API_BASE_URL}/admin/payments/${orderId}/verify`, {
+      const response = await fetch(`${API_CONFIG.API_BASE_URL}/api/admin/payments/${orderId}/verify`, {
         method: 'PATCH',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          ...getAuthHeaders()
         },
         body: JSON.stringify({ verified, verified_by: 'Admin' })
       });
@@ -99,8 +108,9 @@ export default function AdminOrdersPage() {
       formData.append('invoice_file', invoiceFile);
       formData.append('invoice_number', invoiceNumber);
 
-      const response = await fetch(`${API_CONFIG.API_BASE_URL}/admin/payments/${orderId}/upload-invoice`, {
+      const response = await fetch(`${API_CONFIG.API_BASE_URL}/api/admin/payments/${orderId}/upload-invoice`, {
         method: 'POST',
+        headers: getAuthHeaders(),
         body: formData
       });
 
@@ -119,6 +129,31 @@ export default function AdminOrdersPage() {
       alert('Error de conexión');
     } finally {
       setIsGeneratingInvoice(false);
+    }
+  };
+
+  const handleDownloadInvoice = async (filename: string) => {
+    try {
+      const response = await fetch(`${API_CONFIG.API_BASE_URL}/api/admin/payments/invoices/${filename}`, {
+        headers: getAuthHeaders()
+      });
+
+      if (!response.ok) {
+        alert('Error al descargar comprobante');
+        return;
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      alert('Error de conexión');
     }
   };
 
@@ -257,7 +292,7 @@ export default function AdminOrdersPage() {
                           📎 Paso 1: Revisar Comprobante del Cliente
                         </p>
                         <a
-                          href={`${API_CONFIG.API_BASE_URL}/payments/proofs/${order.payment_proof}`}
+                          href={`${API_CONFIG.API_BASE_URL}/api/payments/proofs/${order.payment_proof}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="inline-block px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-medium"
@@ -327,17 +362,16 @@ export default function AdminOrdersPage() {
                           Comprobante Generado y Enviado
                         </p>
                         <div className="flex gap-3 items-center">
-                          <a
-                            href={`${API_CONFIG.API_BASE_URL}/admin/payments/invoices/${order.invoice_file}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                          <button
+                            type="button"
+                            onClick={() => handleDownloadInvoice(order.invoice_file!)}
                             className="px-4 py-2 bg-white text-emerald-700 rounded-lg hover:bg-emerald-50 transition text-sm font-semibold flex items-center gap-2 shadow"
                           >
                             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                               <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
                             </svg>
                             Descargar {order.invoice_type === 'factura' ? 'Factura' : 'Boleta'}
-                          </a>
+                          </button>
                           <span className="px-3 py-1 bg-emerald-700 text-white rounded-full text-xs font-semibold">
                             N° {order.invoice_number}
                           </span>

@@ -46,6 +46,6 @@ export const errorHandler = (
 export const notFoundHandler = (req: Request, res: Response, next: NextFunction) => {
   console.log(`❌ 404 Not Found: ${req.method} ${req.originalUrl}`);
   const error = new Error(`Recurso no encontrado - ${req.originalUrl}`);
-  (error as any).status = 404;
+  (error as any).statusCode = 404;
   next(error);
 };

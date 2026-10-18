@@ -3,6 +3,7 @@ import { body, validationResult } from 'express-validator';
 import { User } from '../../models/User';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { requireJwtSecret } from '../../config/env';
 
 const router = express.Router();
 
@@ -51,7 +52,7 @@ router.post('/login', [
     }
 
     // Generar JWT token
-    const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+    const JWT_SECRET = requireJwtSecret();
     const token = jwt.sign(
       {
         id: user.id,
@@ -94,7 +95,7 @@ router.get('/me', async (req: Request, res: Response) => {
       return res.status(401).json({ error: 'Token no proporcionado' });
     }
 
-    const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+    const JWT_SECRET = requireJwtSecret();
     const decoded: any = jwt.verify(token, JWT_SECRET);
 
     const user = await User.findByPk(decoded.id);

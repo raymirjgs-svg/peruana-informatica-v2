@@ -1,3 +1,6 @@
+import { API_CONFIG } from "@/config/api";
+import { getAdminAuthHeaders } from "@/lib/adminAuth";
+
 interface ContactFormData {
   nombre: string;
   email: string;
@@ -55,18 +58,11 @@ interface PaginatedResponse<T> {
 }
 
 class ContactService {
-  private static readonly BASE_URL =
-    process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
-  private static readonly API_BASE = `${ContactService.BASE_URL}/api`;
+  private static readonly API_BASE = `${API_CONFIG.API_BASE_URL}/api`;
 
-  // Método para obtener las credenciales de autenticación básica
   private static getAuthHeaders(): Record<string, string> {
-    const username = process.env.NEXT_PUBLIC_ADMIN_USERNAME || "admin";
-    const password = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "admin123";
-    const credentials = btoa(`${username}:${password}`);
-
     return {
-      Authorization: `Basic ${credentials}`,
+      ...getAdminAuthHeaders(),
       "Content-Type": "application/json",
     };
   }

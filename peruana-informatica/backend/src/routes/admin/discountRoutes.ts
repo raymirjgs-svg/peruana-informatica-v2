@@ -1,11 +1,11 @@
 import { Router } from 'express';
 import { discountController } from '../../controllers/admin/DiscountController';
-import { authenticateToken } from '../../middleware/authMiddleware';
+import { authenticateToken, requireAdmin } from '../../middleware/authMiddleware';
 
 const router = Router();
 
 // Todas las rutas requieren autenticación y rol de admin (editor, admin, super-admin)
-router.use(authenticateToken);
+router.use(authenticateToken, requireAdmin);
 
 // Listar todos los descuentos
 router.get('/', discountController.getAllDiscounts);

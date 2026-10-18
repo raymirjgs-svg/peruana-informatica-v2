@@ -1,3 +1,5 @@
+import { getAdminAuthHeaders } from "@/lib/adminAuth";
+
 interface SeoSettings {
   id: number;
   page_type: string;
@@ -79,14 +81,9 @@ class SeoService {
     process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
   private static readonly API_BASE = `${SeoService.BASE_URL}/api`;
 
-  // Método para obtener las credenciales de autenticación básica
   private static getAuthHeaders(): Record<string, string> {
-    const username = process.env.NEXT_PUBLIC_ADMIN_USERNAME || "admin";
-    const password = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "admin123";
-    const credentials = btoa(`${username}:${password}`);
-
     return {
-      Authorization: `Basic ${credentials}`,
+      ...getAdminAuthHeaders(),
       "Content-Type": "application/json",
     };
   }

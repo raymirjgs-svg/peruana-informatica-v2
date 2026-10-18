@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { BlogController } from "../controllers/blogController";
-import { authenticateAdmin } from "../middleware/auth";
+import { authenticateToken, requireAdmin } from "../middleware/authMiddleware";
 
 const router = Router();
 
@@ -57,39 +57,39 @@ router.post("/post/:id/like", BlogController.likePost);
  * Obtener todos los posts para administración
  * Query params: page, limit, status, search
  */
-router.get("/admin", authenticateAdmin, BlogController.getAllPosts);
+router.get("/admin", authenticateToken, requireAdmin, BlogController.getAllPosts);
 
 /**
  * GET /api/blog/admin/stats
  * Obtener estadísticas del blog
  */
-router.get("/admin/stats", authenticateAdmin, BlogController.getBlogStats);
+router.get("/admin/stats", authenticateToken, requireAdmin, BlogController.getBlogStats);
 
 /**
  * POST /api/blog/admin
  * Crear nuevo post
  * Body: post data
  */
-router.post("/admin", authenticateAdmin, BlogController.createPost);
+router.post("/admin", authenticateToken, requireAdmin, BlogController.createPost);
 
 /**
  * GET /api/blog/admin/:id
  * Obtener post específico por ID
  */
-router.get("/admin/:id", authenticateAdmin, BlogController.getPostById);
+router.get("/admin/:id", authenticateToken, requireAdmin, BlogController.getPostById);
 
 /**
  * PUT /api/blog/admin/:id
  * Actualizar post existente
  * Body: post data to update
  */
-router.put("/admin/:id", authenticateAdmin, BlogController.updatePost);
+router.put("/admin/:id", authenticateToken, requireAdmin, BlogController.updatePost);
 
 /**
  * DELETE /api/blog/admin/:id
  * Eliminar post
  */
-router.delete("/admin/:id", authenticateAdmin, BlogController.deletePost);
+router.delete("/admin/:id", authenticateToken, requireAdmin, BlogController.deletePost);
 
 // ====================== AI FEATURES ======================
 
@@ -100,7 +100,7 @@ router.delete("/admin/:id", authenticateAdmin, BlogController.deletePost);
  */
 router.post(
   "/admin/ai/generate-titles",
-  authenticateAdmin,
+  authenticateToken, requireAdmin,
   BlogController.generateTitles,
 );
 
@@ -111,7 +111,7 @@ router.post(
  */
 router.get(
   "/admin/ai/title-suggestions",
-  authenticateAdmin,
+  authenticateToken, requireAdmin,
   BlogController.getTitleSuggestions,
 );
 
@@ -122,7 +122,7 @@ router.get(
  */
 router.post(
   "/admin/ai/generate-content",
-  authenticateAdmin,
+  authenticateToken, requireAdmin,
   BlogController.generateContentFromTitle,
 );
 
@@ -133,7 +133,7 @@ router.post(
  */
 router.put(
   "/admin/ai/title-suggestions/:id",
-  authenticateAdmin,
+  authenticateToken, requireAdmin,
   BlogController.manageTitleSuggestion,
 );
 
@@ -180,7 +180,7 @@ router.options("/admin/ai/generate-content", (req, res) => {
  */
 router.post(
   "/admin/config/gemini",
-  authenticateAdmin,
+  authenticateToken, requireAdmin,
   BlogController.configureGemini,
 );
 
@@ -188,7 +188,7 @@ router.post(
  * POST /api/blog/admin/demo
  * Cargar posts de demostración
  */
-router.post("/admin/demo", authenticateAdmin, BlogController.loadDemoData);
+router.post("/admin/demo", authenticateToken, requireAdmin, BlogController.loadDemoData);
 
 // Test endpoint
 router.get("/test", (req, res) => {

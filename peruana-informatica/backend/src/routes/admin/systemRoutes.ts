@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import { getSystemHealth } from '../../controllers/admin/SystemController';
-import { authenticateAdmin } from '../../middleware/auth';
+import { authenticateToken, requireAdmin } from '../../middleware/authMiddleware';
 
 const router = Router();
 
-router.get('/health-check', authenticateAdmin, getSystemHealth);
+router.get('/health-check', authenticateToken, requireAdmin, getSystemHealth);
 
 export default router;

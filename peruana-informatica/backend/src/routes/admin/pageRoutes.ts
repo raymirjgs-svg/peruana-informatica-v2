@@ -1,11 +1,11 @@
 import { Router } from 'express';
 import { pageController } from '../../controllers/pageController';
-import { authenticateToken } from '../../middleware/authMiddleware';
+import { authenticateToken, requireAdmin } from '../../middleware/authMiddleware';
 
 const router = Router();
 
 // Apply auth middleware to all routes
-router.use(authenticateToken);
+router.use(authenticateToken, requireAdmin);
 
 // List pages
 router.get('/', pageController.getAllPages.bind(pageController));

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { SeoController } from "../controllers/seoController";
-import { authenticateAdmin } from "../middleware/auth";
+import { authenticateToken, requireAdmin } from "../middleware/authMiddleware";
 
 const router = Router();
 
@@ -21,20 +21,20 @@ router.get("/test", (req, res) => {
  * Obtener todas las configuraciones SEO
  * Query params: page_type, is_active
  */
-router.get("/", authenticateAdmin, SeoController.getAll);
+router.get("/", authenticateToken, requireAdmin, SeoController.getAll);
 
 /**
  * GET /api/seo/analysis
  * Obtener análisis SEO completo del sitio
  */
-router.get("/analysis", authenticateAdmin, SeoController.getSeoAnalysis);
+router.get("/analysis", authenticateToken, requireAdmin, SeoController.getSeoAnalysis);
 
 /**
  * GET /api/seo/page/:page_type
  * Obtener configuración SEO por tipo de página
  * Query params: page_identifier (opcional)
  */
-router.get("/page/:page_type", authenticateAdmin, SeoController.getByPageType);
+router.get("/page/:page_type", authenticateToken, requireAdmin, SeoController.getByPageType);
 
 /**
  * PUT /api/seo/page/:page_type
@@ -42,38 +42,38 @@ router.get("/page/:page_type", authenticateAdmin, SeoController.getByPageType);
  * Query params: page_identifier (opcional)
  * Body: configuración SEO a actualizar
  */
-router.put("/page/:page_type", authenticateAdmin, SeoController.updateByPageType);
+router.put("/page/:page_type", authenticateToken, requireAdmin, SeoController.updateByPageType);
 
 /**
  * POST /api/seo
  * Crear nueva configuración SEO
  * Body: configuración SEO completa
  */
-router.post("/", authenticateAdmin, SeoController.create);
+router.post("/", authenticateToken, requireAdmin, SeoController.create);
 
 /**
  * GET /api/seo/:id
  * Obtener configuración SEO por ID
  */
-router.get("/:id", authenticateAdmin, SeoController.getById);
+router.get("/:id", authenticateToken, requireAdmin, SeoController.getById);
 
 /**
  * PUT /api/seo/:id
  * Actualizar configuración SEO por ID
  * Body: configuración SEO a actualizar
  */
-router.put("/:id", authenticateAdmin, SeoController.update);
+router.put("/:id", authenticateToken, requireAdmin, SeoController.update);
 
 /**
  * DELETE /api/seo/:id
  * Eliminar configuración SEO
  */
-router.delete("/:id", authenticateAdmin, SeoController.delete);
+router.delete("/:id", authenticateToken, requireAdmin, SeoController.delete);
 
 /**
  * POST /api/seo/suggest
  * Generar sugerencias SEO con IA (Gemini)
  */
-router.post("/suggest", authenticateAdmin, SeoController.suggestMetadata);
+router.post("/suggest", authenticateToken, requireAdmin, SeoController.suggestMetadata);
 
 export { router as seoRoutes };

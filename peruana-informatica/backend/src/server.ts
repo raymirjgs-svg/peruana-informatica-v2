@@ -68,6 +68,7 @@ import {
 } from "./middleware/security";
 import { apiLimiter, authLimiter, createLimiter, paymentLimiter } from "./middleware/rateLimiter";
 import { initRedis } from "./config/redis";
+import { requireJwtSecret } from "./config/env";
 import { logger } from "./config/logger";
 import { requestLogger, errorLogger } from "./middleware/logger";
 
@@ -209,6 +210,8 @@ app.use(errorHandler);
 // Iniciar servidor
 const startServer = async () => {
   try {
+    requireJwtSecret();
+
     await connectDatabase();
 
     // Inicializar asociaciones

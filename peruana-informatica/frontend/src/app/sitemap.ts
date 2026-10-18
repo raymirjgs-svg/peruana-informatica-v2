@@ -12,107 +12,61 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const routes: MetadataRoute.Sitemap = [];
 
   try {
-    // Obtener configuraciones SEO para determinar las páginas y sus configuraciones
-    const seoRes = await fetch(`${getApiBase()}/seo?is_active=true`, {
+    // Obtener posts publicados del blog (endpoint público)
+    const blogRes = await fetch(`${getApiBase()}/blog?limit=100`, {
       next: { revalidate: 3600 },
-      headers: {
-        Authorization: `Basic ${Buffer.from(`${process.env.NEXT_PUBLIC_ADMIN_USERNAME || "admin"}:${process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "admin123"}`).toString("base64")}`,
-      },
     });
 
-    if (seoRes.ok) {
-      const seoData = await seoRes.json();
-      const seoSettings = seoData.data || [];
+    if (blogRes.ok) {
+      const blogData = await blogRes.json();
+      const blogPosts = blogData.data || [];
 
-      // Agregar rutas basadas en configuraciones SEO
-      for (const setting of seoSettings) {
-        let url = siteUrl;
-
-        // Mapear tipos de página a URLs
-        switch (setting.page_type) {
-          case "home":
-          case "global":
-            url = `${siteUrl}/`;
-            break;
-          case "products":
-            url = `${siteUrl}/products`;
-            break;
-          case "categories":
-            url = `${siteUrl}/categories`;
-            break;
-          case "brands":
-            url = `${siteUrl}/brands`;
-            break;
-          case "contact":
-            url = `${siteUrl}/contacto`;
-            break;
-          case "blog":
-            url = `${siteUrl}/blog`;
-            break;
-          case "product":
-            if (setting.page_identifier) {
-              url = `${siteUrl}/products/${setting.page_identifier}`;
-            }
-            break;
-          case "category":
-            if (setting.page_identifier) {
-              url = `${siteUrl}/categories/${setting.page_identifier}`;
-            }
-            break;
-          case "brand":
-            if (setting.page_identifier) {
-              url = `${siteUrl}/brands/${setting.page_identifier}`;
-            }
-            break;
-          default:
-            continue; // Skip unknown page types
-        }
-
+      for (const post of blogPosts) {
+        if (!post?.slug) continue;
         routes.push({
-          url,
-          lastModified: new Date(setting.updatedAt || setting.createdAt),
-          changeFrequency: setting.change_frequency as
-            | "always"
-            | "hourly"
-            | "daily"
-            | "weekly"
-            | "monthly"
-            | "yearly"
-            | "never",
-          priority: parseFloat(setting.priority.toString()) || 0.5,
+          url: `${siteUrl}/blog/${post.slug}`,
+          lastModified: new Date(
+            post.updatedAt || post.published_at || post.createdAt || Date.now(),
+          ),
+          changeFrequency: "monthly",
+          priority: 0.6,
         });
       }
     }
 
-    // Si no hay configuraciones SEO, usar rutas por defecto
-    if (routes.length === 0) {
-      routes.push(
-        {
-          url: `${siteUrl}/`,
-          lastModified: new Date(),
-          changeFrequency: "daily",
-          priority: 1,
-        },
-        {
-          url: `${siteUrl}/products`,
-          lastModified: new Date(),
-          changeFrequency: "daily",
-          priority: 0.9,
-        },
-        {
-          url: `${siteUrl}/categories`,
-          lastModified: new Date(),
-          changeFrequency: "weekly",
-          priority: 0.8,
-        },
-        {
-          url: `${siteUrl}/contacto`,
-          lastModified: new Date(),
-          changeFrequency: "monthly",
-          priority: 0.7,
-        },
-      );
-    }
+    // Rutas base públicas (no requieren credenciales)
+    routes.push(
+      {
+        url: `${siteUrl}/`,
+        lastModified: new Date(),
+        changeFrequency: "daily",
+        priority: 1,
+      },
+      {
+        url: `${siteUrl}/products`,
+        lastModified: new Date(),
+        changeFrequency: "daily",
+        priority: 0.9,
+      },
+      {
+        url: `${siteUrl}/categories`,
+        lastModified: new Date(),
+        changeFrequency: "weekly",
+        priority: 0.8,
+      },
+      {
+        url: `${siteUrl}/blog`,
+        lastModified: new Date(),
+        changeFrequency: "weekly",
+        priority: 0.7,
+      },
+      {
+        url: `${siteUrl}/contacto`,
+        lastModified: new Date(),
+        changeFrequency: "monthly",
+        priority: 0.7,
+      },
+    );
 
     // Agregar productos dinámicamente (primeras 500 URLs para evitar sitemap muy grande)
     const productsRes = await fetch(

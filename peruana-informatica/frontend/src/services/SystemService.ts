@@ -1,4 +1,6 @@
 
+import { getAdminAuthHeaders } from "@/lib/adminAuth";
+
 interface SystemHealth {
     database: {
         status: 'ok' | 'error' | 'unknown';
@@ -47,12 +49,8 @@ class SystemService {
     private static readonly API_BASE = API_CONFIG.API_BASE_URL;
 
     private static getAuthHeaders(): Record<string, string> {
-        const username = process.env.NEXT_PUBLIC_ADMIN_USERNAME || "admin";
-        const password = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "admin123";
-        const credentials = btoa(`${username}:${password}`);
-
         return {
-            Authorization: `Basic ${credentials}`,
+            ...getAdminAuthHeaders(),
         };
     }
 

@@ -39,6 +39,12 @@ router.get('/utils/suggestions', searchRateLimit, [
 
     if (searchTerms.length === 0) return res.json([]);
 
+    const matchingBrands = await Brand.findAll({
+      where: { name: { [Op.like]: `%${q}%` } },
+      attributes: ['id']
+    });
+    const matchingBrandIds = matchingBrands.map(b => b.id);
+
     // Simple robust search for suggestions - prioritized by name
     const products = await Product.findAll({
       where: {
@@ -47,16 +53,17 @@ router.get('/utils/suggestions', searchRateLimit, [
         [Op.or]: [
           { name: { [Op.like]: `%${q}%` } },
           { category: { [Op.like]: `%${q}%` } },
-          { brand_id: { [Op.in]: sequelize.literal(`(SELECT id FROM brands WHERE name LIKE '%${q}%')`) } }
+          { brand_id: { [Op.in]: matchingBrandIds } }
         ]
       },
       attributes: ['cod_producto', 'name', 'slug', 'image', 'category', 'price', 'price_dis', 'price_web', 'price_cot'],
       limit: limit,
       order: [
         // Prioritize exact start of name
-        [sequelize.literal(`CASE WHEN name LIKE '${q}%' THEN 1 ELSE 2 END`), 'ASC'],
+        [sequelize.literal(`CASE WHEN name LIKE :qprefix THEN 1 ELSE 2 END`), 'ASC'],
         ['name', 'ASC']
-      ]
+      ],
+      replacements: { qprefix: `${q}%` }
     });
 
     res.json(products);
@@ -119,6 +126,7 @@ router.get('/', searchRateLimit, [
 
     // Advanced Search Logic "Amazon-like"
     let order: any = [['cod_producto', 'DESC']]; // Default
+    let replacements: Record<string, string> = {};
 
     if (search) {
       const cleanSearch = search.trim();
@@ -162,16 +170,19 @@ router.get('/', searchRateLimit, [
       //   ELSE 5                                 (Description/Other)
       // END
 
-      // Note: literal requires careful escaping. For simplicity/safety with sequelize queries, we use basic sanitization.
-      const safeSearch = cleanSearch.replace(/'/g, "\\'");
+      replacements = {
+        qexact: cleanSearch,
+        qprefix: `${cleanSearch}%`,
+        qcontains: `%${cleanSearch}%`
+      };
 
       order = [
         [sequelize.literal(`
           CASE 
-            WHEN Product.codigo_interno = '${safeSearch}' THEN 1
-            WHEN Product.name LIKE '${safeSearch}' THEN 2
-            WHEN Product.name LIKE '${safeSearch}%' THEN 3
-            WHEN Product.name LIKE '%${safeSearch}%' THEN 4
+            WHEN Product.codigo_interno = :qexact THEN 1
+            WHEN Product.name LIKE :qexact THEN 2
+            WHEN Product.name LIKE :qprefix THEN 3
+            WHEN Product.name LIKE :qcontains THEN 4
             ELSE 5 
           END`), 'ASC'],
         ['is_featured', 'DESC'], // Boost featured items among similar relevance
@@ -216,6 +227,7 @@ router.get('/', searchRateLimit, [
       limit,
       offset,
       order,
+      replacements,
       attributes: [
         'cod_producto', 'name', 'slug', 'description', 'short_description', 'price', 'price_web', 'price_cot', 'price_dis', 'stock', 'category', 'keywords', 'brand_id', 'category_id', 'estado', 'codigo_interno',
         'component_type', 'socket_type', 'ram_type', 'form_factor', 'tdp_watts', 'has_integrated_graphics', 'component_specs', 'is_featured', 'is_new', 'is_clearance', 'average_rating', 'review_count'

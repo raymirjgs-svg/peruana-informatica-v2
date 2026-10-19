@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { pageService } from '@/services/PageService';
+import { sanitizeHtml } from '@/lib/sanitize';
 
 interface PageProps {
     params: Promise<{ slug: string }>;
@@ -48,7 +49,7 @@ export default async function DynamicPage({ params }: PageProps) {
 
                 {/* Content */}
                 <div className="p-8 md:p-12 prose prose-lg max-w-none prose-blue prose-img:rounded-xl prose-headings:text-gray-900 prose-p:text-gray-600">
-                    <div dangerouslySetInnerHTML={{ __html: page.content }} />
+                    <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(page.content) }} />
                 </div>
             </div>
         </div>

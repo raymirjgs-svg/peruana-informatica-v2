@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Script from "next/script";
+import { escapeJsonLd } from "@/lib/sanitize";
 
 function getApiBase() {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
@@ -125,7 +126,7 @@ export default async function ProductSlugLayout({
         <Script
           id="product-jsonld"
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: escapeJsonLd(jsonLd) }}
         />
       )}
       {children}

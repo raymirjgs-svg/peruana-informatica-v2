@@ -6,6 +6,7 @@ import { Navigation } from "@/components/common/Navigation";
 import { BlogService, type BlogPost } from "@/services/BlogService";
 import Link from "next/link";
 import Image from "next/image";
+import { sanitizeHtml } from "@/lib/sanitize";
 
 export default function BlogPostPage() {
   const params = useParams();
@@ -324,7 +325,7 @@ export default function BlogPostPage() {
                           .replace(/\*\*(.+?)\*\*/g, '<strong class="font-bold text-gray-900">$1</strong>')
                           .replace(/\*(.+?)\*/g, '<em class="italic">$1</em>');
                         return (
-                          <li key={index} className="ml-6 mb-2 text-gray-700 leading-relaxed list-disc" dangerouslySetInnerHTML={{ __html: processedContent }} />
+                          <li key={index} className="ml-6 mb-2 text-gray-700 leading-relaxed list-disc" dangerouslySetInnerHTML={{ __html: sanitizeHtml(processedContent) }} />
                         );
                       }
                       // Líneas vacías
@@ -341,7 +342,7 @@ export default function BlogPostPage() {
                         <p
                           key={index}
                           className="text-gray-700 leading-relaxed mb-4 text-lg"
-                          dangerouslySetInnerHTML={{ __html: processedLine }}
+                          dangerouslySetInnerHTML={{ __html: sanitizeHtml(processedLine) }}
                         />
                       );
                     })}

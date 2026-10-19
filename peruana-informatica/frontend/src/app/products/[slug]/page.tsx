@@ -14,6 +14,7 @@ import { useCart } from '@/hooks/useCart';
 import { SettingsService, CompanySettings } from '@/services/SettingsService';
 import { RelatedProducts } from '@/components/product/RelatedProducts';
 import { ProductReviews } from '@/components/product/ProductReviews';
+import { sanitizeHtml } from '@/lib/sanitize';
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -397,7 +398,7 @@ export default function ProductDetailPage() {
                 <h3 className="text-2xl font-bold mb-4">Descripción del Producto</h3>
                 <div
                   className="prose max-w-none [&_table]:w-full [&_table]:border-collapse [&_table]:my-4 [&_th]:border [&_th]:border-gray-300 [&_th]:p-3 [&_th]:bg-gray-100 [&_th]:text-left [&_td]:border [&_td]:border-gray-300 [&_td]:p-3 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5"
-                  dangerouslySetInnerHTML={{ __html: product.description || 'No hay descripción disponible para este producto.' }}
+                  dangerouslySetInnerHTML={{ __html: sanitizeHtml(product.description) || 'No hay descripción disponible para este producto.' }}
                 />
               </div>
             )}

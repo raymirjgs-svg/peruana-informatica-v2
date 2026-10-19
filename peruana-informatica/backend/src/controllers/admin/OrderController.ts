@@ -26,14 +26,34 @@ const ORDER_STATUS_TRANSITIONS: Record<string, string[]> = {
 
 export const getOrders = async (req: Request, res: Response) => {
     try {
-        const orders = await Order.findAll({
+        const parsedPage = parseInt(String(req.query.page ?? ''), 10);
+        const parsedLimit = parseInt(String(req.query.limit ?? ''), 10);
+
+        const page = Number.isFinite(parsedPage) && parsedPage >= 1 ? parsedPage : 1;
+        const limit = Number.isFinite(parsedLimit) && parsedLimit >= 1
+            ? Math.min(parsedLimit, 100)
+            : 20;
+
+        const { rows, count } = await Order.findAndCountAll({
             include: [{
                 model: OrderItem,
                 as: 'items'
             }],
-            order: [['createdAt', 'DESC']]
+            order: [['createdAt', 'DESC']],
+            limit,
+            offset: (page - 1) * limit
         });
-        res.json(orders);
+
+        res.json({
+            success: true,
+            orders: rows,
+            pagination: {
+                page,
+                limit,
+                total: count,
+                totalPages: Math.ceil(count / limit)
+            }
+        });
     } catch (error) {
         console.error('Error fetching orders:', error);
         res.status(500).json({ error: 'Error obteniendo pedidos' });

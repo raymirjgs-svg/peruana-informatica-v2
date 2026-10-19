@@ -33,7 +33,7 @@ Image.init(
       allowNull: true,
     },
     imagen: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING(500),
       allowNull: true,
     },
   },

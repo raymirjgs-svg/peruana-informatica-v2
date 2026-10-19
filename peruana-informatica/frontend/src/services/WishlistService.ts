@@ -27,7 +27,7 @@ class WishlistService {
      */
     async getAnalytics(token?: string): Promise<{ success: boolean; data: WishlistAnalytics }> {
         try {
-            const response = await fetch(`${API_BASE}/admin/wishlists/analytics`, {
+            const response = await fetch(`${API_BASE}/api/admin/wishlists/analytics`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -50,7 +50,7 @@ class WishlistService {
     async getAllWishlists(page: number = 1, limit: number = 20, token?: string) {
         try {
             const response = await fetch(
-                `${API_BASE}/admin/wishlists?page=${page}&limit=${limit}`,
+                `${API_BASE}/api/admin/wishlists?page=${page}&limit=${limit}`,
                 {
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -75,7 +75,7 @@ class WishlistService {
     async getWishlistsByProduct(productId: number, token?: string) {
         try {
             const response = await fetch(
-                `${API_BASE}/admin/wishlists/product/${productId}`,
+                `${API_BASE}/api/admin/wishlists/product/${productId}`,
                 {
                     headers: {
                         'Authorization': `Bearer ${token}`

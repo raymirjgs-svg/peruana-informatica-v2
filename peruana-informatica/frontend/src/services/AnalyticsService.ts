@@ -37,7 +37,7 @@ class AnalyticsService {
      */
     async getKPIs(token?: string): Promise<{ success: boolean; data: KPIs }> {
         try {
-            const response = await fetch(`${API_BASE}/admin/analytics/kpis`, {
+            const response = await fetch(`${API_BASE}/api/admin/analytics/kpis`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -56,7 +56,7 @@ class AnalyticsService {
      */
     async getSalesOverview(period: string = '30d', token?: string): Promise<{ success: boolean; data: SalesDataPoint[] }> {
         try {
-            const response = await fetch(`${API_BASE}/admin/analytics/sales-overview?period=${period}`, {
+            const response = await fetch(`${API_BASE}/api/admin/analytics/sales-overview?period=${period}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -75,7 +75,7 @@ class AnalyticsService {
      */
     async getTopProducts(limit: number = 10, token?: string): Promise<{ success: boolean; data: TopProduct[] }> {
         try {
-            const response = await fetch(`${API_BASE}/admin/analytics/top-products?limit=${limit}`, {
+            const response = await fetch(`${API_BASE}/api/admin/analytics/top-products?limit=${limit}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -94,7 +94,7 @@ class AnalyticsService {
      */
     async getSalesByPaymentMethod(token?: string) {
         try {
-            const response = await fetch(`${API_BASE}/admin/analytics/payment-methods`, {
+            const response = await fetch(`${API_BASE}/api/admin/analytics/payment-methods`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -113,7 +113,7 @@ class AnalyticsService {
      */
     async getRecentOrders(limit: number = 10, token?: string) {
         try {
-            const response = await fetch(`${API_BASE}/admin/analytics/recent-orders?limit=${limit}`, {
+            const response = await fetch(`${API_BASE}/api/admin/analytics/recent-orders?limit=${limit}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -132,7 +132,7 @@ class AnalyticsService {
      */
     async getConversionMetrics(token?: string) {
         try {
-            const response = await fetch(`${API_BASE}/admin/analytics/conversion`, {
+            const response = await fetch(`${API_BASE}/api/admin/analytics/conversion`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }

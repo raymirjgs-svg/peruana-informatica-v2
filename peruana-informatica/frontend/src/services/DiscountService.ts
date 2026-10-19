@@ -17,7 +17,7 @@ export interface Discount {
 
 class DiscountService {
     async getAllDiscounts(token: string): Promise<Discount[]> {
-        const response = await fetch(`${API_BASE}/admin/discounts`, {
+        const response = await fetch(`${API_BASE}/api/admin/discounts`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         if (!response.ok) throw new Error('Failed to fetch discounts');
@@ -26,7 +26,7 @@ class DiscountService {
     }
 
     async createDiscount(data: Partial<Discount>, token: string) {
-        const response = await fetch(`${API_BASE}/admin/discounts`, {
+        const response = await fetch(`${API_BASE}/api/admin/discounts`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -39,7 +39,7 @@ class DiscountService {
     }
 
     async updateDiscount(id: number, data: Partial<Discount>, token: string) {
-        const response = await fetch(`${API_BASE}/admin/discounts/${id}`, {
+        const response = await fetch(`${API_BASE}/api/admin/discounts/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -52,7 +52,7 @@ class DiscountService {
     }
 
     async deleteDiscount(id: number, token: string) {
-        const response = await fetch(`${API_BASE}/admin/discounts/${id}`, {
+        const response = await fetch(`${API_BASE}/api/admin/discounts/${id}`, {
             method: 'DELETE',
             headers: { 'Authorization': `Bearer ${token}` }
         });

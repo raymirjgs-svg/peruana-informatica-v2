@@ -193,7 +193,7 @@ app.use("/api/admin/pages", adminPageRoutes); // Rutas admin de páginas
 app.use("/api/admin/wishlists", adminWishlistRoutes); // Rutas admin de wishlists
 app.use("/api/admin/analytics", adminAnalyticsRoutes); // Rutas admin de analytics
 app.use("/api/admin/system", adminSystemRoutes); // Rutas de monitoreo del sistema
-app.use("/api/admin/roles", adminRoleRoutes); // Rutas admin de roles y permisos
+app.use("/api/admin", adminRoleRoutes); // Rutas admin de roles y permisos
 app.use("/api/admin/discounts", adminDiscountRoutes); // Rutas admin de descuentos
 
 // Rutas API Externa y Adicionales

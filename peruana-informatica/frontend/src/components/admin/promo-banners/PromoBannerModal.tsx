@@ -57,9 +57,9 @@ export function PromoBannerModal({ banner, isOpen, onClose, onSave }: PromoBanne
     }, [isOpen, banner]);
 
     const loadCoupons = async () => {
-        if ((session?.user as any)?.accessToken) {
+        if (session?.accessToken) {
             try {
-                const data = await couponService.getAllCoupons((session!.user as any).accessToken);
+                const data = await couponService.getAllCoupons(session.accessToken);
                 // Filter only active coupons
                 setCoupons(data.filter(c => c.is_active));
             } catch (error) {

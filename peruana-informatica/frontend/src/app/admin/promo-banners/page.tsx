@@ -18,15 +18,16 @@ export default function PromoBannersPage() {
     const [selectedBanner, setSelectedBanner] = useState<PromoBanner | null>(null);
 
     useEffect(() => {
-        if ((session?.user as any)?.accessToken) {
+        if (session?.accessToken) {
             fetchBanners();
         }
     }, [session]);
 
     const fetchBanners = async () => {
+        if (!session?.accessToken) return;
         setIsLoading(true);
         try {
-            const data = await promoBannerService.getAllBanners((session!.user as any).accessToken);
+            const data = await promoBannerService.getAllBanners(session.accessToken);
             setBanners(data);
         } catch (error) {
             console.error('Error fetching banners:', error);
@@ -37,8 +38,9 @@ export default function PromoBannersPage() {
     };
 
     const handleCreate = async (data: Partial<PromoBanner>) => {
+        if (!session?.accessToken) return;
         try {
-            await promoBannerService.createBanner(data, (session!.user as any).accessToken);
+            await promoBannerService.createBanner(data, session.accessToken);
             toast.success('Banner creado exitosamente');
             fetchBanners();
         } catch (error: any) {
@@ -48,8 +50,9 @@ export default function PromoBannersPage() {
 
     const handleUpdate = async (data: Partial<PromoBanner>) => {
         if (!selectedBanner) return;
+        if (!session?.accessToken) return;
         try {
-            await promoBannerService.updateBanner(selectedBanner.id, data, (session!.user as any).accessToken);
+            await promoBannerService.updateBanner(selectedBanner.id, data, session.accessToken);
             toast.success('Banner actualizado exitosamente');
             fetchBanners();
         } catch (error: any) {
@@ -59,8 +62,9 @@ export default function PromoBannersPage() {
 
     const handleDelete = async (id: number) => {
         if (!confirm('¿Estás seguro de eliminar este banner?')) return;
+        if (!session?.accessToken) return;
         try {
-            await promoBannerService.deleteBanner(id, (session!.user as any).accessToken);
+            await promoBannerService.deleteBanner(id, session.accessToken);
             toast.success('Banner eliminado');
             fetchBanners();
         } catch (error: any) {
@@ -69,8 +73,9 @@ export default function PromoBannersPage() {
     };
 
     const handleToggleStatus = async (banner: PromoBanner) => {
+        if (!session?.accessToken) return;
         try {
-            await promoBannerService.toggleStatus(banner.id, (session!.user as any).accessToken);
+            await promoBannerService.toggleStatus(banner.id, session.accessToken);
             toast.success(`Banner ${!banner.is_active ? 'activado' : 'desactivado'}`);
             fetchBanners();
         } catch (error) {

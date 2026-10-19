@@ -25,11 +25,13 @@ export const authOptions: NextAuthOptions = {
         CredentialsProvider({
             name: "Credentials",
             credentials: {
+                email: { label: "Email", type: "email" },
                 username: { label: "Email", type: "email" },
                 password: { label: "Contraseña", type: "password" },
             },
             async authorize(credentials) {
-                if (!credentials?.username || !credentials?.password) return null;
+                const email = credentials?.email || credentials?.username;
+                if (!email || !credentials?.password) return null;
 
                 try {
                     // Always query backend on port 3001
@@ -39,7 +41,7 @@ export const authOptions: NextAuthOptions = {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({
-                            email: credentials.username, // NextAuth uses 'username' field by default for the first credential
+                            email,
                             password: credentials.password,
                         }),
                     });
@@ -49,7 +51,7 @@ export const authOptions: NextAuthOptions = {
                     if (res.ok && data.accessToken) { // Backend returns accessToken, not token
                         return {
                             id: data.user?.id || "1",
-                            username: data.user?.username || data.user?.email.split('@')[0],
+                            username: data.user?.username || data.user?.email?.split('@')[0],
                             token: data.accessToken,
                             role: data.user?.role || 'customer'
                         };

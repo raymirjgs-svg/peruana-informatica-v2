@@ -2,17 +2,12 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-
-function getApiBase() {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
-  const trimmed = baseUrl.replace(/\/+$/, "");
-  return trimmed.endsWith("/api") ? trimmed : `${trimmed}/api`;
-}
+import { signIn } from "next-auth/react";
 
 export default function AdminLoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("admin@peruanadeinformatica.com");
-  const [password, setPassword] = useState("admin123");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -21,27 +16,19 @@ export default function AdminLoginPage() {
     setError(null);
     setLoading(true);
     try {
-      const apiBase = getApiBase();
-      const res = await fetch(`${apiBase}/admin/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+      const res = await signIn("credentials", {
+        redirect: false,
+        email,
+        password,
       });
 
-      const data = await res.json().catch(() => ({}));
-
-      if (!res.ok) {
-        throw new Error(data?.error || data?.message || `Error ${res.status}`);
+      if (res?.error) {
+        setError("Credenciales incorrectas");
+        return;
       }
 
-      // Guardar token en localStorage
-      if (data?.accessToken) {
-        localStorage.setItem("adminToken", data.accessToken);
-        localStorage.setItem("adminUser", JSON.stringify(data.user));
-      }
-
-      // Redirigir al dashboard de admin
       router.push("/admin");
+      router.refresh();
     } catch (err: any) {
       setError(err?.message || "Error de autenticación");
     } finally {
@@ -91,9 +78,6 @@ export default function AdminLoginPage() {
             {loading ? "Ingresando..." : "Ingresar"}
           </button>
         </form>
-        <p className="text-xs text-gray-500 mt-4">
-          Endpoint: <code>{`${getApiBase()}/admin/login`}</code>
-        </p>
       </div>
     </div>
   );

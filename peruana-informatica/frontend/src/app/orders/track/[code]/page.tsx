@@ -87,12 +87,13 @@ export default function OrderTrackingPage() {
   };
 
   const getStatusBadge = (status: string) => {
+    const pending = { bg: 'bg-yellow-100', text: 'text-yellow-800', label: 'Pendiente' };
     const badges: Record<string, { bg: string; text: string; label: string }> = {
-      pending: { bg: 'bg-yellow-100', text: 'text-yellow-800', label: 'Pendiente' },
+      pending,
       processed: { bg: 'bg-green-100', text: 'text-green-800', label: 'Procesado' },
       cancelled: { bg: 'bg-red-100', text: 'text-red-800', label: 'Cancelado' }
     };
-    const badge = badges[status] || badges.pending;
+    const badge = badges[status] || pending;
     return (
       <span className={`px-3 py-1 rounded-full text-sm font-semibold ${badge.bg} ${badge.text}`}>
         {badge.label}
@@ -101,12 +102,13 @@ export default function OrderTrackingPage() {
   };
 
   const getPaymentStatusBadge = (status: string) => {
+    const pending = { bg: 'bg-yellow-100', text: 'text-yellow-800', label: 'Pendiente' };
     const badges: Record<string, { bg: string; text: string; label: string }> = {
-      pending: { bg: 'bg-yellow-100', text: 'text-yellow-800', label: 'Pendiente' },
+      pending,
       verified: { bg: 'bg-green-100', text: 'text-green-800', label: 'Verificado' },
       rejected: { bg: 'bg-red-100', text: 'text-red-800', label: 'Rechazado' }
     };
-    const badge = badges[status] || badges.pending;
+    const badge = badges[status] || pending;
     return (
       <span className={`px-3 py-1 rounded-full text-sm font-semibold ${badge.bg} ${badge.text}`}>
         {badge.label}

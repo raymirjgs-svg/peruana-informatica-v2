@@ -157,7 +157,7 @@ export default function SettingsPage() {
         icon: 'text-amber-600 dark:text-amber-400'
       }
     };
-    return colors[color] || colors.blue;
+    return colors[color] || colors.blue || { selected: '', hover: '', icon: '' };
   };
 
   if (loading) {

@@ -29,11 +29,11 @@ export default function BrandsPage() {
     : brands;
 
   // Letras disponibles
-  const availableLetters = Array.from(new Set(brands.map(b => b.name[0].toUpperCase()))).sort();
+  const availableLetters = Array.from(new Set(brands.map(b => b.name.charAt(0).toUpperCase()))).sort();
 
   // Logo placeholder según marca
   const getBrandLogo = (name: string) => {
-    const firstLetter = name[0].toUpperCase();
+    const firstLetter = name.charAt(0).toUpperCase();
     const colors = [
       'bg-blue-500',
       'bg-green-500',

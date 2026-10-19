@@ -144,7 +144,7 @@ export default function AdminProductsPage() {
   // Obtener URL de imagen del producto
   const getProductImageUrl = (product: Product) => {
     if (!product.images || product.images.length === 0) return null;
-    const img = product.images[0].imagen;
+    const img = product.images[0]?.imagen;
     if (!img) return null;
     if (img.startsWith('http')) return img;
     const baseUrl = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001').replace(/\/api\/?$/, '');
@@ -1344,7 +1344,9 @@ export default function AdminProductsPage() {
                               setUploadingImage(true);
                               const newUrls = [];
                               for (let i = 0; i < e.target.files.length; i++) {
-                                const url = await handleFileUpload(e.target.files[i]);
+                                const selectedFile = e.target.files[i];
+                                if (!selectedFile) continue;
+                                const url = await handleFileUpload(selectedFile);
                                 if (url) newUrls.push(url);
                               }
                               setAdditionalImages([...additionalImages, ...newUrls]);

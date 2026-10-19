@@ -576,7 +576,7 @@ class BlogService {
       scheduled: 'bg-blue-100 text-blue-700 border-blue-200',
       archived: 'bg-red-100 text-red-700 border-red-200'
     };
-    return statusColors[status] || statusColors.draft;
+    return statusColors[status] || statusColors.draft || '';
   }
 
   /**

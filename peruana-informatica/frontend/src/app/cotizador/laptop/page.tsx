@@ -167,7 +167,7 @@ export default function LaptopQuotation() {
     const match = storage.match(/(\d+)\s*(GB|TB|gb|tb)/i);
     if (match) {
       const value = match[1];
-      const unit = match[2].toUpperCase();
+      const unit = match[2]?.toUpperCase() ?? '';
       return `${value}${unit}`;
     }
     return storage;

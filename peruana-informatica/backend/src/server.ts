@@ -8,6 +8,7 @@ import swaggerUi from "swagger-ui-express";
 import chalk from "chalk";
 import { swaggerSpec } from "./config/swagger";
 import { connectDatabase, sequelize } from "./database/connection";
+import { CronJobScheduler } from "./config/cron";
 import productRoutes from "./routes/productRoutes";
 import brandRoutes from "./routes/brandRoutes";
 import categoryRoutes from "./routes/categoryRoutes";
@@ -216,6 +217,10 @@ const startServer = async () => {
 
     // Inicializar asociaciones
     initAssociations();
+
+    if (process.env.ENABLE_CRON !== 'false') {
+      CronJobScheduler.initialize();
+    }
 
     // ✅ CRÍTICO: Validar que la BD tenga tablas ANTES de continuar
     console.log(chalk.cyan('\n🔍 Validando estructura de base de datos...'));

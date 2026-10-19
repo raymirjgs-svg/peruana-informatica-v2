@@ -1,5 +1,6 @@
 import cron from 'node-cron';
 import { abandonedCartService } from '../services/AbandonedCartService';
+import { SyncService } from '../services/SyncService';
 import { logger } from '../config/logger';
 
 export class CronJobScheduler {
@@ -17,6 +18,16 @@ export class CronJobScheduler {
                 logger.info(`Abandoned cart recovery completed. ${sent} emails sent.`);
             } catch (error) {
                 logger.error('Error in abandoned cart cron job:', error);
+            }
+        });
+
+        cron.schedule('0 */3 * * *', async () => {
+            logger.info('Running ERP product sync job...');
+            try {
+                await SyncService.syncProducts();
+                logger.info('ERP product sync completed.');
+            } catch (error) {
+                logger.error('Error in ERP product sync cron job:', error);
             }
         });
 

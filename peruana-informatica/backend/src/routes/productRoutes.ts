@@ -10,7 +10,6 @@ import { Image } from '../models/Image';
 import { Op } from 'sequelize';
 import { sequelize } from '../database/connection';
 import { searchRateLimit } from '../middleware/security';
-import { SyncService } from '../services/SyncService';
 
 const router = express.Router();
 
@@ -85,9 +84,6 @@ router.get('/', searchRateLimit, [
   query('clearance').optional().isBoolean().withMessage('Clearance flag must be boolean'),
 ], validateRequest, async (req: Request, res: Response) => {
   try {
-    // Trigger automatic sync (non-blocking)
-    SyncService.syncProducts().catch(err => console.error('Background sync error:', err));
-
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 12;
     const offset = (page - 1) * limit;

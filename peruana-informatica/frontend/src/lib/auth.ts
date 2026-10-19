@@ -37,7 +37,7 @@ export const authOptions: NextAuthOptions = {
                     // Always query backend on port 3001
                     const apiBase = process.env.INTERNAL_API_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
-                    const res = await fetch(`${apiBase}/api/admin/login`, {
+                    const res = await fetch(`${apiBase}/api/auth/login`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({

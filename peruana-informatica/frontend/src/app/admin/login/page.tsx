@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
+import { signIn, getSession, signOut } from "next-auth/react";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -24,6 +24,15 @@ export default function AdminLoginPage() {
 
       if (res?.error) {
         setError("Credenciales incorrectas");
+        return;
+      }
+
+      const session = await getSession();
+      const role = session?.user?.role;
+
+      if (role !== "admin" && role !== "super-admin") {
+        await signOut({ redirect: false });
+        setError("No tenés permisos de administrador");
         return;
       }
 

@@ -5,6 +5,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { requireJwtSecret } from '../../config/env';
 import { authLimiter } from '../../middleware/rateLimiter';
+import { authenticateToken, requireAdmin } from '../../middleware/authMiddleware';
 
 const router = express.Router();
 
@@ -45,7 +46,7 @@ router.post('/login', authLimiter, [
     }
 
     // Verificar que sea admin
-    if (user.role !== 'admin') {
+    if (!['admin', 'super-admin'].includes(user.role)) {
       return res.status(401).json({
         error: 'Credenciales inválidas',
         message: 'Email o contraseña incorrectos'
@@ -88,18 +89,9 @@ router.post('/login', authLimiter, [
 });
 
 // GET /api/admin/me - Información del usuario actual (requires auth)
-router.get('/me', async (req: Request, res: Response) => {
+router.get('/me', authenticateToken, requireAdmin, async (req: Request, res: Response) => {
   try {
-    const token = req.headers.authorization?.split(' ')[1];
-
-    if (!token) {
-      return res.status(401).json({ error: 'Token no proporcionado' });
-    }
-
-    const JWT_SECRET = requireJwtSecret();
-    const decoded: any = jwt.verify(token, JWT_SECRET);
-
-    const user = await User.findByPk(decoded.id);
+    const user = await User.findByPk((req as Request & { user?: { id: number } }).user?.id);
 
     if (!user) {
       return res.status(404).json({ error: 'Usuario no encontrado' });

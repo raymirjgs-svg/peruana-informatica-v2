@@ -135,6 +135,7 @@ export default function PCBuilder() {
 
     } catch (err) {
       console.error(`Error loading compatible ${componentType} products:`, err);
+      setCompatibilityError(err instanceof Error ? err.message : 'No se pudieron cargar los productos. Intenta nuevamente.');
       setCompatibleProducts([]);
     } finally {
       setLoading(false);

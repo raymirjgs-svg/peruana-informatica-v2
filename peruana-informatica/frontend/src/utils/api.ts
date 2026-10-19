@@ -24,7 +24,7 @@ class ApiClient {
       ...options,
       headers: {
         'Content-Type': 'application/json',
-        ...getAdminAuthHeaders(),
+        ...(endpoint.startsWith('/api/admin') ? getAdminAuthHeaders() : {}),
         ...options.headers,
       },
     };
@@ -106,177 +106,36 @@ class ApiClient {
 
   // Productos
   getProducts = async (params?: any) => {
-    try {
-      const queryParams = params ? new URLSearchParams(params).toString() : '';
-      const endpoint = queryParams ? `/api/products?${queryParams}` : '/api/products';
+    const queryParams = params ? new URLSearchParams(params).toString() : '';
+    const endpoint = queryParams ? `/api/products?${queryParams}` : '/api/products';
 
-      return await this.request(endpoint, { method: 'GET' });
-    } catch (error) {
-      console.warn(`API error for /products, using fallback data:`, error);
-      // Devolver datos de ejemplo cuando la API no esté disponible
-      return {
-        products: [
-          {
-            id: 1,
-            cod_producto: 1,
-            name: 'Laptop Dell Inspiron 15',
-            slug: 'laptop-dell-inspiron-15',
-            description: 'Laptop Dell Inspiron 15 con Intel Core i5, 8GB RAM, 256GB SSD',
-            price: 2499.00,
-            stock: 15,
-            codigo_interno: 'LAP-DELL-15-001',
-            component_type: 'laptop',
-            component_specs: {
-              processor: 'Intel Core i5-1135G7',
-              ram: '8GB DDR4',
-              storage: '256GB SSD',
-              graphics: 'Intel Iris Xe',
-              screen_size: '15.6" Full HD'
-            }
-          },
-          {
-            id: 2,
-            cod_producto: 2,
-            name: 'Laptop HP Pavilion Gaming',
-            slug: 'laptop-hp-pavilion-gaming',
-            description: 'Laptop HP Pavilion Gaming con AMD Ryzen 5, 16GB RAM, GTX 1650',
-            price: 3299.00,
-            stock: 8,
-            codigo_interno: 'LAP-HP-PG-002',
-            component_type: 'laptop',
-            component_specs: {
-              processor: 'AMD Ryzen 5 5600H',
-              ram: '16GB DDR4',
-              storage: '512GB SSD',
-              graphics: 'NVIDIA GTX 1650 4GB',
-              screen_size: '15.6" Full HD 144Hz'
-            }
-          },
-          {
-            id: 3,
-            cod_producto: 3,
-            name: 'MacBook Air M2',
-            slug: 'macbook-air-m2',
-            description: 'MacBook Air con chip M2, 8GB RAM, 256GB SSD',
-            price: 5499.00,
-            stock: 5,
-            codigo_interno: 'LAP-MACBOOK-AIR-M2-003',
-            component_type: 'laptop',
-            component_specs: {
-              processor: 'Apple M2 Chip',
-              ram: '8GB unified memory',
-              storage: '256GB SSD',
-              graphics: '8-core GPU',
-              screen_size: '13.6" Retina'
-            }
-          }
-        ],
-        total: 3,
-        page: 1,
-        pages: 1
-      };
-    }
+    return this.request(endpoint, { method: 'GET' });
   };
 
-  getProductById = async (id: number) => {
-    try {
-      return await this.request(`/api/products/${id}`, { method: 'GET' });
+  getProductById = async (id: number) =>
+    this.request(`/api/products/${id}`, { method: 'GET' });
 
-    } catch (error) {
-      console.warn(`API error for /products/${id}, using fallback data:`, error);
-      // Devolver datos de ejemplo para el producto específico
-      return {
-        id,
-        cod_producto: id,
-        name: `Producto de Ejemplo ${id}`,
-        slug: `producto-ejemplo-${id}`,
-        description: 'Producto de ejemplo para demostración',
-        price: 1999.00,
-        stock: 10,
-        codigo_interno: `PROD-${id}-EJEMPLO`,
-        component_type: 'laptop',
-        component_specs: {
-          processor: 'Intel Core i5',
-          ram: '8GB RAM',
-          storage: '256GB SSD'
-        }
-      };
-    }
-  };
-
-  getProductsByComponentType = async (type: string) => {
-    try {
-      return await this.request(`/api/products/by-component/${type}`, { method: 'GET' });
-
-    } catch (error) {
-      console.warn(`API error for /products/by-component/${type}, using fallback data:`, error);
-      // Devolver datos de ejemplo según el tipo
-      if (type === 'laptop' || type === 'laptops') {
-        return {
-          products: [
-            {
-              id: 1,
-              cod_producto: 1,
-              name: 'Laptop Ejemplo',
-              slug: 'laptop-ejemplo',
-              description: 'Laptop de ejemplo para demostración',
-              price: 2999.00,
-              stock: 12,
-              codigo_interno: 'LAP-EJ-001',
-              component_type: 'laptop',
-              component_specs: {
-                processor: 'Intel Core i5',
-                ram: '8GB',
-                storage: '256GB SSD'
-              }
-            }
-          ],
-          total: 1,
-          page: 1,
-          pages: 1
-        };
-      } else {
-        return { products: [], total: 0, page: 1, pages: 1 };
-      }
-    }
-  };
+  getProductsByComponentType = async (type: string) =>
+    this.request(`/api/products/by-component/${type}`, { method: 'GET' });
 
   // Compatibility System
-  filterCompatibleProducts = async (targetComponentType: string, selectedProducts: any[]) => {
-    try {
-      return await this.request('/api/compatibility/filter', {
-        method: 'POST',
-        body: JSON.stringify({
-          targetComponentType,
-          selectedProducts
-        })
-      });
-    } catch (error) {
-      console.warn('API error filtering compatible products:', error);
-      return { success: false, data: [] };
-    }
-  };
+  filterCompatibleProducts = async (targetComponentType: string, selectedProducts: any[]) =>
+    this.request('/api/compatibility/filter', {
+      method: 'POST',
+      body: JSON.stringify({
+        targetComponentType,
+        selectedProducts
+      })
+    });
 
-  validateBuild = async (productIds: number[]) => {
-    try {
-      return await this.request('/api/compatibility/validate', {
-        method: 'POST',
-        body: JSON.stringify({ productIds })
-      });
-    } catch (error) {
-      console.warn('API error validating build:', error);
-      return { success: false, data: { compatible: true, messages: [] } };
-    }
-  };
+  validateBuild = async (productIds: number[]) =>
+    this.request('/api/compatibility/validate', {
+      method: 'POST',
+      body: JSON.stringify({ productIds })
+    });
 
-  getAttributesByComponentType = async (componentType: string) => {
-    try {
-      return await this.request(`/api/compatibility/attributes/${componentType}`, { method: 'GET' });
-    } catch (error) {
-      console.warn(`API error checking attributes for ${componentType}:`, error);
-      return { success: false, data: [] };
-    }
-  };
+  getAttributesByComponentType = async (componentType: string) =>
+    this.request(`/api/compatibility/attributes/${componentType}`, { method: 'GET' });
 
   // Deprecated methods kept for backward compatibility if needed, but should be removed
   checkCompatibility = async (parentId: number, childId: number) => {
@@ -286,68 +145,28 @@ class ApiClient {
 
   // Laptops
   getLaptops = async (params?: any) => {
-    try {
-      const queryParams = params ? new URLSearchParams(params).toString() : '';
-      const endpoint = queryParams ? `/api/laptops?${queryParams}` : '/api/laptops';
-      return await this.request(endpoint, { method: 'GET' });
-    } catch (error) {
-      console.warn(`API error for /laptops, using fallback data:`, error);
-      // Fallback (omitted for brevity)
-      return [];
-    }
+    const queryParams = params ? new URLSearchParams(params).toString() : '';
+    const endpoint = queryParams ? `/api/laptops?${queryParams}` : '/api/laptops';
+    return this.request(endpoint, { method: 'GET' });
   };
 
   getCotizadorLaptops = async (params?: any) => {
-    try {
-      const queryParams = params ? new URLSearchParams(params).toString() : '';
-      const endpoint = queryParams ? `/api/cotizador/laptops?${queryParams}` : '/api/cotizador/laptops';
-      return await this.request(endpoint, { method: 'GET' });
-    } catch (error) {
-      console.warn(`API error for /cotizador/laptops:`, error);
-      return [];
-    }
+    const queryParams = params ? new URLSearchParams(params).toString() : '';
+    const endpoint = queryParams ? `/api/cotizador/laptops?${queryParams}` : '/api/cotizador/laptops';
+    return this.request(endpoint, { method: 'GET' });
   };
 
-  getLaptopSubcategories = async () => {
-    try {
-      return await this.request('/api/laptops/subcategories', { method: 'GET' });
-    } catch (error) {
-      console.warn(`API error for /laptops/subcategories, using fallback data:`, error);
-      // Devolver subcategorías de ejemplo
-      return [
-        { id: 1, name: 'Laptop Gamer', slug: 'laptop-gamer', type: 'tipo_laptop' },
-        { id: 2, name: 'Laptop Empresarial', slug: 'laptop-empresarial', type: 'tipo_laptop' },
-        { id: 3, name: 'Laptop Ultrabook', slug: 'laptop-ultrabook', type: 'tipo_laptop' }
-      ];
-    }
-  };
+  getLaptopSubcategories = async () =>
+    this.request('/api/laptops/subcategories', { method: 'GET' });
 
-  getLaptopProcessors = async () => {
-    try {
-      return await this.request('/api/laptops/processors', { method: 'GET' });
-    } catch (error) {
-      console.warn(`API error for /laptops/processors, using fallback data:`, error);
-      return [];
-    }
-  };
+  getLaptopProcessors = async () =>
+    this.request('/api/laptops/processors', { method: 'GET' });
 
-  getLaptopRamOptions = async () => {
-    try {
-      return await this.request('/api/laptops/ram', { method: 'GET' });
-    } catch (error) {
-      console.warn(`API error for /laptops/ram, using fallback data:`, error);
-      return [];
-    }
-  };
+  getLaptopRamOptions = async () =>
+    this.request('/api/laptops/ram', { method: 'GET' });
 
-  getLaptopStorageOptions = async () => {
-    try {
-      return await this.request('/api/laptops/storage', { method: 'GET' });
-    } catch (error) {
-      console.warn(`API error for /laptops/storage, using fallback data:`, error);
-      return [];
-    }
-  };
+  getLaptopStorageOptions = async () =>
+    this.request('/api/laptops/storage', { method: 'GET' });
 }
 
 export const apiClient = new ApiClient(API_BASE_URL);

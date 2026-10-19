@@ -30,6 +30,7 @@ export const metadata: Metadata = {
 };
 
 import NextAuthProvider from '@/components/providers/NextAuthProvider';
+import CustomerSessionSync from '@/components/providers/CustomerSessionSync';
 
 export default function RootLayout({
   children,
@@ -44,6 +45,7 @@ export default function RootLayout({
       </head>
       <body className={`${inter.variable} font-sans bg-gray-50`} suppressHydrationWarning={true}>
         <NextAuthProvider>
+          <CustomerSessionSync />
           <ErrorBoundary>
             <CompareProvider>
               <WishlistProvider>

@@ -130,8 +130,11 @@ export default function LaptopQuotation() {
         }
 
       } catch (err) {
-        console.warn('Error fetching from API, using fallback data:', err);
-        // Fallback logic omitted for brevity, assuming API works
+        console.error('Error fetching laptops from API:', err);
+        setError(err instanceof Error ? err.message : 'No se pudieron cargar las laptops. Intenta nuevamente.');
+        setLaptops([]);
+        setFilteredLaptops([]);
+        setAllSubcategories([]);
       } finally {
         setLoading(false);
       }

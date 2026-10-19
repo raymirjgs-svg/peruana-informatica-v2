@@ -270,9 +270,14 @@ export const paymentController = {
                 return res.sendStatus(200);
             }
 
-            // Verify signature when the secret is configured
+            // Fail closed when the webhook secret is not configured
             const secret = process.env.MP_WEBHOOK_SECRET;
-            if (secret) {
+            if (!secret) {
+                if (process.env.NODE_ENV === 'production') {
+                    console.error('Webhook rechazado: MP_WEBHOOK_SECRET no configurado');
+                    return res.sendStatus(500);
+                }
+            } else {
                 const signature = req.headers['x-signature'] as string | undefined;
                 const requestId = req.headers['x-request-id'] as string | undefined;
 
@@ -292,7 +297,16 @@ export const paymentController = {
                 const manifest = `id:${paymentId};request-id:${requestId};ts:${ts};`;
                 const expected = crypto.createHmac('sha256', secret).update(manifest).digest('hex');
 
-                if (!ts || !v1 || expected !== v1) {
+                let signatureValid = false;
+                if (ts && v1) {
+                    const expectedBuffer = Buffer.from(expected, 'hex');
+                    const providedBuffer = Buffer.from(v1, 'hex');
+                    if (expectedBuffer.length === providedBuffer.length) {
+                        signatureValid = crypto.timingSafeEqual(expectedBuffer, providedBuffer);
+                    }
+                }
+
+                if (!ts || !v1 || !signatureValid) {
                     console.warn('Webhook rechazado: firma inválida');
                     return res.sendStatus(401);
                 }

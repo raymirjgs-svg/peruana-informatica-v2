@@ -40,7 +40,7 @@ export const createOrder = async (req: Request, res: Response) => {
         const processedItems = [];
 
         for (const item of items) {
-            const product = await Product.findByPk(item.product_id);
+            const product = await Product.findByPk(item.product_id, { transaction: t });
 
             if (!product) {
                 // If product doesn't exist (or was deleted), we skip or error. 
@@ -50,6 +50,15 @@ export const createOrder = async (req: Request, res: Response) => {
             }
 
             const quantity = item.quantity || 1;
+            const availableStock = Number(product.stock) || 0;
+
+            if (quantity > availableStock) {
+                await t.rollback();
+                return res.status(400).json({
+                    error: `Stock insuficiente para "${product.name}". Disponible: ${availableStock}, solicitado: ${quantity}`
+                });
+            }
+
             const price = Number(product.price);
 
             totalAmount += price * quantity;

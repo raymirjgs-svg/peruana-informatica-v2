@@ -6,20 +6,36 @@ import fs from 'fs';
 import path from 'path';
 import { EmailService } from '../../services/EmailService';
 
+const VERIFIABLE_ORDER_STATUSES = [
+    'pending',
+    'pending_approval',
+    'pending_payment',
+    'payment_review'
+];
+
 // Verify payment
 export const verifyPayment = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        const { verified, verified_by } = req.body;
+        const { verified } = req.body;
 
         const order = await Order.findByPk(id);
         if (!order) {
             return res.status(404).json({ error: 'Pedido no encontrado' });
         }
 
+        const currentUser = (req as any).user;
+        const verifiedBy = currentUser?.email || (currentUser?.id != null ? String(currentUser.id) : 'Admin');
+
+        if (verified && !VERIFIABLE_ORDER_STATUSES.includes(order.status)) {
+            return res.status(400).json({
+                error: `No se puede verificar el pago de un pedido en estado ${order.status}`
+            });
+        }
+
         order.payment_status = verified ? 'verified' : 'rejected';
         order.payment_verified_at = new Date();
-        order.payment_verified_by = verified_by || 'Admin';
+        order.payment_verified_by = verifiedBy;
 
         if (verified) {
             order.status = 'processed';

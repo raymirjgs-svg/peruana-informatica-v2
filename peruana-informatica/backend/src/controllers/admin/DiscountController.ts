@@ -3,6 +3,31 @@ import Discount from '../../models/Discount';
 import { Product } from '../../models/Product';
 import { Category } from '../../models/Category';
 
+const DISCOUNT_EDITABLE_FIELDS = [
+    'name',
+    'description',
+    'discount_type',
+    'discount_value',
+    'applies_to',
+    'category_id',
+    'product_id',
+    'valid_from',
+    'valid_until',
+    'is_active'
+];
+
+function pickDiscountFields(body: any): Record<string, any> {
+    const data: Record<string, any> = {};
+
+    for (const field of DISCOUNT_EDITABLE_FIELDS) {
+        if (body && Object.prototype.hasOwnProperty.call(body, field)) {
+            data[field] = body[field];
+        }
+    }
+
+    return data;
+}
+
 class DiscountController {
     // --- ADMIN METHODS ---
 
@@ -71,7 +96,7 @@ class DiscountController {
                 return res.status(404).json({ success: false, message: 'Descuento no encontrado' });
             }
 
-            await discount.update(req.body);
+            await discount.update(pickDiscountFields(req.body));
             return res.status(200).json({ success: true, message: 'Descuento actualizado', data: discount });
         } catch (error) {
             console.error('Error updating discount:', error);

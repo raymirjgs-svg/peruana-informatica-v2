@@ -52,9 +52,7 @@ router.get('/categories', async (req: Request, res: Response) => {
         console.error('Error getting categories:', error);
         res.status(500).json({
             error: 'Error al obtener categorías',
-            code: 'CATEGORIES_FETCH_ERROR',
-            details: error.message,
-            stack: error.stack
+            code: 'CATEGORIES_FETCH_ERROR'
         });
     }
 });

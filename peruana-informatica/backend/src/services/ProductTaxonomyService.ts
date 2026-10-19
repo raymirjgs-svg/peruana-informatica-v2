@@ -25,7 +25,7 @@ export class ProductTaxonomyService {
         let brand = await Brand.findOne({
             where: {
                 name: {
-                    [require('sequelize').Op.iLike]: normalizedName
+                    [require('sequelize').Op.like]: normalizedName
                 }
             }
         });
@@ -59,7 +59,7 @@ export class ProductTaxonomyService {
         let category = await Category.findOne({
             where: {
                 name: {
-                    [require('sequelize').Op.iLike]: normalizedName
+                    [require('sequelize').Op.like]: normalizedName
                 }
             }
         });
@@ -98,7 +98,7 @@ export class ProductTaxonomyService {
         // Buscar subcategoría existente
         const where: any = {
             name: {
-                [require('sequelize').Op.iLike]: normalizedName
+                [require('sequelize').Op.like]: normalizedName
             }
         };
 

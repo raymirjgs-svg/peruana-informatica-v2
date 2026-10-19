@@ -40,10 +40,10 @@ export class BlogController {
 
       if (search) {
         whereClause[Op.or] = [
-          { title: { [Op.iLike]: `%${search}%` } },
-          { excerpt: { [Op.iLike]: `%${search}%` } },
-          { content: { [Op.iLike]: `%${search}%` } },
-          { tags: { [Op.iLike]: `%${search}%` } },
+          { title: { [Op.like]: `%${search}%` } },
+          { excerpt: { [Op.like]: `%${search}%` } },
+          { content: { [Op.like]: `%${search}%` } },
+          { tags: { [Op.like]: `%${search}%` } },
         ];
       }
 
@@ -176,9 +176,9 @@ export class BlogController {
 
       if (search) {
         whereClause[Op.or] = [
-          { title: { [Op.iLike]: `%${search}%` } },
-          { excerpt: { [Op.iLike]: `%${search}%` } },
-          { author_name: { [Op.iLike]: `%${search}%` } },
+          { title: { [Op.like]: `%${search}%` } },
+          { excerpt: { [Op.like]: `%${search}%` } },
+          { author_name: { [Op.like]: `%${search}%` } },
         ];
       }
 
@@ -546,7 +546,7 @@ export class BlogController {
 
       if (topic) {
         whereClause.topic = {
-          [Op.iLike]: `%${topic}%`,
+          [Op.like]: `%${topic}%`,
         };
       }
 

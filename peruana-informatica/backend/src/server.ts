@@ -242,10 +242,18 @@ const startServer = async () => {
     }
 
     // Global Error Handlers
+    const shutdown = async (code: number) => {
+      try {
+        await sequelize.close();
+      } catch (closeError) {
+        console.error('Error closing database connection:', closeError);
+      }
+      process.exit(code);
+    };
+
     process.on('uncaughtException', (error) => {
       console.error('FATAL: Uncaught Exception:', error);
-      // Keep the process alive if possible, or exit with error code
-      // process.exit(1); 
+      void shutdown(1);
     });
 
     process.on('unhandledRejection', (reason, promise) => {

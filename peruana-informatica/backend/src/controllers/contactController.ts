@@ -142,9 +142,9 @@ export class ContactController {
 
       if (search) {
         whereClause[Op.or] = [
-          { nombre: { [Op.iLike]: `%${search}%` } },
-          { email: { [Op.iLike]: `%${search}%` } },
-          { mensaje: { [Op.iLike]: `%${search}%` } },
+          { nombre: { [Op.like]: `%${search}%` } },
+          { email: { [Op.like]: `%${search}%` } },
+          { mensaje: { [Op.like]: `%${search}%` } },
         ];
       }
 

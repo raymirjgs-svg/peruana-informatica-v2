@@ -4,6 +4,7 @@ import { Category } from '../../models/Category';
 import { SubCategory } from '../../models/SubCategory';
 import { Op } from 'sequelize';
 import { authenticateToken, requireAdmin } from '../../middleware/authMiddleware';
+import { TaxonomyController } from '../../controllers/TaxonomyController';
 
 const router = express.Router();
 
@@ -21,6 +22,14 @@ const validateRequest = (req: Request, res: Response, next: any) => {
     }
     next();
 };
+
+// ============ ASIGNACIÓN DE TAXONOMÍA ============
+
+// POST asignar marca, categoría y subcategorías a un producto
+router.post('/assign', TaxonomyController.assignTaxonomy);
+
+// POST asignación masiva de taxonomía
+router.post('/bulk-assign', TaxonomyController.bulkAssignTaxonomy);
 
 // ============ CATEGORÍAS ============
 

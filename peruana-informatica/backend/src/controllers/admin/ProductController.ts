@@ -1,15 +1,107 @@
 import { Request, Response } from 'express';
-import { Op } from 'sequelize';
+import { Op, Transaction } from 'sequelize';
 import { Product } from '../../models/Product';
 import { Brand } from '../../models/Brand';
 import { Category } from '../../models/Category';
 import { SubCategory } from '../../models/SubCategory';
 import { ProductSubCategory } from '../../models/ProductSubCategory';
 import { Image } from '../../models/Image';
+import { sequelize } from '../../database/connection';
 import { SyncService } from '../../services/SyncService';
 import { PeruanaInformaticaService } from '../../services/PeruanaInformaticaService';
 
 export class ProductController {
+
+    // Crea un producto (con imágenes y subcategorías) dentro de una transacción
+    private async createProductRecord(data: any, transaction: Transaction) {
+        const {
+            name,
+            description,
+            price,
+            stock,
+            category_id,
+            brand_id,
+            image,
+            keywords,
+            component_type,
+            additional_images,
+            subcategory_ids
+        } = data;
+
+        const baseSlug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+        let slug = baseSlug;
+        let counter = 1;
+
+        while (await Product.findOne({ where: { slug }, transaction })) {
+            slug = `${baseSlug}-${counter}`;
+            counter++;
+        }
+
+        const generateCodigoInterno = async (): Promise<string> => {
+            const timestamp = Date.now().toString().slice(-8);
+            const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+            const codigo = `${timestamp}${random}`;
+
+            const exists = await Product.findOne({ where: { codigo_interno: codigo }, transaction });
+            if (exists) {
+                return generateCodigoInterno();
+            }
+            return codigo;
+        };
+
+        let codigo_interno: string;
+        const providedCodigo = data.codigo_interno;
+
+        if (providedCodigo !== undefined && providedCodigo !== null && String(providedCodigo).trim() !== '') {
+            codigo_interno = String(providedCodigo).trim();
+
+            const duplicate = await Product.findOne({ where: { codigo_interno }, transaction });
+            if (duplicate) {
+                const duplicateError: any = new Error(`El código interno '${codigo_interno}' ya está registrado`);
+                duplicateError.code = 'DUPLICATE_CODIGO_INTERNO';
+                throw duplicateError;
+            }
+        } else {
+            codigo_interno = await generateCodigoInterno();
+        }
+
+        const product = await Product.create({
+            name,
+            slug,
+            description,
+            short_description: (description || '').substring(0, 500),
+            price,
+            stock,
+            category_id,
+            brand_id,
+            image,
+            keywords,
+            codigo_interno,
+            seo_title: data.seo_title ?? null,
+            seo_description: data.seo_description ?? null,
+            component_type: component_type || null
+        }, { transaction });
+
+        if (additional_images && additional_images.length > 0) {
+            await Image.bulkCreate(
+                additional_images.map((imgUrl: string) => ({
+                    codigo_interno: product.codigo_interno,
+                    imagen: imgUrl
+                })),
+                { transaction }
+            );
+        }
+
+        if (subcategory_ids && Array.isArray(subcategory_ids) && subcategory_ids.length > 0) {
+            const subcategoryRecords = subcategory_ids.map((subId: number) => ({
+                product_codigo_interno: product.codigo_interno,
+                sub_category_id: subId
+            }));
+            await ProductSubCategory.bulkCreate(subcategoryRecords, { transaction });
+        }
+
+        return product;
+    }
 
     // GET todos los productos con paginación y filtros
     async getProducts(req: Request, res: Response) {
@@ -296,70 +388,11 @@ export class ProductController {
 
     // POST crear producto
     async createProduct(req: Request, res: Response) {
+        const transaction = await sequelize.transaction();
         try {
-            const { name, description, price, stock, category_id, brand_id, image, keywords, component_type, additional_images, subcategory_ids } = req.body;
+            const product = await this.createProductRecord(req.body, transaction);
 
-            // Generar slug único
-            const baseSlug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-            let slug = baseSlug;
-            let counter = 1;
-
-            while (await Product.findOne({ where: { slug } })) {
-                slug = `${baseSlug}-${counter}`;
-                counter++;
-            }
-
-            // Generar codigo_interno único
-            const generateCodigoInterno = async (): Promise<string> => {
-                const timestamp = Date.now().toString().slice(-8);
-                const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
-                const codigo = `${timestamp}${random}`;
-
-                const exists = await Product.findOne({ where: { codigo_interno: codigo } });
-                if (exists) {
-                    return generateCodigoInterno();
-                }
-                return codigo;
-            };
-
-            const codigo_interno = await generateCodigoInterno();
-
-            const product = await Product.create({
-                name,
-                slug,
-                description,
-                short_description: description.substring(0, 500),
-                price,
-                stock,
-                category_id,
-                brand_id,
-                image,
-                keywords,
-                codigo_interno,
-                seo_title: req.body.seo_title ?? null,
-                seo_description: req.body.seo_description ?? null,
-                component_type: component_type || null
-            });
-
-            // Guardar imágenes adicionales
-            if (additional_images && additional_images.length > 0) {
-                const imagePromises = additional_images.map((imgUrl: string) => {
-                    return Image.create({
-                        codigo_interno: product.codigo_interno,
-                        imagen: imgUrl
-                    });
-                });
-                await Promise.all(imagePromises);
-            }
-
-            // Guardar subcategorías
-            if (subcategory_ids && Array.isArray(subcategory_ids) && subcategory_ids.length > 0) {
-                const subcategoryRecords = subcategory_ids.map((subId: number) => ({
-                    product_codigo_interno: product.codigo_interno,
-                    sub_category_id: subId
-                }));
-                await ProductSubCategory.bulkCreate(subcategoryRecords);
-            }
+            await transaction.commit();
 
             const newProduct = await Product.findByPk(product.cod_producto, {
                 include: [
@@ -371,7 +404,17 @@ export class ProductController {
             });
 
             res.status(201).json(newProduct);
-        } catch (error) {
+        } catch (error: any) {
+            await transaction.rollback();
+
+            if (error?.code === 'DUPLICATE_CODIGO_INTERNO') {
+                return res.status(409).json({
+                    error: error.message,
+                    code: 'DUPLICATE_CODIGO_INTERNO',
+                    timestamp: new Date().toISOString()
+                });
+            }
+
             console.error('Error creating product:', error);
             res.status(500).json({
                 error: 'Error al crear producto',
@@ -381,15 +424,104 @@ export class ProductController {
         }
     }
 
+    // POST importar productos desde JSON (ERP)
+    async importJson(req: Request, res: Response) {
+        try {
+            const payload = req.body;
+            const items = Array.isArray(payload)
+                ? payload
+                : (Array.isArray(payload?.products) ? payload.products : null);
+
+            if (!items) {
+                return res.status(400).json({
+                    error: 'El cuerpo debe ser un array de productos o un objeto con la propiedad "products"',
+                    code: 'INVALID_IMPORT_PAYLOAD'
+                });
+            }
+
+            const success: any[] = [];
+            const updated: any[] = [];
+            const errors: any[] = [];
+
+            for (const raw of items) {
+                const codigo = raw?.codigo_interno ?? raw?.codigo ?? null;
+                const name = raw?.name ?? raw?.nombre ?? null;
+
+                if (!name) {
+                    errors.push({ codigo: codigo ?? 'sin_codigo', error: 'El nombre del producto es requerido' });
+                    continue;
+                }
+
+                const data = {
+                    name,
+                    description: raw?.description ?? raw?.descripcion ?? name,
+                    price: raw?.price ?? raw?.precio ?? raw?.pre_cli ?? 0,
+                    stock: raw?.stock ?? 0,
+                    category_id: raw?.category_id,
+                    brand_id: raw?.brand_id,
+                    image: raw?.image,
+                    keywords: raw?.keywords,
+                    component_type: raw?.component_type,
+                    additional_images: raw?.additional_images,
+                    subcategory_ids: raw?.subcategory_ids,
+                    codigo_interno: codigo ?? undefined,
+                    seo_title: raw?.seo_title,
+                    seo_description: raw?.seo_description
+                };
+
+                const transaction = await sequelize.transaction();
+                try {
+                    const product = await this.createProductRecord(data, transaction);
+                    await transaction.commit();
+                    success.push({
+                        codigo: product.codigo_interno,
+                        productId: product.cod_producto,
+                        name: product.name
+                    });
+                } catch (error: any) {
+                    await transaction.rollback();
+                    errors.push({
+                        codigo: codigo ?? 'sin_codigo',
+                        error: error?.message || 'Error al crear producto'
+                    });
+                }
+            }
+
+            res.status(201).json({
+                message: `Importación completada: ${success.length} creados, ${errors.length} errores`,
+                summary: {
+                    total: items.length,
+                    creados: success.length,
+                    actualizados: updated.length,
+                    errores: errors.length
+                },
+                details: {
+                    success,
+                    updated,
+                    errors
+                }
+            });
+        } catch (error) {
+            console.error('Error importing products:', error);
+            res.status(500).json({
+                error: 'Error al importar productos',
+                code: 'PRODUCT_IMPORT_ERROR',
+                timestamp: new Date().toISOString()
+            });
+        }
+    }
+
     // PUT actualizar producto
     async updateProduct(req: Request, res: Response) {
+        const transaction = await sequelize.transaction();
         try {
             const productId = parseInt(req.params.id as string);
             const { subcategory_ids } = req.body;
 
-            const product = await Product.findByPk(productId);
+            const product = await Product.findByPk(productId, { transaction });
 
             if (!product) {
+                await transaction.rollback();
                 return res.status(404).json({ error: 'Producto no encontrado' });
             }
 
@@ -428,13 +560,14 @@ export class ProductController {
                 }
             });
 
-            await product.update(updates);
+            await product.update(updates, { transaction });
 
             // Actualizar subcategorías si se proporcionan
             if (subcategory_ids && Array.isArray(subcategory_ids)) {
                 if (product.codigo_interno) {
                     await ProductSubCategory.destroy({
-                        where: { product_codigo_interno: product.codigo_interno }
+                        where: { product_codigo_interno: product.codigo_interno },
+                        transaction
                     });
 
                     if (subcategory_ids.length > 0) {
@@ -442,13 +575,16 @@ export class ProductController {
                             product_codigo_interno: product.codigo_interno,
                             sub_category_id: subId
                         }));
-                        await ProductSubCategory.bulkCreate(subcategoryRecords);
+                        await ProductSubCategory.bulkCreate(subcategoryRecords, { transaction });
                     }
                 }
             }
 
+            await transaction.commit();
+
             res.json(product);
         } catch (error) {
+            await transaction.rollback();
             console.error('Error updating product:', error);
             res.status(500).json({ error: 'Error al actualizar producto' });
         }
@@ -477,33 +613,40 @@ export class ProductController {
 
     // DELETE eliminar producto
     async deleteProduct(req: Request, res: Response) {
+        const transaction = await sequelize.transaction();
         try {
             const productId = parseInt(req.params.id as string);
-            const product = await Product.findByPk(productId);
+            const product = await Product.findByPk(productId, { transaction });
 
             if (!product) {
+                await transaction.rollback();
                 return res.status(404).json({ error: 'Producto no encontrado' });
             }
 
             // Eliminar imágenes asociadas primero
             if (product.codigo_interno) {
                 await Image.destroy({
-                    where: { codigo_interno: product.codigo_interno }
+                    where: { codigo_interno: product.codigo_interno },
+                    transaction
                 });
 
                 await ProductSubCategory.destroy({
-                    where: { product_codigo_interno: product.codigo_interno }
+                    where: { product_codigo_interno: product.codigo_interno },
+                    transaction
                 });
             }
 
             // Eliminar el producto
-            await product.destroy();
+            await product.destroy({ transaction });
+
+            await transaction.commit();
 
             res.json({
                 message: 'Producto eliminado correctamente',
                 id: productId
             });
         } catch (error) {
+            await transaction.rollback();
             console.error('Error deleting product:', error);
             res.status(500).json({ error: 'Error al eliminar producto' });
         }

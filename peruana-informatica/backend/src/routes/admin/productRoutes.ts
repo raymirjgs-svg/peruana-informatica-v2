@@ -54,7 +54,11 @@ router.post('/', [
   body('additional_images.*').optional().isURL().withMessage('URL de imagen adicional inválida'),
   body('subcategory_ids').optional().isArray().withMessage('IDs de subcategorías deben ser un array'),
   body('subcategory_ids.*').optional().isInt().withMessage('ID de subcategoría debe ser un entero'),
+  body('codigo_interno').optional().isString().withMessage('Código interno debe ser una cadena'),
 ], validateRequest, productController.createProduct.bind(productController));
+
+// POST importar productos desde JSON - Importación masiva (ERP)
+router.post('/import-json', productController.importJson.bind(productController));
 
 // PUT actualizar producto
 router.put('/:id', [

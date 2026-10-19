@@ -5,6 +5,7 @@ import path from 'path';
 import fs from 'fs';
 import { Carousel } from '../../models/Carousel';
 import { authenticateToken, requireAdmin } from '../../middleware/authMiddleware';
+import { sequelize } from '../../database/connection';
 
 const router = express.Router();
 
@@ -243,6 +244,7 @@ router.put('/reorder', [
   body('slides.*.id').isInt({ min: 1 }).withMessage('ID de slide debe ser un número entero mayor a 0'),
   body('slides.*.order').isInt({ min: 0 }).withMessage('Orden debe ser un número entero mayor o igual a 0'),
 ], validateRequest, async (req: Request, res: Response) => {
+  const transaction = await sequelize.transaction();
   try {
     const { slides } = req.body;
 
@@ -250,15 +252,18 @@ router.put('/reorder', [
     for (const slideData of slides) {
       await Carousel.update(
         { order: slideData.order },
-        { where: { id: slideData.id } }
+        { where: { id: slideData.id }, transaction }
       );
     }
+
+    await transaction.commit();
 
     res.json({ 
       message: 'Orden actualizado correctamente',
       updatedSlides: slides.length
     });
   } catch (error) {
+    await transaction.rollback();
     console.error('Error reordering slides:', error);
     res.status(500).json({ 
       error: 'Error al actualizar orden',

@@ -110,7 +110,6 @@ export const paymentController = {
 
             // 2. Create Order (Pending)
             let totalAmount = 0;
-            const preferenceItems = [];
 
             for (const item of cartItems) {
                 // @ts-ignore
@@ -118,14 +117,6 @@ export const paymentController = {
                 const price = Number(product.priceWeb) > 0 ? Number(product.priceWeb) : Number(product.price);
 
                 totalAmount += price * item.quantity;
-
-                preferenceItems.push({
-                    id: String(product.id),
-                    title: product.name,
-                    unit_price: price,
-                    quantity: item.quantity,
-                    currency_id: 'PEN'
-                });
             }
 
             const user = await User.findByPk(userId);
@@ -156,10 +147,21 @@ export const paymentController = {
             }
 
             // 3. Create MP Preference
+            // El monto cobrado se deriva del total persistido del pedido (fuente única de verdad)
+            const chargedTotal = Number(order.total_amount);
+
             const preference = new Preference(client);
             const result = await preference.create({
                 body: {
-                    items: preferenceItems,
+                    items: [
+                        {
+                            id: String(order.id),
+                            title: `Pedido #${order.id}`,
+                            unit_price: chargedTotal,
+                            quantity: 1,
+                            currency_id: 'PEN'
+                        }
+                    ],
                     payer: {
                         email: user?.email,
                         name: user?.first_name,

@@ -59,19 +59,32 @@ export class TaxonomyController {
      */
     static async bulkAssignTaxonomy(req: Request, res: Response) {
         try {
-            const { products } = req.body;
+            const { products, productIds, brandName, categoryName, subCategoryNames } = req.body;
 
-            if (!products || !Array.isArray(products) || products.length === 0) {
+            let items: any[] = [];
+
+            if (Array.isArray(products) && products.length > 0) {
+                items = products;
+            } else if (Array.isArray(productIds) && productIds.length > 0) {
+                items = productIds.map((productId: number) => ({
+                    productId,
+                    brandName,
+                    categoryName,
+                    subCategoryNames
+                }));
+            }
+
+            if (items.length === 0) {
                 return res.status(400).json({
                     success: false,
-                    message: 'Se requiere un array de productos con sus taxonomías'
+                    message: 'Se requiere un array de productos con sus taxonomías o una lista de productIds'
                 });
             }
 
             const resultados = [];
             const errores = [];
 
-            for (const item of products) {
+            for (const item of items) {
                 try {
                     const { productId, codigoInterno, brandName, categoryName, subCategoryNames } = item;
 
@@ -108,9 +121,10 @@ export class TaxonomyController {
 
             return res.json({
                 success: true,
-                message: `Asignación masiva completada: ${resultados.length}/${products.length} exitosos`,
+                message: `Asignación masiva completada: ${resultados.length}/${items.length} exitosos`,
                 data: {
-                    total: products.length,
+                    total: items.length,
+                    count: resultados.length,
                     exitosos: resultados.length,
                     fallidos: errores.length,
                     detalles: {

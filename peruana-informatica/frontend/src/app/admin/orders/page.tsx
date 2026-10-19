@@ -4,12 +4,7 @@
 import { useEffect, useState } from 'react';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { API_CONFIG } from '@/config/api';
-
-const getAuthHeaders = (): Record<string, string> => {
-  if (typeof window === 'undefined') return {};
-  const token = localStorage.getItem('adminToken');
-  return token ? { Authorization: `Bearer ${token}` } : {};
-};
+import { getAdminAuthHeaders } from '@/lib/adminAuth';
 
 interface OrderItem {
   id: number;
@@ -49,14 +44,25 @@ export default function AdminOrdersPage() {
   const [invoiceNumber, setInvoiceNumber] = useState('');
   const [isGeneratingInvoice, setIsGeneratingInvoice] = useState(false);
   const [invoiceFile, setInvoiceFile] = useState<File | null>(null);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal] = useState(0);
+  const limit = 20;
 
-  const fetchOrders = async () => {
+  const fetchOrders = async (targetPage: number = page) => {
+    setIsLoading(true);
     try {
-      const response = await fetch(`${API_CONFIG.API_BASE_URL}/api/admin/orders`, {
-        headers: getAuthHeaders()
+      const response = await fetch(`${API_CONFIG.API_BASE_URL}/api/admin/orders?page=${targetPage}&limit=${limit}`, {
+        headers: getAdminAuthHeaders()
       });
       const data = await response.json();
-      setOrders(Array.isArray(data) ? data : []);
+      const list = Array.isArray(data) ? data : (data.orders ?? []);
+      setOrders(list);
+      if (data?.pagination) {
+        setTotal(data.pagination.total ?? list.length);
+        setTotalPages(data.pagination.totalPages ?? 1);
+        setPage(data.pagination.page ?? targetPage);
+      }
     } catch (error) {
       setError('Error al cargar pedidos');
     } finally {
@@ -65,7 +71,7 @@ export default function AdminOrdersPage() {
   };
 
   useEffect(() => {
-    fetchOrders();
+    fetchOrders(1);
   }, []);
 
   const handleVerifyPayment = async (orderId: number, verified: boolean) => {
@@ -74,7 +80,7 @@ export default function AdminOrdersPage() {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
-          ...getAuthHeaders()
+          ...getAdminAuthHeaders()
         },
         body: JSON.stringify({ verified, verified_by: 'Admin' })
       });
@@ -110,7 +116,7 @@ export default function AdminOrdersPage() {
 
       const response = await fetch(`${API_CONFIG.API_BASE_URL}/api/admin/payments/${orderId}/upload-invoice`, {
         method: 'POST',
-        headers: getAuthHeaders(),
+        headers: getAdminAuthHeaders(),
         body: formData
       });
 
@@ -135,7 +141,7 @@ export default function AdminOrdersPage() {
   const handleDownloadInvoice = async (filename: string) => {
     try {
       const response = await fetch(`${API_CONFIG.API_BASE_URL}/api/admin/payments/invoices/${filename}`, {
-        headers: getAuthHeaders()
+        headers: getAdminAuthHeaders()
       });
 
       if (!response.ok) {
@@ -407,6 +413,28 @@ export default function AdminOrdersPage() {
             {orders.length === 0 && (
               <div className="text-center py-12 text-gray-500 dark:text-gray-400">
                 No hay pedidos registrados
+              </div>
+            )}
+
+            {totalPages > 1 && (
+              <div className="flex items-center justify-between pt-4">
+                <button
+                  onClick={() => fetchOrders(page - 1)}
+                  disabled={page <= 1 || isLoading}
+                  className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Anterior
+                </button>
+                <span className="text-sm text-gray-600 dark:text-gray-300">
+                  Página {page} de {totalPages} ({total} pedidos)
+                </span>
+                <button
+                  onClick={() => fetchOrders(page + 1)}
+                  disabled={page >= totalPages || isLoading}
+                  className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Siguiente
+                </button>
               </div>
             )}
           </div>

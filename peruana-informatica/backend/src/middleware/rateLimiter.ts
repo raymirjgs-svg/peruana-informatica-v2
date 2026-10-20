@@ -48,3 +48,27 @@ export const paymentLimiter = rateLimit({
     standardHeaders: true,
     legacyHeaders: false,
 });
+
+// Limiter for coupon lookups
+export const couponLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 30,
+    message: {
+        success: false,
+        message: 'Demasiadas validaciones de cupón. Intenta de nuevo más tarde.'
+    },
+    standardHeaders: true,
+    legacyHeaders: false,
+});
+
+// Limiter for file uploads
+export const uploadLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000,
+    max: 30,
+    message: {
+        success: false,
+        message: 'Demasiadas subidas de archivos. Intenta de nuevo más tarde.'
+    },
+    standardHeaders: true,
+    legacyHeaders: false,
+});

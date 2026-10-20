@@ -6,6 +6,7 @@ import path from 'path';
 import fs from 'fs';
 import crypto from 'crypto';
 import { hasValidImageSignature } from '../utils/imageSignature';
+import { paymentLimiter, createLimiter } from '../middleware/rateLimiter';
 
 const router = express.Router();
 
@@ -59,15 +60,15 @@ const validateImageSignature = (req: Request, res: Response, next: NextFunction)
 };
 
 // Create Preference (Protected)
-router.post('/create-preference', authenticateToken, paymentController.createPreference);
+router.post('/create-preference', paymentLimiter, authenticateToken, paymentController.createPreference);
 // Create Preference from Order
-router.post('/create-preference-order', paymentController.createPreferenceFromOrder);
+router.post('/create-preference-order', paymentLimiter, paymentController.createPreferenceFromOrder);
 
 // Webhook (Public, MP calls this)
 router.post('/webhook', paymentController.receiveWebhook);
 
 // Upload Payment Proof (Public/Generic)
 // Move dynamic route to the end to avoid conflict with static routes like 'create-preference'
-router.post('/:orderId/upload-proof', optionalAuthenticateToken, upload.single('payment_proof'), validateImageSignature, paymentController.uploadProof);
+router.post('/:orderId/upload-proof', optionalAuthenticateToken, createLimiter, upload.single('payment_proof'), validateImageSignature, paymentController.uploadProof);
 
 export default router;

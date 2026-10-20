@@ -4,6 +4,7 @@ import path from 'path';
 import fs from 'fs';
 import { authenticateToken, requireAdmin } from '../../middleware/authMiddleware';
 import { hasValidImageSignature } from '../../utils/imageSignature';
+import { uploadLimiter } from '../../middleware/rateLimiter';
 
 const router = express.Router();
 
@@ -41,7 +42,7 @@ const upload = multer({
 });
 
 // POST /upload - Subir un archivo
-router.post('/', upload.single('image'), (req: Request, res: Response) => {
+router.post('/', uploadLimiter, upload.single('image'), (req: Request, res: Response) => {
     try {
         if (!req.file) {
             return res.status(400).json({ error: 'No se subió ningún archivo' });

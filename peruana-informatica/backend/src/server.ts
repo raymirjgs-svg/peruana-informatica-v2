@@ -67,7 +67,6 @@ import {
   sanitizeInput,
   securityHeaders,
 } from "./middleware/security";
-import { apiLimiter, authLimiter, createLimiter, paymentLimiter } from "./middleware/rateLimiter";
 import { initRedis } from "./config/redis";
 import { requireJwtSecret } from "./config/env";
 import { logger } from "./config/logger";

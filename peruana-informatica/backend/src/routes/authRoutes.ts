@@ -5,7 +5,7 @@ import { authLimiter } from '../middleware/rateLimiter';
 
 const router = Router();
 
-router.post('/social-login', AuthController.socialLogin);
+router.post('/social-login', authLimiter, AuthController.socialLogin);
 
 router.post('/register', authLimiter, [
     body('email').isEmail().withMessage('Email válido es requerido'),

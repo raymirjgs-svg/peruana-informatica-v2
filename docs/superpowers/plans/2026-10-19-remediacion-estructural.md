@@ -152,7 +152,8 @@
   - Hecho: `seoController.ts` (626 ln) partido en `seoController.ts` (292, CRUD), `SeoPageController.ts` (106), `SeoAnalysisController.ts` (150) y `SeoSuggestController.ts` (63), con los campos editables en `utils/seoFields.ts`. Verificado con MySQL real: getAll, analysis, get/update por page_type, create/get/update/delete y suggest (Gemini responde 500 por la key filtrada, wiring OK); `tsc` 0, 18/18 tests.
   - Hecho: `admin/orders/page.tsx` (583 ln) partido en `orders/types.ts`, `components/admin/orders/statusBadges.tsx`, `OrderCard.tsx` y `InvoiceModal.tsx` (page 232 ln); `tsc` 0 y `next build` OK.
   - Hecho: `account/profile/page.tsx` (638 ln) partido en `profile/types.ts` y 7 componentes en `components/account/profile/` (page 281 ln); `tsc` 0 y `next build` OK.
-  - Pendiente: `admin/products/page.tsx` (1498), `admin/blog/page.tsx` (1242), `admin/seo/page.tsx` (855), `cotizador/laptop/page.tsx` (745), `cart/page.tsx` (717).
+  - Hecho: `cart/page.tsx` (717 ln) partido en `cart/{types,helpers}.ts` y `ProgressBar`, `SuccessStep`, `PaymentStep`, `CustomerStep`, `CartStep` (page 295 ln); `tsc` 0 y `next build` OK.
+  - Pendiente: `admin/products/page.tsx` (1498), `admin/blog/page.tsx` (1242), `admin/seo/page.tsx` (855), `cotizador/laptop/page.tsx` (745).
 
 ### P2.7 — Tipos unificados
 - **Evidencia:** triple `Product` (`models/Product.ts`, `types/index.ts` con `id:string` en conflicto, `models/ApiTypes.ts`); `CartItem` duplicado; ~148 `any` + 31 `as any` + 170 backend `any` + 17 `@ts-ignore`.

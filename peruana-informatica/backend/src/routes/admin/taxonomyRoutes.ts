@@ -5,6 +5,7 @@ import { SubCategory } from '../../models/SubCategory';
 import { Op } from 'sequelize';
 import { authenticateToken, requireAdmin } from '../../middleware/authMiddleware';
 import { TaxonomyController } from '../../controllers/TaxonomyController';
+import { buildPaginationMeta, getSafetyLimit, resolvePagination } from '../../utils/pagination';
 
 const router = express.Router();
 
@@ -36,15 +37,33 @@ router.post('/bulk-assign', TaxonomyController.bulkAssignTaxonomy);
 // GET todas las categorías con sus subcategorías
 router.get('/categories', async (req: Request, res: Response) => {
     try {
+        const { page, limit, offset, paginated } = resolvePagination(req.query);
+        const include = [{
+            model: SubCategory,
+            as: 'subcategories',
+            where: { is_active: true },
+            required: false,
+            order: [['order', 'ASC']] as [string, string][]
+        }];
+
+        if (paginated) {
+            const { rows, count } = await Category.findAndCountAll({
+                include,
+                order: [['name', 'ASC']],
+                limit,
+                offset
+            });
+            return res.json({
+                success: true,
+                data: rows,
+                pagination: buildPaginationMeta(page, limit, count)
+            });
+        }
+
         const categories = await Category.findAll({
-            include: [{
-                model: SubCategory,
-                as: 'subcategories',
-                where: { is_active: true },
-                required: false,
-                order: [['order', 'ASC']]
-            }],
-            order: [['name', 'ASC']]
+            include,
+            order: [['name', 'ASC']],
+            limit: getSafetyLimit(limit)
         });
 
         res.json(categories);
@@ -198,14 +217,34 @@ router.get('/subcategories', async (req: Request, res: Response) => {
             where.category_id = parseInt(category_id as string);
         }
 
+        const { page, limit, offset, paginated } = resolvePagination(req.query);
+        const include = [{
+            model: Category,
+            as: 'category',
+            attributes: ['id', 'name', 'slug']
+        }];
+        const order: [string, string][] = [['order', 'ASC'], ['name', 'ASC']];
+
+        if (paginated) {
+            const { rows, count } = await SubCategory.findAndCountAll({
+                where,
+                include,
+                order,
+                limit,
+                offset
+            });
+            return res.json({
+                success: true,
+                data: rows,
+                pagination: buildPaginationMeta(page, limit, count)
+            });
+        }
+
         const subcategories = await SubCategory.findAll({
             where,
-            include: [{
-                model: Category,
-                as: 'category',
-                attributes: ['id', 'name', 'slug']
-            }],
-            order: [['order', 'ASC'], ['name', 'ASC']]
+            include,
+            order,
+            limit: getSafetyLimit(limit)
         });
 
         res.json(subcategories);

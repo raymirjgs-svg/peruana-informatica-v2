@@ -6,6 +6,7 @@ import { Plus, Search, Edit, Trash2, Tag, Eye, EyeOff, LayoutTemplate } from 'lu
 import { PromoBanner, couponService } from '@/services/CouponService';
 import { promoBannerService } from '@/services/PromoBannerService';
 import { PromoBannerModal } from '@/components/admin/promo-banners/PromoBannerModal';
+import { Pagination } from '@/components/admin/Pagination';
 import { toast } from 'sonner';
 import Image from 'next/image';
 
@@ -16,19 +17,26 @@ export default function PromoBannersPage() {
     const [searchTerm, setSearchTerm] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedBanner, setSelectedBanner] = useState<PromoBanner | null>(null);
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [total, setTotal] = useState(0);
+    const limit = 20;
 
     useEffect(() => {
         if (session?.accessToken) {
-            fetchBanners();
+            fetchBanners(1);
         }
     }, [session]);
 
-    const fetchBanners = async () => {
+    const fetchBanners = async (targetPage: number = page) => {
         if (!session?.accessToken) return;
         setIsLoading(true);
         try {
-            const data = await promoBannerService.getAllBanners(session.accessToken);
-            setBanners(data);
+            const result = await promoBannerService.getBannersPage(session.accessToken, targetPage, limit);
+            setBanners(result.data);
+            setPage(result.pagination.page);
+            setTotalPages(result.pagination.totalPages);
+            setTotal(result.pagination.total);
         } catch (error) {
             console.error('Error fetching banners:', error);
             toast.error('No se pudieron cargar los banners');
@@ -211,6 +219,15 @@ export default function PromoBannersPage() {
                     </div>
                 )}
             </div>
+
+            <Pagination
+                page={page}
+                totalPages={totalPages}
+                total={total}
+                onPageChange={(nextPage) => fetchBanners(nextPage)}
+                disabled={isLoading}
+                itemLabel="banners"
+            />
 
             <PromoBannerModal
                 isOpen={isModalOpen}

@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import Discount from '../../models/Discount';
 import { Product } from '../../models/Product';
 import { Category } from '../../models/Category';
+import { buildPaginationMeta, getSafetyLimit, resolvePagination } from '../../utils/pagination';
 
 const DISCOUNT_EDITABLE_FIELDS = [
     'name',
@@ -36,8 +37,28 @@ class DiscountController {
      */
     async getAllDiscounts(req: Request, res: Response) {
         try {
+            const { page, limit, offset, paginated } = resolvePagination(req.query);
+
+            if (paginated) {
+                const [{ rows, count }, active] = await Promise.all([
+                    Discount.findAndCountAll({
+                        order: [['created_at', 'DESC']],
+                        limit,
+                        offset
+                    }),
+                    Discount.count({ where: { is_active: true } })
+                ]);
+                return res.status(200).json({
+                    success: true,
+                    data: rows,
+                    pagination: buildPaginationMeta(page, limit, count),
+                    summary: { active, total: count }
+                });
+            }
+
             const discounts = await Discount.findAll({
-                order: [['created_at', 'DESC']]
+                order: [['created_at', 'DESC']],
+                limit: getSafetyLimit(limit)
             });
             return res.status(200).json({ success: true, data: discounts });
         } catch (error) {

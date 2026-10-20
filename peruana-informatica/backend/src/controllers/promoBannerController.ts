@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { PromoBanner } from '../models/PromoBanner';
+import { buildPaginationMeta, getSafetyLimit, resolvePagination } from '../utils/pagination';
 
 export class PromoBannerController {
     /**
@@ -41,8 +42,24 @@ export class PromoBannerController {
      */
     async getAllBanners(req: Request, res: Response) {
         try {
+            const { page, limit, offset, paginated } = resolvePagination(req.query);
+
+            if (paginated) {
+                const { rows, count } = await PromoBanner.findAndCountAll({
+                    order: [['priority', 'DESC'], ['created_at', 'DESC']],
+                    limit,
+                    offset
+                });
+                return res.status(200).json({
+                    success: true,
+                    data: rows,
+                    pagination: buildPaginationMeta(page, limit, count)
+                });
+            }
+
             const banners = await PromoBanner.findAll({
-                order: [['priority', 'DESC'], ['created_at', 'DESC']]
+                order: [['priority', 'DESC'], ['created_at', 'DESC']],
+                limit: getSafetyLimit(limit)
             });
 
             return res.status(200).json({

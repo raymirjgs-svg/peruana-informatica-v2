@@ -8,6 +8,7 @@ import { AdminLayout } from '@/components/admin/AdminLayout';
 import { useSession } from 'next-auth/react';
 import { discountService, type Discount } from '@/services/DiscountService';
 import { DiscountModal } from '@/components/admin/discounts/DiscountModal';
+import { Pagination } from '@/components/admin/Pagination';
 import { toast } from 'sonner';
 
 export default function DiscountsPage() {
@@ -17,12 +18,21 @@ export default function DiscountsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDiscount, setSelectedDiscount] = useState<Discount | null>(null);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [activeCount, setActiveCount] = useState(0);
+  const limit = 20;
 
-  const fetchDiscounts = async () => {
+  const fetchDiscounts = async (targetPage: number = page) => {
     if (!session?.accessToken) return;
     try {
-      const data = await discountService.getAllDiscounts(session.accessToken);
-      setDiscounts(data);
+      const result = await discountService.getDiscountsPage(session.accessToken, targetPage, limit);
+      setDiscounts(result.data);
+      setPage(result.pagination.page);
+      setTotalPages(result.pagination.totalPages);
+      setTotal(result.pagination.total);
+      setActiveCount(result.summary.active);
     } catch (error) {
       toast.error('Error al cargar descuentos');
     } finally {
@@ -31,7 +41,7 @@ export default function DiscountsPage() {
   };
 
   useEffect(() => {
-    if (session?.accessToken) fetchDiscounts();
+    if (session?.accessToken) fetchDiscounts(1);
   }, [session]);
 
   const handleDelete = async (id: number) => {
@@ -56,8 +66,6 @@ export default function DiscountsPage() {
     d.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     d.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
-  const activeCount = discounts.filter(d => d.is_active).length;
 
   return (
     <AdminLayout>
@@ -87,7 +95,7 @@ export default function DiscountsPage() {
           />
           <StatsCard
             title="Total Promociones"
-            value={discounts.length.toString()}
+            value={total.toString()}
             description="Histórico"
             icon={Tag}
             color="blue"
@@ -165,6 +173,15 @@ export default function DiscountsPage() {
               ))}
             </div>
           )}
+
+          <Pagination
+            page={page}
+            totalPages={totalPages}
+            total={total}
+            onPageChange={(nextPage) => fetchDiscounts(nextPage)}
+            disabled={loading}
+            itemLabel="descuentos"
+          />
         </div>
       </div>
 

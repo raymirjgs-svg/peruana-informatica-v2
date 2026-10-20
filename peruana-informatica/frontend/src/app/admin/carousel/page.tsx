@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { Modal } from '@/components/admin/Modal';
 import { Button } from '@/components/admin/Button';
+import { Pagination } from '@/components/admin/Pagination';
 import { getAdminAuthHeaders } from '@/lib/adminAuth';
 
 function getApiBase() {
@@ -28,6 +29,10 @@ export default function AdminCarouselPage() {
   const [slides, setSlides] = useState<Slide[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal] = useState(0);
+  const limit = 20;
   const [form, setForm] = useState({
     title: '',
     description: '',
@@ -106,36 +111,32 @@ export default function AdminCarouselPage() {
     order: 0,
   });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const res = await fetch(`${getApiBase()}/admin/carousel`, { headers: { ...getAdminAuthHeaders() } });
-        const json = await res.json().catch(() => ({}));
-        if (!res.ok) throw new Error(json?.error || `Error ${res.status}`);
-        setSlides(json as Slide[]);
-      } catch (err: any) {
-        setError(err?.message || "Error al cargar carrusel");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
-
-  const reload = async () => {
+  const loadSlides = async (targetPage: number = 1) => {
     setLoading(true);
+    setError(null);
     try {
-      const res = await fetch(`${getApiBase()}/admin/carousel`, { headers: { ...getAdminAuthHeaders() } });
+      const res = await fetch(`${getApiBase()}/admin/carousel?page=${targetPage}&limit=${limit}`, { headers: { ...getAdminAuthHeaders() } });
       const json = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(json?.error || `Error ${res.status}`);
-      setSlides(json as Slide[]);
+      setSlides((json?.data ?? json) as Slide[]);
+      if (json?.pagination) {
+        setPage(json.pagination.page);
+        setTotalPages(json.pagination.totalPages);
+        setTotal(json.pagination.total);
+      }
     } catch (err: any) {
       setError(err?.message || "Error al cargar carrusel");
     } finally {
       setLoading(false);
     }
+  };
+
+  useEffect(() => {
+    loadSlides(1);
+  }, []);
+
+  const reload = async () => {
+    await loadSlides(page);
   };
 
   const onCreate = async (e: React.FormEvent) => {
@@ -306,6 +307,15 @@ export default function AdminCarouselPage() {
           </div>
         ))}
       </div>
+
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        total={total}
+        onPageChange={(nextPage) => loadSlides(nextPage)}
+        disabled={loading}
+        itemLabel="slides"
+      />
 
       {/* Modal Crear Slide */}
       <Modal isOpen={showCreateModal} onClose={() => setShowCreateModal(false)} title="Crear Nuevo Slide" size="lg">

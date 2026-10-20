@@ -6,6 +6,7 @@ import fs from 'fs';
 import { Carousel } from '../../models/Carousel';
 import { authenticateToken, requireAdmin } from '../../middleware/authMiddleware';
 import { sequelize } from '../../database/connection';
+import { buildPaginationMeta, getSafetyLimit, resolvePagination } from '../../utils/pagination';
 
 const router = express.Router();
 
@@ -66,8 +67,25 @@ const validateRequest = (req: Request, res: Response, next: any) => {
 // GET todos los slides del carrusel
 router.get('/', async (req: Request, res: Response) => {
   try {
+    const { page, limit, offset, paginated } = resolvePagination(req.query);
+    const order: [string, string][] = [['order', 'ASC'], ['id', 'ASC']];
+
+    if (paginated) {
+      const { rows, count } = await Carousel.findAndCountAll({
+        order,
+        limit,
+        offset
+      });
+      return res.json({
+        success: true,
+        data: rows,
+        pagination: buildPaginationMeta(page, limit, count)
+      });
+    }
+
     const slides = await Carousel.findAll({
-      order: [['order', 'ASC'], ['id', 'ASC']]
+      order,
+      limit: getSafetyLimit(limit)
     });
 
     res.json(slides);

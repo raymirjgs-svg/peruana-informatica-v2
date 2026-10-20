@@ -1,5 +1,12 @@
 import { API_CONFIG } from '../config/api';
+import type { PaginationMeta } from '../types';
 const API_BASE = API_CONFIG.API_BASE_URL;
+
+export interface CouponPage {
+    data: Coupon[];
+    pagination: PaginationMeta;
+    summary: { active: number; totalUses: number; total: number };
+}
 
 export interface Coupon {
     id: number;
@@ -127,6 +134,30 @@ class CouponService {
             return result.data || [];
         } catch (error) {
             console.error('Error fetching coupons:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Get a paginated coupon page with aggregates (Admin)
+     */
+    async getCouponsPage(token: string, page = 1, limit = 20): Promise<CouponPage> {
+        try {
+            const response = await fetch(`${API_BASE}/api/admin/coupons?page=${page}&limit=${limit}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) throw new Error('Failed to fetch coupons');
+            const result = await response.json();
+            return {
+                data: result.data || [],
+                pagination: result.pagination,
+                summary: result.summary || { active: 0, totalUses: 0, total: 0 }
+            };
+        } catch (error) {
+            console.error('Error fetching coupons page:', error);
             throw error;
         }
     }

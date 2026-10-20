@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { Coupon } from '../models/Coupon';
+import { buildPaginationMeta, getSafetyLimit, resolvePagination } from '../utils/pagination';
 
 const COUPON_TYPES = ['percentage', 'fixed'];
 
@@ -168,8 +169,29 @@ export class CouponController {
      */
     async getAllCoupons(req: Request, res: Response) {
         try {
+            const { page, limit, offset, paginated } = resolvePagination(req.query);
+
+            if (paginated) {
+                const [{ rows, count }, active, totalUses] = await Promise.all([
+                    Coupon.findAndCountAll({
+                        order: [['created_at', 'DESC']],
+                        limit,
+                        offset
+                    }),
+                    Coupon.count({ where: { is_active: true } }),
+                    Coupon.sum('current_uses')
+                ]);
+                return res.status(200).json({
+                    success: true,
+                    data: rows,
+                    pagination: buildPaginationMeta(page, limit, count),
+                    summary: { active, totalUses: totalUses || 0, total: count }
+                });
+            }
+
             const coupons = await Coupon.findAll({
-                order: [['created_at', 'DESC']]
+                order: [['created_at', 'DESC']],
+                limit: getSafetyLimit(limit)
             });
 
             return res.status(200).json({

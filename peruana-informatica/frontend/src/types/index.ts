@@ -46,3 +46,9 @@ export interface Order {
   status: 'pending' | 'processing' | 'shipped' | 'delivered';
   createdAt: Date;
 }
+export interface PaginationMeta {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}

@@ -8,6 +8,7 @@ import { AdminLayout } from '@/components/admin/AdminLayout';
 import { useSession } from 'next-auth/react';
 import { couponService, type Coupon } from '@/services/CouponService';
 import { CouponModal } from '@/components/admin/coupons/CouponModal';
+import { Pagination } from '@/components/admin/Pagination';
 import { toast } from 'sonner';
 
 export default function CouponsPage() {
@@ -15,16 +16,23 @@ export default function CouponsPage() {
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [summary, setSummary] = useState({ active: 0, totalUses: 0, total: 0 });
+  const limit = 20;
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCoupon, setSelectedCoupon] = useState<Coupon | null>(null);
 
-  const fetchCoupons = async () => {
+  const fetchCoupons = async (targetPage: number = page) => {
     if (!session?.accessToken) return;
     try {
-      const data = await couponService.getAllCoupons(session.accessToken);
-      setCoupons(data);
+      const result = await couponService.getCouponsPage(session.accessToken, targetPage, limit);
+      setCoupons(result.data);
+      setPagination(result.pagination);
+      setSummary(result.summary);
     } catch (error) {
       toast.error('Error al cargar cupones');
     } finally {
@@ -32,9 +40,15 @@ export default function CouponsPage() {
     }
   };
 
+  const setPagination = (meta: { page: number; totalPages: number; total: number }) => {
+    setPage(meta.page);
+    setTotalPages(meta.totalPages);
+    setTotal(meta.total);
+  };
+
   useEffect(() => {
     if (session?.accessToken) {
-      fetchCoupons();
+      fetchCoupons(1);
     }
   }, [session]);
 
@@ -76,8 +90,8 @@ export default function CouponsPage() {
   );
 
   // Stats Calculations
-  const activeCoupons = coupons.filter(c => c.is_active).length;
-  const totalUses = coupons.reduce((acc, curr) => acc + curr.current_uses, 0);
+  const activeCoupons = summary.active;
+  const totalUses = summary.totalUses;
 
   return (
     <AdminLayout>
@@ -114,7 +128,7 @@ export default function CouponsPage() {
           />
           <StatsCard
             title="Total Cupones"
-            value={coupons.length.toString()}
+            value={summary.total.toString()}
             description="Registrados en sistema"
             icon={Percent}
             color="purple"
@@ -213,6 +227,15 @@ export default function CouponsPage() {
               ))}
             </div>
           )}
+
+          <Pagination
+            page={page}
+            totalPages={totalPages}
+            total={total}
+            onPageChange={(nextPage) => fetchCoupons(nextPage)}
+            disabled={loading}
+            itemLabel="cupones"
+          />
         </div>
       </div>
 

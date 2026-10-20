@@ -3,6 +3,12 @@
 // ============================================
 
 import { getAdminAuthHeaders } from '@/lib/adminAuth';
+import type { PaginationMeta } from '../types';
+
+export interface CarouselPage {
+  data: CarouselSlide[];
+  pagination: PaginationMeta;
+}
 
 export interface CarouselSlide {
   id: number;
@@ -45,6 +51,29 @@ export class CarouselService {
       // Silenciar el error y retornar array vacío para usar slides por defecto
       return [];
     }
+  }
+
+  /**
+   * Obtener una página de slides (para admin)
+   */
+  async getSlidesPage(page = 1, limit = 20): Promise<CarouselPage> {
+    const response = await fetch(`${this.baseUrl}/api/admin/carousel?page=${page}&limit=${limit}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAdminAuthHeaders(),
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const result = await response.json();
+    return {
+      data: result.data || [],
+      pagination: result.pagination,
+    };
   }
 
   /**

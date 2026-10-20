@@ -198,22 +198,102 @@ export class AuthController {
                 { expiresIn: '24h' }
             );
 
-            res.json({
-                success: true,
-                accessToken: token,
-                user: {
-                    id: user.id,
-                    email: user.email,
-                    username: user.first_name,
-                    role: user.role
-                }
-            });
-        } catch (error) {
-            console.error('Error in login:', error);
-            res.status(500).json({
-                success: false,
-                message: 'Error al procesar el login'
-            });
-        }
+res.json({
+            success: true,
+            accessToken: token,
+            user: {
+                id: user.id,
+                email: user.email,
+                username: user.first_name,
+                role: user.role
+            }
+        });
+    } catch (error) {
+        console.error('Error in login:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error al procesar el login'
+        });
     }
+}
+
+static async adminLogin(req: Request, res: Response): Promise<void> {
+    try {
+        const { email, password } = req.body;
+
+        const normalizedEmail = String(email).trim().toLowerCase();
+
+        const user = await User.findOne({
+            where: sequelize.where(
+                sequelize.fn('LOWER', sequelize.col('email')),
+                normalizedEmail
+            )
+        });
+
+        if (!user || !user.password_hash) {
+            res.status(401).json({
+                success: false,
+                message: 'Credenciales inválidas'
+            });
+            return;
+        }
+
+        const isValidPassword = await bcrypt.compare(password, user.password_hash);
+
+        if (!isValidPassword) {
+            res.status(401).json({
+                success: false,
+                message: 'Credenciales inválidas'
+            });
+            return;
+        }
+
+        if (user.is_blocked) {
+            res.status(403).json({
+                success: false,
+                message: 'La cuenta ha sido bloqueada'
+            });
+            return;
+        }
+
+        // Verificar que sea admin
+        if (!['admin', 'super-admin'].includes(user.role)) {
+            res.status(401).json({
+                success: false,
+                message: 'Credenciales inválidas'
+            });
+            return;
+        }
+
+        user.last_login = new Date();
+        await user.save();
+
+        const token = jwt.sign(
+            {
+                id: user.id,
+                email: user.email,
+                role: user.role
+            },
+            requireJwtSecret(),
+            { expiresIn: '24h' }
+        );
+
+        res.json({
+            success: true,
+            accessToken: token,
+            user: {
+                id: user.id,
+                email: user.email,
+                username: user.first_name,
+                role: user.role
+            }
+        });
+    } catch (error) {
+        console.error('Error in admin login:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error al procesar el login'
+        });
+    }
+}
 }

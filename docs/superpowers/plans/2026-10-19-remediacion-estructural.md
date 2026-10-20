@@ -116,6 +116,7 @@
 ### P2.1 — Lógica inline en rutas → controllers
 - **Evidencia:** `admin/taxonomyRoutes.ts` (381 ln, CRUD completo inline), `admin/categoryRoutes.ts` (243), `admin/carouselRoutes.ts` (312), `productRoutes.ts` (365), `dashboardRoutes.ts` (76), `admin/authRoutes.ts` (duplica login de `authController.ts`). CRUD de categorías en **3 lugares**.
 - **Aceptación:** routers solo enrutan; lógica en controllers; sin duplicación de CRUD.
+- **Estado:** hecho. Nuevos `admin/CategoryController.ts`, `admin/CarouselController.ts`, `admin/DashboardController.ts`; `TaxonomyController` y `admin/ProductController` extendidos; `authController.adminLogin` reutilizado. Routers reducidos a routing + validación. Verificado con MySQL real: product por id/slug, menú de categorías, CRUD completo de taxonomía/categorías/carousel, `reorder` idempotente y `upload` con tipo explícito; `tsc` 0, 18/18 tests, `next build` OK.
 
 ### P2.2 — Logging unificado
 - **Evidencia:** **456 `console.*`** vs 30 `logger.*`; 3 loggers compitiendo (`config/logger.ts` real, `utils/logger.ts` muerto, `middleware/logger.ts`); sin `morgan`.

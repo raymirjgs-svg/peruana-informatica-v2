@@ -1,5 +1,9 @@
 import { Request, Response } from 'express';
+import { Category } from '../models/Category';
+import { SubCategory } from '../models/SubCategory';
+import { Op } from 'sequelize';
 import { ProductTaxonomyService } from '../services/ProductTaxonomyService';
+import { buildPaginationMeta, getSafetyLimit, resolvePagination } from '../utils/pagination';
 
 /**
  * Controlador para gestionar marcas, categorías y subcategorías de productos
@@ -242,6 +246,395 @@ export class TaxonomyController {
                 success: false,
                 message: 'Error al sincronizar taxonomía desde API',
                 error: 'Error al procesar la taxonomía'
+            });
+        }
+    }
+
+    // ============ CATEGORÍAS ============
+
+    /**
+     * GET /api/admin/taxonomy/categories
+     * Obtiene todas las categorías con sus subcategorías (paginado)
+     */
+    static async getAllCategories(req: Request, res: Response) {
+        try {
+            const { page, limit, offset, paginated } = resolvePagination(req.query);
+            const include = [{
+                model: SubCategory,
+                as: 'subcategories',
+                where: { is_active: true },
+                required: false,
+                order: [['order', 'ASC']] as [string, string][]
+            }];
+
+            if (paginated) {
+                const { rows, count } = await Category.findAndCountAll({
+                    include,
+                    order: [['name', 'ASC']],
+                    limit,
+                    offset
+                });
+                return res.json({
+                    success: true,
+                    data: rows,
+                    pagination: buildPaginationMeta(page, limit, count)
+                });
+            }
+
+            const categories = await Category.findAll({
+                include,
+                order: [['name', 'ASC']],
+                limit: getSafetyLimit(limit)
+            });
+
+            res.json(categories);
+        } catch (error: any) {
+            console.error('Error getting categories:', error);
+            res.status(500).json({
+                error: 'Error al obtener categorías',
+                code: 'CATEGORIES_FETCH_ERROR'
+            });
+        }
+    }
+
+    /**
+     * POST /api/admin/taxonomy/categories
+     * Crea una nueva categoría
+     */
+    static async createCategory(req: Request, res: Response) {
+        try {
+            const { name, slug, appears_in_menu, seo_title, seo_description } = req.body;
+
+            // Verificar si ya existe
+            const existing = await Category.findOne({ where: { slug } });
+            if (existing) {
+                return res.status(400).json({
+                    error: 'Ya existe una categoría con ese slug',
+                    code: 'DUPLICATE_SLUG'
+                });
+            }
+
+            const category = await Category.create({
+                name,
+                slug,
+                appears_in_menu: appears_in_menu !== undefined ? appears_in_menu : true,
+                seo_title,
+                seo_description
+            });
+
+            res.status(201).json({
+                message: 'Categoría creada exitosamente',
+                category
+            });
+        } catch (error) {
+            console.error('Error creating category:', error);
+            res.status(500).json({
+                error: 'Error al crear categoría',
+                code: 'CATEGORY_CREATE_ERROR'
+            });
+        }
+    }
+
+    /**
+     * PUT /api/admin/taxonomy/categories/:id
+     * Actualiza una categoría
+     */
+    static async updateCategory(req: Request, res: Response) {
+        try {
+            const id = parseInt(req.params.id as string);
+            const { name, slug, appears_in_menu, seo_title, seo_description } = req.body;
+
+            const category = await Category.findByPk(id);
+            if (!category) {
+                return res.status(404).json({
+                    error: 'Categoría no encontrada',
+                    code: 'CATEGORY_NOT_FOUND'
+                });
+            }
+
+            // Si se está actualizando el slug, verificar que no exista
+            if (slug && slug !== category.slug) {
+                const existing = await Category.findOne({ where: { slug } });
+                if (existing) {
+                    return res.status(400).json({
+                        error: 'Ya existe una categoría con ese slug',
+                        code: 'DUPLICATE_SLUG'
+                    });
+                }
+            }
+
+            await category.update({
+                ...(name && { name }),
+                ...(slug && { slug }),
+                ...(appears_in_menu !== undefined && { appears_in_menu }),
+                ...(seo_title !== undefined && { seo_title }),
+                ...(seo_description !== undefined && { seo_description }),
+            });
+
+            res.json({
+                message: 'Categoría actualizada exitosamente',
+                category
+            });
+        } catch (error) {
+            console.error('Error updating category:', error);
+            res.status(500).json({
+                error: 'Error al actualizar categoría',
+                code: 'CATEGORY_UPDATE_ERROR'
+            });
+        }
+    }
+
+    /**
+     * DELETE /api/admin/taxonomy/categories/:id
+     * Elimina una categoría
+     */
+    static async deleteCategory(req: Request, res: Response) {
+        try {
+            const id = parseInt(req.params.id as string);
+
+            const category = await Category.findByPk(id);
+            if (!category) {
+                return res.status(404).json({
+                    error: 'Categoría no encontrada',
+                    code: 'CATEGORY_NOT_FOUND'
+                });
+            }
+
+            // Verificar si tiene subcategorías
+            const subcategoriesCount = await SubCategory.count({
+                where: { category_id: id, is_active: true }
+            });
+
+            if (subcategoriesCount > 0) {
+                return res.status(400).json({
+                    error: `No se puede eliminar. Esta categoría tiene ${subcategoriesCount} subcategoría${subcategoriesCount !== 1 ? 's' : ''} activa${subcategoriesCount !== 1 ? 's' : ''}`,
+                    code: 'CATEGORY_HAS_SUBCATEGORIES'
+                });
+            }
+
+            await category.destroy();
+
+            res.json({
+                message: 'Categoría eliminada exitosamente'
+            });
+        } catch (error) {
+            console.error('Error deleting category:', error);
+            res.status(500).json({
+                error: 'Error al eliminar categoría',
+                code: 'CATEGORY_DELETE_ERROR'
+            });
+        }
+    }
+
+    // ============ SUBCATEGORÍAS ============
+
+    /**
+     * GET /api/admin/taxonomy/subcategories
+     * Obtiene todas las subcategorías (paginado, filtro opcional por categoría)
+     */
+    static async getAllSubCategories(req: Request, res: Response) {
+        try {
+            const { category_id } = req.query;
+
+            const where: any = { is_active: true };
+            if (category_id) {
+                where.category_id = parseInt(category_id as string);
+            }
+
+            const { page, limit, offset, paginated } = resolvePagination(req.query);
+            const include = [{
+                model: Category,
+                as: 'category',
+                attributes: ['id', 'name', 'slug']
+            }];
+            const order: [string, string][] = [['order', 'ASC'], ['name', 'ASC']];
+
+            if (paginated) {
+                const { rows, count } = await SubCategory.findAndCountAll({
+                    where,
+                    include,
+                    order,
+                    limit,
+                    offset
+                });
+                return res.json({
+                    success: true,
+                    data: rows,
+                    pagination: buildPaginationMeta(page, limit, count)
+                });
+            }
+
+            const subcategories = await SubCategory.findAll({
+                where,
+                include,
+                order,
+                limit: getSafetyLimit(limit)
+            });
+
+            res.json(subcategories);
+        } catch (error) {
+            console.error('Error getting subcategories:', error);
+            res.status(500).json({
+                error: 'Error al obtener subcategorías',
+                code: 'SUBCATEGORIES_FETCH_ERROR'
+            });
+        }
+    }
+
+    /**
+     * POST /api/admin/taxonomy/subcategories
+     * Crea una nueva subcategoría
+     */
+    static async createSubCategory(req: Request, res: Response) {
+        try {
+            const { name, slug, category_id, order = 0, description } = req.body;
+
+            // Verificar que la categoría existe
+            const category = await Category.findByPk(category_id);
+            if (!category) {
+                return res.status(404).json({
+                    error: 'Categoría no encontrada',
+                    code: 'CATEGORY_NOT_FOUND'
+                });
+            }
+
+            // Verificar si ya existe una subcategoría con el mismo slug
+            const existing = await SubCategory.findOne({ where: { slug } });
+            if (existing) {
+                return res.status(400).json({
+                    error: 'Ya existe una subcategoría con ese slug',
+                    code: 'DUPLICATE_SLUG'
+                });
+            }
+
+            const subcategory = await SubCategory.create({
+                name,
+                slug,
+                category_id,
+                order,
+                description,
+                is_active: true
+            });
+
+            // Obtener la subcategoría con la categoría incluida
+            const subcategoryWithCategory = await SubCategory.findByPk(subcategory.id, {
+                include: [{
+                    model: Category,
+                    as: 'category',
+                    attributes: ['id', 'name', 'slug']
+                }]
+            });
+
+            res.status(201).json({
+                message: 'Subcategoría creada exitosamente',
+                subcategory: subcategoryWithCategory
+            });
+        } catch (error) {
+            console.error('Error creating subcategory:', error);
+            res.status(500).json({
+                error: 'Error al crear subcategoría',
+                code: 'SUBCATEGORY_CREATE_ERROR'
+            });
+        }
+    }
+
+    /**
+     * PUT /api/admin/taxonomy/subcategories/:id
+     * Actualiza una subcategoría
+     */
+    static async updateSubCategory(req: Request, res: Response) {
+        try {
+            const id = parseInt(req.params.id as string);
+            const { name, slug, category_id, order, description, is_active } = req.body;
+
+            const subcategory = await SubCategory.findByPk(id);
+            if (!subcategory) {
+                return res.status(404).json({
+                    error: 'Subcategoría no encontrada',
+                    code: 'SUBCATEGORY_NOT_FOUND'
+                });
+            }
+
+            // Si se está cambiando la categoría, verificar que existe
+            if (category_id && category_id !== subcategory.category_id) {
+                const category = await Category.findByPk(category_id);
+                if (!category) {
+                    return res.status(404).json({
+                        error: 'Categoría no encontrada',
+                        code: 'CATEGORY_NOT_FOUND'
+                    });
+                }
+            }
+
+            // Si se está actualizando el slug, verificar que no exista
+            if (slug && slug !== subcategory.slug) {
+                const existing = await SubCategory.findOne({ where: { slug } });
+                if (existing) {
+                    return res.status(400).json({
+                        error: 'Ya existe una subcategoría con ese slug',
+                        code: 'DUPLICATE_SLUG'
+                    });
+                }
+            }
+
+            await subcategory.update({
+                ...(name && { name }),
+                ...(slug && { slug }),
+                ...(category_id && { category_id }),
+                ...(order !== undefined && { order }),
+                ...(description !== undefined && { description }),
+                ...(is_active !== undefined && { is_active }),
+            });
+
+            // Obtener la subcategoría actualizada con la categoría
+            const updatedSubcategory = await SubCategory.findByPk(id, {
+                include: [{
+                    model: Category,
+                    as: 'category',
+                    attributes: ['id', 'name', 'slug']
+                }]
+            });
+
+            res.json({
+                message: 'Subcategoría actualizada exitosamente',
+                subcategory: updatedSubcategory
+            });
+        } catch (error) {
+            console.error('Error updating subcategory:', error);
+            res.status(500).json({
+                error: 'Error al actualizar subcategoría',
+                code: 'SUBCATEGORY_UPDATE_ERROR'
+            });
+        }
+    }
+
+    /**
+     * DELETE /api/admin/taxonomy/subcategories/:id
+     * Elimina una subcategoría (soft delete)
+     */
+    static async deleteSubCategory(req: Request, res: Response) {
+        try {
+            const id = parseInt(req.params.id as string);
+
+            const subcategory = await SubCategory.findByPk(id);
+            if (!subcategory) {
+                return res.status(404).json({
+                    error: 'Subcategoría no encontrada',
+                    code: 'SUBCATEGORY_NOT_FOUND'
+                });
+            }
+
+            // Soft delete
+            await subcategory.update({ is_active: false });
+
+            res.json({
+                message: 'Subcategoría eliminada exitosamente'
+            });
+        } catch (error) {
+            console.error('Error deleting subcategory:', error);
+            res.status(500).json({
+                error: 'Error al eliminar subcategoría',
+                code: 'SUBCATEGORY_DELETE_ERROR'
             });
         }
     }

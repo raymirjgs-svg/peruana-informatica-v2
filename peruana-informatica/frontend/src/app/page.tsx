@@ -13,10 +13,12 @@ export default function HomePage() {
   const [newProducts, setNewProducts] = useState<Product[]>([]);
   const [clearanceProducts, setClearanceProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
 
   useEffect(() => {
     const loadProducts = async () => {
       setLoading(true);
+      setLoadError(false);
       const productService = new ProductService();
 
       try {
@@ -31,6 +33,7 @@ export default function HomePage() {
         setClearanceProducts(clearance.products);
       } catch (error) {
         console.error("Error loading products:", error);
+        setLoadError(true);
       } finally {
         setLoading(false);
       }
@@ -42,6 +45,12 @@ export default function HomePage() {
     <div>
       {/* CARRUSEL */}
       <Carousel />
+
+      {loadError && (
+        <div className="mt-8 rounded-lg border border-red-200 bg-red-50 p-4 text-center text-sm text-red-700">
+          No pudimos cargar los productos. Recarga la página o intenta más tarde.
+        </div>
+      )}
 
       <div className="space-y-16 mt-12">
         {/* Novedades */}

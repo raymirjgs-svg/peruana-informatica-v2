@@ -153,7 +153,8 @@
   - Hecho: `admin/orders/page.tsx` (583 ln) partido en `orders/types.ts`, `components/admin/orders/statusBadges.tsx`, `OrderCard.tsx` y `InvoiceModal.tsx` (page 232 ln); `tsc` 0 y `next build` OK.
   - Hecho: `account/profile/page.tsx` (638 ln) partido en `profile/types.ts` y 7 componentes en `components/account/profile/` (page 281 ln); `tsc` 0 y `next build` OK.
   - Hecho: `cart/page.tsx` (717 ln) partido en `cart/{types,helpers}.ts` y `ProgressBar`, `SuccessStep`, `PaymentStep`, `CustomerStep`, `CartStep` (page 295 ln); `tsc` 0 y `next build` OK.
-  - Pendiente: `admin/products/page.tsx` (1498), `admin/blog/page.tsx` (1242), `admin/seo/page.tsx` (855), `cotizador/laptop/page.tsx` (745).
+  - Hecho: `admin/seo/page.tsx` (855 ln) partido en 6 componentes locales (score, stats, recomendaciones, listado, herramientas y modal de edición); page 294 ln; `tsc` 0 y `next build` OK.
+  - Pendiente: `admin/products/page.tsx` (1498), `admin/blog/page.tsx` (1242), `cotizador/laptop/page.tsx` (745).
 
 ### P2.7 — Tipos unificados
 - **Evidencia:** triple `Product` (`models/Product.ts`, `types/index.ts` con `id:string` en conflicto, `models/ApiTypes.ts`); `CartItem` duplicado; ~148 `any` + 31 `as any` + 170 backend `any` + 17 `@ts-ignore`.

@@ -14,7 +14,7 @@ set -e
 SERVER_IP="200.58.98.122"
 SERVER_PORT="5313"
 SSH_USER="root"
-SSH_PASSWORD="9wC8/5lAhlxrXd"
+SSH_PASSWORD="${SSH_PASSWORD:?SSH_PASSWORD is required}"
 REMOTE_DIR="/root/peruana-informatica"
 
 # Colores para output

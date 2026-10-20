@@ -3,7 +3,7 @@
 # Configuration
 CONTAINER_NAME="peruana-local-db"
 DB_USER="root"
-DB_PASSWORD="rootpassword"
+DB_PASSWORD="${DB_PASSWORD:?DB_PASSWORD is required}"
 DB_NAME="peruana_informatica"
 BACKUP_DIR="../backups/db"
 DATE=$(date +"%Y-%m-%d_%H-%M-%S")

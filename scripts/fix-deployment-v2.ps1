@@ -54,7 +54,7 @@ NEXTAUTH_SECRET=openssl_rand_base64_32_secure_key_here
 # --- DATABASE ---
 DB_HOST=db
 DB_USER=root
-DB_PASSWORD=secure_password_2024
+DB_PASSWORD=CAMBIAR_PASSWORD
 DB_NAME=peruana_db
 DB_PORT=3306
 DB_DIALECT=mysql

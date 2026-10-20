@@ -246,7 +246,6 @@ router.get('/', searchRateLimit, [
     console.error('Error getting products:', error);
     res.status(500).json({
       error: 'Error interno del servidor al obtener productos',
-      details: error instanceof Error ? error.message : String(error)
     });
   }
 });
@@ -300,7 +299,6 @@ router.get('/:id', [
       error: 'Error interno del servidor al obtener producto',
       code: 'PRODUCT_FETCH_ERROR',
       timestamp: new Date().toISOString(),
-      details: error instanceof Error ? error.message : String(error)
     });
   }
 });
@@ -354,7 +352,6 @@ router.get('/slug/:slug', [
       error: 'Error interno del servidor al obtener producto',
       code: 'PRODUCT_FETCH_ERROR',
       timestamp: new Date().toISOString(),
-      details: error instanceof Error ? error.message : String(error)
     });
   }
 });

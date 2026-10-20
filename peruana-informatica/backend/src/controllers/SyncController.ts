@@ -37,7 +37,7 @@ export class SyncController {
             return res.status(500).json({
                 success: false,
                 message: 'Error al solicitar token',
-                error: error.message
+                error: 'Error en la sincronización'
             });
         }
     }
@@ -195,7 +195,7 @@ export class SyncController {
             return res.status(500).json({
                 success: false,
                 message: 'Error al sincronizar producto',
-                error: error.message
+                error: 'Error en la sincronización'
             });
         }
     }
@@ -265,7 +265,7 @@ export class SyncController {
                     } catch (error: any) {
                         errores.push({
                             id: resultado.id,
-                            error: error.message
+                            error: 'Error en la sincronización'
                         });
                     }
                 } else if (!resultado.success && 'error' in resultado) {
@@ -294,7 +294,7 @@ export class SyncController {
             return res.status(500).json({
                 success: false,
                 message: 'Error al sincronizar productos',
-                error: error.message
+                error: 'Error en la sincronización'
             });
         }
     }
@@ -380,7 +380,7 @@ export class SyncController {
                     } catch (error: any) {
                         errores.push({
                             id: resultado.id,
-                            error: error.message
+                            error: 'Error en la sincronización'
                         });
                     }
                 } else if (!resultado.success && 'error' in resultado) {
@@ -409,7 +409,7 @@ export class SyncController {
             return res.status(500).json({
                 success: false,
                 message: 'Error al sincronizar todos los productos',
-                error: error.message
+                error: 'Error en la sincronización'
             });
         }
     }
@@ -432,7 +432,7 @@ export class SyncController {
             return res.status(500).json({
                 success: false,
                 message: 'Error al verificar token',
-                error: error.message
+                error: 'Error en la sincronización'
             });
         }
     }

@@ -17,6 +17,6 @@ export const consultArticle = async (req: Request, res: Response) => {
         res.json(data);
     } catch (error: any) {
         console.error('Error en ExternalApiController.consultArticle:', error.message);
-        res.status(500).json({ error: 'Error interno al consultar la API externa', details: error.message });
+        res.status(500).json({ error: 'Error interno al consultar la API externa' });
     }
 };

@@ -296,15 +296,14 @@ router.post('/upload', upload.single('image'), async (req: Request, res: Respons
     
     if (error.message.includes('Solo se permiten imágenes')) {
       return res.status(400).json({ 
-        error: error.message,
+        error: 'Error interno',
         code: 'INVALID_FILE_TYPE'
       });
     }
     
     res.status(500).json({ 
       error: 'Error al subir imagen',
-      code: 'IMAGE_UPLOAD_ERROR',
-      details: error.message
+      code: 'IMAGE_UPLOAD_ERROR'
     });
   }
 });

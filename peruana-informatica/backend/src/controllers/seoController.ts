@@ -196,7 +196,7 @@ export class SeoController {
       if (error.name === "SequelizeValidationError") {
         const validationErrors = error.errors.map((err: any) => ({
           field: err.path,
-          message: err.message,
+          message: 'Error interno',
         }));
 
         return res.status(400).json({
@@ -283,7 +283,7 @@ export class SeoController {
       if (error.name === "SequelizeValidationError") {
         const validationErrors = error.errors.map((err: any) => ({
           field: err.path,
-          message: err.message,
+          message: 'Error interno',
         }));
 
         return res.status(400).json({
@@ -546,7 +546,7 @@ export class SeoController {
       if (error.name === "SequelizeValidationError") {
         const validationErrors = error.errors.map((err: any) => ({
           field: err.path,
-          message: err.message,
+          message: 'Error interno',
         }));
 
         return res.status(400).json({

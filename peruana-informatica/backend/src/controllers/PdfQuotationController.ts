@@ -23,7 +23,7 @@ export const generateQuotationPdf = async (req: Request, res: Response) => {
     console.error('Error generating PDF:', error);
     res.status(500).json({
       error: 'Error al generar el PDF de la cotización',
-      message: error instanceof Error ? error.message : 'Error desconocido'
+      message: 'Error interno'
     });
   }
 };

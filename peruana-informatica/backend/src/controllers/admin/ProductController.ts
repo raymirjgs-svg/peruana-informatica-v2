@@ -409,7 +409,7 @@ export class ProductController {
 
             if (error?.code === 'DUPLICATE_CODIGO_INTERNO') {
                 return res.status(409).json({
-                    error: error.message,
+                    error: 'Error interno',
                     code: 'DUPLICATE_CODIGO_INTERNO',
                     timestamp: new Date().toISOString()
                 });

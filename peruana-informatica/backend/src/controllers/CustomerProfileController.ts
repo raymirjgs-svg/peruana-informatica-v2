@@ -33,7 +33,7 @@ export class CustomerProfileController {
             console.error('❌ Error fetching profile:', error);
             res.status(500).json({
                 message: 'Error fetching profile',
-                error: error instanceof Error ? error.message : 'Unknown error'
+                error: 'Error interno'
             });
         }
     }
@@ -91,7 +91,7 @@ export class CustomerProfileController {
             console.error('❌ Error updating profile:', error);
             res.status(500).json({
                 message: 'Error updating profile',
-                error: error instanceof Error ? error.message : 'Unknown error'
+                error: 'Error interno'
             });
         }
     }
@@ -157,7 +157,7 @@ export class CustomerProfileController {
             console.error('❌ Error changing password:', error);
             res.status(500).json({
                 message: 'Error changing password',
-                error: error instanceof Error ? error.message : 'Unknown error'
+                error: 'Error interno'
             });
         }
     }
@@ -186,7 +186,7 @@ export class CustomerProfileController {
             console.error('❌ Error fetching orders:', error);
             res.status(500).json({
                 message: 'Error fetching orders',
-                error: error instanceof Error ? error.message : 'Unknown error'
+                error: 'Error interno'
             });
         }
     }

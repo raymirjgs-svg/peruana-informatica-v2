@@ -70,7 +70,7 @@ export class CustomerController {
             console.error('❌ Error fetching customers:', error);
             res.status(500).json({
                 message: 'Error fetching customers',
-                error: error instanceof Error ? error.message : 'Unknown error'
+                error: 'Error interno'
             });
         }
     }
@@ -100,7 +100,7 @@ export class CustomerController {
             console.error('❌ Error fetching customer:', error);
             res.status(500).json({
                 message: 'Error fetching customer',
-                error: error instanceof Error ? error.message : 'Unknown error'
+                error: 'Error interno'
             });
         }
     }
@@ -145,7 +145,7 @@ export class CustomerController {
             console.error('❌ Error toggling customer block:', error);
             res.status(500).json({
                 message: 'Error updating customer',
-                error: error instanceof Error ? error.message : 'Unknown error'
+                error: 'Error interno'
             });
         }
     }
@@ -221,7 +221,7 @@ export class CustomerController {
             console.error('❌ Error fetching customer stats:', error);
             res.status(500).json({
                 message: 'Error fetching statistics',
-                error: error instanceof Error ? error.message : 'Unknown error'
+                error: 'Error interno'
             });
         }
     }
@@ -254,7 +254,7 @@ export class CustomerController {
             console.error('❌ Error fetching customer orders:', error);
             res.status(500).json({
                 message: 'Error fetching orders',
-                error: error instanceof Error ? error.message : 'Unknown error'
+                error: 'Error interno'
             });
         }
     }

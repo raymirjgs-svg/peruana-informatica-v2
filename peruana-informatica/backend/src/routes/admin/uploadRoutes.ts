@@ -64,7 +64,7 @@ router.post('/', uploadLimiter, upload.single('image'), (req: Request, res: Resp
         });
     } catch (error: any) {
         console.error('Error uploading file:', error);
-        res.status(500).json({ error: error.message || 'Error al subir archivo' });
+        res.status(500).json({ error: 'Error al subir archivo' });
     }
 });
 

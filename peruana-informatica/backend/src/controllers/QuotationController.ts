@@ -27,7 +27,7 @@ export const createQuotation = async (req: Request, res: Response) => {
     console.error('Error creating quotation:', error);
     res.status(500).json({
       error: 'Error interno del servidor',
-      message: error instanceof Error ? error.message : 'Error desconocido'
+      message: 'Error interno'
     });
   }
 };
@@ -61,7 +61,7 @@ export const getQuotationByCode = async (req: Request, res: Response) => {
     console.error('Error getting quotation:', error);
     res.status(500).json({
       error: 'Error interno del servidor',
-      message: error instanceof Error ? error.message : 'Error desconocido'
+      message: 'Error interno'
     });
   }
 };
@@ -79,7 +79,7 @@ export const getAllQuotations = async (req: Request, res: Response) => {
     console.error('Error getting quotations:', error);
     res.status(500).json({
       error: 'Error interno del servidor',
-      message: error instanceof Error ? error.message : 'Error desconocido'
+      message: 'Error interno'
     });
   }
 };
@@ -106,7 +106,7 @@ export const getQuotationById = async (req: Request, res: Response) => {
     console.error('Error getting quotation by ID:', error);
     res.status(500).json({
       error: 'Error interno del servidor',
-      message: error instanceof Error ? error.message : 'Error desconocido'
+      message: 'Error interno'
     });
   }
 };
@@ -138,7 +138,7 @@ export const updateQuotationStatus = async (req: Request, res: Response) => {
     console.error('Error updating quotation status:', error);
     res.status(500).json({
       error: 'Error interno del servidor',
-      message: error instanceof Error ? error.message : 'Error desconocido'
+      message: 'Error interno'
     });
   }
 };
@@ -159,7 +159,7 @@ export const validateQuotation = async (req: Request, res: Response) => {
     console.error('Error validating quotation:', error);
     res.status(500).json({
       error: 'Error interno del servidor',
-      message: error instanceof Error ? error.message : 'Error desconocido'
+      message: 'Error interno'
     });
   }
 };
@@ -175,7 +175,7 @@ export const getCompatibleComponents = async (req: Request, res: Response) => {
     console.error('Error getting compatible components:', error);
     res.status(500).json({
       error: 'Error interno del servidor',
-      message: error instanceof Error ? error.message : 'Error desconocido'
+      message: 'Error interno'
     });
   }
 };
@@ -191,7 +191,7 @@ export const checkCompatibility = async (req: Request, res: Response) => {
     console.error('Error checking compatibility:', error);
     res.status(500).json({
       error: 'Error interno del servidor',
-      message: error instanceof Error ? error.message : 'Error desconocido'
+      message: 'Error interno'
     });
   }
 };

@@ -90,7 +90,7 @@ export class AuthController {
         } catch (error) {
             console.error('❌ Social Login Error:', error);
             console.error('❌ Social Login Error Stack:', error instanceof Error ? error.stack : 'No stack trace');
-            res.status(500).json({ message: 'Error processing social login', error: error instanceof Error ? error.message : 'Unknown error' });
+            res.status(500).json({ message: 'Error processing social login', error: 'Error interno' });
         }
     }
 

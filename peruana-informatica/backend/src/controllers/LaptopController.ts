@@ -160,7 +160,7 @@ export const getLaptopsWithSubcategories = async (req: Request, res: Response) =
     console.error('Error fetching laptops with subcategories:', error);
     res.status(500).json({
       error: 'Error interno del servidor',
-      message: error instanceof Error ? error.message : 'Error desconocido'
+      message: 'Error interno'
     });
   }
 };

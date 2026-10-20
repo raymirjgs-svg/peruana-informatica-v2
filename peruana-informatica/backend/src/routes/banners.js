@@ -14,7 +14,7 @@ router.get('/', async (req, res) => {
     
     res.json(banners);
   } catch (error) {
-    res.status(500).json({ message: 'Error al obtener banners', error: error.message });
+    res.status(500).json({ message: 'Error al obtener banners', error: 'Error interno' });
   }
 });
 
@@ -27,7 +27,7 @@ router.get('/admin/all', async (req, res) => {
     
     res.json(banners);
   } catch (error) {
-    res.status(500).json({ message: 'Error al obtener banners', error: error.message });
+    res.status(500).json({ message: 'Error al obtener banners', error: 'Error interno' });
   }
 });
 
@@ -42,7 +42,7 @@ router.get('/:id', async (req, res) => {
     
     res.json(banner);
   } catch (error) {
-    res.status(500).json({ message: 'Error al obtener banner', error: error.message });
+    res.status(500).json({ message: 'Error al obtener banner', error: 'Error interno' });
   }
 });
 
@@ -54,7 +54,7 @@ router.post('/', async (req, res) => {
     
     res.status(201).json(banner);
   } catch (error) {
-    res.status(400).json({ message: 'Error al crear banner', error: error.message });
+    res.status(400).json({ message: 'Error al crear banner', error: 'Error interno' });
   }
 });
 
@@ -73,7 +73,7 @@ router.put('/:id', async (req, res) => {
     
     res.json(banner);
   } catch (error) {
-    res.status(400).json({ message: 'Error al actualizar banner', error: error.message });
+    res.status(400).json({ message: 'Error al actualizar banner', error: 'Error interno' });
   }
 });
 
@@ -88,7 +88,7 @@ router.delete('/:id', async (req, res) => {
     
     res.json({ message: 'Banner eliminado exitosamente', banner });
   } catch (error) {
-    res.status(500).json({ message: 'Error al eliminar banner', error: error.message });
+    res.status(500).json({ message: 'Error al eliminar banner', error: 'Error interno' });
   }
 });
 
@@ -105,7 +105,7 @@ router.patch('/reorder', async (req, res) => {
     
     res.json({ message: 'Orden actualizado exitosamente' });
   } catch (error) {
-    res.status(500).json({ message: 'Error al reordenar banners', error: error.message });
+    res.status(500).json({ message: 'Error al reordenar banners', error: 'Error interno' });
   }
 });
 

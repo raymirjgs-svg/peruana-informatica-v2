@@ -31,7 +31,7 @@ export const getSystemHealth = async (req: Request, res: Response) => {
                 await sequelize.authenticate();
                 return { type: 'database', status: 'ok', latency: Date.now() - dbStart };
             } catch (error: any) {
-                return { type: 'database', status: 'error', message: error.message, latency: Date.now() - dbStart };
+                return { type: 'database', status: 'error', message: 'No disponible', latency: Date.now() - dbStart };
             }
         })(),
 
@@ -56,7 +56,7 @@ export const getSystemHealth = async (req: Request, res: Response) => {
                 }
                 return { type: 'geminiApi', status: 'error', message: 'Falta GEMINI_API_KEY', latency: 0 };
             } catch (error: any) {
-                return { type: 'geminiApi', status: 'error', message: error.message, latency: Date.now() - geminiStart };
+                return { type: 'geminiApi', status: 'error', message: 'No disponible', latency: Date.now() - geminiStart };
             }
         })()
     ]);

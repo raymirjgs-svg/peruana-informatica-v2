@@ -325,7 +325,7 @@ export class ReviewController {
             return res.status(500).json({
                 success: false,
                 message: 'Error al obtener las reseñas',
-                error: error instanceof Error ? error.message : 'Unknown error'
+                error: 'Error interno'
             });
         }
     }

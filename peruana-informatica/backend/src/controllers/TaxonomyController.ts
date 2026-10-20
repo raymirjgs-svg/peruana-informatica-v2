@@ -47,8 +47,8 @@ export class TaxonomyController {
             console.error('Error en TaxonomyController.assignTaxonomy:', error);
             return res.status(500).json({
                 success: false,
-                message: error.message || 'Error al asignar taxonomía',
-                error: error.message
+                message: 'Error al asignar taxonomía',
+                error: 'Error al procesar la taxonomía'
             });
         }
     }
@@ -114,7 +114,7 @@ export class TaxonomyController {
                     errores.push({
                         success: false,
                         productId: item.productId || item.codigoInterno,
-                        error: error.message
+                        error: 'Error al procesar la taxonomía'
                     });
                 }
             }
@@ -138,7 +138,7 @@ export class TaxonomyController {
             return res.status(500).json({
                 success: false,
                 message: 'Error en asignación masiva',
-                error: error.message
+                error: 'Error al procesar la taxonomía'
             });
         }
     }
@@ -161,7 +161,7 @@ export class TaxonomyController {
             return res.status(500).json({
                 success: false,
                 message: 'Error al obtener marcas',
-                error: error.message
+                error: 'Error al procesar la taxonomía'
             });
         }
     }
@@ -184,7 +184,7 @@ export class TaxonomyController {
             return res.status(500).json({
                 success: false,
                 message: 'Error al obtener categorías',
-                error: error.message
+                error: 'Error al procesar la taxonomía'
             });
         }
     }
@@ -208,7 +208,7 @@ export class TaxonomyController {
             return res.status(500).json({
                 success: false,
                 message: 'Error al obtener subcategorías',
-                error: error.message
+                error: 'Error al procesar la taxonomía'
             });
         }
     }
@@ -241,7 +241,7 @@ export class TaxonomyController {
             return res.status(500).json({
                 success: false,
                 message: 'Error al sincronizar taxonomía desde API',
-                error: error.message
+                error: 'Error al procesar la taxonomía'
             });
         }
     }

@@ -296,7 +296,7 @@ export class BlogController {
       if (error.name === "SequelizeValidationError") {
         const validationErrors = error.errors.map((err: any) => ({
           field: err.path,
-          message: err.message,
+          message: 'Error interno',
         }));
 
         return res.status(400).json({
@@ -413,7 +413,7 @@ export class BlogController {
       if (error.name === "SequelizeValidationError") {
         const validationErrors = error.errors.map((err: any) => ({
           field: err.path,
-          message: err.message,
+          message: 'Error interno',
         }));
 
         return res.status(400).json({
@@ -528,7 +528,7 @@ export class BlogController {
       
       res.status(500).json({
         error: "Error generando títulos",
-        message: error.message || "Error al generar títulos con IA",
+        message: "Error al generar títulos con IA",
         code: "AI_GENERATION_ERROR",
       });
     }
@@ -680,7 +680,7 @@ export class BlogController {
       
       res.status(500).json({
         error: "Error generando contenido",
-        message: error.message || "Error al generar contenido con IA",
+        message: "Error al generar contenido con IA",
         code: "AI_GENERATION_ERROR",
       });
     }
@@ -884,7 +884,7 @@ export class BlogController {
       console.error("❌ Error configuring Gemini API Key:", error);
       res.status(500).json({
         error: "Error interno del servidor",
-        message: error.message || "Error al configurar API Key",
+        message: "Error al configurar API Key",
         code: "CONFIG_ERROR",
       });
     }
@@ -1437,7 +1437,7 @@ En 2024, un SSD es prácticamente obligatorio como disco principal. Los HDD aún
       console.error("❌ Error loading demo data:", error);
       res.status(500).json({
         error: "Error cargando datos demo",
-        message: error.message || "Error al crear posts de demostración",
+        message: "Error al crear posts de demostración",
         code: "DEMO_DATA_ERROR",
       });
     }

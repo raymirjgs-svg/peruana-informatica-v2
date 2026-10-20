@@ -146,6 +146,9 @@
 ### P2.6 — Partir archivos "god"
 - **Evidencia:** `admin/products/page.tsx` 1498, `admin/blog/page.tsx` 1242, `admin/seo/page.tsx` 855, `cotizador/laptop/page.tsx` 745, `cart/page.tsx` 717, `account/profile/page.tsx` 638, `admin/orders/page.tsx` 565, `blogController.ts` 1445, `admin/ProductController.ts` 787, `seoController.ts` 625.
 - **Aceptación:** componentes/páginas < ~400 ln, separados por responsabilidad.
+- **Estado:** en progreso.
+  - Hecho: `blogController.ts` (1446 ln) partido en `controllers/blog/BlogPublicController.ts` (152), `BlogAdminController.ts` (376), `BlogAiController.ts` (361) y `BlogDemoController.ts` (47), con los datos demo extraídos a `data/blogDemoPosts.ts` (531, dato estático). `blogRoutes.ts` reapunta a los cuatro controllers; sin cambios de contrato. Verificado con MySQL real: listado público/admin, stats, sugerencias IA, create/get/update/delete y 401 sin token; `tsc` 0, 18/18 tests.
+  - Pendiente: `admin/products/page.tsx` (1498), `admin/blog/page.tsx` (1242), `admin/seo/page.tsx` (855), `cotizador/laptop/page.tsx` (745), `cart/page.tsx` (717), `account/profile/page.tsx` (638), `admin/orders/page.tsx` (565), `admin/ProductController.ts` (1026), `seoController.ts` (626).
 
 ### P2.7 — Tipos unificados
 - **Evidencia:** triple `Product` (`models/Product.ts`, `types/index.ts` con `id:string` en conflicto, `models/ApiTypes.ts`); `CartItem` duplicado; ~148 `any` + 31 `as any` + 170 backend `any` + 17 `@ts-ignore`.

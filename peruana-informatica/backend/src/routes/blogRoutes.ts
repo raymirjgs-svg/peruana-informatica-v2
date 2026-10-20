@@ -1,5 +1,8 @@
 import { Router } from "express";
-import { BlogController } from "../controllers/blogController";
+import { BlogPublicController } from "../controllers/blog/BlogPublicController";
+import { BlogAdminController } from "../controllers/blog/BlogAdminController";
+import { BlogAiController } from "../controllers/blog/BlogAiController";
+import { BlogDemoController } from "../controllers/blog/BlogDemoController";
 import { authenticateToken, requireAdmin } from "../middleware/authMiddleware";
 
 const router = Router();
@@ -36,19 +39,19 @@ router.options("/post/:id/like", (req, res) => {
  * Obtener posts publicados para el frontend público
  * Query params: page, limit, category, tag, search
  */
-router.get("/", BlogController.getPublishedPosts);
+router.get("/", BlogPublicController.getPublishedPosts);
 
 /**
  * GET /api/blog/post/:slug
  * Obtener post específico por slug (frontend público)
  */
-router.get("/post/:slug", BlogController.getPostBySlug);
+router.get("/post/:slug", BlogPublicController.getPostBySlug);
 
 /**
  * POST /api/blog/post/:id/like
  * Dar like a un post
  */
-router.post("/post/:id/like", BlogController.likePost);
+router.post("/post/:id/like", BlogPublicController.likePost);
 
 // ====================== ADMIN ROUTES ======================
 
@@ -57,39 +60,39 @@ router.post("/post/:id/like", BlogController.likePost);
  * Obtener todos los posts para administración
  * Query params: page, limit, status, search
  */
-router.get("/admin", authenticateToken, requireAdmin, BlogController.getAllPosts);
+router.get("/admin", authenticateToken, requireAdmin, BlogAdminController.getAllPosts);
 
 /**
  * GET /api/blog/admin/stats
  * Obtener estadísticas del blog
  */
-router.get("/admin/stats", authenticateToken, requireAdmin, BlogController.getBlogStats);
+router.get("/admin/stats", authenticateToken, requireAdmin, BlogAdminController.getBlogStats);
 
 /**
  * POST /api/blog/admin
  * Crear nuevo post
  * Body: post data
  */
-router.post("/admin", authenticateToken, requireAdmin, BlogController.createPost);
+router.post("/admin", authenticateToken, requireAdmin, BlogAdminController.createPost);
 
 /**
  * GET /api/blog/admin/:id
  * Obtener post específico por ID
  */
-router.get("/admin/:id", authenticateToken, requireAdmin, BlogController.getPostById);
+router.get("/admin/:id", authenticateToken, requireAdmin, BlogAdminController.getPostById);
 
 /**
  * PUT /api/blog/admin/:id
  * Actualizar post existente
  * Body: post data to update
  */
-router.put("/admin/:id", authenticateToken, requireAdmin, BlogController.updatePost);
+router.put("/admin/:id", authenticateToken, requireAdmin, BlogAdminController.updatePost);
 
 /**
  * DELETE /api/blog/admin/:id
  * Eliminar post
  */
-router.delete("/admin/:id", authenticateToken, requireAdmin, BlogController.deletePost);
+router.delete("/admin/:id", authenticateToken, requireAdmin, BlogAdminController.deletePost);
 
 // ====================== AI FEATURES ======================
 
@@ -101,7 +104,7 @@ router.delete("/admin/:id", authenticateToken, requireAdmin, BlogController.dele
 router.post(
   "/admin/ai/generate-titles",
   authenticateToken, requireAdmin,
-  BlogController.generateTitles,
+  BlogAiController.generateTitles,
 );
 
 /**
@@ -112,7 +115,7 @@ router.post(
 router.get(
   "/admin/ai/title-suggestions",
   authenticateToken, requireAdmin,
-  BlogController.getTitleSuggestions,
+  BlogAiController.getTitleSuggestions,
 );
 
 /**
@@ -123,7 +126,7 @@ router.get(
 router.post(
   "/admin/ai/generate-content",
   authenticateToken, requireAdmin,
-  BlogController.generateContentFromTitle,
+  BlogAiController.generateContentFromTitle,
 );
 
 /**
@@ -134,7 +137,7 @@ router.post(
 router.put(
   "/admin/ai/title-suggestions/:id",
   authenticateToken, requireAdmin,
-  BlogController.manageTitleSuggestion,
+  BlogAiController.manageTitleSuggestion,
 );
 
 // Manejar solicitudes OPTIONS para CORS preflight
@@ -181,14 +184,14 @@ router.options("/admin/ai/generate-content", (req, res) => {
 router.post(
   "/admin/config/gemini",
   authenticateToken, requireAdmin,
-  BlogController.configureGemini,
+  BlogAiController.configureGemini,
 );
 
 /**
  * POST /api/blog/admin/demo
  * Cargar posts de demostración
  */
-router.post("/admin/demo", authenticateToken, requireAdmin, BlogController.loadDemoData);
+router.post("/admin/demo", authenticateToken, requireAdmin, BlogDemoController.loadDemoData);
 
 // Test endpoint
 router.get("/test", (req, res) => {

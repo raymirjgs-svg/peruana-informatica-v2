@@ -1,6 +1,8 @@
 import express, { Request, Response } from 'express';
 import { body, param, query, validationResult } from 'express-validator';
 import { productController } from '../../controllers/admin/ProductController';
+import { productBulkController } from '../../controllers/admin/ProductBulkController';
+import { productErpController } from '../../controllers/admin/ProductErpController';
 import { authenticateToken, requireAdmin } from '../../middleware/authMiddleware';
 
 const router = express.Router();
@@ -35,7 +37,7 @@ router.get('/:id', [
 ], validateRequest, productController.getProductById.bind(productController));
 
 // GET erp-lookup/:code - Busca producto en BD local y en API del sistema de ventas
-router.get('/erp-lookup/:code', productController.erpLookup.bind(productController));
+router.get('/erp-lookup/:code', productErpController.erpLookup.bind(productErpController));
 
 // POST crear producto
 router.post('/', [
@@ -58,7 +60,7 @@ router.post('/', [
 ], validateRequest, productController.createProduct.bind(productController));
 
 // POST importar productos desde JSON - Importación masiva (ERP)
-router.post('/import-json', productController.importJson.bind(productController));
+router.post('/import-json', productBulkController.importJson.bind(productBulkController));
 
 // PUT actualizar producto
 router.put('/:id', [
@@ -83,9 +85,9 @@ router.delete('/:id', [
 router.patch('/bulk-update', [
   body('product_ids').isArray({ min: 1 }).withMessage('Se requiere un array de IDs de productos'),
   body('product_ids.*').isInt().withMessage('IDs de productos deben ser enteros'),
-], validateRequest, productController.bulkUpdate.bind(productController));
+], validateRequest, productBulkController.bulkUpdate.bind(productBulkController));
 
 // POST sync-all - Sincronizar todos los productos con el ERP
-router.post('/sync-all', productController.syncAll.bind(productController));
+router.post('/sync-all', productBulkController.syncAll.bind(productBulkController));
 
 export default router;

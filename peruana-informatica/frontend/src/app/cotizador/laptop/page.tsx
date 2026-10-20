@@ -1,53 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import QuotationForm from './components/QuotationForm';
 import apiClient from '@/utils/api';
 import { cleanHtmlText } from '@/utils/text';
-
-interface SubCategory {
-  id: number;
-  name: string;
-  slug: string;
-  type?: string | null;
-}
-
-interface Product {
-  id: number;
-  cod_producto: number;
-  name: string;
-  slug: string;
-  description: string;
-  short_description?: string | null;
-  price: number | string;
-  stock: number;
-  codigo_interno: string;
-  component_type?: string;
-  subCategories?: SubCategory[];
-  // Add component_specs as optional to prevent errors
-  component_specs?: {
-    processor?: string;
-    ram?: string;
-    storage?: string;
-    graphics?: string;
-    screen_size?: string;
-  };
-}
-
-interface Filters {
-  minPrice: string;
-  maxPrice: string;
-  processor: string;
-  ram: string;
-  storage: string;
-  subcategory: string;
-  search: string; // Add search filter
-}
-
-interface QuotationResponse {
-  code: string;
-  total: number | string;
-}
+import { Product, SubCategory, Filters, QuotationResponse } from './types';
+import { LaptopFilters } from './components/LaptopFilters';
+import { LaptopList } from './components/LaptopList';
+import { QuotationSuccess } from './components/QuotationSuccess';
+import { QuotationPanel } from './components/QuotationPanel';
 
 export default function LaptopQuotation() {
   const [showForm, setShowForm] = useState(false);
@@ -148,54 +108,6 @@ export default function LaptopQuotation() {
     setFilteredLaptops(laptops);
     setCurrentPage(1);
   }, [laptops]);
-
-  // Function to standardize RAM values
-  const standardizeRamValue = (ram: string): string => {
-    if (!ram) return '';
-
-    // Extract the numeric value and unit
-    const match = ram.match(/(\d+)\s*(GB|gb|g)/i);
-    if (match) {
-      const value = match[1];
-      return `${value}GB`;
-    }
-    return ram;
-  };
-
-  // Function to standardize storage values
-  const standardizeStorageValue = (storage: string): string => {
-    if (!storage) return '';
-
-    // Extract the numeric value and unit
-    const match = storage.match(/(\d+)\s*(GB|TB|gb|tb)/i);
-    if (match) {
-      const value = match[1];
-      const unit = match[2]?.toUpperCase() ?? '';
-      return `${value}${unit}`;
-    }
-    return storage;
-  };
-
-  // Function to get unique standardized values
-  const getUniqueStandardizedValues = (values: (string | undefined)[], standardizeFn: (value: string) => string): string[] => {
-    const standardized = values
-      .filter(Boolean)
-      .map(val => standardizeFn(val as string))
-      .filter(val => val.length > 0);
-
-    // Return unique values
-    return [...new Set(standardized)].sort((a, b) => {
-      // Sort numerically first, then alphabetically
-      const numA = parseInt(a);
-      const numB = parseInt(b);
-
-      if (!isNaN(numA) && !isNaN(numB)) {
-        return numA - numB;
-      }
-
-      return a.localeCompare(b);
-    });
-  };
 
   const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -332,74 +244,16 @@ export default function LaptopQuotation() {
 
   if (showSuccess && quotationResult) {
     return (
-      <div className="max-w-4xl mx-auto px-4 py-12">
-        <div className="bg-white rounded-xl shadow-lg p-8 text-center">
-          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-
-          <h1 className="text-2xl font-bold text-gray-800 mb-2">¡Cotización Generada!</h1>
-          <p className="text-gray-600 mb-8">
-            Gracias por tu solicitud. Tu cotización ha sido creada exitosamente.
-          </p>
-
-          <div className="bg-gray-50 rounded-lg p-6 text-left max-w-md mx-auto mb-8">
-            <h2 className="font-bold text-lg mb-4 text-gray-800">Detalles de la Cotización</h2>
-            <div className="space-y-3">
-              <div className="flex justify-between">
-                <span className="text-gray-600">Código:</span>
-                <span className="font-medium">{quotationResult.code}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Cliente:</span>
-                <span className="font-medium">{quotationResult.client_name}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Producto:</span>
-                <span className="font-medium">{selectedLaptop?.name}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Total:</span>
-                <span className="font-medium text-green-600">S/. {
-                  typeof quotationResult.total === 'number'
-                    ? quotationResult.total.toFixed(2)
-                    : typeof quotationResult.total === 'string'
-                      ? parseFloat(quotationResult.total).toFixed(2)
-                      : '0.00'
-                }</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Fecha:</span>
-                <span className="font-medium">{new Date(quotationResult.date).toLocaleDateString()}</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex justify-center gap-4 mt-6">
-            <button
-              onClick={() => {
-                // Descargar PDF de cotización usando el servicio
-                apiClient.downloadQuotationPdf(quotationResult.code);
-              }}
-              className="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition font-medium"
-            >
-              Descargar PDF
-            </button>
-            <button
-              onClick={() => {
-                setShowSuccess(false);
-                setQuotationResult(null);
-                setSelectedLaptop(null);
-              }}
-              className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition font-medium"
-            >
-              Hacer Otra Cotización
-            </button>
-          </div>
-        </div>
-      </div>
+      <QuotationSuccess
+        result={quotationResult}
+        productName={selectedLaptop?.name}
+        onDownload={() => apiClient.downloadQuotationPdf(quotationResult.code)}
+        onReset={() => {
+          setShowSuccess(false);
+          setQuotationResult(null);
+          setSelectedLaptop(null);
+        }}
+      />
     );
   }
 
@@ -428,321 +282,34 @@ export default function LaptopQuotation() {
       </p>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        {/* Panel de filtros */}
-        <div className="lg:col-span-1">
-          <div className="bg-white rounded-xl shadow-md p-6 sticky top-24">
-            <h2 className="text-xl font-semibold mb-4 text-gray-800">Filtros</h2>
+        <LaptopFilters
+          filters={filters}
+          onFilterChange={handleFilterChange}
+          onReset={resetFilters}
+          subcategories={allSubcategories}
+          processorOptions={processorOptions}
+          ramOptions={ramOptions}
+          storageOptions={storageOptions}
+        />
 
-            <div className="space-y-4">
-              {/* Search filter */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Buscar</label>
-                <input
-                  type="text"
-                  name="search"
-                  value={filters.search}
-                  onChange={handleFilterChange}
-                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Nombre o descripción"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Categoría</label>
-                <select
-                  name="subcategory"
-                  value={filters.subcategory}
-                  onChange={handleFilterChange}
-                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                >
-                  <option value="">Todas las categorías</option>
-                  {allSubcategories.map(subcategory => (
-                    <option key={subcategory.id} value={subcategory.slug}>
-                      {subcategory.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Precio Mínimo</label>
-                <input
-                  type="number"
-                  name="minPrice"
-                  value={filters.minPrice}
-                  onChange={handleFilterChange}
-                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="S/. 0"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Precio Máximo</label>
-                <input
-                  type="number"
-                  name="maxPrice"
-                  value={filters.maxPrice}
-                  onChange={handleFilterChange}
-                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="S/. 10000"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Procesador</label>
-                <select
-                  name="processor"
-                  value={filters.processor}
-                  onChange={handleFilterChange}
-                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                >
-                  <option value="">Todos los procesadores</option>
-                  {processorOptions.map((processor, index) => (
-                    <option key={index} value={processor}>
-                      {processor}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">RAM</label>
-                <select
-                  name="ram"
-                  value={filters.ram}
-                  onChange={handleFilterChange}
-                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                >
-                  <option value="">Toda la RAM</option>
-                  {ramOptions.map((ram, index) => (
-                    <option key={index} value={ram}>
-                      {ram}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Almacenamiento</label>
-                <select
-                  name="storage"
-                  value={filters.storage}
-                  onChange={handleFilterChange}
-                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                >
-                  <option value="">Todo el almacenamiento</option>
-                  {storageOptions.map((storage, index) => (
-                    <option key={index} value={storage}>
-                      {storage}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <button
-                onClick={resetFilters}
-                className="w-full bg-gray-200 text-gray-800 py-2 rounded-md hover:bg-gray-300 transition mt-4"
-              >
-                Limpiar Filtros
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Lista de laptops */}
-        <div className="lg:col-span-3">
-          {loading ? (
-            <div className="flex justify-center items-center h-64">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-            </div>
-          ) : filteredLaptops.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-gray-600">No se encontraron laptops que coincidan con los filtros.</p>
-            </div>
-          ) : (
-            <>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {filteredLaptops
-                  .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-                  .map((laptop) => (
-                    <div
-                      key={laptop.id || laptop.cod_producto}
-                      className="border border-gray-200 rounded-xl overflow-hidden bg-white shadow-sm hover:shadow-md transition"
-                    >
-                      <div className="p-5">
-                        <h3 className="text-lg font-semibold text-gray-800 mb-2">{laptop.name}</h3>
-
-                        {/* Mostrar código interno */}
-                        <p className="text-sm text-gray-500 mb-1">Código: {laptop.codigo_interno}</p>
-
-                        {/* Mostrar subcategorías */}
-                        {laptop.subCategories && laptop.subCategories.length > 0 && (
-                          <div className="flex flex-wrap gap-1 mb-2">
-                            {laptop.subCategories.slice(0, 2).map((subcategory) => (
-                              <span
-                                key={subcategory.id}
-                                className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full"
-                              >
-                                {subcategory.name}
-                              </span>
-                            ))}
-                            {laptop.subCategories.length > 2 && (
-                              <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
-                                +{laptop.subCategories.length - 2}
-                              </span>
-                            )}
-                          </div>
-                        )}
-
-                        {laptop.component_specs && (
-                          <div className="text-sm text-gray-600 mb-3 space-y-1">
-                            {laptop.component_specs.processor && (
-                              <div><strong>Procesador:</strong> {laptop.component_specs.processor}</div>
-                            )}
-                            {laptop.component_specs.ram && (
-                              <div><strong>RAM:</strong> {laptop.component_specs.ram}</div>
-                            )}
-                            {laptop.component_specs.storage && (
-                              <div><strong>Almacenamiento:</strong> {laptop.component_specs.storage}</div>
-                            )}
-                          </div>
-                        )}
-
-                        <p className="text-gray-700 text-sm mb-4 line-clamp-2">
-                          {laptop.short_description ? (
-                            laptop.short_description
-                          ) : laptop.description ? (
-                            // Remove HTML tags from description and show only text
-                            laptop.description.replace(/<[^>]*>/g, '').substring(0, 100) +
-                            (laptop.description.replace(/<[^>]*>/g, '').length > 100 ? '...' : '')
-                          ) : 'Sin descripción'}
-                        </p>
-
-                        <div className="flex justify-between items-center mb-4">
-                          <span className="text-xl font-bold text-blue-600">S/. {
-                            typeof laptop.price === 'number'
-                              ? laptop.price.toFixed(2)
-                              : typeof laptop.price === 'string'
-                                ? parseFloat(laptop.price).toFixed(2)
-                                : '0.00'
-                          }</span>
-                          <span className={`px-2 py-1 rounded-full text-xs ${laptop.stock > 5 ? 'bg-green-100 text-green-800' :
-                            laptop.stock > 0 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'
-                            }`}>
-                            {laptop.stock > 5 ? 'En stock' :
-                              laptop.stock > 0 ? `Solo ${laptop.stock} unidad(es)` : 'Agotado'}
-                          </span>
-                        </div>
-
-                        <div className="flex gap-2">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              addToQuotation(laptop);
-                            }}
-                            className={`flex-1 py-2 rounded-lg transition ${selectedLaptop?.id === laptop.id || selectedLaptop?.cod_producto === laptop.cod_producto
-                              ? 'bg-green-600 text-white' : 'bg-blue-600 hover:bg-blue-700 text-white'
-                              }`}
-                            disabled={laptop.stock === 0}
-                          >
-                            {selectedLaptop?.id === laptop.id || selectedLaptop?.cod_producto === laptop.cod_producto ? 'Agregado ✓' : 'Agregar a Cotización'}
-                          </button>
-
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              if (laptop.slug) {
-                                window.open(`/products/${laptop.slug}`, '_blank');
-                              } else {
-                                window.open(`/products/${laptop.cod_producto || laptop.id}`, '_blank');
-                              }
-                            }}
-                            className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
-                            title="Ver detalles del producto"
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                            </svg>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-              </div>
-
-              {/* Controles de paginación */}
-              {filteredLaptops.length > itemsPerPage && (
-                <div className="flex justify-center mt-8">
-                  <div className="flex items-center space-x-2">
-                    <button
-                      onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                      disabled={currentPage === 1}
-                      className={`px-4 py-2 rounded-lg ${currentPage === 1
-                        ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                        : 'bg-blue-600 text-white hover:bg-blue-700'
-                        }`}
-                    >
-                      Anterior
-                    </button>
-
-                    <span className="px-4 py-2 text-gray-700">
-                      Página {currentPage} de {Math.ceil(filteredLaptops.length / itemsPerPage)}
-                    </span>
-
-                    <button
-                      onClick={() => setCurrentPage(prev => Math.min(prev + 1, Math.ceil(filteredLaptops.length / itemsPerPage)))}
-                      disabled={currentPage === Math.ceil(filteredLaptops.length / itemsPerPage)}
-                      className={`px-4 py-2 rounded-lg ${currentPage === Math.ceil(filteredLaptops.length / itemsPerPage)
-                        ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                        : 'bg-blue-600 text-white hover:bg-blue-700'
-                        }`}
-                    >
-                      Siguiente
-                    </button>
-                  </div>
-                </div>
-              )}
-            </>
-          )}
-        </div>
+        <LaptopList
+          loading={loading}
+          laptops={filteredLaptops}
+          currentPage={currentPage}
+          itemsPerPage={itemsPerPage}
+          onPageChange={setCurrentPage}
+          selectedLaptop={selectedLaptop}
+          onAdd={addToQuotation}
+        />
       </div>
 
-      {/* Panel de cotización */}
       {showForm && selectedLaptop && (
-        <div className="mt-8 bg-white rounded-xl shadow-lg p-6 border border-blue-200">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold text-gray-800">Cotización - {selectedLaptop.name}</h2>
-            <button
-              onClick={handleCloseForm}
-              className="text-gray-500 hover:text-red-600"
-              disabled={loading}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-
-          <div className="flex items-center gap-4 mb-6">
-            <div className="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16 flex items-center justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 3V5m0 0V12m0-9h9m-9 0a2 2 0 01-2-2V7a4 4 0 014-4z" />
-              </svg>
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-800">{selectedLaptop.name}</h3>
-              <div className="text-gray-600 text-sm">
-                <p>S/. {
-                  typeof selectedLaptop.price === 'number'
-                    ? selectedLaptop.price.toFixed(2)
-                    : typeof selectedLaptop.price === 'string'
-                      ? parseFloat(selectedLaptop.price).toFixed(2)
-                      : '0.00'
-                }</p>
-                <p>Código: {selectedLaptop.codigo_interno}</p>
-              </div>
-            </div>
-          </div>
-
-          <QuotationForm
-            laptop={selectedLaptop}
-            onSubmit={handleFormSubmit}
-          />
-        </div>
+        <QuotationPanel
+          laptop={selectedLaptop}
+          loading={loading}
+          onSubmit={handleFormSubmit}
+          onClose={handleCloseForm}
+        />
       )}
     </div>
   );

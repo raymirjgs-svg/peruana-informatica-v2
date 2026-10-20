@@ -163,6 +163,26 @@ export default function AdminOrdersPage() {
     }
   };
 
+  const handleViewProof = async (orderId: number) => {
+    try {
+      const response = await fetch(`${API_CONFIG.API_BASE_URL}/api/admin/orders/${orderId}/payment-proof`, {
+        headers: getAdminAuthHeaders()
+      });
+
+      if (!response.ok) {
+        alert('Error al cargar comprobante');
+        return;
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      window.open(url, '_blank', 'noopener,noreferrer');
+      setTimeout(() => window.URL.revokeObjectURL(url), 60000);
+    } catch (error) {
+      alert('Error de conexión');
+    }
+  };
+
   const getStatusBadge = (status: string) => {
     const colors = {
       pending: 'bg-amber-500 text-white',
@@ -297,14 +317,12 @@ export default function AdminOrdersPage() {
                         <p className="text-sm font-medium text-blue-900 mb-2">
                           📎 Paso 1: Revisar Comprobante del Cliente
                         </p>
-                        <a
-                          href={`${API_CONFIG.API_BASE_URL}/api/payments/proofs/${order.payment_proof}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                        <button
+                          onClick={() => handleViewProof(order.id)}
                           className="inline-block px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-medium"
                         >
                           👁️ Ver Comprobante de Pago
-                        </a>
+                        </button>
                       </div>
                     )}
 

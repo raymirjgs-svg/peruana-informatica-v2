@@ -39,12 +39,16 @@ export const paymentController = {
             const { payment_method, invoice_type } = req.body || {};
 
             // Update payment details
-            order.payment_method = payment_method;
-            order.invoice_type = invoice_type;
+            if (payment_method !== undefined) {
+                order.payment_method = payment_method;
+            }
+            if (invoice_type !== undefined) {
+                order.invoice_type = invoice_type;
+            }
             
             // Payment Proof (if uploaded)
             if (file) {
-                order.payment_proof = `/uploads/${file.filename}`;
+                order.payment_proof = `/uploads/proofs/${file.filename}`;
             }
 
             // Card details (if applicable)

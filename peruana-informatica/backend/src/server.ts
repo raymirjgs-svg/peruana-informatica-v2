@@ -127,6 +127,9 @@ app.use(requestLogger);
 
 // Servir archivos estáticos (imágenes del carousel y uploads)
 app.use("/images", express.static(path.join(__dirname, "../public/images")));
+app.use("/uploads/proofs", (_req, res) => {
+  res.status(404).json({ error: "Not found" });
+});
 app.use("/uploads", express.static(path.join(__dirname, "../public/uploads")));
 
 // Rutas

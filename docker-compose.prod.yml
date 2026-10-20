@@ -76,6 +76,26 @@ services:
           memory: 512M
 
   # ============================================
+  # 🧱 Database Migrations (one-shot)
+  # ============================================
+  migrate:
+    build:
+      context: ./peruana-informatica/backend
+      dockerfile: Dockerfile.prod
+    container_name: peruana_migrate_prod
+    command: npm run db:migrate
+    env_file:
+      - ./envs/.env.production
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - peruana_net_prod
+    restart: "no"
+
+  # ============================================
   # ⚙️ Backend API (Node.js/Express Production)
   # ============================================
   backend:
@@ -97,6 +117,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
     networks:
       - peruana_net_prod
     restart: unless-stopped

@@ -40,6 +40,11 @@ COPY --from=builder /app/dist ./dist
 # Copy public folder (images, uploads) if needed
 COPY --from=builder /app/public ./public
 
+# Copy migration assets for sequelize-cli
+COPY .sequelizerc ./
+COPY database-config.js ./
+COPY migrations ./migrations
+
 # Create uploads directory
 RUN mkdir -p /app/public/uploads
 

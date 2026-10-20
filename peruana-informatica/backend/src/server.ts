@@ -68,7 +68,7 @@ import {
   securityHeaders,
 } from "./middleware/security";
 import { initRedis } from "./config/redis";
-import { requireJwtSecret } from "./config/env";
+import { validateEnv } from "./config/env";
 import { logger } from "./config/logger";
 import { requestLogger, errorLogger } from "./middleware/logger";
 
@@ -213,7 +213,7 @@ app.use(errorHandler);
 // Iniciar servidor
 const startServer = async () => {
   try {
-    requireJwtSecret();
+    validateEnv();
 
     await connectDatabase();
 

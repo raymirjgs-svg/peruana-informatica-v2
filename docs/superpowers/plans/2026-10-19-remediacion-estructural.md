@@ -127,6 +127,7 @@
 - **Evidencia:** solo `JWT_SECRET` validado; fallbacks inseguros (`DB_PASSWORD||''`, `MP_ACCESS_TOKEN||'TEST-TOKEN'`); `backend/.env.example` incompleto (falta MP_WEBHOOK_SECRET, Redis, Google, CORS, etc.); **no existe `frontend/.env.example`**; `envs/.env.staging` sin `JWT_SECRET`/`NEXTAUTH_SECRET` (crashea al boot).
 - **Tareas:** validación con zod/envalid al arranque; completar examples; corregir staging.
 - **Aceptación:** variables faltantes/inválidas fallan al iniciar con mensaje claro.
+- **Estado:** hecho (salvo staging, que es ops). `config/env.ts` ahora valida con zod (zod añadido al backend) al arrancar: errores agregados por variable (`JWT_SECRET`, `PORT`, `NODE_ENV`, etc.) y warnings de producción (DB_PASSWORD vacío, sin MP_WEBHOOK_SECRET, JWT corto, sin CORS). `server.ts` llama `validateEnv()` antes de conectar. Eliminado el fallback `MP_ACCESS_TOKEN || 'TEST-TOKEN'`. Los `.env.example` de backend y frontend ya estaban completos. `envs/.env.staging` no existe en el repo (gitignored) → la provisión de secretos de staging sigue pendiente como tarea de ops.
 
 ### P2.4 — Capa de datos del frontend unificada
 - **Evidencia:** 3 estrategias de token; `lib/api-client.ts` muerto; `utils/api.ts` con mocks (P0.9); ~27 archivos con `NEXT_PUBLIC_API_URL || 'http://localhost:3001'` hardcodeado; `contacto/page.tsx:27` sin fallback (`undefined/api/...`); `next.config.ts` `images.unoptimized: true` + `hostname:'**'`; conflicto `NEXT_PUBLIC_API_URL` con/sin `/api` (root `.env.example` incluye `/api`).

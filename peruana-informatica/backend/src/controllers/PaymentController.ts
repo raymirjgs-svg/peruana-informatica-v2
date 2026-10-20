@@ -12,7 +12,7 @@ import { logger } from '../config/logger';
 
 // Initialize MP
 const client = new MercadoPagoConfig({
-    accessToken: process.env.MP_ACCESS_TOKEN || 'TEST-TOKEN'
+    accessToken: process.env.MP_ACCESS_TOKEN || ''
 });
 
 export const paymentController = {

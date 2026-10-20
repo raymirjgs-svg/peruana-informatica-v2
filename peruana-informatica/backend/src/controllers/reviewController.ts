@@ -6,6 +6,7 @@ import { Order } from '../models/Order';
 import { Image } from '../models/Image';
 import { OrderItem } from '../models/OrderItem';
 import { Op } from 'sequelize';
+import { logger } from '../config/logger';
 
 export class ReviewController {
     /**
@@ -90,7 +91,7 @@ export class ReviewController {
                 data: review
             });
         } catch (error) {
-            console.error('Error creating review:', error);
+            logger.error('Error creating review:', error);
             return res.status(500).json({
                 success: false,
                 message: 'Error al crear la reseña'
@@ -168,7 +169,7 @@ export class ReviewController {
                 }
             });
         } catch (error) {
-            console.error('Error fetching product reviews:', error);
+            logger.error('Error fetching product reviews:', error);
             return res.status(500).json({
                 success: false,
                 message: 'Error al obtener las reseñas'
@@ -222,7 +223,7 @@ export class ReviewController {
                 }
             });
         } catch (error) {
-            console.error('Error fetching rating summary:', error);
+            logger.error('Error fetching rating summary:', error);
             return res.status(500).json({
                 success: false,
                 message: 'Error al obtener el resumen de calificaciones'
@@ -255,7 +256,7 @@ export class ReviewController {
                 data: review
             });
         } catch (error) {
-            console.error('Error marking review as helpful:', error);
+            logger.error('Error marking review as helpful:', error);
             return res.status(500).json({
                 success: false,
                 message: 'Error al procesar tu voto'
@@ -320,8 +321,8 @@ export class ReviewController {
                 }
             });
         } catch (error) {
-            console.error('Error fetching all reviews:', JSON.stringify(error, null, 2));
-            console.error(error);
+            logger.error('Error fetching all reviews:', JSON.stringify(error, null, 2));
+            logger.error(error);
             return res.status(500).json({
                 success: false,
                 message: 'Error al obtener las reseñas',
@@ -356,7 +357,7 @@ export class ReviewController {
                 data: review
             });
         } catch (error) {
-            console.error('Error approving review:', error);
+            logger.error('Error approving review:', error);
             return res.status(500).json({
                 success: false,
                 message: 'Error al aprobar la reseña'
@@ -393,7 +394,7 @@ export class ReviewController {
                 data: review
             });
         } catch (error) {
-            console.error('Error rejecting review:', error);
+            logger.error('Error rejecting review:', error);
             return res.status(500).json({
                 success: false,
                 message: 'Error al rechazar la reseña'
@@ -431,7 +432,7 @@ export class ReviewController {
                 message: 'Reseña eliminada exitosamente'
             });
         } catch (error) {
-            console.error('Error deleting review:', error);
+            logger.error('Error deleting review:', error);
             return res.status(500).json({
                 success: false,
                 message: 'Error al eliminar la reseña'
@@ -467,7 +468,7 @@ export class ReviewController {
                 }
             );
         } catch (error) {
-            console.error('Error updating product rating:', error);
+            logger.error('Error updating product rating:', error);
         }
     }
 }

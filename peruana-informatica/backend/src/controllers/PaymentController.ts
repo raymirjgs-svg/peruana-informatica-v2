@@ -8,6 +8,7 @@ import { CartItem } from '../models/CartItem';
 import { Product } from '../models/Product';
 import { sequelize } from '../database/connection';
 import { User } from '../models/User';
+import { logger } from '../config/logger';
 
 // Initialize MP
 const client = new MercadoPagoConfig({
@@ -77,7 +78,7 @@ export const paymentController = {
             res.json({ success: true, message: 'Comprobante subido correctamente' });
 
         } catch (error) {
-            console.error('Error uploading proof:', error);
+            logger.error('Error uploading proof:', error);
             res.status(500).json({ error: 'Error al subir comprobante' });
         }
     },
@@ -196,7 +197,7 @@ export const paymentController = {
 
         } catch (error) {
             await t.rollback();
-            console.error('Create preference error:', error);
+            logger.error('Create preference error:', error);
             res.status(500).json({ error: 'Error al procesar el pago' });
         }
     },
@@ -256,7 +257,7 @@ export const paymentController = {
             });
 
         } catch (error) {
-            console.error('Create preference from order error:', error);
+            logger.error('Create preference from order error:', error);
             res.status(500).json({ error: 'Error al crear preferencia' });
         }
     },
@@ -280,7 +281,7 @@ export const paymentController = {
             const secret = process.env.MP_WEBHOOK_SECRET;
             if (!secret) {
                 if (process.env.NODE_ENV === 'production') {
-                    console.error('Webhook rechazado: MP_WEBHOOK_SECRET no configurado');
+                    logger.error('Webhook rechazado: MP_WEBHOOK_SECRET no configurado');
                     return res.sendStatus(500);
                 }
             } else {
@@ -288,7 +289,7 @@ export const paymentController = {
                 const requestId = req.headers['x-request-id'] as string | undefined;
 
                 if (!signature || !requestId) {
-                    console.warn('Webhook rechazado: faltan headers de firma');
+                    logger.warn('Webhook rechazado: faltan headers de firma');
                     return res.sendStatus(401);
                 }
 
@@ -313,7 +314,7 @@ export const paymentController = {
                 }
 
                 if (!ts || !v1 || !signatureValid) {
-                    console.warn('Webhook rechazado: firma inválida');
+                    logger.warn('Webhook rechazado: firma inválida');
                     return res.sendStatus(401);
                 }
             }
@@ -353,7 +354,7 @@ export const paymentController = {
 
             res.sendStatus(200);
         } catch (error) {
-            console.error('Webhook error:', error);
+            logger.error('Webhook error:', error);
             res.sendStatus(500);
         }
     }

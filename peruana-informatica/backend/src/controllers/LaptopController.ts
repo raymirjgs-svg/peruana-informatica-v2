@@ -3,6 +3,7 @@ import { Product } from '../models/Product';
 import { SubCategory } from '../models/SubCategory';
 import { ProductSubCategory } from '../models/ProductSubCategory';
 import { Op, Sequelize } from 'sequelize';
+import { logger } from '../config/logger';
 
 const extractComponentSpecs = (product: any) => {
   const description = product.description || '';
@@ -157,7 +158,7 @@ export const getLaptopsWithSubcategories = async (req: Request, res: Response) =
 
     res.json(laptopsWithSpecs);
   } catch (error) {
-    console.error('Error fetching laptops with subcategories:', error);
+    logger.error('Error fetching laptops with subcategories:', error);
     res.status(500).json({
       error: 'Error interno del servidor',
       message: 'Error interno'
@@ -188,7 +189,7 @@ export const getLaptopSubcategories = async (req: Request, res: Response) => {
 
     res.json(subcategories);
   } catch (error) {
-    console.error('Error fetching laptop subcategories:', error);
+    logger.error('Error fetching laptop subcategories:', error);
     res.json([]);
   }
 };
@@ -216,7 +217,7 @@ export const getLaptopProcessors = async (req: Request, res: Response) => {
 
     res.json(processors);
   } catch (error) {
-    console.error('Error fetching laptop processors:', error);
+    logger.error('Error fetching laptop processors:', error);
     res.json([]);
   }
 };
@@ -237,7 +238,7 @@ export const getLaptopRamOptions = async (req: Request, res: Response) => {
     });
     res.json(options);
   } catch (error) {
-    console.error('Error fetching laptop RAM options:', error);
+    logger.error('Error fetching laptop RAM options:', error);
     res.json([]);
   }
 };
@@ -258,7 +259,7 @@ export const getLaptopStorageOptions = async (req: Request, res: Response) => {
     });
     res.json(options);
   } catch (error) {
-    console.error('Error fetching laptop storage options:', error);
+    logger.error('Error fetching laptop storage options:', error);
     res.json([]);
   }
 };

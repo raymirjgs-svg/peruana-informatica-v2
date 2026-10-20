@@ -1,20 +1,21 @@
 import { Request, Response } from "express";
 import { Contact } from "../models/Contact";
 import { Op } from "sequelize";
+import { logger } from '../config/logger';
 
 export class ContactController {
   // Crear un nuevo contacto (formulario público)
   static async create(req: Request, res: Response) {
     try {
-      console.log("📧 Contact creation request received");
-      console.log("Request body:", req.body);
-      console.log("Request headers:", req.headers);
+      logger.info("📧 Contact creation request received");
+      logger.info("Request body:", req.body);
+      logger.info("Request headers:", req.headers);
 
       const { nombre, email, telefono, asunto, mensaje } = req.body;
 
       // Validar datos requeridos
-      console.log("Validating required fields...");
-      console.log(
+      logger.info("Validating required fields...");
+      logger.info(
         "nombre:",
         nombre,
         "email:",
@@ -26,7 +27,7 @@ export class ContactController {
       );
 
       if (!nombre || !email || !asunto || !mensaje) {
-        console.log("❌ Missing required fields");
+        logger.info("❌ Missing required fields");
         return res.status(400).json({
           error: "Datos incompletos",
           message: "Nombre, email, asunto y mensaje son requeridos",
@@ -37,10 +38,10 @@ export class ContactController {
       // Obtener información adicional de la request
       const ip_address = req.ip || req.connection.remoteAddress;
       const user_agent = req.get("User-Agent");
-      console.log("Client info - IP:", ip_address, "User-Agent:", user_agent);
+      logger.info("Client info - IP:", ip_address, "User-Agent:", user_agent);
 
       // Verificar si ya existe un contacto reciente con el mismo email (prevenir spam)
-      console.log("Checking for recent contacts...");
+      logger.info("Checking for recent contacts...");
       const recentContact = await Contact.findOne({
         where: {
           email: email.toLowerCase().trim(),
@@ -49,10 +50,10 @@ export class ContactController {
           },
         },
       });
-      console.log("Recent contact found:", !!recentContact);
+      logger.info("Recent contact found:", !!recentContact);
 
       if (recentContact) {
-        console.log("❌ Too many requests from same email");
+        logger.info("❌ Too many requests from same email");
         return res.status(429).json({
           error: "Demasiados intentos",
           message:
@@ -62,7 +63,7 @@ export class ContactController {
       }
 
       // Crear el contacto
-      console.log("Creating new contact...");
+      logger.info("Creating new contact...");
       const newContact = await Contact.create({
         nombre,
         email,
@@ -72,10 +73,10 @@ export class ContactController {
         ip_address,
         user_agent,
       });
-      console.log("✅ Contact created with ID:", newContact.id);
+      logger.info("✅ Contact created with ID:", newContact.id);
 
       // Respuesta exitosa
-      console.log("✅ Contact creation successful");
+      logger.info("✅ Contact creation successful");
       res.status(201).json({
         success: true,
         message: "Mensaje enviado exitosamente. Te contactaremos pronto.",
@@ -88,10 +89,10 @@ export class ContactController {
         },
       });
     } catch (error: any) {
-      console.error("❌ Error creating contact:", error);
-      console.error("Error stack:", error.stack);
-      console.error("Error name:", error.name);
-      console.error("Error message:", error.message);
+      logger.error("❌ Error creating contact:", error);
+      logger.error("Error stack:", error.stack);
+      logger.error("Error name:", error.name);
+      logger.error("Error message:", error.message);
 
       // Manejar errores de validación de Sequelize
       if (error.name === "SequelizeValidationError") {
@@ -187,7 +188,7 @@ export class ContactController {
         },
       });
     } catch (error) {
-      console.error("Error fetching contacts:", error);
+      logger.error("Error fetching contacts:", error);
       res.status(500).json({
         error: "Error interno del servidor",
         message: "Error al obtener los contactos",
@@ -216,7 +217,7 @@ export class ContactController {
         data: contact,
       });
     } catch (error) {
-      console.error("Error fetching contact:", error);
+      logger.error("Error fetching contact:", error);
       res.status(500).json({
         error: "Error interno del servidor",
         message: "Error al obtener el contacto",
@@ -257,7 +258,7 @@ export class ContactController {
         data: contact,
       });
     } catch (error) {
-      console.error("Error updating contact status:", error);
+      logger.error("Error updating contact status:", error);
       res.status(500).json({
         error: "Error interno del servidor",
         message: "Error al actualizar el estado del contacto",
@@ -288,7 +289,7 @@ export class ContactController {
         message: "Contacto eliminado exitosamente",
       });
     } catch (error) {
-      console.error("Error deleting contact:", error);
+      logger.error("Error deleting contact:", error);
       res.status(500).json({
         error: "Error interno del servidor",
         message: "Error al eliminar el contacto",
@@ -356,7 +357,7 @@ export class ContactController {
         },
       });
     } catch (error) {
-      console.error("Error fetching contact stats:", error);
+      logger.error("Error fetching contact stats:", error);
       res.status(500).json({
         error: "Error interno del servidor",
         message: "Error al obtener las estadísticas",
@@ -389,7 +390,7 @@ export class ContactController {
         data: { updatedCount },
       });
     } catch (error) {
-      console.error("Error bulk resolving contacts:", error);
+      logger.error("Error bulk resolving contacts:", error);
       res.status(500).json({
         error: "Error interno del servidor",
         message: "Error al actualizar los contactos",

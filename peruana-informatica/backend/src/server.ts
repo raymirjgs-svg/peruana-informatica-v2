@@ -225,27 +225,27 @@ const startServer = async () => {
     }
 
     // ✅ CRÍTICO: Validar que la BD tenga tablas ANTES de continuar
-    console.log(chalk.cyan('\n🔍 Validando estructura de base de datos...'));
+    logger.info(chalk.cyan('\n🔍 Validando estructura de base de datos...'));
     try {
       const [tables]: any = await sequelize.query("SHOW TABLES");
       const tableCount = tables.length;
 
-      console.log(chalk.green(`📊 Tablas encontradas en BD: ${tableCount}`));
+      logger.info(chalk.green(`📊 Tablas encontradas en BD: ${tableCount}`));
 
       if (tableCount === 0) {
-        console.error(chalk.red('\n⚠️ WARNING: La base de datos está VACÍA'));
-        console.error(chalk.yellow('Se intentará sincronizar los modelos automáticamente...'));
+        logger.error(chalk.red('\n⚠️ WARNING: La base de datos está VACÍA'));
+        logger.error(chalk.yellow('Se intentará sincronizar los modelos automáticamente...'));
         // process.exit(1); // DISABLED TEMPORARILY
       }
 
       // Listar primeras 5 tablas para confirmar
       const tableNames = tables.slice(0, 5).map((t: any) => Object.values(t)[0]);
-      console.log(chalk.gray(`   Primeras tablas: ${tableNames.join(', ')}...`));
-      console.log(chalk.green('✅ Estructura de BD validada correctamente\n'));
+      logger.info(chalk.gray(`   Primeras tablas: ${tableNames.join(', ')}...`));
+      logger.info(chalk.green('✅ Estructura de BD validada correctamente\n'));
 
     } catch (error) {
-      console.error(chalk.red('❌ Error validando BD:'), error);
-      console.error(chalk.yellow('El servidor continuará, pero pueden ocurrir errores 500'));
+      logger.error(chalk.red('❌ Error validando BD:'), error);
+      logger.error(chalk.yellow('El servidor continuará, pero pueden ocurrir errores 500'));
     }
 
     // Global Error Handlers
@@ -253,45 +253,45 @@ const startServer = async () => {
       try {
         await sequelize.close();
       } catch (closeError) {
-        console.error('Error closing database connection:', closeError);
+        logger.error('Error closing database connection:', closeError);
       }
       process.exit(code);
     };
 
     process.on('uncaughtException', (error) => {
-      console.error('FATAL: Uncaught Exception:', error);
+      logger.error('FATAL: Uncaught Exception:', error);
       void shutdown(1);
     });
 
     process.on('unhandledRejection', (reason, promise) => {
-      console.error('FATAL: Unhandled Rejection at:', promise, 'reason:', reason);
+      logger.error('FATAL: Unhandled Rejection at:', promise, 'reason:', reason);
     });
 
     process.on('exit', (code) => {
-      console.log(`🛑 PROCESS EXITING WITH CODE: ${code}`);
+      logger.info(`🛑 PROCESS EXITING WITH CODE: ${code}`);
     });
 
     process.on('SIGINT', () => {
-      console.log('🛑 Received SIGINT. Shutting down...');
+      logger.info('🛑 Received SIGINT. Shutting down...');
       process.exit(0);
     });
 
     const server = app.listen(PORT, () => {
-      console.log(chalk.cyan(`\n🚀 Server running on `) + chalk.green.bold(`http://localhost:${PORT}`));
-      console.log(chalk.cyan(`📚 API Documentation: `) + chalk.blue.bold(`http://localhost:${PORT}/api-docs`));
-      console.log(chalk.cyan(`📊 Health check:      `) + chalk.white(`http://localhost:${PORT}/health\n`));
-      console.log(chalk.yellow('⏰ Server will stay running...'));
+      logger.info(chalk.cyan(`\n🚀 Server running on `) + chalk.green.bold(`http://localhost:${PORT}`));
+      logger.info(chalk.cyan(`📚 API Documentation: `) + chalk.blue.bold(`http://localhost:${PORT}/api-docs`));
+      logger.info(chalk.cyan(`📊 Health check:      `) + chalk.white(`http://localhost:${PORT}/health\n`));
+      logger.info(chalk.yellow('⏰ Server will stay running...'));
 
       // Force process to stay alive
       setInterval(() => {
-        // console.log('💓 Heartbeat');
+        // logger.info('💓 Heartbeat');
       }, 10000);
     });
 
     // Keep server reference to prevent process exit
     return server;
   } catch (error) {
-    console.error("❌ Error starting server:", error);
+    logger.error("❌ Error starting server:", error);
     process.exit(1);
   }
 };

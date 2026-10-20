@@ -1,5 +1,6 @@
 import express from 'express';
 import { Brand } from '../models/Brand';
+import { logger } from '../config/logger';
 
 const router = express.Router();
 
@@ -12,7 +13,7 @@ router.get('/', async (req, res) => {
     });
     res.json(brands);
   } catch (error) {
-    console.error('Error:', error);
+    logger.error('Error:', error);
     res.status(500).json({ error: 'Error al obtener marcas' });
   }
 });
@@ -29,7 +30,7 @@ router.get('/:slug', async (req, res) => {
     }
     res.json(brand);
   } catch (error) {
-    console.error('Error:', error);
+    logger.error('Error:', error);
     res.status(500).json({ error: 'Error al obtener marca' });
   }
 });

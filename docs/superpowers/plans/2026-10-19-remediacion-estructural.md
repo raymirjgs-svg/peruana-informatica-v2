@@ -121,6 +121,7 @@
 ### P2.2 — Logging unificado
 - **Evidencia:** **456 `console.*`** vs 30 `logger.*`; 3 loggers compitiendo (`config/logger.ts` real, `utils/logger.ts` muerto, `middleware/logger.ts`); sin `morgan`.
 - **Aceptación:** un solo logger (winston) en controllers/handlers; sin `utils/logger.ts`.
+- **Estado:** hecho. `utils/logger.ts` eliminado; `config/logger.ts` es el único logger (winston). 457 `console.*` reemplazados por `logger.info/warn/error` en 60 archivos (imports relativos agregados, sin duplicar los existentes). `Sequelize logging` en desarrollo ahora usa `logger.debug`. Verificado: `tsc` 0, 18/18 tests, smoke runtime con logs winston.
 
 ### P2.3 — Config/env con validación de esquema
 - **Evidencia:** solo `JWT_SECRET` validado; fallbacks inseguros (`DB_PASSWORD||''`, `MP_ACCESS_TOKEN||'TEST-TOKEN'`); `backend/.env.example` incompleto (falta MP_WEBHOOK_SECRET, Redis, Google, CORS, etc.); **no existe `frontend/.env.example`**; `envs/.env.staging` sin `JWT_SECRET`/`NEXTAUTH_SECRET` (crashea al boot).

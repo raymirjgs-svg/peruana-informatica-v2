@@ -4,24 +4,25 @@ import { PromoBanner } from '../models/PromoBanner';
 import { Setting } from '../models/Setting';
 import { Page } from '../models/Page';
 import { Review } from '../models/Review';
+import { logger } from '../config/logger';
 
 async function fix() {
     try {
-        console.log('🔧 Fixing database tables...');
+        logger.info('🔧 Fixing database tables...');
         await CompanySettings.sync({ alter: true });
-        console.log('✅ CompanySettings synced');
+        logger.info('✅ CompanySettings synced');
 
         await PromoBanner.sync({ alter: true });
-        console.log('✅ PromoBanner synced');
+        logger.info('✅ PromoBanner synced');
 
         await Setting.sync({ alter: true });
-        console.log('✅ Setting synced');
+        logger.info('✅ Setting synced');
 
         await Page.sync({ alter: true });
-        console.log('✅ Page synced');
+        logger.info('✅ Page synced');
 
         await Review.sync({ alter: true });
-        console.log('✅ Review synced');
+        logger.info('✅ Review synced');
 
         // Create default company settings if none exist
         const count = await CompanySettings.count();
@@ -33,12 +34,12 @@ async function fix() {
                 company_phone: '(01) 123-4567',
                 company_email: 'ventas@peruanainformatica.com'
             });
-            console.log('✅ Default settings created');
+            logger.info('✅ Default settings created');
         }
 
-        console.log('🎉 Fix completed');
+        logger.info('🎉 Fix completed');
     } catch (error) {
-        console.error('❌ Error fixing DB:', error);
+        logger.error('❌ Error fixing DB:', error);
     } finally {
         await sequelize.close();
     }

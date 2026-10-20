@@ -3,6 +3,7 @@ import { Product } from '../models/Product';
 import { SubCategory } from '../models/SubCategory';
 import { Setting } from '../models/Setting';
 import { Op, Sequelize } from 'sequelize';
+import { logger } from '../config/logger';
 
 // Helper to determine active price column
 const getActivePriceColumn = async () => {
@@ -56,8 +57,8 @@ export const getCotizadorLaptops = async (req: Request, res: Response) => {
         const { subcategory, minPrice, maxPrice, search } = req.query;
         let activePriceCol = await getActivePriceColumn(); // e.g., 'pre_web', 'pre_cli', 'pre_dis'
 
-        console.log('--- COTIZADOR DEBUG ---');
-        console.log('Active Price Column Setting:', activePriceCol);
+        logger.info('--- COTIZADOR DEBUG ---');
+        logger.info('Active Price Column Setting:', activePriceCol);
 
         // Handle legacy or fallback
         if (activePriceCol === 'pre_cot') activePriceCol = 'pre_web';
@@ -68,7 +69,7 @@ export const getCotizadorLaptops = async (req: Request, res: Response) => {
         if (activePriceCol === 'pre_dis') priceField = 'price_dis';
         if (activePriceCol === 'pre_cli') priceField = 'price';
 
-        console.log('Mapped Price Field for Sorting:', priceField);
+        logger.info('Mapped Price Field for Sorting:', priceField);
 
         // Build filter conditions
         let whereClause: any = {
@@ -171,7 +172,7 @@ export const getCotizadorLaptops = async (req: Request, res: Response) => {
         res.json(laptopsWithDynamicPrice);
 
     } catch (error: any) {
-        console.error('Error fetching cotizador laptops:', error);
+        logger.error('Error fetching cotizador laptops:', error);
         res.status(500).json({ error: 'Error interno' });
     }
 };

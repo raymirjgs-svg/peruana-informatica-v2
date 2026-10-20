@@ -3,6 +3,7 @@ import { Category } from '../models/Category';
 import { SubCategory } from '../models/SubCategory';
 import Product from '../models/Product';
 import { ProductSubCategory } from '../models/ProductSubCategory';
+import { logger } from '../config/logger';
 
 /**
  * Servicio para gestionar la asignación de marcas, categorías y subcategorías a productos
@@ -36,7 +37,7 @@ export class ProductTaxonomyService {
                 name: normalizedName,
                 slug
             });
-            console.log(`✓ Marca creada: ${normalizedName}`);
+            logger.info(`✓ Marca creada: ${normalizedName}`);
         }
 
         return brand;
@@ -72,7 +73,7 @@ export class ProductTaxonomyService {
                 description: `Productos de la categoría ${normalizedName}`,
                 is_active: true
             } as any);
-            console.log(`✓ Categoría creada: ${normalizedName}`);
+            logger.info(`✓ Categoría creada: ${normalizedName}`);
         }
 
         return category;
@@ -117,7 +118,7 @@ export class ProductTaxonomyService {
                 category_id: categoryId || null,
                 is_active: true
             } as any);
-            console.log(`✓ Subcategoría creada: ${normalizedName}`);
+            logger.info(`✓ Subcategoría creada: ${normalizedName}`);
         }
 
         return subCategory;

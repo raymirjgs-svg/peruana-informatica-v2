@@ -6,6 +6,7 @@ import { Brand } from '../models/Brand';
 import { ProductAttribute } from '../models/ProductAttribute';
 import { Attribute } from '../models/Attribute';
 import { AttributeValue } from '../models/AttributeValue';
+import { logger } from '../config/logger';
 
 /**
  * Script para asignar automáticamente categorías, subcategorías y atributos
@@ -162,7 +163,7 @@ const detectors = {
 
 async function bulkAssignProducts() {
     try {
-        console.log('🚀 Iniciando asignación masiva de productos...\n');
+        logger.info('🚀 Iniciando asignación masiva de productos...\n');
 
         // Obtener todos los productos sin categoría
         const productsWithoutCategory = await Product.findAll({
@@ -171,7 +172,7 @@ async function bulkAssignProducts() {
             }
         });
 
-        console.log(`📦 Productos sin categoría: ${productsWithoutCategory.length}\n`);
+        logger.info(`📦 Productos sin categoría: ${productsWithoutCategory.length}\n`);
 
         let assigned = 0;
         let skipped = 0;
@@ -188,7 +189,7 @@ async function bulkAssignProducts() {
 
             if (!matchedRule) {
                 skipped++;
-                console.log(`⏭️  SKIP: ${(product as any).name}`);
+                logger.info(`⏭️  SKIP: ${(product as any).name}`);
                 continue;
             }
 
@@ -233,16 +234,16 @@ async function bulkAssignProducts() {
             }
 
             assigned++;
-            console.log(`✅ ASIGNADO: ${(product as any).name} → ${matchedRule.category} > ${matchedRule.subCategory}`);
+            logger.info(`✅ ASIGNADO: ${(product as any).name} → ${matchedRule.category} > ${matchedRule.subCategory}`);
         }
 
-        console.log(`\n📊 Resumen:`);
-        console.log(`   ✅ Asignados: ${assigned}`);
-        console.log(`   ⏭️  Omitidos: ${skipped}`);
-        console.log(`   📦 Total: ${productsWithoutCategory.length}`);
+        logger.info(`\n📊 Resumen:`);
+        logger.info(`   ✅ Asignados: ${assigned}`);
+        logger.info(`   ⏭️  Omitidos: ${skipped}`);
+        logger.info(`   📦 Total: ${productsWithoutCategory.length}`);
 
     } catch (error) {
-        console.error('❌ Error en asignación masiva:', error);
+        logger.error('❌ Error en asignación masiva:', error);
         throw error;
     }
 }
@@ -326,11 +327,11 @@ async function assignAttributes(product: any, rule: AssignmentRule) {
 if (require.main === module) {
     bulkAssignProducts()
         .then(() => {
-            console.log('\n✅ Script completado exitosamente');
+            logger.info('\n✅ Script completado exitosamente');
             process.exit(0);
         })
         .catch((error) => {
-            console.error('\n❌ Error:', error);
+            logger.error('\n❌ Error:', error);
             process.exit(1);
         });
 }

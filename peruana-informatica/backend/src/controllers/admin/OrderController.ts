@@ -3,6 +3,7 @@ import path from 'path';
 import fs from 'fs';
 import { Order } from '../../models/Order';
 import { OrderItem } from '../../models/OrderItem';
+import { logger } from '../../config/logger';
 
 const ALLOWED_ORDER_STATUSES = [
     'pending',
@@ -57,7 +58,7 @@ export const getOrders = async (req: Request, res: Response) => {
             }
         });
     } catch (error) {
-        console.error('Error fetching orders:', error);
+        logger.error('Error fetching orders:', error);
         res.status(500).json({ error: 'Error obteniendo pedidos' });
     }
 };
@@ -93,7 +94,7 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
 
         res.json({ success: true, message: 'Estado actualizado' });
     } catch (error) {
-        console.error('Error updating order status:', error);
+        logger.error('Error updating order status:', error);
         res.status(500).json({ error: 'Error actualizando estado' });
     }
 };
@@ -120,7 +121,7 @@ export const getPaymentProof = async (req: Request, res: Response) => {
 
         res.sendFile(filePath);
     } catch (error) {
-        console.error('Error fetching payment proof:', error);
+        logger.error('Error fetching payment proof:', error);
         res.status(500).json({ error: 'Error al obtener el comprobante' });
     }
 };

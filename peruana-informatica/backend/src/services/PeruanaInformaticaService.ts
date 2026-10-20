@@ -2,6 +2,7 @@ import axios from 'axios';
 import dotenv from 'dotenv';
 import path from 'path';
 import fs from 'fs/promises';
+import { logger } from '../config/logger';
 
 // Asegurarse de que las variables de entorno estén cargadas
 dotenv.config();
@@ -39,7 +40,7 @@ export class PeruanaInformaticaService {
                 dias
             };
 
-            console.log(`Solicitando nuevo token para usuario: ${usuario}, duración: ${dias} días...`);
+            logger.info(`Solicitando nuevo token para usuario: ${usuario}, duración: ${dias} días...`);
 
             const response = await axios.post(url, payload, {
                 headers: {
@@ -75,7 +76,7 @@ export class PeruanaInformaticaService {
                         // Actualizar el archivo .env
                         await this.updateEnvToken(token);
 
-                        console.log(`✓ Nuevo token obtenido exitosamente. Expira: ${expiresAt.toISOString()}`);
+                        logger.info(`✓ Nuevo token obtenido exitosamente. Expira: ${expiresAt.toISOString()}`);
 
                         return {
                             success: true,
@@ -98,7 +99,7 @@ export class PeruanaInformaticaService {
             };
 
         } catch (error: any) {
-            console.error('Error en PeruanaInformaticaService.solicitarToken:', error.message);
+            logger.error('Error en PeruanaInformaticaService.solicitarToken:', error.message);
             return {
                 success: false,
                 message: error.message
@@ -144,9 +145,9 @@ export class PeruanaInformaticaService {
             // Actualizar variable de entorno en memoria
             process.env.API_PERUANA_TOKEN = newToken;
 
-            console.log('✓ Token actualizado en .env');
+            logger.info('✓ Token actualizado en .env');
         } catch (error: any) {
-            console.error('Error al actualizar .env:', error.message);
+            logger.error('Error al actualizar .env:', error.message);
         }
     }
 
@@ -155,7 +156,7 @@ export class PeruanaInformaticaService {
      */
     static async verificarYRenovarToken(diasAnticipacion: number = 7): Promise<boolean> {
         if (!this.tokenExpiresAt) {
-            console.log('No hay información de expiración del token. Solicitando nuevo token...');
+            logger.info('No hay información de expiración del token. Solicitando nuevo token...');
             const result = await this.solicitarToken();
             return result.success;
         }
@@ -164,7 +165,7 @@ export class PeruanaInformaticaService {
         const diasRestantes = Math.floor((this.tokenExpiresAt.getTime() - ahora.getTime()) / (1000 * 60 * 60 * 24));
 
         if (diasRestantes <= diasAnticipacion) {
-            console.log(`Token expira en ${diasRestantes} días. Renovando...`);
+            logger.info(`Token expira en ${diasRestantes} días. Renovando...`);
             const result = await this.solicitarToken();
             return result.success;
         }
@@ -183,7 +184,7 @@ export class PeruanaInformaticaService {
         await this.verificarYRenovarToken();
 
         if (!this.token) {
-            console.error('API_PERUANA_TOKEN no está definido en las variables de entorno.');
+            logger.error('API_PERUANA_TOKEN no está definido en las variables de entorno.');
             return {
                 success: false,
                 message: 'Configuración de API incompleta: Falta TOKEN'
@@ -229,14 +230,14 @@ export class PeruanaInformaticaService {
                             data: parsed
                         };
                     } catch (e) {
-                        console.error('Error al parsear el JSON extraído:', e);
+                        logger.error('Error al parsear el JSON extraído:', e);
                         return {
                             success: false,
                             message: 'Respuesta inválida del servidor externo'
                         };
                     }
                 } else {
-                    console.warn('No se encontró estructura JSON en la respuesta textual.');
+                    logger.warn('No se encontró estructura JSON en la respuesta textual.');
                     return {
                         success: false,
                         message: 'No se encontró estructura JSON en la respuesta'
@@ -258,7 +259,7 @@ export class PeruanaInformaticaService {
             }
 
         } catch (error: any) {
-            console.error('Error en PeruanaInformaticaService.consultarArticulo:', error.message);
+            logger.error('Error en PeruanaInformaticaService.consultarArticulo:', error.message);
             return {
                 success: false,
                 message: error.message
@@ -278,7 +279,7 @@ export class PeruanaInformaticaService {
             const articulo = response.data;
 
             // Log para debug de campos recibidos
-            // console.log(`Datos recibidos para ${idArticulo}:`, articulo);
+            // logger.info(`Datos recibidos para ${idArticulo}:`, articulo);
 
             // Parsear stock que puede venir como "65.000"
             const stockRaw = articulo.stock || 0;
@@ -322,7 +323,7 @@ export class PeruanaInformaticaService {
      * @returns Array con los resultados de la sincronización
      */
     static async sincronizarProductos(idsArticulos: string[]) {
-        console.log(`Iniciando sincronización de ${idsArticulos.length} productos...`);
+        logger.info(`Iniciando sincronización de ${idsArticulos.length} productos...`);
 
         const resultados = [];
 
@@ -336,14 +337,14 @@ export class PeruanaInformaticaService {
                         success: true,
                         datos
                     });
-                    console.log(`✓ Producto ${id} sincronizado: Stock=${datos.stock}, Pre_CLI=${datos.pre_cli}, Pre_COT=${datos.pre_cot}, Pre_WEB=${datos.pre_web}`);
+                    logger.info(`✓ Producto ${id} sincronizado: Stock=${datos.stock}, Pre_CLI=${datos.pre_cli}, Pre_COT=${datos.pre_cot}, Pre_WEB=${datos.pre_web}`);
                 } else {
                     resultados.push({
                         id,
                         success: false,
                         error: 'No se obtuvieron datos'
                     });
-                    console.log(`✗ Producto ${id} no pudo sincronizarse`);
+                    logger.info(`✗ Producto ${id} no pudo sincronizarse`);
                 }
 
                 // Pequeña pausa para no saturar la API
@@ -355,11 +356,11 @@ export class PeruanaInformaticaService {
                     success: false,
                     error: error.message
                 });
-                console.error(`✗ Error sincronizando producto ${id}:`, error.message);
+                logger.error(`✗ Error sincronizando producto ${id}:`, error.message);
             }
         }
 
-        console.log(`✓ Sincronización completada: ${resultados.filter(r => r.success).length}/${idsArticulos.length} exitosos`);
+        logger.info(`✓ Sincronización completada: ${resultados.filter(r => r.success).length}/${idsArticulos.length} exitosos`);
 
         return resultados;
     }

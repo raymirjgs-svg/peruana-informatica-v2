@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { User } from '../../models/User';
 import { Op } from 'sequelize';
+import { logger } from '../../config/logger';
 
 export class CustomerController {
     /**
@@ -67,7 +68,7 @@ export class CustomerController {
             });
 
         } catch (error) {
-            console.error('❌ Error fetching customers:', error);
+            logger.error('❌ Error fetching customers:', error);
             res.status(500).json({
                 message: 'Error fetching customers',
                 error: 'Error interno'
@@ -97,7 +98,7 @@ export class CustomerController {
             res.json({ customer });
 
         } catch (error) {
-            console.error('❌ Error fetching customer:', error);
+            logger.error('❌ Error fetching customer:', error);
             res.status(500).json({
                 message: 'Error fetching customer',
                 error: 'Error interno'
@@ -130,7 +131,7 @@ export class CustomerController {
             customer.is_blocked = !customer.is_blocked;
             await customer.save();
 
-            console.log(`✅ Customer ${customer.email} ${customer.is_blocked ? 'blocked' : 'unblocked'}`);
+            logger.info(`✅ Customer ${customer.email} ${customer.is_blocked ? 'blocked' : 'unblocked'}`);
 
             res.json({
                 message: `Customer ${customer.is_blocked ? 'blocked' : 'unblocked'} successfully`,
@@ -142,7 +143,7 @@ export class CustomerController {
             });
 
         } catch (error) {
-            console.error('❌ Error toggling customer block:', error);
+            logger.error('❌ Error toggling customer block:', error);
             res.status(500).json({
                 message: 'Error updating customer',
                 error: 'Error interno'
@@ -218,7 +219,7 @@ export class CustomerController {
             });
 
         } catch (error) {
-            console.error('❌ Error fetching customer stats:', error);
+            logger.error('❌ Error fetching customer stats:', error);
             res.status(500).json({
                 message: 'Error fetching statistics',
                 error: 'Error interno'
@@ -251,7 +252,7 @@ export class CustomerController {
             });
 
         } catch (error) {
-            console.error('❌ Error fetching customer orders:', error);
+            logger.error('❌ Error fetching customer orders:', error);
             res.status(500).json({
                 message: 'Error fetching orders',
                 error: 'Error interno'

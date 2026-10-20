@@ -2,6 +2,7 @@ import fs from 'fs';
 import { Op } from 'sequelize';
 import { Product } from '../models/Product';
 import { PeruanaInformaticaService } from './PeruanaInformaticaService';
+import { logger } from '../config/logger';
 
 export class SyncService {
     private static isSyncing = false;
@@ -13,7 +14,7 @@ export class SyncService {
         const now = Date.now();
         if (this.isSyncing || (now - this.lastSyncTime < this.SYNC_INTERVAL_MS)) {
             // Debug log to know why it skipped
-            // console.log(`SyncService: Skipped. Syncing: ${this.isSyncing}, Cooldown: ${((this.SYNC_INTERVAL_MS - (now - this.lastSyncTime)) / 1000).toFixed(0)}s remaining`);
+            // logger.info(`SyncService: Skipped. Syncing: ${this.isSyncing}, Cooldown: ${((this.SYNC_INTERVAL_MS - (now - this.lastSyncTime)) / 1000).toFixed(0)}s remaining`);
             return { skipped: true, reason: this.isSyncing ? 'Sync in progress' : 'Cooldown active' };
         }
 
@@ -22,7 +23,7 @@ export class SyncService {
         let errorCount = 0;
 
         try {
-            console.log('SyncService: Starting synchronization with External API...');
+            logger.info('SyncService: Starting synchronization with External API...');
 
             // Get all active products with an internal code
             const products = await Product.findAll({
@@ -32,7 +33,7 @@ export class SyncService {
                 }
             });
 
-            console.log(`SyncService: Found ${products.length} products to sync.`);
+            logger.info(`SyncService: Found ${products.length} products to sync.`);
 
             // Process sequentially to avoid overwhelming the external API
             for (const product of products) {
@@ -60,8 +61,8 @@ export class SyncService {
                         const newStock = syncData.stock;
 
                         if (product.codigo_interno === '15953') {
-                            console.log(`[SYNC DEBUG 15953] DB: Cli=${product.price}, Web=${product.price_web}, Dis=${product.price_dis}`);
-                            console.log(`[SYNC DEBUG 15953] API: Cli=${newPrice}, Web=${newPriceWeb}, Dis=${newPriceDis}`);
+                            logger.info(`[SYNC DEBUG 15953] DB: Cli=${product.price}, Web=${product.price_web}, Dis=${product.price_dis}`);
+                            logger.info(`[SYNC DEBUG 15953] API: Cli=${newPrice}, Web=${newPriceWeb}, Dis=${newPriceDis}`);
                         }
 
                         if (
@@ -79,25 +80,25 @@ export class SyncService {
                                 stock: newStock
                             });
                             updatedCount++;
-                            // console.log(`SyncService: Updated ${product.codigo_interno}: Stock=${newStock}, Web=${newPriceWeb}`);
+                            // logger.info(`SyncService: Updated ${product.codigo_interno}: Stock=${newStock}, Web=${newPriceWeb}`);
                         }
                     } else {
                         // Product not found in API or error
-                        // console.warn(`SyncService: Data not found for ${product.codigo_interno}`);
+                        // logger.warn(`SyncService: Data not found for ${product.codigo_interno}`);
                         errorCount++;
                     }
                 } catch (err: any) {
-                    console.error(`SyncService: Error syncing product ${product.codigo_interno}`, err.message);
+                    logger.error(`SyncService: Error syncing product ${product.codigo_interno}`, err.message);
                     errorCount++;
                 }
             }
 
             this.lastSyncTime = Date.now();
-            console.log(`SyncService: Sync completed. ${updatedCount} products updated. ${errorCount} errors.`);
+            logger.info(`SyncService: Sync completed. ${updatedCount} products updated. ${errorCount} errors.`);
             return { success: true, updated: updatedCount, errors: errorCount };
 
         } catch (error) {
-            console.error('SyncService: Fatal error', error);
+            logger.error('SyncService: Fatal error', error);
             return { error: 'Sync failed' };
         } finally {
             this.isSyncing = false;

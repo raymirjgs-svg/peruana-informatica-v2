@@ -6,6 +6,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { Op } from "sequelize";
 import * as fs from "fs";
 import * as path from "path";
+import { logger } from '../config/logger';
 
 export class BlogController {
   // ====================== PUBLIC ROUTES ======================
@@ -75,7 +76,7 @@ export class BlogController {
         },
       });
     } catch (error) {
-      console.error("Error fetching published posts:", error);
+      logger.error("Error fetching published posts:", error);
       res.status(500).json({
         error: "Error interno del servidor",
         message: "Error al obtener los posts del blog",
@@ -116,7 +117,7 @@ export class BlogController {
         data: post,
       });
     } catch (error) {
-      console.error("Error fetching post by slug:", error);
+      logger.error("Error fetching post by slug:", error);
       res.status(500).json({
         error: "Error interno del servidor",
         message: "Error al obtener el post",
@@ -148,7 +149,7 @@ export class BlogController {
         data: { likes: post.likes + 1 },
       });
     } catch (error) {
-      console.error("Error liking post:", error);
+      logger.error("Error liking post:", error);
       res.status(500).json({
         error: "Error interno del servidor",
         message: "Error al procesar el like",
@@ -204,7 +205,7 @@ export class BlogController {
         },
       });
     } catch (error) {
-      console.error("Error fetching all posts:", error);
+      logger.error("Error fetching all posts:", error);
       res.status(500).json({
         error: "Error interno del servidor",
         message: "Error al obtener los posts",
@@ -216,8 +217,8 @@ export class BlogController {
   // Crear nuevo post
   static async createPost(req: Request, res: Response) {
     try {
-      console.log("📝 Creating new blog post");
-      console.log("Request body:", req.body);
+      logger.info("📝 Creating new blog post");
+      logger.info("Request body:", req.body);
 
       const {
         title,
@@ -253,11 +254,11 @@ export class BlogController {
       let generatedImage = featured_image;
       if (!featured_image && geminiService.isReady()) {
         try {
-          console.log("🖼️ Auto-generating image for post:", title);
+          logger.info("🖼️ Auto-generating image for post:", title);
           generatedImage = await geminiService.generateBlogImage(title, content);
-          console.log("✅ Image generated:", generatedImage);
+          logger.info("✅ Image generated:", generatedImage);
         } catch (error) {
-          console.error("❌ Failed to generate image, using fallback");
+          logger.error("❌ Failed to generate image, using fallback");
           generatedImage = `https://source.unsplash.com/1200x600/?technology`;
         }
       }
@@ -283,7 +284,7 @@ export class BlogController {
         ai_model,
       });
 
-      console.log("✅ Blog post created with ID:", newPost.id);
+      logger.info("✅ Blog post created with ID:", newPost.id);
 
       res.status(201).json({
         success: true,
@@ -291,7 +292,7 @@ export class BlogController {
         data: newPost,
       });
     } catch (error: any) {
-      console.error("❌ Error creating blog post:", error);
+      logger.error("❌ Error creating blog post:", error);
 
       if (error.name === "SequelizeValidationError") {
         const validationErrors = error.errors.map((err: any) => ({
@@ -343,7 +344,7 @@ export class BlogController {
         data: post,
       });
     } catch (error) {
-      console.error("Error fetching post by ID:", error);
+      logger.error("Error fetching post by ID:", error);
       res.status(500).json({
         error: "Error interno del servidor",
         message: "Error al obtener el post",
@@ -356,7 +357,7 @@ export class BlogController {
   static async updatePost(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      console.log(`📝 Updating blog post ID: ${id}`);
+      logger.info(`📝 Updating blog post ID: ${id}`);
 
       const post = await BlogPost.findByPk(id);
 
@@ -400,7 +401,7 @@ export class BlogController {
 
       await post.update(updates);
 
-      console.log("✅ Blog post updated successfully");
+      logger.info("✅ Blog post updated successfully");
 
       res.json({
         success: true,
@@ -408,7 +409,7 @@ export class BlogController {
         data: post,
       });
     } catch (error: any) {
-      console.error("❌ Error updating blog post:", error);
+      logger.error("❌ Error updating blog post:", error);
 
       if (error.name === "SequelizeValidationError") {
         const validationErrors = error.errors.map((err: any) => ({
@@ -454,7 +455,7 @@ export class BlogController {
         message: "Post eliminado exitosamente",
       });
     } catch (error) {
-      console.error("Error deleting blog post:", error);
+      logger.error("Error deleting blog post:", error);
       res.status(500).json({
         error: "Error interno del servidor",
         message: "Error al eliminar el post",
@@ -479,7 +480,7 @@ export class BlogController {
         });
       }
 
-      console.log(
+      logger.info(
         `🤖 Generating ${count || 5} titles for topic: ${topic || "tecnología"}`,
       );
 
@@ -507,7 +508,7 @@ export class BlogController {
         data: savedSuggestions,
       });
     } catch (error: any) {
-      console.error("❌ Error generating titles:", error);
+      logger.error("❌ Error generating titles:", error);
       
       // Manejo específico de errores de la API de Gemini
       if (error.message && error.message.includes("API_KEY")) {
@@ -561,7 +562,7 @@ export class BlogController {
         data: suggestions,
       });
     } catch (error) {
-      console.error("Error fetching title suggestions:", error);
+      logger.error("Error fetching title suggestions:", error);
       res.status(500).json({
         error: "Error interno del servidor",
         message: "Error al obtener las sugerencias",
@@ -603,7 +604,7 @@ export class BlogController {
         });
       }
 
-      console.log(`🤖 Generating content for: ${suggestion.suggested_title}`);
+      logger.info(`🤖 Generating content for: ${suggestion.suggested_title}`);
 
       // Generar contenido con IA
       const blogContent = await geminiService.generateBlogContent(
@@ -618,9 +619,9 @@ export class BlogController {
           suggestion.suggested_title,
           blogContent.content // Pasamos el contenido para una mejor generación de keywords
         );
-        console.log("✅ Generated featured image URL");
+        logger.info("✅ Generated featured image URL");
       } catch (imageError) {
-        console.warn("⚠️ Could not generate image:", imageError);
+        logger.warn("⚠️ Could not generate image:", imageError);
       }
 
       // Crear el post como borrador
@@ -647,7 +648,7 @@ export class BlogController {
       // Marcar la sugerencia como usada
       await suggestion.markAsUsed(newPost.id);
 
-      console.log("✅ AI-generated blog post created:", newPost.id);
+      logger.info("✅ AI-generated blog post created:", newPost.id);
 
       res.status(201).json({
         success: true,
@@ -659,7 +660,7 @@ export class BlogController {
         },
       });
     } catch (error: any) {
-      console.error("❌ Error generating content:", error);
+      logger.error("❌ Error generating content:", error);
       
       // Manejo específico de errores de la API de Gemini
       if (error.message && error.message.includes("API_KEY")) {
@@ -719,7 +720,7 @@ export class BlogController {
         data: suggestion,
       });
     } catch (error) {
-      console.error("Error managing title suggestion:", error);
+      logger.error("Error managing title suggestion:", error);
       res.status(500).json({
         error: "Error interno del servidor",
         message: "Error al gestionar la sugerencia",
@@ -789,7 +790,7 @@ export class BlogController {
         },
       });
     } catch (error) {
-      console.error("Error fetching blog stats:", error);
+      logger.error("Error fetching blog stats:", error);
       res.status(500).json({
         error: "Error interno del servidor",
         message: "Error al obtener estadísticas",
@@ -869,7 +870,7 @@ export class BlogController {
       // Actualizar la variable de entorno en el proceso actual
       process.env.GEMINI_API_KEY = apiKey.trim();
 
-      console.log("✅ Gemini API Key configured successfully");
+      logger.info("✅ Gemini API Key configured successfully");
 
       res.json({
         success: true,
@@ -881,7 +882,7 @@ export class BlogController {
         },
       });
     } catch (error: any) {
-      console.error("❌ Error configuring Gemini API Key:", error);
+      logger.error("❌ Error configuring Gemini API Key:", error);
       res.status(500).json({
         error: "Error interno del servidor",
         message: "Error al configurar API Key",
@@ -893,7 +894,7 @@ export class BlogController {
   // Cargar datos de demostración
   static async loadDemoData(req: Request, res: Response) {
     try {
-      console.log("📦 Loading demo blog posts...");
+      logger.info("📦 Loading demo blog posts...");
 
       const demoPosts = [
         {
@@ -1423,7 +1424,7 @@ En 2024, un SSD es prácticamente obligatorio como disco principal. Los HDD aún
         }),
       );
 
-      console.log(`✅ Created ${createdPosts.length} demo blog posts`);
+      logger.info(`✅ Created ${createdPosts.length} demo blog posts`);
 
       res.status(201).json({
         success: true,
@@ -1434,7 +1435,7 @@ En 2024, un SSD es prácticamente obligatorio como disco principal. Los HDD aún
         },
       });
     } catch (error: any) {
-      console.error("❌ Error loading demo data:", error);
+      logger.error("❌ Error loading demo data:", error);
       res.status(500).json({
         error: "Error cargando datos demo",
         message: "Error al crear posts de demostración",

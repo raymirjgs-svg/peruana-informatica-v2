@@ -9,6 +9,7 @@ import { Image } from '../../models/Image';
 import { sequelize } from '../../database/connection';
 import { SyncService } from '../../services/SyncService';
 import { PeruanaInformaticaService } from '../../services/PeruanaInformaticaService';
+import { logger } from '../../config/logger';
 
 export class ProductController {
 
@@ -226,7 +227,7 @@ export class ProductController {
                 }
             });
         } catch (error) {
-            console.error('Error getting products:', error);
+            logger.error('Error getting products:', error);
             res.status(500).json({
                 error: 'Error al obtener productos',
                 code: 'PRODUCTS_FETCH_ERROR',
@@ -285,7 +286,7 @@ export class ProductController {
             // @ts-ignore
             res.json({ ...json, id: product.cod_producto, subcategory_ids: json.subCategories?.map((s: any) => s.id) || [] });
         } catch (error) {
-            console.error('Error getting product:', error);
+            logger.error('Error getting product:', error);
             res.status(500).json({
                 error: 'Error al obtener producto',
                 code: 'PRODUCT_FETCH_ERROR',
@@ -323,9 +324,9 @@ export class ProductController {
 
             // 2. Buscar en API del sistema de ventas (ERP real)
             try {
-                console.log(`Buscando producto ${code} en API de ventas...`);
+                logger.info(`Buscando producto ${code} en API de ventas...`);
                 const erpResult = await PeruanaInformaticaService.consultarArticulo(String(code));
-                console.log('Respuesta API:', JSON.stringify(erpResult, null, 2));
+                logger.info('Respuesta API:', JSON.stringify(erpResult, null, 2));
 
                 let articulo = null;
 
@@ -365,7 +366,7 @@ export class ProductController {
                     });
                 }
             } catch (apiError: any) {
-                console.error('Error consultando API de ventas:', apiError.message);
+                logger.error('Error consultando API de ventas:', apiError.message);
 
                 if (apiError.message?.includes('401') || apiError.message?.includes('Unauthorized') || apiError.message?.includes('autorizado')) {
                     return res.json({
@@ -381,7 +382,7 @@ export class ProductController {
             }
 
         } catch (error) {
-            console.error('Error in ERP lookup:', error);
+            logger.error('Error in ERP lookup:', error);
             res.status(500).json({ error: 'Error interno del servidor' });
         }
     }
@@ -415,7 +416,7 @@ export class ProductController {
                 });
             }
 
-            console.error('Error creating product:', error);
+            logger.error('Error creating product:', error);
             res.status(500).json({
                 error: 'Error al crear producto',
                 code: 'PRODUCT_CREATION_ERROR',
@@ -502,7 +503,7 @@ export class ProductController {
                 }
             });
         } catch (error) {
-            console.error('Error importing products:', error);
+            logger.error('Error importing products:', error);
             res.status(500).json({
                 error: 'Error al importar productos',
                 code: 'PRODUCT_IMPORT_ERROR',
@@ -585,7 +586,7 @@ export class ProductController {
             res.json(product);
         } catch (error) {
             await transaction.rollback();
-            console.error('Error updating product:', error);
+            logger.error('Error updating product:', error);
             res.status(500).json({ error: 'Error al actualizar producto' });
         }
     }
@@ -606,7 +607,7 @@ export class ProductController {
                 is_active: product.is_active
             });
         } catch (error) {
-            console.error('Error toggling product status:', error);
+            logger.error('Error toggling product status:', error);
             res.status(500).json({ error: 'Error al cambiar estado del producto' });
         }
     }
@@ -647,7 +648,7 @@ export class ProductController {
             });
         } catch (error) {
             await transaction.rollback();
-            console.error('Error deleting product:', error);
+            logger.error('Error deleting product:', error);
             res.status(500).json({ error: 'Error al eliminar producto' });
         }
     }
@@ -730,7 +731,7 @@ export class ProductController {
                 updated: updatedCount
             });
         } catch (error) {
-            console.error('Error in bulk update:', error);
+            logger.error('Error in bulk update:', error);
             res.status(500).json({ error: 'Error al actualizar productos en bloque' });
         }
     }
@@ -767,7 +768,7 @@ export class ProductController {
                     }
                 } catch (err) {
                     errors++;
-                    console.error(`Error syncing product ${product.codigo_interno}:`, err);
+                    logger.error(`Error syncing product ${product.codigo_interno}:`, err);
                 }
             }
 
@@ -778,7 +779,7 @@ export class ProductController {
                 errors
             });
         } catch (error) {
-            console.error('Error in sync-all:', error);
+            logger.error('Error in sync-all:', error);
             res.status(500).json({ error: 'Error al sincronizar productos' });
         }
     }
@@ -824,7 +825,7 @@ export class ProductController {
 
             res.json(products);
         } catch (error) {
-            console.error('Error getting suggestions:', error);
+            logger.error('Error getting suggestions:', error);
             res.status(500).json({ error: 'Suggestion error' });
         }
     }
@@ -929,7 +930,7 @@ export class ProductController {
                 }
             });
         } catch (error) {
-            console.error('Error getting public products:', error);
+            logger.error('Error getting public products:', error);
             res.status(500).json({ error: 'Error al obtener productos' });
         }
     }
@@ -973,7 +974,7 @@ export class ProductController {
 
             res.json(product);
         } catch (error) {
-            console.error('Error getting product by slug:', error);
+            logger.error('Error getting product by slug:', error);
             res.status(500).json({ error: 'Error al obtener producto' });
         }
     }
@@ -1016,7 +1017,7 @@ export class ProductController {
 
             res.json(product);
         } catch (error) {
-            console.error('Error getting product by id:', error);
+            logger.error('Error getting product by id:', error);
             res.status(500).json({ error: 'Error al obtener producto' });
         }
     }

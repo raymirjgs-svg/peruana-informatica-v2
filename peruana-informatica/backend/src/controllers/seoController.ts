@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { SeoSettings } from "../models/SeoSettings";
 import { Op } from "sequelize";
 import { geminiService } from "../services/GeminiService";
+import { logger } from '../config/logger';
 
 const SEO_SETTINGS_EDITABLE_FIELDS = [
   "page_type",
@@ -61,7 +62,7 @@ export class SeoController {
         data: seoSettings,
       });
     } catch (error) {
-      console.error("Error fetching SEO settings:", error);
+      logger.error("Error fetching SEO settings:", error);
       res.status(500).json({
         error: "Error interno del servidor",
         message: "Error al obtener las configuraciones SEO",
@@ -101,7 +102,7 @@ export class SeoController {
         data: seoSettings,
       });
     } catch (error) {
-      console.error("Error fetching SEO settings by page type:", error);
+      logger.error("Error fetching SEO settings by page type:", error);
       res.status(500).json({
         error: "Error interno del servidor",
         message: "Error al obtener la configuración SEO",
@@ -113,8 +114,8 @@ export class SeoController {
   // Crear nueva configuración SEO
   static async create(req: Request, res: Response) {
     try {
-      console.log("🔧 Creating SEO settings");
-      console.log("Request body:", req.body);
+      logger.info("🔧 Creating SEO settings");
+      logger.info("Request body:", req.body);
 
       const {
         page_type,
@@ -183,7 +184,7 @@ export class SeoController {
         is_active: is_active !== undefined ? is_active : true,
       });
 
-      console.log("✅ SEO settings created with ID:", newSeoSettings.id);
+      logger.info("✅ SEO settings created with ID:", newSeoSettings.id);
 
       res.status(201).json({
         success: true,
@@ -191,7 +192,7 @@ export class SeoController {
         data: newSeoSettings,
       });
     } catch (error: any) {
-      console.error("❌ Error creating SEO settings:", error);
+      logger.error("❌ Error creating SEO settings:", error);
 
       if (error.name === "SequelizeValidationError") {
         const validationErrors = error.errors.map((err: any) => ({
@@ -219,8 +220,8 @@ export class SeoController {
   static async update(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      console.log("🔧 Updating SEO settings ID:", id);
-      console.log("Request body:", req.body);
+      logger.info("🔧 Updating SEO settings ID:", id);
+      logger.info("Request body:", req.body);
 
       const seoSettings = await SeoSettings.findByPk(id);
 
@@ -270,7 +271,7 @@ export class SeoController {
         is_active,
       });
 
-      console.log("✅ SEO settings updated successfully");
+      logger.info("✅ SEO settings updated successfully");
 
       res.json({
         success: true,
@@ -278,7 +279,7 @@ export class SeoController {
         data: seoSettings,
       });
     } catch (error: any) {
-      console.error("❌ Error updating SEO settings:", error);
+      logger.error("❌ Error updating SEO settings:", error);
 
       if (error.name === "SequelizeValidationError") {
         const validationErrors = error.errors.map((err: any) => ({
@@ -322,7 +323,7 @@ export class SeoController {
         data: seoSettings,
       });
     } catch (error) {
-      console.error("Error fetching SEO settings by ID:", error);
+      logger.error("Error fetching SEO settings by ID:", error);
       res.status(500).json({
         error: "Error interno del servidor",
         message: "Error al obtener la configuración SEO",
@@ -353,7 +354,7 @@ export class SeoController {
         message: "Configuración SEO eliminada exitosamente",
       });
     } catch (error) {
-      console.error("Error deleting SEO settings:", error);
+      logger.error("Error deleting SEO settings:", error);
       res.status(500).json({
         error: "Error interno del servidor",
         message: "Error al eliminar la configuración SEO",
@@ -498,7 +499,7 @@ export class SeoController {
         },
       });
     } catch (error) {
-      console.error("Error generating SEO analysis:", error);
+      logger.error("Error generating SEO analysis:", error);
       res.status(500).json({
         error: "Error interno del servidor",
         message: "Error al generar el análisis SEO",
@@ -541,7 +542,7 @@ export class SeoController {
         data: seoSettings,
       });
     } catch (error: any) {
-      console.error("Error updating SEO settings by page type:", error);
+      logger.error("Error updating SEO settings by page type:", error);
 
       if (error.name === "SequelizeValidationError") {
         const validationErrors = error.errors.map((err: any) => ({
@@ -614,7 +615,7 @@ export class SeoController {
         data: suggestions
       });
     } catch (error) {
-      console.error("Error suggesting metadata via AI:", error);
+      logger.error("Error suggesting metadata via AI:", error);
       res.status(500).json({
         success: false,
         error: "Error al generar sugerencias con IA",

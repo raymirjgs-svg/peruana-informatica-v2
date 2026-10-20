@@ -8,6 +8,7 @@ import { EmailService } from '../services/EmailService';
 import { Setting } from '../models/Setting';
 import { Coupon } from '../models/Coupon';
 import { generateTrackingCode } from '../utils/trackingCode';
+import { logger } from '../config/logger';
 
 async function createOrderWithTrackingCode(values: any, transaction: any) {
     for (let attempt = 0; attempt < 8; attempt++) {
@@ -147,9 +148,9 @@ export const createOrder = async (req: Request, res: Response) => {
             // Email al operador/admin
             await emailService.sendNewOrderNotificationToAdmin(order, processedItems);
 
-            console.log(`✅ Emails enviados para pedido #${order.id}`);
+            logger.info(`✅ Emails enviados para pedido #${order.id}`);
         } catch (emailError) {
-            console.error('⚠️ Error enviando emails:', emailError);
+            logger.error('⚠️ Error enviando emails:', emailError);
             // No fallar el pedido si el email falla
         }
 
@@ -166,7 +167,7 @@ export const createOrder = async (req: Request, res: Response) => {
 
     } catch (error) {
         await t.rollback();
-        console.error('Error creating order:', error);
+        logger.error('Error creating order:', error);
         return res.status(500).json({ error: 'Error al procesar el pedido' });
     }
 };

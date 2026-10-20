@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import { logger } from '../config/logger';
 
 export interface AppError extends Error {
   statusCode?: number;
@@ -23,7 +24,7 @@ export const errorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  console.error('Error:', {
+  logger.error('Error:', {
     message: err.message,
     stack: err.stack,
     url: req.url,
@@ -44,7 +45,7 @@ export const errorHandler = (
 };
 
 export const notFoundHandler = (req: Request, res: Response, next: NextFunction) => {
-  console.log(`❌ 404 Not Found: ${req.method} ${req.originalUrl}`);
+  logger.info(`❌ 404 Not Found: ${req.method} ${req.originalUrl}`);
   const error = new Error(`Recurso no encontrado - ${req.originalUrl}`);
   (error as any).statusCode = 404;
   next(error);

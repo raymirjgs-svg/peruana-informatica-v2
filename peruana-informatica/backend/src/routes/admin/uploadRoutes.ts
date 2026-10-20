@@ -5,6 +5,7 @@ import fs from 'fs';
 import { authenticateToken, requireAdmin } from '../../middleware/authMiddleware';
 import { hasValidImageSignature } from '../../utils/imageSignature';
 import { uploadLimiter } from '../../middleware/rateLimiter';
+import { logger } from '../../config/logger';
 
 const router = express.Router();
 
@@ -63,7 +64,7 @@ router.post('/', uploadLimiter, upload.single('image'), (req: Request, res: Resp
             filename: req.file.filename
         });
     } catch (error: any) {
-        console.error('Error uploading file:', error);
+        logger.error('Error uploading file:', error);
         res.status(500).json({ error: 'Error al subir archivo' });
     }
 });

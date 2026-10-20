@@ -5,6 +5,7 @@ import PDFDocument from 'pdfkit';
 import fs from 'fs';
 import path from 'path';
 import { EmailService } from '../../services/EmailService';
+import { logger } from '../../config/logger';
 
 const VERIFIABLE_ORDER_STATUSES = [
     'pending',
@@ -48,9 +49,9 @@ export const verifyPayment = async (req: Request, res: Response) => {
             try {
                 const emailService = new EmailService();
                 await emailService.sendPaymentVerifiedToClient(order);
-                console.log(`✅ Email de verificación enviado al cliente para pedido #${order.id}`);
+                logger.info(`✅ Email de verificación enviado al cliente para pedido #${order.id}`);
             } catch (emailError) {
-                console.error('⚠️ Error enviando email de verificación:', emailError);
+                logger.error('⚠️ Error enviando email de verificación:', emailError);
             }
         }
 
@@ -60,7 +61,7 @@ export const verifyPayment = async (req: Request, res: Response) => {
             order
         });
     } catch (error) {
-        console.error('Error verifying payment:', error);
+        logger.error('Error verifying payment:', error);
         res.status(500).json({ error: 'Error al verificar pago' });
     }
 };
@@ -176,9 +177,9 @@ export const generateInvoice = async (req: Request, res: Response) => {
             try {
                 const emailService = new EmailService();
                 await emailService.sendInvoiceToClient(order, filename);
-                console.log(`✅ Comprobante enviado por email al cliente para pedido #${order.id}`);
+                logger.info(`✅ Comprobante enviado por email al cliente para pedido #${order.id}`);
             } catch (emailError) {
-                console.error('⚠️ Error enviando comprobante por email:', emailError);
+                logger.error('⚠️ Error enviando comprobante por email:', emailError);
             }
 
             res.json({
@@ -190,7 +191,7 @@ export const generateInvoice = async (req: Request, res: Response) => {
         });
 
     } catch (error) {
-        console.error('Error generating invoice:', error);
+        logger.error('Error generating invoice:', error);
         res.status(500).json({ error: 'Error al generar comprobante' });
     }
 };
@@ -221,7 +222,7 @@ export const downloadInvoice = async (req: Request, res: Response) => {
 
         res.download(filepath);
     } catch (error) {
-        console.error('Error downloading invoice:', error);
+        logger.error('Error downloading invoice:', error);
         res.status(500).json({ error: 'Error al descargar comprobante' });
     }
 };

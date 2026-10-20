@@ -6,6 +6,7 @@ import { Brand } from '../models/Brand';
 import { Category } from '../models/Category';
 import { Image } from '../models/Image';
 import { Op } from 'sequelize';
+import { logger } from '../config/logger';
 
 export class WishlistController {
     /**
@@ -57,7 +58,7 @@ export class WishlistController {
                 data: wishlistItems
             });
         } catch (error) {
-            console.error('Error fetching wishlist:', error);
+            logger.error('Error fetching wishlist:', error);
             return res.status(500).json({
                 success: false,
                 message: 'Error al obtener la lista de deseos'
@@ -114,7 +115,7 @@ export class WishlistController {
                 data: wishlistItem
             });
         } catch (error) {
-            console.error('Error adding to wishlist:', error);
+            logger.error('Error adding to wishlist:', error);
             return res.status(500).json({
                 success: false,
                 message: 'Error al agregar a favoritos'
@@ -156,7 +157,7 @@ export class WishlistController {
                 message: 'Producto eliminado de favoritos'
             });
         } catch (error) {
-            console.error('Error removing from wishlist:', error);
+            logger.error('Error removing from wishlist:', error);
             return res.status(500).json({
                 success: false,
                 message: 'Error al eliminar de favoritos'
@@ -187,7 +188,7 @@ export class WishlistController {
                 message: 'Lista de deseos limpiada'
             });
         } catch (error) {
-            console.error('Error clearing wishlist:', error);
+            logger.error('Error clearing wishlist:', error);
             return res.status(500).json({
                 success: false,
                 message: 'Error al limpiar la lista de deseos'
@@ -222,7 +223,7 @@ export class WishlistController {
                 inWishlist: !!exists
             });
         } catch (error) {
-            console.error('Error checking wishlist:', error);
+            logger.error('Error checking wishlist:', error);
             return res.status(500).json({
                 success: false,
                 message: 'Error al verificar favoritos'
@@ -306,7 +307,7 @@ export class WishlistController {
                 }
             });
         } catch (error) {
-            console.error('Error fetching wishlist analytics:', error);
+            logger.error('Error fetching wishlist analytics:', error);
             return res.status(500).json({
                 success: false,
                 message: 'Error al obtener análisis de favoritos'
@@ -354,7 +355,7 @@ export class WishlistController {
                 }
             });
         } catch (error) {
-            console.error('Error fetching all wishlists:', error);
+            logger.error('Error fetching all wishlists:', error);
             return res.status(500).json({
                 success: false,
                 message: 'Error al obtener listas de deseos'
@@ -384,7 +385,7 @@ export class WishlistController {
                 }
             });
         } catch (error) {
-            console.error('Error fetching product wishlists:', error);
+            logger.error('Error fetching product wishlists:', error);
             return res.status(500).json({
                 success: false,
                 message: 'Error al obtener favoritos del producto'

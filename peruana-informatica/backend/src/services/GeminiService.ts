@@ -1,4 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { logger } from '../config/logger';
 
 interface TitleSuggestion {
   title: string;
@@ -27,7 +28,7 @@ class GeminiService {
     const apiKey = process.env.GEMINI_API_KEY;
 
     if (!apiKey) {
-      console.warn(
+      logger.warn(
         "⚠️ GEMINI_API_KEY not configured. AI features will be disabled.",
       );
       this.isConfigured = false;
@@ -47,10 +48,10 @@ class GeminiService {
         },
       });
       this.isConfigured = true;
-      console.log("🤖 Google Gemini service initialized successfully (FREE!)");
-      console.log("📋 Using model: gemini-2.5-flash");
+      logger.info("🤖 Google Gemini service initialized successfully (FREE!)");
+      logger.info("📋 Using model: gemini-2.5-flash");
     } catch (error) {
-      console.error("❌ Error initializing Gemini:", error);
+      logger.error("❌ Error initializing Gemini:", error);
       this.isConfigured = false;
     }
   }
@@ -79,7 +80,7 @@ class GeminiService {
       // Si obtenemos una respuesta, la API Key es válida
       return text !== undefined && text !== null;
     } catch (error) {
-      console.error("❌ Error verifying API Key:", error);
+      logger.error("❌ Error verifying API Key:", error);
       return false;
     }
   }
@@ -98,7 +99,7 @@ class GeminiService {
     }
 
     try {
-      console.log(`🤖 Generating ${count} blog titles for topic: ${topic}`);
+      logger.info(`🤖 Generating ${count} blog titles for topic: ${topic}`);
 
       const prompt = `Como experto en marketing de contenidos y tecnología, genera ${count} títulos atractivos para blog posts sobre ${topic}.
 
@@ -135,10 +136,10 @@ Devuelve SOLO un JSON válido con este formato (sin texto adicional):
 
       const suggestions: TitleSuggestion[] = JSON.parse(jsonText);
 
-      console.log(`✅ Generated ${suggestions.length} title suggestions`);
+      logger.info(`✅ Generated ${suggestions.length} title suggestions`);
       return suggestions;
     } catch (error: any) {
-      console.error("❌ Error generating titles with Gemini:", error);
+      logger.error("❌ Error generating titles with Gemini:", error);
       throw new Error(
         `Failed to generate titles: ${error.message || "Unknown error"}`,
       );
@@ -159,7 +160,7 @@ Devuelve SOLO un JSON válido con este formato (sin texto adicional):
     }
 
     try {
-      console.log(`🤖 Generating blog content for: ${title}`);
+      logger.info(`🤖 Generating blog content for: ${title}`);
 
       // Paso 1: Generar el contenido del artículo (sin JSON)
       const contentPrompt = `Como redactor experto en tecnología, escribe un artículo completo y profesional para el blog de "Peruana Informática".
@@ -224,7 +225,7 @@ META_DESC: [descripción SEO de 150 caracteres]`;
       const wordCount = articleContent.split(/\s+/).length;
       const readingTime = Math.ceil(wordCount / 200);
 
-      console.log(`✅ Generated blog content: ${wordCount} words, ~${readingTime} min read`);
+      logger.info(`✅ Generated blog content: ${wordCount} words, ~${readingTime} min read`);
 
       return {
         title: title,
@@ -238,7 +239,7 @@ META_DESC: [descripción SEO de 150 caracteres]`;
         word_count: wordCount,
       };
     } catch (error: any) {
-      console.error("❌ Error generating blog content with Gemini:", error);
+      logger.error("❌ Error generating blog content with Gemini:", error);
       throw new Error(
         `Failed to generate content: ${error.message || "Unknown error"}`,
       );
@@ -268,7 +269,7 @@ META_DESC: [descripción SEO de 150 caracteres]`;
       const response = await result.response;
       return response.text().trim();
     } catch (error: any) {
-      console.error("❌ Error generating image prompt:", error);
+      logger.error("❌ Error generating image prompt:", error);
       return `Modern technology concept related to ${title}, high quality, 4k, cinematic lighting`;
     }
   }
@@ -278,9 +279,9 @@ META_DESC: [descripción SEO de 150 caracteres]`;
    */
   async generateBlogImage(title: string, content?: string): Promise<string> {
     try {
-      console.log("🎨 Generating AI image prompt...");
+      logger.info("🎨 Generating AI image prompt...");
       const imagePrompt = await this.generateImagePrompt(title, content);
-      console.log("📝 Image Prompt:", imagePrompt);
+      logger.info("📝 Image Prompt:", imagePrompt);
 
       // Encode prompt for URL
       const encodedPrompt = encodeURIComponent(imagePrompt);
@@ -290,11 +291,11 @@ META_DESC: [descripción SEO de 150 caracteres]`;
       const seed = Math.floor(Math.random() * 1000000);
       const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1280&height=720&nologo=true&seed=${seed}&model=flux`;
 
-      console.log("✅ Generated Pollinations Image URL");
+      logger.info("✅ Generated Pollinations Image URL");
       return imageUrl;
 
     } catch (error) {
-      console.error("❌ Error generating blog image:", error);
+      logger.error("❌ Error generating blog image:", error);
       // Fallback
       return `https://picsum.photos/seed/${encodeURIComponent(title)}/1280/720`;
     }
@@ -314,10 +315,10 @@ META_DESC: [descripción SEO de 150 caracteres]`;
       // Usar Unsplash para imágenes gratuitas de alta calidad
       const imageUrl = `https://source.unsplash.com/800x400/?${keywords},technology`;
 
-      console.log(`✅ Generated image URL for: ${title}`);
+      logger.info(`✅ Generated image URL for: ${title}`);
       return imageUrl;
     } catch (error) {
-      console.warn("⚠️ Could not generate image, using placeholder");
+      logger.warn("⚠️ Could not generate image, using placeholder");
       return "https://via.placeholder.com/800x400/667eea/ffffff?text=Tech+Blog";
     }
   }
@@ -360,7 +361,7 @@ Devuelve SOLO un array JSON (sin texto adicional):
       const tags: string[] = JSON.parse(jsonText);
       return tags.slice(0, count);
     } catch (error: any) {
-      console.error("❌ Error generating tags with Gemini:", error);
+      logger.error("❌ Error generating tags with Gemini:", error);
       // Retornar tags por defecto en caso de error
       return ["tecnología", "informática", "productos", "guía", "review"];
     }
@@ -393,7 +394,7 @@ Devuelve el contenido mejorado en formato Markdown, manteniendo la estructura pe
       const response = await result.response;
       return response.text();
     } catch (error: any) {
-      console.error("❌ Error improving content with Gemini:", error);
+      logger.error("❌ Error improving content with Gemini:", error);
       throw new Error(
         `Failed to improve content: ${error.message || "Unknown error"}`,
       );
@@ -420,7 +421,7 @@ Devuelve el contenido mejorado en formato Markdown, manteniendo la estructura pe
 
       return JSON.parse(text);
     } catch (error: any) {
-      console.error("❌ Error generating JSON with Gemini:", error);
+      logger.error("❌ Error generating JSON with Gemini:", error);
       throw error;
     }
   }

@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { Setting } from '../models/Setting';
+import { logger } from '../config/logger';
 
 export const settingsController = {
     // GET checkout-mode
@@ -9,7 +10,7 @@ export const settingsController = {
             // Default to 'direct' if not set
             res.json({ mode: setting?.value || 'direct' });
         } catch (error) {
-            console.error('Error getting checkout mode:', error);
+            logger.error('Error getting checkout mode:', error);
             res.status(500).json({ error: 'Error al obtener modo de compra' });
         }
     },
@@ -34,7 +35,7 @@ export const settingsController = {
                 mode: setting.value
             });
         } catch (error) {
-            console.error('Error updating checkout mode:', error);
+            logger.error('Error updating checkout mode:', error);
             res.status(500).json({ error: 'Error al actualizar modo de compra' });
         }
     }

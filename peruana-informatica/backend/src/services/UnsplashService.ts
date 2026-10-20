@@ -1,4 +1,5 @@
 import axios from "axios";
+import { logger } from '../config/logger';
 
 interface UnsplashPhoto {
   id: string;
@@ -25,9 +26,9 @@ class UnsplashService {
     this.accessKey = process.env.UNSPLASH_ACCESS_KEY || null;
     
     if (this.accessKey) {
-      console.log("📸 Unsplash API initialized successfully");
+      logger.info("📸 Unsplash API initialized successfully");
     } else {
-      console.log("⚠️ Unsplash API key not found - image generation disabled");
+      logger.info("⚠️ Unsplash API key not found - image generation disabled");
     }
   }
 
@@ -44,7 +45,7 @@ class UnsplashService {
         throw new Error("Unsplash API key not configured");
       }
 
-      console.log(`🔍 Searching Unsplash for: "${query}"`);
+      logger.info(`🔍 Searching Unsplash for: "${query}"`);
 
       const response = await axios.get(`${this.baseUrl}/search/photos`, {
         params: {
@@ -59,11 +60,11 @@ class UnsplashService {
       });
 
       const photos = response.data.results as UnsplashPhoto[];
-      console.log(`✅ Found ${photos.length} photos on Unsplash`);
+      logger.info(`✅ Found ${photos.length} photos on Unsplash`);
 
       return photos;
     } catch (error: any) {
-      console.error("❌ Error searching Unsplash:", error.message);
+      logger.error("❌ Error searching Unsplash:", error.message);
       throw error;
     }
   }
@@ -90,12 +91,12 @@ class UnsplashService {
       // Usar la URL 'regular' que es 1080p (perfecto para blog)
       const imageUrl = `${bestPhoto.urls.regular}&w=1200&h=600&fit=crop`;
 
-      console.log(`✅ Selected photo by ${bestPhoto.user.name}`);
-      console.log(`   URL: ${imageUrl}`);
+      logger.info(`✅ Selected photo by ${bestPhoto.user.name}`);
+      logger.info(`   URL: ${imageUrl}`);
 
       return imageUrl;
     } catch (error: any) {
-      console.error("❌ Error getting best photo:", error.message);
+      logger.error("❌ Error getting best photo:", error.message);
       throw error;
     }
   }
@@ -113,9 +114,9 @@ class UnsplashService {
         },
       });
 
-      console.log(`📥 Download triggered for photo ${photoId}`);
+      logger.info(`📥 Download triggered for photo ${photoId}`);
     } catch (error) {
-      console.error("❌ Error triggering download:", error);
+      logger.error("❌ Error triggering download:", error);
     }
   }
 }

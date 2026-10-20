@@ -1,4 +1,5 @@
 import OpenAI from "openai";
+import { logger } from '../config/logger';
 
 interface TitleSuggestion {
   title: string;
@@ -33,7 +34,7 @@ class OpenAIService {
     const apiKey = process.env.OPENAI_API_KEY;
 
     if (!apiKey) {
-      console.warn(
+      logger.warn(
         "⚠️ OPENAI_API_KEY not configured. AI features will be disabled.",
       );
       this.isConfigured = false;
@@ -44,7 +45,7 @@ class OpenAIService {
       apiKey: apiKey,
     });
     this.isConfigured = true;
-    console.log("🤖 OpenAI service initialized successfully");
+    logger.info("🤖 OpenAI service initialized successfully");
   }
 
   /**
@@ -69,7 +70,7 @@ class OpenAIService {
     }
 
     try {
-      console.log(`🤖 Generating ${count} blog titles for topic: ${topic}`);
+      logger.info(`🤖 Generating ${count} blog titles for topic: ${topic}`);
 
       const prompt = `Como experto en marketing de contenidos y tecnología, genera ${count} títulos atractivos para blog posts sobre ${topic}.
 
@@ -124,14 +125,14 @@ No incluyas texto adicional, solo el JSON.`;
           ? parsed
           : parsed.titles || parsed.suggestions || [];
       } catch (parseError) {
-        console.error("Error parsing OpenAI response:", response);
+        logger.error("Error parsing OpenAI response:", response);
         throw new Error("Invalid JSON response from OpenAI");
       }
 
-      console.log(`✅ Generated ${suggestions.length} title suggestions`);
+      logger.info(`✅ Generated ${suggestions.length} title suggestions`);
       return suggestions.slice(0, count); // Asegurar que no excedan el límite
     } catch (error: any) {
-      console.error("❌ Error generating blog titles:", error);
+      logger.error("❌ Error generating blog titles:", error);
       throw new Error(`Failed to generate blog titles: ${error.message}`);
     }
   }
@@ -151,7 +152,7 @@ No incluyas texto adicional, solo el JSON.`;
     }
 
     try {
-      console.log(`🤖 Generating blog content for: ${title}`);
+      logger.info(`🤖 Generating blog content for: ${title}`);
 
       const prompt = `Como experto redactor de tecnología, escribe un artículo completo de blog para "Peruana Informática".
 
@@ -211,7 +212,7 @@ No incluyas texto adicional, solo el JSON.`;
       try {
         blogData = JSON.parse(response);
       } catch (parseError) {
-        console.error("Error parsing OpenAI response:", response);
+        logger.error("Error parsing OpenAI response:", response);
         throw new Error("Invalid JSON response from OpenAI");
       }
 
@@ -237,12 +238,12 @@ No incluyas texto adicional, solo el JSON.`;
         word_count: wordCount,
       };
 
-      console.log(
+      logger.info(
         `✅ Generated blog content: ${wordCount} words, ${readingTime} min read`,
       );
       return result;
     } catch (error: any) {
-      console.error("❌ Error generating blog content:", error);
+      logger.error("❌ Error generating blog content:", error);
       throw new Error(`Failed to generate blog content: ${error.message}`);
     }
   }
@@ -262,7 +263,7 @@ No incluyas texto adicional, solo el JSON.`;
     }
 
     try {
-      console.log(`🎨 Generating image for blog post: ${title}`);
+      logger.info(`🎨 Generating image for blog post: ${title}`);
 
       // Crear un prompt para la imagen basado en el título y contenido
       const imagePrompt = await this.generateImagePrompt(title, content);
@@ -281,10 +282,10 @@ No incluyas texto adicional, solo el JSON.`;
         throw new Error("No image URL in response");
       }
 
-      console.log("✅ Generated blog image successfully");
+      logger.info("✅ Generated blog image successfully");
       return imageUrl;
     } catch (error: any) {
-      console.error("❌ Error generating blog image:", error);
+      logger.error("❌ Error generating blog image:", error);
       throw new Error(`Failed to generate blog image: ${error.message}`);
     }
   }
@@ -334,7 +335,7 @@ Responde solo con el prompt en inglés, máximo 400 caracteres.`;
 
       return generatedPrompt;
     } catch (error) {
-      console.warn("Error generating image prompt, using fallback");
+      logger.warn("Error generating image prompt, using fallback");
       return `Professional technology blog header image, modern tech equipment, clean corporate style, high-tech atmosphere, professional lighting, no text`;
     }
   }
@@ -384,7 +385,7 @@ Devuelve el contenido mejorado manteniendo el formato markdown y la estructura o
 
       return improvedContent;
     } catch (error: any) {
-      console.error("❌ Error improving blog content:", error);
+      logger.error("❌ Error improving blog content:", error);
       throw new Error(`Failed to improve blog content: ${error.message}`);
     }
   }
@@ -421,7 +422,7 @@ Devuelve el contenido mejorado manteniendo el formato markdown y la estructura o
   async getUsageInfo(): Promise<any> {
     // OpenAI no proporciona información de uso directamente desde el SDK
     // Esto requeriría una llamada separada a la API de uso
-    console.log(
+    logger.info(
       "ℹ️ Usage info requires separate API call to OpenAI usage endpoint",
     );
     return null;
@@ -470,7 +471,7 @@ Devuelve solo un array JSON con los tags, sin texto adicional:
         return [];
       }
     } catch (error) {
-      console.error("Error generating tags:", error);
+      logger.error("Error generating tags:", error);
       return [];
     }
   }

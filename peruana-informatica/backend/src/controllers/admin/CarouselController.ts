@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { Carousel } from '../../models/Carousel';
 import { sequelize } from '../../database/connection';
 import { buildPaginationMeta, getSafetyLimit, resolvePagination } from '../../utils/pagination';
+import { logger } from '../../config/logger';
 
 export class CarouselController {
     /**
@@ -33,7 +34,7 @@ export class CarouselController {
 
             res.json(slides);
         } catch (error) {
-            console.error('Error getting carousel slides:', error);
+            logger.error('Error getting carousel slides:', error);
             res.status(500).json({
                 error: 'Error al obtener slides del carrusel',
                 code: 'CAROUSEL_FETCH_ERROR',
@@ -56,7 +57,7 @@ export class CarouselController {
 
             res.json(slides);
         } catch (error) {
-            console.error('Error getting active carousel slides:', error);
+            logger.error('Error getting active carousel slides:', error);
             res.status(500).json({
                 error: 'Error al obtener slides activos',
                 code: 'CAROUSEL_ACTIVE_ERROR',
@@ -83,7 +84,7 @@ export class CarouselController {
 
             res.json(slide);
         } catch (error) {
-            console.error('Error getting slide:', error);
+            logger.error('Error getting slide:', error);
             res.status(500).json({
                 error: 'Error al obtener slide',
                 code: 'SLIDE_FETCH_ERROR',
@@ -113,7 +114,7 @@ export class CarouselController {
 
             res.status(201).json(slide);
         } catch (error) {
-            console.error('Error creating slide:', error);
+            logger.error('Error creating slide:', error);
             res.status(500).json({
                 error: 'Error al crear slide',
                 code: 'SLIDE_CREATE_ERROR',
@@ -150,7 +151,7 @@ export class CarouselController {
 
             res.json(slide);
         } catch (error) {
-            console.error('Error updating slide:', error);
+            logger.error('Error updating slide:', error);
             res.status(500).json({
                 error: 'Error al actualizar slide',
                 code: 'SLIDE_UPDATE_ERROR',
@@ -182,7 +183,7 @@ export class CarouselController {
                 id: slide.id
             });
         } catch (error) {
-            console.error('Error deleting slide:', error);
+            logger.error('Error deleting slide:', error);
             res.status(500).json({
                 error: 'Error al eliminar slide',
                 code: 'SLIDE_DELETE_ERROR',
@@ -216,7 +217,7 @@ export class CarouselController {
             });
         } catch (error) {
             await transaction.rollback();
-            console.error('Error reordering slides:', error);
+            logger.error('Error reordering slides:', error);
             res.status(500).json({
                 error: 'Error al actualizar orden',
                 code: 'SLIDE_REORDER_ERROR',
@@ -250,7 +251,7 @@ export class CarouselController {
                 message: 'Imagen subida correctamente'
             });
         } catch (error: any) {
-            console.error('Error uploading image:', error);
+            logger.error('Error uploading image:', error);
 
             if (error.message.includes('Solo se permiten imágenes')) {
                 return res.status(400).json({

@@ -2,6 +2,7 @@ import { Category } from './Category';
 import { SubCategory } from './SubCategory';
 import { Product } from './Product';
 import { setupRoleAssociations } from './RolePermission';
+import { logger } from '../config/logger';
 
 export function initAssociations() {
     // Definir SOLO las relaciones que faltan y son necesarias para la taxonomía
@@ -81,5 +82,5 @@ export function initAssociations() {
     // Roles & Permissions (User.belongsTo(Role), Role.belongsToMany(Permission))
     setupRoleAssociations();
 
-    console.log('✅ Asociaciones de taxonomía inicializadas');
+    logger.info('✅ Asociaciones de taxonomía inicializadas');
 }

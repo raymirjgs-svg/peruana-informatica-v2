@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { Coupon } from '../models/Coupon';
 import { buildPaginationMeta, getSafetyLimit, resolvePagination } from '../utils/pagination';
+import { logger } from '../config/logger';
 
 const COUPON_TYPES = ['percentage', 'fixed'];
 
@@ -98,7 +99,7 @@ export class CouponController {
                 }
             });
         } catch (error) {
-            console.error('Error validating coupon:', error);
+            logger.error('Error validating coupon:', error);
             return res.status(500).json({
                 success: false,
                 message: 'Error al validar cupón'
@@ -154,7 +155,7 @@ export class CouponController {
                 }
             });
         } catch (error) {
-            console.error('Error applying coupon:', error);
+            logger.error('Error applying coupon:', error);
             return res.status(500).json({
                 success: false,
                 message: 'Error al aplicar cupón'
@@ -199,7 +200,7 @@ export class CouponController {
                 data: coupons
             });
         } catch (error) {
-            console.error('Error fetching coupons:', error);
+            logger.error('Error fetching coupons:', error);
             return res.status(500).json({
                 success: false,
                 message: 'Error al obtener cupones'
@@ -257,7 +258,7 @@ export class CouponController {
                 data: coupon
             });
         } catch (error: any) {
-            console.error('Error creating coupon:', error);
+            logger.error('Error creating coupon:', error);
 
             if (error.name === 'SequelizeUniqueConstraintError') {
                 return res.status(400).json({
@@ -314,7 +315,7 @@ export class CouponController {
                 data: coupon
             });
         } catch (error) {
-            console.error('Error updating coupon:', error);
+            logger.error('Error updating coupon:', error);
             return res.status(500).json({
                 success: false,
                 message: 'Error al actualizar cupón'
@@ -345,7 +346,7 @@ export class CouponController {
                 message: 'Cupón eliminado exitosamente'
             });
         } catch (error) {
-            console.error('Error deleting coupon:', error);
+            logger.error('Error deleting coupon:', error);
             return res.status(500).json({
                 success: false,
                 message: 'Error al eliminar cupón'
@@ -379,7 +380,7 @@ export class CouponController {
                 data: coupon
             });
         } catch (error) {
-            console.error('Error toggling coupon status:', error);
+            logger.error('Error toggling coupon status:', error);
             return res.status(500).json({
                 success: false,
                 message: 'Error al cambiar estado del cupón'

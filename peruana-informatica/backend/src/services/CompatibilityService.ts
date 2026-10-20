@@ -3,6 +3,7 @@ import { ProductAttribute } from '../models/ProductAttribute';
 import { CompatibilityRule } from '../models/CompatibilityRule';
 import { Attribute } from '../models/Attribute';
 import { AttributeValue } from '../models/AttributeValue';
+import { logger } from '../config/logger';
 
 interface CompatibilityFilter {
   componentType: string;
@@ -153,7 +154,7 @@ class CompatibilityService {
       };
 
     } catch (error) {
-      console.error('Error in getCompatibleProducts:', error);
+      logger.error('Error in getCompatibleProducts:', error);
       throw error;
     }
   }
@@ -241,7 +242,7 @@ class CompatibilityService {
       };
 
     } catch (error) {
-      console.error('Error in validateBuild:', error);
+      logger.error('Error in validateBuild:', error);
       throw error;
     }
   }

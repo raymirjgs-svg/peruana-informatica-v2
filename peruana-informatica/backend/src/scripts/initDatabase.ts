@@ -3,10 +3,11 @@ import { Product } from '../models/Product';
 import { Brand } from '../models/Brand';
 import { Category } from '../models/Category';
 import { Carousel } from '../models/Carousel';
+import { logger } from '../config/logger';
 
 async function initDatabase() {
   try {
-    console.log('🔄 Inicializando base de datos...');
+    logger.info('🔄 Inicializando base de datos...');
 
     // Sincronizar modelos (aplicar cambios de columnas sin borrar datos)
     // Importar asociaciones para registrar todos los modelos
@@ -20,10 +21,10 @@ async function initDatabase() {
     const { Page } = require('../models/Page');
 
     await CompanySettings.sync({ alter: true });
-    console.log('✅ Tabla company_settings sincronizada');
+    logger.info('✅ Tabla company_settings sincronizada');
 
     await sequelize.sync({ alter: true });
-    console.log('✅ Modelos sincronizados');
+    logger.info('✅ Modelos sincronizados');
 
     // Configuración de la empresa por defecto
     await CompanySettings.findOrCreate({
@@ -36,7 +37,7 @@ async function initDatabase() {
         company_email: 'ventas@peruanainformatica.com'
       }
     });
-    console.log('✅ Configuración de empresa inicializada');
+    logger.info('✅ Configuración de empresa inicializada');
 
     // Crear categorías por defecto
     const categories = await Category.findOrCreate({
@@ -66,7 +67,7 @@ async function initDatabase() {
       }
     });
 
-    console.log('✅ Categorías creadas');
+    logger.info('✅ Categorías creadas');
 
     // Crear marcas por defecto
     await Brand.findOrCreate({
@@ -93,7 +94,7 @@ async function initDatabase() {
       }
     });
 
-    console.log('✅ Marcas creadas');
+    logger.info('✅ Marcas creadas');
 
     // Crear slides del carrusel por defecto
     const carouselCount = await Carousel.count();
@@ -127,12 +128,12 @@ async function initDatabase() {
           order: 3
         }
       ]);
-      console.log('✅ Slides del carrusel creados');
+      logger.info('✅ Slides del carrusel creados');
     }
 
-    console.log('🎉 Base de datos inicializada correctamente');
+    logger.info('🎉 Base de datos inicializada correctamente');
   } catch (error) {
-    console.error('❌ Error inicializando base de datos:', error);
+    logger.error('❌ Error inicializando base de datos:', error);
   } finally {
     await sequelize.close();
   }

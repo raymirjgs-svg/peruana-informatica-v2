@@ -3,6 +3,7 @@ import { Quotation } from '../models/Quotation';
 import { QuotationItem } from '../models/QuotationItem';
 import { Product } from '../models/Product';
 import { Op, Transaction } from 'sequelize';
+import { logger } from '../config/logger';
 
 export interface QuotationItemData {
   product_id: number;
@@ -130,7 +131,7 @@ export class QuotationService {
         try {
           await transaction.rollback();
         } catch (rollbackError) {
-          console.error('Error during transaction rollback:', rollbackError);
+          logger.error('Error during transaction rollback:', rollbackError);
         }
       }
       throw error;

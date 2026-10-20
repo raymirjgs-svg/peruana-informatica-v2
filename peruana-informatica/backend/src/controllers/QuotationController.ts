@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { QuotationService } from '../services/QuotationService';
 import { compatibilityService } from '../services/CompatibilityService';
+import { logger } from '../config/logger';
 
 const quotationService = new QuotationService();
 
@@ -24,7 +25,7 @@ export const createQuotation = async (req: Request, res: Response) => {
       total: quotation.total,
     });
   } catch (error) {
-    console.error('Error creating quotation:', error);
+    logger.error('Error creating quotation:', error);
     res.status(500).json({
       error: 'Error interno del servidor',
       message: 'Error interno'
@@ -58,7 +59,7 @@ export const getQuotationByCode = async (req: Request, res: Response) => {
       validationMessage: validation.message
     });
   } catch (error) {
-    console.error('Error getting quotation:', error);
+    logger.error('Error getting quotation:', error);
     res.status(500).json({
       error: 'Error interno del servidor',
       message: 'Error interno'
@@ -76,7 +77,7 @@ export const getAllQuotations = async (req: Request, res: Response) => {
 
     res.json(result);
   } catch (error) {
-    console.error('Error getting quotations:', error);
+    logger.error('Error getting quotations:', error);
     res.status(500).json({
       error: 'Error interno del servidor',
       message: 'Error interno'
@@ -103,7 +104,7 @@ export const getQuotationById = async (req: Request, res: Response) => {
 
     res.json(quotation);
   } catch (error) {
-    console.error('Error getting quotation by ID:', error);
+    logger.error('Error getting quotation by ID:', error);
     res.status(500).json({
       error: 'Error interno del servidor',
       message: 'Error interno'
@@ -135,7 +136,7 @@ export const updateQuotationStatus = async (req: Request, res: Response) => {
       quotation,
     });
   } catch (error) {
-    console.error('Error updating quotation status:', error);
+    logger.error('Error updating quotation status:', error);
     res.status(500).json({
       error: 'Error interno del servidor',
       message: 'Error interno'
@@ -156,7 +157,7 @@ export const validateQuotation = async (req: Request, res: Response) => {
 
     res.json(validation);
   } catch (error) {
-    console.error('Error validating quotation:', error);
+    logger.error('Error validating quotation:', error);
     res.status(500).json({
       error: 'Error interno del servidor',
       message: 'Error interno'
@@ -172,7 +173,7 @@ export const getCompatibleComponents = async (req: Request, res: Response) => {
       message: 'Usar /api/compatibility/filter en su lugar'
     });
   } catch (error) {
-    console.error('Error getting compatible components:', error);
+    logger.error('Error getting compatible components:', error);
     res.status(500).json({
       error: 'Error interno del servidor',
       message: 'Error interno'
@@ -188,7 +189,7 @@ export const checkCompatibility = async (req: Request, res: Response) => {
       message: 'Usar /api/compatibility/validate en su lugar'
     });
   } catch (error) {
-    console.error('Error checking compatibility:', error);
+    logger.error('Error checking compatibility:', error);
     res.status(500).json({
       error: 'Error interno del servidor',
       message: 'Error interno'

@@ -3,6 +3,7 @@ import { Product } from '../../models/Product';
 import { Brand } from '../../models/Brand';
 import { Category } from '../../models/Category';
 import { Op } from 'sequelize';
+import { logger } from '../../config/logger';
 
 export class DashboardController {
     /**
@@ -62,7 +63,7 @@ export class DashboardController {
                 lowStockProducts
             });
         } catch (error) {
-            console.error('Error getting dashboard data:', error);
+            logger.error('Error getting dashboard data:', error);
             res.status(500).json({
                 error: 'Error al obtener datos del dashboard',
                 code: 'DASHBOARD_ERROR',

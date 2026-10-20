@@ -136,6 +136,12 @@
 ### P2.5 — Purga de código muerto
 - **Evidencia:** `common/Navbar.tsx` (739 ln, 0 imports), `QuotationForm` duplicado, stubs vacíos (`cart/Cart.tsx`, `cart/Checkout.tsx`, `product/ProductDetail.tsx`, `seo/SEOHead.tsx`, `hooks/useProducts.ts`, `hooks/useSEO.ts`, `services/OrderService.ts`, `services/piClient.ts`, `models/Order.ts`, `models/User.ts`), `AuthProvider`/`NextAuthProvider` idénticos, `robots.ts` + `api/robots/route.ts` duplicados, backend `OpenAIService.ts`, `UnsplashService.ts`, `models/Banner.js`, `routes/banners.js`, `controllers/index.ts`, scripts de debug sueltos, doble mount `/api/payments`+`/api/payment`.
 - **Aceptación:** sin archivos muertos/vacíos; un solo provider/robots.
+- **Estado:** hecho. Eliminados 26 módulos sin imports reales (verificados con búsqueda de especificadores, alias y rutas dinámicas):
+  - Frontend: `common/Navbar.tsx`, `cart/Cart.tsx`, `cart/Checkout.tsx`, `product/ProductDetail.tsx`, `seo/SEOHead.tsx`, `hooks/useProducts.ts`, `hooks/useSEO.ts`, `services/OrderService.ts`, `services/piClient.ts`, `lib/api-client.ts`, `utils/canonical.ts`, `utils/slugs.ts`, `models/Order.ts`, `models/User.ts`, `app/api/robots/route.ts`, `components/quotation/QuotationForm.tsx`.
+  - Backend: `controllers/index.ts`, `services/OpenAIService.ts`, `services/UnsplashService.ts`, `models/Banner.js`, `routes/banners.js`, `routes/settingsRoutes.ts`, `routes/taxonomyRoutes.ts` (público sin auth y sin montar), `models/ComponentCompatibility.ts`, `models/Inventory.ts`, `scripts/fix-db.ts`.
+  - Conservados a propósito: `AuthProvider` y `NextAuthProvider` (los usan layouts distintos), `app/cotizador/laptop/components/QuotationForm.tsx` y `components/quotation/QuotationSummary.tsx` (en uso), `bulkAssignProducts`/`backfillTrackingCodes`/`syncDatabase` (utilidades ops documentadas) y el doble mount `/api/payments` + `/api/payment` (el frontend usa ambos).
+  - `settingsRoutes.ts` se eliminó porque su GET duplicaba `globalSettingsRoutes` (montado en `/api/settings`) y su PUT admin no estaba montado ni se usaba desde el frontend.
+  - Verificado: backend `tsc` 0 + 18/18 tests; frontend `tsc --noEmit` 0 + `next build` OK (limpiando `.next` cacheado).
 
 ### P2.6 — Partir archivos "god"
 - **Evidencia:** `admin/products/page.tsx` 1498, `admin/blog/page.tsx` 1242, `admin/seo/page.tsx` 855, `cotizador/laptop/page.tsx` 745, `cart/page.tsx` 717, `account/profile/page.tsx` 638, `admin/orders/page.tsx` 565, `blogController.ts` 1445, `admin/ProductController.ts` 787, `seoController.ts` 625.

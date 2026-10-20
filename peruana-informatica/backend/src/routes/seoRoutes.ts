@@ -1,5 +1,8 @@
 import { Router } from "express";
 import { SeoController } from "../controllers/seoController";
+import { SeoPageController } from "../controllers/SeoPageController";
+import { SeoAnalysisController } from "../controllers/SeoAnalysisController";
+import { SeoSuggestController } from "../controllers/SeoSuggestController";
 import { authenticateToken, requireAdmin } from "../middleware/authMiddleware";
 
 const router = Router();
@@ -27,14 +30,14 @@ router.get("/", authenticateToken, requireAdmin, SeoController.getAll);
  * GET /api/seo/analysis
  * Obtener análisis SEO completo del sitio
  */
-router.get("/analysis", authenticateToken, requireAdmin, SeoController.getSeoAnalysis);
+router.get("/analysis", authenticateToken, requireAdmin, SeoAnalysisController.getSeoAnalysis);
 
 /**
  * GET /api/seo/page/:page_type
  * Obtener configuración SEO por tipo de página
  * Query params: page_identifier (opcional)
  */
-router.get("/page/:page_type", authenticateToken, requireAdmin, SeoController.getByPageType);
+router.get("/page/:page_type", authenticateToken, requireAdmin, SeoPageController.getByPageType);
 
 /**
  * PUT /api/seo/page/:page_type
@@ -42,7 +45,7 @@ router.get("/page/:page_type", authenticateToken, requireAdmin, SeoController.ge
  * Query params: page_identifier (opcional)
  * Body: configuración SEO a actualizar
  */
-router.put("/page/:page_type", authenticateToken, requireAdmin, SeoController.updateByPageType);
+router.put("/page/:page_type", authenticateToken, requireAdmin, SeoPageController.updateByPageType);
 
 /**
  * POST /api/seo
@@ -74,6 +77,6 @@ router.delete("/:id", authenticateToken, requireAdmin, SeoController.delete);
  * POST /api/seo/suggest
  * Generar sugerencias SEO con IA (Gemini)
  */
-router.post("/suggest", authenticateToken, requireAdmin, SeoController.suggestMetadata);
+router.post("/suggest", authenticateToken, requireAdmin, SeoSuggestController.suggestMetadata);
 
 export { router as seoRoutes };

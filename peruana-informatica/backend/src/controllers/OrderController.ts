@@ -39,8 +39,15 @@ export const createOrder = async (req: Request, res: Response) => {
         let totalAmount = 0;
         const processedItems = [];
 
+        const requestedIds = [...new Set(items.map((item: any) => Number(item.product_id)))];
+        const products = await Product.findAll({
+            where: { cod_producto: requestedIds },
+            transaction: t
+        });
+        const productsById = new Map(products.map((product) => [Number(product.cod_producto), product]));
+
         for (const item of items) {
-            const product = await Product.findByPk(item.product_id, { transaction: t });
+            const product = productsById.get(Number(item.product_id));
 
             if (!product) {
                 // If product doesn't exist (or was deleted), we skip or error. 
@@ -113,15 +120,16 @@ export const createOrder = async (req: Request, res: Response) => {
         }, t);
 
         // 3. Create OrderItems
-        for (const pItem of processedItems) {
-            await OrderItem.create({
+        await OrderItem.bulkCreate(
+            processedItems.map((pItem) => ({
                 order_id: order.id,
                 product_id: pItem.product_id,
                 product_name: pItem.product_name,
                 price: pItem.price,
                 quantity: pItem.quantity
-            }, { transaction: t });
-        }
+            })),
+            { transaction: t }
+        );
 
         if (coupon) {
             await coupon.update({ current_uses: coupon.current_uses + 1 }, { transaction: t });

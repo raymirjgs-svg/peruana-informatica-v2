@@ -1,32 +1,15 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import useSWR from 'swr';
+import { SWR_KEYS, fetchMenuCategories } from '@/lib/swr/publicData';
 import Link from 'next/link';
-import { CategoryService, Category } from '@/services/CategoryService';
+import { Category } from '@/services/CategoryService';
 
 export function MegaMenu() {
-    const [categories, setCategories] = useState<Category[]>([]);
+    const { data: categories = [] } = useSWR<Category[]>(SWR_KEYS.menuCategories, fetchMenuCategories);
     const [isOpen, setIsOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
-    const categoryService = new CategoryService();
-
-    useEffect(() => {
-        const loadCategories = async () => {
-            try {
-                const data = await categoryService.getMenuCategories();
-                // Fallback if data is empty, maybe fetch all
-                if (data.length === 0) {
-                    const all = await categoryService.getCategories();
-                    setCategories(all.slice(0, 15)); // Limit to 15 for menu
-                } else {
-                    setCategories(data);
-                }
-            } catch (error) {
-                console.error('Error loading menu categories:', error);
-            }
-        };
-        loadCategories();
-    }, []);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {

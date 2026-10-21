@@ -17,6 +17,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://peruanainformatica.com'),
   title: 'Peruana de Informática | Equipos Tecnológicos en Perú',
   description: 'Venta de laptops, monitores, periféricos y equipos informáticos de calidad en todo Perú',
   keywords: 'laptop, computadora, monitor, periféricos, tecnología, Perú',
@@ -30,6 +31,7 @@ export const metadata: Metadata = {
 };
 
 import NextAuthProvider from '@/components/providers/NextAuthProvider';
+import SWRProvider from '@/components/providers/SWRProvider';
 import CustomerSessionSync from '@/components/providers/CustomerSessionSync';
 
 export default function RootLayout({
@@ -45,6 +47,7 @@ export default function RootLayout({
       </head>
       <body className={`${inter.variable} font-sans bg-gray-50`} suppressHydrationWarning={true}>
         <NextAuthProvider>
+          <SWRProvider>
           <CustomerSessionSync />
           <ErrorBoundary>
             <CompareProvider>
@@ -55,6 +58,7 @@ export default function RootLayout({
               </WishlistProvider>
             </CompareProvider>
           </ErrorBoundary>
+          </SWRProvider>
         </NextAuthProvider>
       </body>
     </html>

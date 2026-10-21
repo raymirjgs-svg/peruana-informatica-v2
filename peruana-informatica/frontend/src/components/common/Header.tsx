@@ -1,18 +1,20 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import useSWR from 'swr';
+import { SWR_KEYS, fetchPublicSettings, fetchMenuCategories } from '@/lib/swr/publicData';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { SearchBar } from './SearchBar';
 import { MegaMenu } from './MegaMenu';
-import { SettingsService, CompanySettings } from '@/services/SettingsService';
+import { CompanySettings } from '@/services/SettingsService';
 import { useCart } from '@/hooks/useCart';
 import { useWishlist } from '@/hooks/useWishlist';
 import { useCompare } from '@/hooks/useCompare';
-import { CategoryService, Category } from '@/services/CategoryService';
+import { Category } from '@/services/CategoryService';
 
 export function Header() {
-  const [settings, setSettings] = useState<CompanySettings | null>(null);
+  const { data: settings = null } = useSWR<CompanySettings | null>(SWR_KEYS.publicSettings, fetchPublicSettings);
   const { totalItems } = useCart();
   const { wishlistCount } = useWishlist();
   const { compareCount } = useCompare();
@@ -22,7 +24,7 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [mobileCategoriesOpen, setMobileCategoriesOpen] = useState(false);
-  const [categories, setCategories] = useState<Category[]>([]);
+  const { data: categories = [] } = useSWR<Category[]>(SWR_KEYS.menuCategories, fetchMenuCategories);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -30,22 +32,6 @@ export function Header() {
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [settingsData, categoriesData] = await Promise.all([
-          SettingsService.getPublicSettings(),
-          new CategoryService().getMenuCategories()
-        ]);
-        setSettings(settingsData);
-        setCategories(categoriesData);
-      } catch (error) {
-        console.error('Error loading header data:', error);
-      }
-    };
-    fetchData();
   }, []);
 
   // Body & HTML Scroll Lock

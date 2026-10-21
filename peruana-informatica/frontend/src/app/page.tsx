@@ -3,43 +3,35 @@
 import Link from 'next/link';
 import { ProductGrid } from '@/components/product/ProductGrid';
 import { Carousel } from '@/components/common/Carousel';
-import { useEffect, useState } from 'react';
+import useSWR from 'swr';
 import { ProductService } from '@/services/ProductService';
 import { Product } from '@/models/Product';
 import { ProductCardSkeleton } from '@/components/product/ProductCardSkeleton';
 
+const fetchHomeProducts = (filters: Record<string, boolean>) => async () => {
+  const result = await new ProductService().getProducts(1, 4, filters);
+  return result.products;
+};
+
 export default function HomePage() {
-  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
-  const [newProducts, setNewProducts] = useState<Product[]>([]);
-  const [clearanceProducts, setClearanceProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState(false);
+  const {
+    data: featuredProducts = [],
+    isLoading: loadingFeatured,
+    error: featuredError,
+  } = useSWR('home-products-featured', fetchHomeProducts({ featured: true }));
+  const {
+    data: newProducts = [],
+    isLoading: loadingNew,
+    error: newError,
+  } = useSWR('home-products-new', fetchHomeProducts({ new: true }));
+  const {
+    data: clearanceProducts = [],
+    isLoading: loadingClearance,
+    error: clearanceError,
+  } = useSWR('home-products-clearance', fetchHomeProducts({ clearance: true }));
 
-  useEffect(() => {
-    const loadProducts = async () => {
-      setLoading(true);
-      setLoadError(false);
-      const productService = new ProductService();
-
-      try {
-        const [featured, newArrivals, clearance] = await Promise.all([
-          productService.getProducts(1, 4, { featured: true }),
-          productService.getProducts(1, 4, { new: true }),
-          productService.getProducts(1, 4, { clearance: true }),
-        ]);
-
-        setFeaturedProducts(featured.products);
-        setNewProducts(newArrivals.products);
-        setClearanceProducts(clearance.products);
-      } catch (error) {
-        console.error("Error loading products:", error);
-        setLoadError(true);
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadProducts();
-  }, []);
+  const loading = loadingFeatured || loadingNew || loadingClearance;
+  const loadError = Boolean(featuredError || newError || clearanceError);
 
   return (
     <div>

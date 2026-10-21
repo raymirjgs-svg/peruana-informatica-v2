@@ -4,25 +4,15 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
-import { SettingsService, CompanySettings } from '../../services/SettingsService';
+import { useState } from 'react';
+import useSWR from 'swr';
+import { SWR_KEYS, fetchPublicSettings } from '@/lib/swr/publicData';
+import { CompanySettings } from '../../services/SettingsService';
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
   const [email, setEmail] = useState('');
-  const [settings, setSettings] = useState<CompanySettings | null>(null);
-
-  useEffect(() => {
-    const fetchSettings = async () => {
-      try {
-        const data = await SettingsService.getPublicSettings();
-        setSettings(data);
-      } catch (error) {
-        console.error('Error loading footer settings:', error);
-      }
-    };
-    fetchSettings();
-  }, []);
+  const { data: settings = null } = useSWR<CompanySettings | null>(SWR_KEYS.publicSettings, fetchPublicSettings);
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();

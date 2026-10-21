@@ -170,6 +170,9 @@
 ### P2.9 — Swagger real
 - **Evidencia:** `/api-docs` montado (`server.ts:170`) pero **cero** anotaciones `@openapi` → docs vacías; `docs/technical/*` describe endpoints inexistentes.
 - **Aceptación:** spec cubre rutas y componentes; docs alineadas.
+- **Estado:** hecho.
+  - `scripts/generate-openapi.ts` introspecciona los routers Express montados y emite `src/config/openapi.paths.json` (168 paths / 207 operaciones). `npm run docs:generate` lo regenera.
+  - `config/swagger.ts` carga ese JSON, define 16 schemas (Product, Category, Brand, Order, AuthResponse, etc.) y enriquece las operaciones clave con request bodies, parámetros y `$ref`s; `/api-docs` sirve la spec real. `tsc` 0, 18/18 tests.
 
 ### P2.10 — Deploy/nginx correctos
 - **Evidencia:** `nginx/nginx.conf` con `midominio.com` y sin `location /images/` (imágenes 404 en prod); healthcheck nginx pega `http://localhost/health` que no existe (solo `/api/health`); `nginx/conf.d` vacío; composes duplicados stale.

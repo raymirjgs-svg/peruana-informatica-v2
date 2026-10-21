@@ -156,7 +156,7 @@
   - Hecho: `admin/seo/page.tsx` (855 ln) partido en 6 componentes locales (score, stats, recomendaciones, listado, herramientas y modal de edición); page 294 ln; `tsc` 0 y `next build` OK.
   - Hecho: `cotizador/laptop/page.tsx` (749 ln) partido en `types.ts` y 5 componentes (filtros, lista, card, éxito y panel de cotización); page 317 ln; se eliminaron helpers de estandarización sin uso. `tsc` 0 y `next build` OK.
   - Hecho: `admin/blog/page.tsx` (1242 ln) partido en `blog/types.ts`, `blog/utils.ts`, `blog/useBlogAdmin.ts` (hook con estado/handlers, 408 ln) y 7 componentes locales (stats, panel IA, aviso IA, listado, modales de API key, sugerencias y post); page 157 ln; `tsc` 0 y `next build` OK.
-  - Pendiente: `admin/products/page.tsx` (1498).
+  - Hecho: `admin/products/page.tsx` (1498 ln) partido en `products/types.ts`, `products/utils.ts`, `hooks/useProductsData.ts` (datos, filtros y selección) y `hooks/useProductsForms.ts` (alta/edición/bulk); 11 componentes locales (toast, header, filtros, barra y modal bulk, vistas lista y grilla, preview, crear, editar y paginación); page 80 ln; `tsc` 0 y `next build` OK.
 
 ### P2.7 — Tipos unificados
 - **Evidencia:** triple `Product` (`models/Product.ts`, `types/index.ts` con `id:string` en conflicto, `models/ApiTypes.ts`); `CartItem` duplicado; ~148 `any` + 31 `as any` + 170 backend `any` + 17 `@ts-ignore`.

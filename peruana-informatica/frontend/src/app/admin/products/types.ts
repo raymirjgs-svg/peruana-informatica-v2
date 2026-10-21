@@ -23,27 +23,33 @@ export type ProductsResponse = {
 };
 
 export type ProductForm = {
-  codigo_interno: string;
-  erp_name: string;
-  name: string;
-  description: string;
-  price: number | string;
-  stock: number;
-  category_id?: number | undefined;
-  brand_id?: number | undefined;
-  image: string;
-  keywords: string;
-  seo_title: string;
-  seo_description: string;
-  subcategory_ids: number[];
+    codigo_interno: string;
+    erp_name: string;
+    name: string;
+    description: string;
+    price: number;
+    stock: number;
+    category_id: number | undefined;
+    brand_id: number | undefined;
+    image: string;
+    keywords: string;
+    seo_title: string;
+    seo_description: string;
+    subcategory_ids: number[];
 };
 
 export type EditForm = {
-  name: string;
-  description: string;
-  price: number;
-  stock: number;
-  is_featured: boolean;
-  is_new: boolean;
-  is_clearance: boolean;
+    name: string;
+    description: string;
+    price: number;
+    stock: number;
+    category_id: number | undefined;
+    brand_id: number | undefined;
+    image: string;
+    keywords: string;
+    seo_title: string;
+    seo_description: string;
+    is_featured: boolean;
+    is_new: boolean;
+    is_clearance: boolean;
 };

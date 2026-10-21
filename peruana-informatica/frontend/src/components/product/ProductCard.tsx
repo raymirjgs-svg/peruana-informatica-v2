@@ -16,6 +16,7 @@ interface ProductCardProps {
 
 import { motion } from 'framer-motion';
 import { getApiBase } from '@/lib/apiBase';
+import { isProductAvailable } from '@/lib/product';
 
 // ... imports
 
@@ -25,7 +26,7 @@ export function ProductCard({ product }: ProductCardProps) {
   const { addToCompare, removeFromCompare, isInCompare } = useCompare();
 
   const handleAddToCart = () => {
-    if (product.isAvailable()) {
+    if (isProductAvailable(product)) {
       addItem(product);
     }
   };
@@ -123,7 +124,7 @@ export function ProductCard({ product }: ProductCardProps) {
           </button>
         </div>
 
-        {!product.isAvailable() && (
+        {!isProductAvailable(product) && (
           <div className="absolute top-3 left-3 bg-red-500/90 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs font-bold shadow-sm">
             Agotado
           </div>
@@ -159,7 +160,7 @@ export function ProductCard({ product }: ProductCardProps) {
             })()}
 
             {/* Indicador de Stock */}
-            {product.isAvailable() && (
+            {isProductAvailable(product) && (
               <div className="mt-2 text-sm font-medium">
                 {product.stock < 5 ? (
                   <span className="text-red-600 flex items-center gap-1 animate-pulse">
@@ -179,15 +180,15 @@ export function ProductCard({ product }: ProductCardProps) {
         {/* Botón */}
         <button
           onClick={handleAddToCart}
-          disabled={!product.isAvailable()}
-          className={`w-full py-3 rounded-lg font-semibold transition-all duration-300 shadow-md hover:shadow-lg active:scale-95 ${product.isAvailable()
+          disabled={!isProductAvailable(product)}
+          className={`w-full py-3 rounded-lg font-semibold transition-all duration-300 shadow-md hover:shadow-lg active:scale-95 ${isProductAvailable(product)
             ? isInCart(product.id)
               ? 'bg-green-600 text-white hover:bg-green-700'
               : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700'
             : 'bg-gray-100 text-gray-400 cursor-not-allowed shadow-none'
             }`}
         >
-          {!product.isAvailable()
+          {!isProductAvailable(product)
             ? 'Agotado'
             : isInCart(product.id)
               ? 'En el carrito'

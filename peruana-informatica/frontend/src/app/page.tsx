@@ -1,37 +1,36 @@
-'use client';
-
 import Link from 'next/link';
 import { ProductGrid } from '@/components/product/ProductGrid';
 import { Carousel } from '@/components/common/Carousel';
-import useSWR from 'swr';
 import { ProductService } from '@/services/ProductService';
-import { Product } from '@/models/Product';
-import { ProductCardSkeleton } from '@/components/product/ProductCardSkeleton';
+import type { Product } from '@/models/Product';
 
-const fetchHomeProducts = (filters: Record<string, boolean>) => async () => {
-  const result = await new ProductService().getProducts(1, 4, filters);
-  return result.products;
-};
+export const revalidate = 300;
 
-export default function HomePage() {
-  const {
-    data: featuredProducts = [],
-    isLoading: loadingFeatured,
-    error: featuredError,
-  } = useSWR('home-products-featured', fetchHomeProducts({ featured: true }));
-  const {
-    data: newProducts = [],
-    isLoading: loadingNew,
-    error: newError,
-  } = useSWR('home-products-new', fetchHomeProducts({ new: true }));
-  const {
-    data: clearanceProducts = [],
-    isLoading: loadingClearance,
-    error: clearanceError,
-  } = useSWR('home-products-clearance', fetchHomeProducts({ clearance: true }));
+interface HomeProducts {
+  products: Product[];
+  error: boolean;
+}
 
-  const loading = loadingFeatured || loadingNew || loadingClearance;
-  const loadError = Boolean(featuredError || newError || clearanceError);
+async function loadProducts(filters: Record<string, boolean>): Promise<HomeProducts> {
+  try {
+    const result = await new ProductService().getProducts(1, 4, filters);
+    return { products: result.products, error: false };
+  } catch {
+    return { products: [], error: true };
+  }
+}
+
+export default async function HomePage() {
+  const [featured, newArrivals, clearance] = await Promise.all([
+    loadProducts({ featured: true }),
+    loadProducts({ new: true }),
+    loadProducts({ clearance: true }),
+  ]);
+
+  const featuredProducts = featured.products;
+  const newProducts = newArrivals.products;
+  const clearanceProducts = clearance.products;
+  const loadError = featured.error && newArrivals.error && clearance.error;
 
   return (
     <div>
@@ -57,13 +56,7 @@ export default function HomePage() {
                 Ver todo <span className="text-xl">→</span>
               </Link>
             </div>
-            {loading ? (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                {[1, 2, 3, 4].map(i => <ProductCardSkeleton key={i} />)}
-              </div>
-            ) : (
-              <ProductGrid products={newProducts} />
-            )}
+            <ProductGrid products={newProducts} />
           </section>
         )}
 
@@ -78,13 +71,7 @@ export default function HomePage() {
               Ver todo <span className="text-xl">→</span>
             </Link>
           </div>
-          {loading ? (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              {[1, 2, 3, 4].map(i => <ProductCardSkeleton key={i} />)}
-            </div>
-          ) : (
-            <ProductGrid products={featuredProducts.length > 0 ? featuredProducts : []} />
-          )}
+          <ProductGrid products={featuredProducts} />
         </section>
 
         {/* Remates */}
@@ -99,13 +86,7 @@ export default function HomePage() {
                 Ver ofertas <span className="text-xl">→</span>
               </Link>
             </div>
-            {loading ? (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                {[1, 2, 3, 4].map(i => <ProductCardSkeleton key={i} />)}
-              </div>
-            ) : (
-              <ProductGrid products={clearanceProducts} />
-            )}
+            <ProductGrid products={clearanceProducts} />
           </section>
         )}
       </div>

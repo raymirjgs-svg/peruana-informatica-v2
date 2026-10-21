@@ -112,14 +112,23 @@ export class ProductService {
     }
 
 
-    // Instanciar Modelo
-    const product = new Product(id, name, description, price, stock, categoryName);
-
-    // Completar propiedades adicionales
-
-    // Slug
-    product.slug = item.slug || item.url_amigable ||
+    const slug = item.slug || item.url_amigable ||
       name.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-');
+
+    const product: Product = {
+      id,
+      name,
+      slug,
+      description,
+      shortDescription: cleanHtmlText(description).substring(0, 100),
+      keywords: name.split(' ').slice(0, 5),
+      image: 'placeholder.jpg',
+      price,
+      stock,
+      category: categoryName,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
 
     // Código Interno
     if (item.codigo_interno) product.codigo_interno = item.codigo_interno;

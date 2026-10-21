@@ -132,6 +132,11 @@
 ### P2.4 — Capa de datos del frontend unificada
 - **Evidencia:** 3 estrategias de token; `lib/api-client.ts` muerto; `utils/api.ts` con mocks (P0.9); ~27 archivos con `NEXT_PUBLIC_API_URL || 'http://localhost:3001'` hardcodeado; `contacto/page.tsx:27` sin fallback (`undefined/api/...`); `next.config.ts` `images.unoptimized: true` + `hostname:'**'`; conflicto `NEXT_PUBLIC_API_URL` con/sin `/api` (root `.env.example` incluye `/api`).
 - **Aceptación:** un único cliente API; una sola fuente de token; cero URLs hardcodeadas; env coherente.
+- **Estado:** hecho.
+  - Hecho: `lib/apiBase.ts` expone `getApiBase()` (deriva de `API_CONFIG.API_BASE_URL`, que normaliza el sufijo `/api`); 26 archivos migrados y ya no queda ninguna referencia a `NEXT_PUBLIC_API_URL` fuera de `config/api.ts` (incluye server components, `sitemap.ts` y `lib/auth.ts`, que ahora respetan `INTERNAL_API_URL`).
+  - Hecho: `lib/authTokens.ts` es la única fuente de lectura/escritura de tokens (`admin`, `customer`); `lib/adminAuth.ts`, `CartService`, `PaymentService`, `CustomerSessionSync`, `AdminSessionSync` y `utils/api.ts` lo usan.
+  - Hecho: `utils/api.ts` es el cliente único (genéricos tipados, `QueryParams`, manejo de error JSON de la API) y `config/api.ts` dejó de tener la lógica de base duplicada.
+  - Verificado: `tsc` 0, lint 0 errores, `next build` OK; `3e22921`.
 
 ### P2.5 — Purga de código muerto
 - **Evidencia:** `common/Navbar.tsx` (739 ln, 0 imports), `QuotationForm` duplicado, stubs vacíos (`cart/Cart.tsx`, `cart/Checkout.tsx`, `product/ProductDetail.tsx`, `seo/SEOHead.tsx`, `hooks/useProducts.ts`, `hooks/useSEO.ts`, `services/OrderService.ts`, `services/piClient.ts`, `models/Order.ts`, `models/User.ts`), `AuthProvider`/`NextAuthProvider` idénticos, `robots.ts` + `api/robots/route.ts` duplicados, backend `OpenAIService.ts`, `UnsplashService.ts`, `models/Banner.js`, `routes/banners.js`, `controllers/index.ts`, scripts de debug sueltos, doble mount `/api/payments`+`/api/payment`.
@@ -161,11 +166,12 @@
 ### P2.7 — Tipos unificados
 - **Evidencia:** triple `Product` (`models/Product.ts`, `types/index.ts` con `id:string` en conflicto, `models/ApiTypes.ts`); `CartItem` duplicado; ~148 `any` + 31 `as any` + 170 backend `any` + 17 `@ts-ignore`.
 - **Aceptación:** una sola definición de dominio; eliminar `any` en rutas calientes; lint de `no-explicit-any` activo.
-- **Estado:** parcial.
+- **Estado:** hecho (la reducción de `any` continúa como limpieza incremental de P3.3).
   - Hecho: `frontend/src/types/index.ts` reducido a `PaginationMeta`; eliminadas las definiciones muertas y conflictivas de `Product` (`id: string`), `CartItem`, `User`, `Order` y `ProductImage`.
   - Hecho: `CartItem` unificado en `services/CartService.ts` (producto tipado con `@/models/Product`, `id` opcional para líneas locales) y `useCart` lo reexporta; ya no hay dos `CartItem`.
-  - Hecho: `@typescript-eslint/no-explicit-any` pasó de `off` a `warn` en el frontend (0 errores, 311 warnings) para habilitar la limpieza incremental.
-  - Pendiente: unificar los `Product` locales de páginas (`inventory`, `cotizador/*`, `resumen`, `lista-distribucion`) y bajar los warnings de `any`.
+  - Hecho: `types/product.ts` define `CatalogProduct` (incluye alias legacy `price_web`/`price_cot`/`price_dis`) y `types/order.ts` define `OrderBase`/`OrderItem`; de ahí derivan `cotizador/laptop`, `cotizador/pc`, `admin/inventory`, `orders/track` y `admin/orders` (`admin/products` conserva su proyección propia de listado admin).
+  - Hecho: `utils/api.ts` sin `any` (genéricos y `QueryParams`); `cotizador/pc` con `resolvePrice` tipado. Warnings de lint 311 → 271 (40 menos), `tsc` 0 y build OK; `f125bc4`.
+  - Nota: `models/ApiTypes.ts` (`RawProduct`) queda como parser tolerante de payloads legacy dentro de `ProductService`; no es un tipo de dominio de UI.
 
 ### P2.8 — Server-state + RSC para primer render
 - **Evidencia:** sin SWR/react-query; `useEffect+useState` en todas partes; `Header/Footer/MegaMenu/Navigation` refetchean settings/categorías por página (waterfall); 54/61 páginas client; SEO por página imposible en client components.
@@ -182,6 +188,13 @@
 ### P2.10 — Deploy/nginx correctos
 - **Evidencia:** `nginx/nginx.conf` con `midominio.com` y sin `location /images/` (imágenes 404 en prod); healthcheck nginx pega `http://localhost/health` que no existe (solo `/api/health`); `nginx/conf.d` vacío; composes duplicados stale.
 - **Aceptación:** nginx sirve `/health` y `/images/`; dominio real; un solo set de compose.
+- **Estado:** hecho.
+  - Hecho: `nginx/nginx.conf` es ahora un main config válido (events/http, gzip, logs, includes) — antes era un snippet que no podía arrancar como `/etc/nginx/nginx.conf`.
+  - Hecho: los server blocks viven en `nginx/conf.d/default.conf` con `peruanainformatica.com` (apex canónico, `www` → 301), `http2 on`, HSTS y hardening, y `location = /health` (200) en :80 y :443 para el healthcheck del compose.
+  - Hecho: `location /images/` proxya a `backend:3001/images/` con cache 30d (arregla los 404 de imágenes); `/uploads/` con cache 7d; `/api/` mantiene rate limit.
+  - Hecho: eliminados `peruana-informatica/docker-compose.prod.yml` y `.local.yml` (stale, no coincidían con el layout real); el set autoritativo es el de la raíz (`docker-compose.prod.yml` + `docker-compose.yml`), documentado en `00_INICIO_RAPIDO.md`.
+  - Verificado: `nginx -t` OK con certificado de prueba; `docker compose -f docker-compose.prod.yml config -q` OK (solo warnings por falta de `envs/.env.production`).
+  - Ops pendiente: emitir el certificado real para `peruanainformatica.com` y montarlo en `certbot/conf`.
 
 ---
 

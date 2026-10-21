@@ -13,7 +13,7 @@
 ## 📊 Resumen de Cambios
 
 ### 1. Docker Compose Production (Zero-Bandwidth)
-**Archivo**: [peruana-informatica/docker-compose.prod.yml](peruana-informatica/docker-compose.prod.yml)
+**Archivo**: [docker-compose.prod.yml](../../docker-compose.prod.yml)
 
 | Cambio | Antes | Después | Impacto |
 |--------|-------|---------|---------|

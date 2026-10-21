@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { signOut, useSession } from "next-auth/react";
+import { setAuthToken, clearAuthToken } from '@/lib/authTokens';
 
 export function AdminSessionSync({ children }: { children: React.ReactNode }) {
   const { data: session, status } = useSession();
@@ -26,14 +27,14 @@ export function AdminSessionSync({ children }: { children: React.ReactNode }) {
         return;
       }
 
-      localStorage.setItem("adminToken", token);
+      setAuthToken('admin', token);
       localStorage.removeItem("adminUser");
       signingOut.current = false;
       setReady(true);
       return;
     }
 
-    localStorage.removeItem("adminToken");
+    clearAuthToken('admin');
     setReady(true);
   }, [session, status]);
 

@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import Link from 'next/link';
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
+import { getApiBase } from '@/lib/apiBase';
 
 export default function RegisterPage() {
     const router = useRouter();
@@ -24,7 +25,7 @@ export default function RegisterPage() {
     const onSubmit = async (data: RegisterForm) => {
         setLoading(true);
         try {
-            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+            const API_URL = getApiBase();
             const response = await fetch(`${API_URL}/api/auth/register`, {
                 method: 'POST',
                 headers: {

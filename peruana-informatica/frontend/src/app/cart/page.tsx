@@ -11,6 +11,7 @@ import { SuccessStep } from './SuccessStep';
 import { PaymentStep } from './PaymentStep';
 import { CustomerStep } from './CustomerStep';
 import { CartStep } from './CartStep';
+import { getApiBase } from '@/lib/apiBase';
 
 export default function CartPage() {
   const { items, totalPrice, updateQuantity, removeItem, clearCart } = useCart();
@@ -31,7 +32,7 @@ export default function CartPage() {
   useEffect(() => {
     const fetchCheckoutMode = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+        const apiUrl = getApiBase();
         const res = await fetch(`${apiUrl}/api/settings/checkout-mode`);
         if (res.ok) {
           const data = await res.json();
@@ -105,7 +106,7 @@ export default function CartPage() {
     setIsLoading(true);
     setError(null);
 
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+    const apiUrl = getApiBase();
 
     try {
       const payload = {
@@ -182,7 +183,7 @@ export default function CartPage() {
     setIsLoading(true);
     setError(null);
 
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+    const apiUrl = getApiBase();
 
     try {
       const formData = new FormData();

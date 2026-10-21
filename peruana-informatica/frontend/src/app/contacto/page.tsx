@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { contactSchema, type ContactFormData } from '@/lib/validations/schemas';
 import { useState } from 'react';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
+import { getApiBase } from '@/lib/apiBase';
 
 export default function ContactPage() {
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
@@ -24,7 +25,7 @@ export default function ContactPage() {
     setErrorMessage('');
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/contacts`, {
+      const response = await fetch(`getApiBase()/api/contacts`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

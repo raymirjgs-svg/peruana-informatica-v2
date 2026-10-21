@@ -1,3 +1,5 @@
+import { getApiBase } from '@/lib/apiBase';
+
 export const formatCardNumber = (value: string) => {
     const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
     const matches = v.match(/\d{4,16}/g);
@@ -25,6 +27,6 @@ export const getCardType = (number: string) => {
 export const getImageUrl = (imagePath?: string) => {
     if (!imagePath) return 'https://placehold.co/100x100?text=Sin+Imagen';
     if (imagePath.startsWith('http')) return imagePath;
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+    const apiUrl = getApiBase();
     return `${apiUrl}/images/products/${imagePath}`;
   };

@@ -1,4 +1,5 @@
 import { API_CONFIG } from '@/config/api';
+import { getAuthToken } from '@/lib/authTokens';
 
 export interface CreatePreferenceRequest {
     address: string;
@@ -16,10 +17,7 @@ class PaymentService {
     private apiBase = API_CONFIG.API_BASE_URL + '/api/payment';
 
     private getToken(): string | null {
-        if (typeof window !== 'undefined') {
-            return localStorage.getItem('customerToken');
-        }
-        return null;
+        return getAuthToken('customer');
     }
 
     private getHeaders() {

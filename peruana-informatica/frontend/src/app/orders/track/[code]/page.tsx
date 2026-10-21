@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
+import { getApiBase } from '@/lib/apiBase';
 
 interface OrderItem {
   id: number;
@@ -44,7 +45,7 @@ export default function OrderTrackingPage() {
   const fetchOrder = async () => {
     try {
       setLoading(true);
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const apiUrl = getApiBase();
       const response = await fetch(`${apiUrl}/api/client/orders/track/${code}`);
 
       if (!response.ok) {
@@ -63,7 +64,7 @@ export default function OrderTrackingPage() {
   const downloadInvoice = async () => {
     try {
       setDownloading(true);
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const apiUrl = getApiBase();
       const response = await fetch(`${apiUrl}/api/client/orders/track/${code}/invoice`);
 
       if (!response.ok) {

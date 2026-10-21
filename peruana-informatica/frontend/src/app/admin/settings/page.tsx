@@ -22,6 +22,7 @@ import {
   EyeOff,
   ShoppingCart
 } from 'lucide-react';
+import { getApiBase } from '@/lib/apiBase';
 
 interface PriceOption {
   value: string;
@@ -87,7 +88,7 @@ export default function SettingsPage() {
     announcement_bar_color: '#1e40af' // blue-800
   });
 
-  const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+  const apiBase = getApiBase();
 
   useEffect(() => {
     fetch(`${apiBase}/api/admin/settings`, { headers: { ...getAdminAuthHeaders() } })

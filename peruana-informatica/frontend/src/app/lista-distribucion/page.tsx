@@ -7,6 +7,7 @@ import { ProductService } from '@/services/ProductService';
 import { Product } from '@/models/Product';
 import { Eye, X, ChevronUp, ChevronDown, Package } from 'lucide-react';
 import Image from 'next/image';
+import { getApiBase } from '@/lib/apiBase';
 
 export default function ListaDistribucionPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -127,7 +128,7 @@ export default function ListaDistribucionPage() {
   const getProductImage = (product: Product) => {
     const p = product as any;
     // Current API base URL from env or default
-    const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+    const apiBase = getApiBase();
     // Remove /api if present for image base
     const baseUrl = apiBase.endsWith('/api') ? apiBase.slice(0, -4) : apiBase;
 

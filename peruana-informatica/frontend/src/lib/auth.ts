@@ -1,6 +1,7 @@
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
+import { getApiBase } from '@/lib/apiBase';
 
 declare module "next-auth" {
     interface User {
@@ -35,7 +36,7 @@ export const authOptions: NextAuthOptions = {
 
                 try {
                     // Always query backend on port 3001
-                    const apiBase = process.env.INTERNAL_API_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+                    const apiBase = getApiBase();
 
                     const res = await fetch(`${apiBase}/api/auth/login`, {
                         method: "POST",
@@ -78,7 +79,7 @@ export const authOptions: NextAuthOptions = {
         async signIn({ user, account, profile }) {
             if (account?.provider === "google") {
                 try {
-                    const apiBase = process.env.INTERNAL_API_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+                    const apiBase = getApiBase();
 
                     // Send Google data to backend to find/create user
                     const res = await fetch(`${apiBase}/api/auth/social-login`, {

@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Button } from '../Button';
 import { getAdminAuthHeaders } from '@/lib/adminAuth';
+import { getApiBase as getApiHost } from '@/lib/apiBase';
 
 interface ImportResult {
     success: boolean;
@@ -28,9 +29,7 @@ export function ProductImporter() {
     const [mode, setMode] = useState<'file' | 'text'>('file');
 
     const getApiBase = () => {
-        const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
-        const trimmed = baseUrl.replace(/\/+$/, "");
-        return trimmed.endsWith("/api") ? trimmed : `${trimmed}/api`;
+        return `${getApiHost()}/api`;
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {

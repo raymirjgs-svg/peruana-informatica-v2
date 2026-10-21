@@ -5,6 +5,7 @@
 
 import { useState, useEffect } from 'react';
 import { CarouselService, CarouselSlide as ApiSlide } from '@/services/CarouselService';
+import { getApiBase } from '@/lib/apiBase';
 
 interface CarouselSlide extends ApiSlide {}
 
@@ -49,7 +50,7 @@ export function Carousel() {
     if (!imageUrl) return '';
     // Si es una URL relativa (empieza con /), prependemos el baseUrl del backend
     if (imageUrl.startsWith('/')) {
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const baseUrl = getApiBase();
       return `${baseUrl}${imageUrl}`;
     }
     return imageUrl;

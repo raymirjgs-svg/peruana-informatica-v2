@@ -1,6 +1,6 @@
 // src/utils/api.ts
 import { API_CONFIG } from '@/config/api';
-import { getAdminAuthHeaders } from '@/lib/adminAuth';
+import { getAuthHeaders } from '@/lib/authTokens';
 
 const API_BASE_URL = API_CONFIG.API_BASE_URL;
 
@@ -24,7 +24,7 @@ class ApiClient {
       ...options,
       headers: {
         'Content-Type': 'application/json',
-        ...(endpoint.startsWith('/api/admin') ? getAdminAuthHeaders() : {}),
+        ...(endpoint.startsWith('/api/admin') ? getAuthHeaders('admin') : {}),
         ...options.headers,
       },
     };

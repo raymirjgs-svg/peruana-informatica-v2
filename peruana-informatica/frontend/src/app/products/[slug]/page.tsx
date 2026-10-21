@@ -15,6 +15,7 @@ import { SettingsService, CompanySettings } from '@/services/SettingsService';
 import { RelatedProducts } from '@/components/product/RelatedProducts';
 import { ProductReviews } from '@/components/product/ProductReviews';
 import { sanitizeHtml } from '@/lib/sanitize';
+import { getApiBase } from '@/lib/apiBase';
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -31,7 +32,7 @@ export default function ProductDetailPage() {
   const { addItem } = useCart();
 
   // Usar las imágenes reales del producto si están disponibles
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+  const apiUrl = getApiBase();
 
   const productImages = product?.images && product.images.length > 0
     ? product.images.map(img => img.imagen.startsWith('http') ? img.imagen : `${apiUrl}/images/products/${img.imagen}`)

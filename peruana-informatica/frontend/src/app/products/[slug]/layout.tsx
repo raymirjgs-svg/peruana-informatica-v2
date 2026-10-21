@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import { escapeJsonLd } from "@/lib/sanitize";
+import { getApiBase as getApiHost } from '@/lib/apiBase';
 
 function getApiBase() {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
-  const trimmed = baseUrl.replace(/\/+$/, "");
-  return trimmed.endsWith("/api") ? trimmed : `${trimmed}/api`;
+  return `${getApiHost()}/api`;
 }
 
 export async function generateMetadata({

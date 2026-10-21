@@ -8,6 +8,7 @@ import { StatsCard } from '@/components/admin/StatsCard';
 import { useSession } from 'next-auth/react';
 import { Package, AlertTriangle, TrendingDown, Search, Download } from 'lucide-react';
 import { toast } from 'sonner';
+import { getApiBase } from '@/lib/apiBase';
 
 interface Product {
   cod_producto: string;
@@ -30,7 +31,7 @@ export default function InventoryPage() {
       if (!session?.accessToken) return;
 
       try {
-        const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+        const API_BASE = getApiBase();
         const response = await fetch(`${API_BASE}/api/admin/products`, {
           headers: {
             'Authorization': `Bearer ${session.accessToken}`

@@ -6,6 +6,7 @@ import { ProductService } from '@/services/ProductService';
 import { Product } from '@/models/Product';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { getAdminAuthHeaders } from '@/lib/adminAuth';
+import { getApiBase } from '@/lib/apiBase';
 
 interface Brand {
   id: number;
@@ -24,7 +25,7 @@ interface SubCategory {
 }
 
 const productService = new ProductService();
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+const API_URL = getApiBase();
 
 export default function TaxonomyPage() {
   const [products, setProducts] = useState<Product[]>([]);

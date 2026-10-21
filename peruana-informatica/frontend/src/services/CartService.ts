@@ -1,4 +1,5 @@
 import { API_CONFIG } from '@/config/api';
+import { getAuthToken } from '@/lib/authTokens';
 import type { Product } from '@/models/Product';
 
 export interface CartItem {
@@ -17,10 +18,7 @@ class CartService {
     private apiBase = API_CONFIG.API_BASE_URL + '/api/cart';
 
     private getToken(): string | null {
-        if (typeof window !== 'undefined') {
-            return localStorage.getItem('customerToken');
-        }
-        return null;
+        return getAuthToken('customer');
     }
 
     private getHeaders() {

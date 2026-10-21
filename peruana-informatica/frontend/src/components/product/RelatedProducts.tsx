@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Product } from '@/models/Product';
 import { useCart } from '@/hooks/useCart';
 import { useWishlist } from '@/hooks/useWishlist';
+import { getApiBase } from '@/lib/apiBase';
 // Assuming we can reuse the solid card style or a variation of it
 // For related products, a slightly more compact card is often better
 
@@ -33,7 +34,7 @@ export function RelatedProducts({ products }: RelatedProductsProps) {
                 {products.map((product) => {
                     const isOnWishlist = isInWishlist(product.id);
                     const pPrice = Number(product.price || 0);
-                    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+                    const apiUrl = getApiBase();
 
                     // Image logic
                     let imageUrl = '/placeholder.png';

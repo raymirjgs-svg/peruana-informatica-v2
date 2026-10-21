@@ -6,11 +6,10 @@ import { Modal } from '@/components/admin/Modal';
 import { Button } from '@/components/admin/Button';
 import { Pagination } from '@/components/admin/Pagination';
 import { getAdminAuthHeaders } from '@/lib/adminAuth';
+import { getApiBase as getApiHost } from '@/lib/apiBase';
 
 function getApiBase() {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
-  const trimmed = baseUrl.replace(/\/+$/, "");
-  return trimmed.endsWith("/api") ? trimmed : `${trimmed}/api`;
+  return `${getApiHost()}/api`;
 }
 
 type Slide = {

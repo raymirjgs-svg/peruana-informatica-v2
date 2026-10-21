@@ -1,9 +1,8 @@
 import type { Product } from './types';
+import { getApiBase as getHostBase } from '@/lib/apiBase';
 
 export function getApiBase() {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
-  const trimmed = baseUrl.replace(/\/+$/, "");
-  return trimmed.endsWith("/api") ? trimmed : `${trimmed}/api`;
+  return `${getHostBase()}/api`;
 }
 
 export function isValidUrl(value: string) {
@@ -22,6 +21,5 @@ export function getProductImageUrl(product: Product) {
     const img = product.images[0]?.imagen;
     if (!img) return null;
     if (img.startsWith('http')) return img;
-    const baseUrl = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001').replace(/\/api\/?$/, '');
-    return `${baseUrl}/uploads/${encodeURIComponent(img)}`;
+    return `${getHostBase()}/uploads/${encodeURIComponent(img)}`;
 }

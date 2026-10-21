@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { useSession } from 'next-auth/react';
+import { setAuthToken, clearAuthToken } from '@/lib/authTokens';
 
 export default function CustomerSessionSync() {
   const { data: session, status } = useSession();
@@ -13,11 +14,11 @@ export default function CustomerSessionSync() {
     const isAdmin = role === 'admin' || role === 'super-admin';
 
     if (status === 'authenticated' && session?.accessToken && !isAdmin) {
-      localStorage.setItem('customerToken', session.accessToken);
+      setAuthToken('customer', session.accessToken);
       return;
     }
 
-    localStorage.removeItem('customerToken');
+    clearAuthToken('customer');
   }, [session, status]);
 
   return null;

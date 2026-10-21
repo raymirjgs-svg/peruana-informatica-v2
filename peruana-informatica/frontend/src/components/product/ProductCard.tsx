@@ -15,6 +15,7 @@ interface ProductCardProps {
 }
 
 import { motion } from 'framer-motion';
+import { getApiBase } from '@/lib/apiBase';
 
 // ... imports
 
@@ -69,13 +70,13 @@ export function ProductCard({ product }: ProductCardProps) {
             if (firstImage?.imagen) {
               const image = firstImage.imagen;
               if (image.startsWith('http')) return image;
-              const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+              const apiUrl = getApiBase();
               return `${apiUrl}/images/products/${image}`;
             }
 
             if (product.image && product.image.trim() !== '') {
               if (product.image.startsWith('http')) return product.image;
-              const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+              const apiUrl = getApiBase();
               return `${apiUrl}/images/products/${product.image}`;
             }
 

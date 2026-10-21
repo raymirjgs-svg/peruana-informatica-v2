@@ -1,8 +1,9 @@
 import { ProductImage } from '@/models/Product';
 import { getAdminAuthHeaders } from '@/lib/adminAuth';
+import { getApiBase } from '@/lib/apiBase';
 
 export class ImageService {
-  private baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+  private baseUrl = getApiBase();
   private apiBase = (() => {
     const trimmed = this.baseUrl.replace(/\/+$/, '');
     return trimmed.endsWith('/api') ? trimmed : `${trimmed}/api`;

@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { useCart } from '@/hooks/useCart';
 import { Product } from '@/models/Product';
 import { useState } from 'react';
+import { getApiBase } from '@/lib/apiBase';
 
 export default function ComparePage() {
   const { compareList, compareCount, removeFromCompare, clearCompare, maxCompareItems } = useCompare();
@@ -16,7 +17,7 @@ export default function ComparePage() {
   const getImageUrl = (image: string | null | undefined): string => {
     if (!image) return 'https://placehold.co/600x600?text=Sin+Imagen';
     if (image.startsWith('http')) return image;
-    return `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/images/products/${image}`;
+    return `${getApiBase()}/images/products/${image}`;
   };
 
   const handleAddToCart = (product: Product) => {

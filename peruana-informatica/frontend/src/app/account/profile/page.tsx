@@ -12,6 +12,7 @@ import { SecurityForm } from '@/components/account/profile/SecurityForm';
 import { GoogleAccountNotice } from '@/components/account/profile/GoogleAccountNotice';
 import { OrdersTab } from '@/components/account/profile/OrdersTab';
 import { WishlistTab } from '@/components/account/profile/WishlistTab';
+import { getApiBase } from '@/lib/apiBase';
 
 type TabType = 'profile' | 'orders' | 'wishlist';
 
@@ -49,7 +50,7 @@ export default function ProfilePage() {
 
     const loadProfile = async () => {
         try {
-            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+            const API_URL = getApiBase();
             const response = await fetch(`${API_URL}/api/customers/profile`, {
                 headers: {
                     'Authorization': `Bearer ${(session as any)?.accessToken}`
@@ -67,7 +68,7 @@ export default function ProfilePage() {
 
     const loadOrders = async () => {
         try {
-            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+            const API_URL = getApiBase();
             const response = await fetch(`${API_URL}/api/customers/orders`, {
                 headers: {
                     'Authorization': `Bearer ${(session as any)?.accessToken}`
@@ -85,7 +86,7 @@ export default function ProfilePage() {
 
     const loadWishlist = async () => {
         try {
-            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+            const API_URL = getApiBase();
             const response = await fetch(`${API_URL}/api/wishlist`, {
                 headers: {
                     'Authorization': `Bearer ${(session as any)?.accessToken}`
@@ -107,7 +108,7 @@ export default function ProfilePage() {
         setMessage('');
 
         try {
-            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+            const API_URL = getApiBase();
             const response = await fetch(`${API_URL}/api/customers/profile`, {
                 method: 'PATCH',
                 headers: {
@@ -154,7 +155,7 @@ export default function ProfilePage() {
         }
 
         try {
-            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+            const API_URL = getApiBase();
             const response = await fetch(`${API_URL}/api/customers/password`, {
                 method: 'PATCH',
                 headers: {

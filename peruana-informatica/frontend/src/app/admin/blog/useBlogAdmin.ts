@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { getAdminAuthHeaders } from '@/lib/adminAuth';
 import { BlogPost, TitleSuggestion, BlogStats, PostFormData } from './types';
+import { getApiBase } from '@/lib/apiBase';
 
 export function useBlogAdmin() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -44,7 +45,7 @@ export function useBlogAdmin() {
   const [savingApiKey, setSavingApiKey] = useState(false);
 
   // Configuración de la API
-  const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+  const API_BASE = getApiBase();
 
   const getAuthHeaders = () => ({
     ...getAdminAuthHeaders(),

@@ -1,4 +1,5 @@
 import { getAdminAuthHeaders } from "@/lib/adminAuth";
+import { getApiBase } from '@/lib/apiBase';
 
 interface SeoSettings {
   id: number;
@@ -78,7 +79,7 @@ interface SeoFormData {
 
 class SeoService {
   private static readonly BASE_URL =
-    process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+    getApiBase();
   private static readonly API_BASE = `${SeoService.BASE_URL}/api`;
 
   private static getAuthHeaders(): Record<string, string> {

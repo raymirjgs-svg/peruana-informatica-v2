@@ -161,6 +161,11 @@
 ### P2.7 — Tipos unificados
 - **Evidencia:** triple `Product` (`models/Product.ts`, `types/index.ts` con `id:string` en conflicto, `models/ApiTypes.ts`); `CartItem` duplicado; ~148 `any` + 31 `as any` + 170 backend `any` + 17 `@ts-ignore`.
 - **Aceptación:** una sola definición de dominio; eliminar `any` en rutas calientes; lint de `no-explicit-any` activo.
+- **Estado:** parcial.
+  - Hecho: `frontend/src/types/index.ts` reducido a `PaginationMeta`; eliminadas las definiciones muertas y conflictivas de `Product` (`id: string`), `CartItem`, `User`, `Order` y `ProductImage`.
+  - Hecho: `CartItem` unificado en `services/CartService.ts` (producto tipado con `@/models/Product`, `id` opcional para líneas locales) y `useCart` lo reexporta; ya no hay dos `CartItem`.
+  - Hecho: `@typescript-eslint/no-explicit-any` pasó de `off` a `warn` en el frontend (0 errores, 311 warnings) para habilitar la limpieza incremental.
+  - Pendiente: unificar los `Product` locales de páginas (`inventory`, `cotizador/*`, `resumen`, `lista-distribucion`) y bajar los warnings de `any`.
 
 ### P2.8 — Server-state + RSC para primer render
 - **Evidencia:** sin SWR/react-query; `useEffect+useState` en todas partes; `Header/Footer/MegaMenu/Navigation` refetchean settings/categorías por página (waterfall); 54/61 páginas client; SEO por página imposible en client components.

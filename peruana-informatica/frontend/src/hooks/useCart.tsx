@@ -2,13 +2,10 @@
 
 import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 import { Product } from '@/models/Product';
-import { cartService } from '@/services/CartService';
+import { cartService, type CartItem } from '@/services/CartService';
 import { useSession } from 'next-auth/react';
 
-export interface CartItem {
-  product: Product;
-  quantity: number;
-}
+export type { CartItem };
 
 interface CartContextType {
   items: CartItem[];

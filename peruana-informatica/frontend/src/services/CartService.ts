@@ -1,8 +1,9 @@
 import { API_CONFIG } from '@/config/api';
+import type { Product } from '@/models/Product';
 
 export interface CartItem {
-    id: number;
-    product: any;
+    id?: number;
+    product: Product;
     quantity: number;
 }
 

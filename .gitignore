@@ -58,3 +58,6 @@ graphify-out/
 # --- TEST ARTIFACTS (ruido para grafo) ---
 **/playwright-report/
 **/test-results/
+
+# Superpowers SDD scratch
+.superpowers/

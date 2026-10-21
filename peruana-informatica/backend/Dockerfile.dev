@@ -13,7 +13,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install ALL dependencies (including dev dependencies for hot-reload)
-RUN npm install --force
+RUN npm ci --force
 
 # Copy source code
 COPY . .

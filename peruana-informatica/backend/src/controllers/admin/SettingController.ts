@@ -19,7 +19,7 @@ export const updateSetting = async (req: Request, res: Response) => {
         const { key } = req.params;
         const { value } = req.body;
 
-        let setting = await Setting.findByPk(key);
+        const setting = await Setting.findByPk(key);
         if (setting) {
             setting.value = value;
             await setting.save();

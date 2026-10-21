@@ -49,7 +49,7 @@ export class SyncController {
     private static async resolveTaxonomy(marcaName: string | null, categoriaName: string | null) {
         let brand_id = null;
         let category_id = null;
-        let sub_category_ids: number[] = [];
+        const sub_category_ids: number[] = [];
 
         // 1. Handle Brand
         if (marcaName) {

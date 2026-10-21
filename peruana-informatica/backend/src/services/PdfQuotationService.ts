@@ -170,7 +170,7 @@ export class PdfQuotationService {
       head: [['CANTIDAD', 'UND', 'CODIGO', 'DESCRIPCIÓN', 'P. UNITARIO', 'TOTAL']],
       body: quotation.items.map((item: any) => {
         // Format description possibly with specs
-        let description = item.product_name || item.product?.name || 'Producto desconocido';
+        const description = item.product_name || item.product?.name || 'Producto desconocido';
         // Clean description needed?
 
         return [

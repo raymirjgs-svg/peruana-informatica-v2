@@ -124,7 +124,7 @@ Invertir en una laptop gaming es una decisión importante. Evalúa tus necesidad
           author_name: "Peruana Informática",
           tags: "gaming, laptops, hardware, reviews, guías",
           categories: "Gaming, Hardware, Guías de Compra",
-          status: "published" as "published",
+          status: "published" as const,
           is_featured: true,
           published_at: new Date(),
         },
@@ -319,7 +319,7 @@ Elige uno con:
           author_name: "Peruana Informática",
           tags: "pc gaming, tutorial, hardware, ensamblaje, guía",
           categories: "Tutoriales, Hardware, Gaming",
-          status: "published" as "published",
+          status: "published" as const,
           is_featured: true,
           published_at: new Date(Date.now() - 86400000), // 1 día atrás
         },
@@ -523,7 +523,7 @@ En 2024, un SSD es prácticamente obligatorio como disco principal. Los HDD aún
           author_name: "Peruana Informática",
           tags: "almacenamiento, ssd, hdd, hardware, comparativa",
           categories: "Hardware, Comparativas, Guías",
-          status: "published" as "published",
+          status: "published" as const,
           is_featured: false,
           published_at: new Date(Date.now() - 172800000), // 2 días atrás
         },

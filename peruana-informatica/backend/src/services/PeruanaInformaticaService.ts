@@ -50,7 +50,7 @@ export class PeruanaInformaticaService {
                 validateStatus: () => true
             });
 
-            let responseBody = response.data;
+            const responseBody = response.data;
 
             // Limpiar respuesta cruda si viene con warnings de PHP
             if (typeof responseBody === 'string') {
@@ -207,7 +207,7 @@ export class PeruanaInformaticaService {
                 validateStatus: () => true
             });
 
-            let responseBody: string = response.data;
+            const responseBody: string = response.data;
 
             // La API a veces devuelve warnings de PHP antes del JSON. Limpiamos la respuesta.
             if (typeof responseBody === 'string') {

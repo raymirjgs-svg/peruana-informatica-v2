@@ -74,7 +74,7 @@ export const getLaptopsWithSubcategories = async (req: Request, res: Response) =
   try {
     const { subcategory, minPrice, maxPrice, search } = req.query;
 
-    let whereClause: any = {
+    const whereClause: any = {
       [Op.or]: [
         { category_id: 1 },
         { name: { [Op.like]: '%laptop%' } },
@@ -98,7 +98,7 @@ export const getLaptopsWithSubcategories = async (req: Request, res: Response) =
       ];
     }
 
-    let includeConditions: any = [
+    const includeConditions: any = [
       {
         model: SubCategory,
         as: 'subCategories',

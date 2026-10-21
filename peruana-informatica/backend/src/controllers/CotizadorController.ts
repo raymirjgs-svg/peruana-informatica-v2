@@ -72,7 +72,7 @@ export const getCotizadorLaptops = async (req: Request, res: Response) => {
         logger.info('Mapped Price Field for Sorting:', priceField);
 
         // Build filter conditions
-        let whereClause: any = {
+        const whereClause: any = {
             [Op.or]: [
                 { category_id: 1 },
                 { name: { [Op.like]: '%laptop%' } },
@@ -107,7 +107,7 @@ export const getCotizadorLaptops = async (req: Request, res: Response) => {
         }
 
         // Subcategory Logic
-        let includeConditions: any = [
+        const includeConditions: any = [
             {
                 model: SubCategory,
                 as: 'subCategories',

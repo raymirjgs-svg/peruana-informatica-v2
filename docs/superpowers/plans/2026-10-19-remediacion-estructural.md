@@ -199,6 +199,11 @@
 ### P3.3 — Lint/format/hooks
 - **Evidencia:** backend sin ESLint/Prettier; frontend con `ignoreDuringBuilds: true` y `no-explicit-any: off`; sin husky/lint-staged/editorconfig.
 - **Aceptación:** lint obligatorio (no ignorado en build); pre-commit con lint/types.
+- **Estado:** parcial.
+  - Hecho: frontend ya no ignora ESLint en `next build` (`ignoreDuringBuilds: false`); se corrigieron los 10 errores existentes y `npm run lint` queda limitado a `src` (0 errores, 154 warnings).
+  - Hecho: backend con ESLint 9 + `typescript-eslint` (`eslint.config.mjs`), script `lint` y job de CI; 0 errores, 66 warnings.
+  - Hecho: `.editorconfig` en la raíz.
+  - Pendiente: husky/lint-staged (requiere decidir tooling de monorepo) y Prettier.
 
 ### P3.4 — Builds reproducibles y pipeline
 - **Evidencia:** `Dockerfile.prod` usa `npm install`; `tsc` emite tests a `dist`; rollback reconstruye desde ref git (no atómico); sin Dependabot/CODEOWNERS.

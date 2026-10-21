@@ -5,6 +5,8 @@ dotenv.config();
 import path from "path";
 import helmet from "helmet";
 import swaggerUi from "swagger-ui-express";
+import metricsRoutes from "./routes/metricsRoutes";
+import { metricsMiddleware } from "./middleware/metrics";
 import chalk from "chalk";
 import { swaggerSpec } from "./config/swagger";
 import { connectDatabase, sequelize } from "./database/connection";
@@ -80,6 +82,8 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Security Headers
+app.use(metricsMiddleware);
+
 app.use(helmet({
   contentSecurityPolicy: false, // Disable CSP for API
   crossOriginEmbedderPolicy: false, // Allow embedding
@@ -168,6 +172,7 @@ app.use("/api/wishlist", wishlistRoutes); // Rutas de wishlist
 app.use("/api/coupons", couponRoutes); // Rutas de cupones
 app.use("/api/compatibility", compatibilityRoutes); // Rutas de compatibilidad
 app.use("/api/promo-banners", promoBannerRoutes); // Rutas de banners promocionales
+app.use("/api/metrics", metricsRoutes); // Métricas Prometheus (requiere METRICS_TOKEN)
 
 // Swagger Documentation
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
@@ -265,6 +270,7 @@ const startServer = async () => {
 
     process.on('unhandledRejection', (reason, promise) => {
       logger.error('FATAL: Unhandled Rejection at:', promise, 'reason:', reason);
+      void shutdown(1);
     });
 
     process.on('exit', (code) => {
@@ -281,11 +287,6 @@ const startServer = async () => {
       logger.info(chalk.cyan(`📚 API Documentation: `) + chalk.blue.bold(`http://localhost:${PORT}/api-docs`));
       logger.info(chalk.cyan(`📊 Health check:      `) + chalk.white(`http://localhost:${PORT}/health\n`));
       logger.info(chalk.yellow('⏰ Server will stay running...'));
-
-      // Force process to stay alive
-      setInterval(() => {
-        // logger.info('💓 Heartbeat');
-      }, 10000);
     });
 
     // Keep server reference to prevent process exit

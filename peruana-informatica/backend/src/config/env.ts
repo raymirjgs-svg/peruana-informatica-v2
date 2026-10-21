@@ -56,7 +56,9 @@ const schema = z.object({
     ENABLE_CRON: boolEnv(true),
 
     RATE_LIMIT_MAX_REQUESTS: z.coerce.number().int().positive().default(1000),
-    SEARCH_RATE_LIMIT_MAX: z.coerce.number().int().positive().default(500)
+    SEARCH_RATE_LIMIT_MAX: z.coerce.number().int().positive().default(500),
+
+    METRICS_TOKEN: z.string().min(1).optional()
 });
 
 export type Env = z.infer<typeof schema>;

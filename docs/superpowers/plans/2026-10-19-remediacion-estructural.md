@@ -212,6 +212,11 @@
 ### P3.5 — Observabilidad y backups
 - **Evidencia:** sin APM/metrics/tracing/Sentry; heartbeat vacío cada 10s (`server.ts:279`); backup local sin cifrado/offsite y con password en CLI; `unhandledRejection` no sale.
 - **Aceptación:** error tracking + métricas básicas; backup cifrado y verificado.
+- **Estado:** parcial.
+  - Hecho: `middleware/metrics.ts` cuenta requests por método/estado y duración; `/api/metrics` expone formato Prometheus protegido por `METRICS_TOKEN` (404 si el token falta).
+  - Hecho: `unhandledRejection` ahora cierra el proceso con código 1; eliminado el `setInterval` heartbeat vacío.
+  - Hecho: `scripts/backup-db.sh` usa `MYSQL_PWD` (sin password en argv), `--single-transaction`, valida el gzip y cifra con `openssl` si `BACKUP_PASSPHRASE` está definido; `scripts/backup_daemon.sh` aplica la misma política y la retención cubre archivos cifrados.
+  - Pendiente: error tracking (Sentry/APM requiere cuenta y DSN) y copia offsite.
 
 ### P3.6 — Accesibilidad e i18n (decisión)
 - **Evidencia:** 259 `<button>` vs 6 `aria-label`; `<img>` sin `alt` en admin/reviews y ProductImageManager; copy 100% hardcodeado en español; fechas `es-PE` vs `es-ES`.

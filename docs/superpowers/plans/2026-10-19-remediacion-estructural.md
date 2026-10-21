@@ -191,6 +191,10 @@
 - **Evidencia:** cobertura backend **0.87%**; `analytics.test.ts`/`roles.test.ts` construyen una app Express fake y **no importan código real**; `permissions.test.ts` solo valida `typeof === 'function'`; frontend sin tests unitarios.
 - **Tareas:** tests de integración con `supertest(app)` y DB de test para auth/orders/payments/coupons; thresholds de cobertura; frontend Vitest+RTL para services/hooks críticos; arreglar Playwright (sin `return` silenciosos, credenciales por env, `storageState`, no commitear `playwright-report/`).
 - **Aceptación:** cobertura con umbral que rompe build; flujos de negocio cubiertos.
+- **Estado:** parcial.
+  - Hecho: eliminados `analytics.test.ts` y `roles.test.ts` (apps Express fake que no importaban código real); `permissions.test.ts` reescrito contra el middleware real (`checkPermission`/`checkAnyPermission`/`checkRole`) con modelos mockeados.
+  - Hecho: tests nuevos para `utils/pagination.ts`, `utils/seoFields.ts`, `utils/imageSignature.ts` y `middleware/errorHandler.ts` (37 tests, 6 suites). `coverageThreshold` en `jest.config.js` rompe el build si `src/utils` baja de 85% líneas o `src/middleware` de 30%.
+  - Pendiente: integración real con DB de test (auth/orders/payments/coupons), Vitest+RTL en frontend y arreglo de Playwright.
 
 ### P3.3 — Lint/format/hooks
 - **Evidencia:** backend sin ESLint/Prettier; frontend con `ignoreDuringBuilds: true` y `no-explicit-any: off`; sin husky/lint-staged/editorconfig.

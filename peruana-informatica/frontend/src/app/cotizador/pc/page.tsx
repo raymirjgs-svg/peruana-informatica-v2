@@ -90,7 +90,7 @@ export default function PCBuilder() {
         .filter(p => p !== undefined && p !== null)
         .map(p => (p as Product).cod_producto);
 
-      let params: any = {
+      const params: any = {
         page: page.toString(),
         limit: '12',
       };

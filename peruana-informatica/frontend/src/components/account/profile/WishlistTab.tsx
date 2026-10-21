@@ -1,4 +1,5 @@
 import { Heart } from 'lucide-react';
+import Link from 'next/link';
 import { WishlistItem } from '@/app/account/profile/types';
 
 export function WishlistTab({ wishlist }: { wishlist: WishlistItem[] }) {
@@ -19,13 +20,13 @@ export function WishlistTab({ wishlist }: { wishlist: WishlistItem[] }) {
                                 <Heart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                                 <h3 className="text-xl font-semibold text-gray-900 mb-2">Sin favoritos aún</h3>
                                 <p className="text-gray-500 mb-6">Guarda tus productos favoritos aquí para encontrarlos fácilmente más tarde</p>
-                                <a
+                                <Link
                                     href="/products"
                                     className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-pink-600 to-red-600 text-white rounded-xl font-semibold hover:from-pink-700 hover:to-red-700 transition-all shadow-lg"
                                 >
                                     <Heart className="w-5 h-5" />
                                     Explorar Productos
-                                </a>
+                                </Link>
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

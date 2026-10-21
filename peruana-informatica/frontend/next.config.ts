@@ -61,9 +61,9 @@ const nextConfig: NextConfig = {
     ],
   },
 
-  // ESLint laxo por ahora para permitir iteración rápida en UX, pero TypeScript estricto.
+  // ESLint se ejecuta en el build: los errores bloquean, los warnings no.
   eslint: {
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: false,
   },
   typescript: {
     ignoreBuildErrors: false,

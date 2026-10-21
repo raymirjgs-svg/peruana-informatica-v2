@@ -141,7 +141,7 @@ export default function ReviewsPage() {
                                             </div>
 
                                             <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">
-                                                "{review.comment}"
+                                                &quot;{review.comment}&quot;
                                             </p>
 
                                             <div className="flex items-center gap-2 text-xs text-gray-500 bg-gray-50 dark:bg-gray-900/50 p-2 rounded-lg w-fit">

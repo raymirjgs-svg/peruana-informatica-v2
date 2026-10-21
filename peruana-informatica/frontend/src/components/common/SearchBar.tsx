@@ -166,7 +166,7 @@ export function SearchBar() {
                         </div>
                     ) : (
                         <div className="p-8 text-center text-gray-500">
-                            <p>No se encontraron productos para "{query}"</p>
+                            <p>No se encontraron productos para &quot;{query}&quot;</p>
                         </div>
                     )}
                 </div>

@@ -245,7 +245,7 @@ export default function SettingsPage() {
 
               <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-xl p-4 mb-6">
                 <p className="text-amber-800 dark:text-amber-200 text-sm">
-                  <strong>💡 Consejo:</strong> Cambia a "Precio Distribuidor" durante campañas promocionales
+                  <strong>💡 Consejo:</strong> Cambia a &quot;Precio Distribuidor&quot; durante campañas promocionales
                   para ofrecer los mejores precios a tus clientes.
                 </p>
               </div>

@@ -1,4 +1,5 @@
 import { Package, ShoppingBag } from 'lucide-react';
+import Link from 'next/link';
 import { CustomerOrder } from '@/app/account/profile/types';
 
 export function OrdersTab({ orders }: { orders: CustomerOrder[] }) {
@@ -19,13 +20,13 @@ export function OrdersTab({ orders }: { orders: CustomerOrder[] }) {
                                 <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                                 <h3 className="text-xl font-semibold text-gray-900 mb-2">Sin pedidos aún</h3>
                                 <p className="text-gray-500 mb-6">Tus pedidos aparecerán aquí una vez que realices tu primera compra</p>
-                                <a
+                                <Link
                                     href="/products"
                                     className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all shadow-lg"
                                 >
                                     <ShoppingBag className="w-5 h-5" />
                                     Explorar Productos
-                                </a>
+                                </Link>
                             </div>
                         ) : (
                             <div className="space-y-4">

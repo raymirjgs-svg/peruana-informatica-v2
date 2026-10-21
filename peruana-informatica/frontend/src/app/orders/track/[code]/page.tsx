@@ -4,29 +4,12 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { getApiBase } from '@/lib/apiBase';
+import type { OrderBase, OrderItem } from '@/types/order';
 
-interface OrderItem {
-  id: number;
-  product_name: string;
-  quantity: number;
-  price: string;
-}
-
-interface Order {
-  id: number;
+interface Order extends OrderBase {
   tracking_code?: string;
-  customer_name: string;
-  customer_email: string;
-  total_amount: string;
-  status: string;
-  payment_status: string;
-  payment_method: string;
-  invoice_type: string;
-  invoice_number?: string;
-  invoice_file?: string;
   has_invoice: boolean;
   items: OrderItem[];
-  createdAt: string;
 }
 
 export default function OrderTrackingPage() {

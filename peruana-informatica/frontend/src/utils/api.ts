@@ -1,13 +1,20 @@
-// src/utils/api.ts
 import { API_CONFIG } from '@/config/api';
 import { getAuthHeaders } from '@/lib/authTokens';
 
 const API_BASE_URL = API_CONFIG.API_BASE_URL;
 
-interface ApiError {
-  error: string;
+export type QueryParams = Record<string, string | number | boolean | undefined>;
+
+interface ApiErrorDetail {
+  param?: string;
+  path?: string;
+  msg?: string;
+}
+
+interface ApiErrorBody {
+  error?: string;
   message?: string;
-  details?: any;
+  details?: ApiErrorDetail[];
 }
 
 class ApiClient {
@@ -32,29 +39,24 @@ class ApiClient {
     try {
       const response = await fetch(url, config);
 
-      // Verificar si la respuesta es exitosa antes de parsear JSON
       if (!response.ok) {
-        const errorText = await response.text(); // Obtener el texto del error
+        const errorText = await response.text();
         let errorMessage = 'Error en la solicitud';
 
         try {
-          // Intentar parsear como JSON para obtener el mensaje estructurado
-          const errorJson = JSON.parse(errorText);
+          const errorJson = JSON.parse(errorText) as ApiErrorBody;
           errorMessage = errorJson.message || errorJson.error || errorMessage;
 
-          // Si hay detalles específicos, incluirlos en el mensaje
-          if (errorJson.details) {
-            const details = Array.isArray(errorJson.details) ? errorJson.details : [errorJson.details];
-            const detailMessages = details.map((detail: any) =>
-              `${detail.param || detail.path || 'Campo'}: ${detail.msg}`
-            ).join(', ');
+          if (Array.isArray(errorJson.details)) {
+            const detailMessages = errorJson.details
+              .map((detail) => `${detail.param || detail.path || 'Campo'}: ${detail.msg}`)
+              .join(', ');
 
             if (detailMessages) {
               errorMessage += ` (${detailMessages})`;
             }
           }
         } catch {
-          // Si no se puede parsear como JSON, usar el texto plano
           errorMessage = errorText || errorMessage;
         }
 
@@ -62,7 +64,7 @@ class ApiClient {
       }
 
       const data = await response.json();
-      return data;
+      return data as T;
     } catch (error) {
       if (error instanceof Error) {
         console.error(`API Error for endpoint ${endpoint}:`, error.message);
@@ -73,16 +75,22 @@ class ApiClient {
     }
   }
 
-  // Métodos genéricos públicos
-  // Métodos genéricos públicos
-  public get = <T = any>(endpoint: string) => this.request<T>(endpoint, { method: 'GET' });
-  public post = <T = any>(endpoint: string, data: any) => this.request<T>(endpoint, { method: 'POST', body: JSON.stringify(data) });
-  public put = <T = any>(endpoint: string, data: any) => this.request<T>(endpoint, { method: 'PUT', body: JSON.stringify(data) });
-  public delete = <T = any>(endpoint: string) => this.request<T>(endpoint, { method: 'DELETE' });
+  private buildQuery(params?: QueryParams): string {
+    if (!params) return '';
+    const search = new URLSearchParams();
+    for (const [key, value] of Object.entries(params)) {
+      if (value !== undefined && value !== '') search.set(key, String(value));
+    }
+    const query = search.toString();
+    return query ? `?${query}` : '';
+  }
 
+  public get = <T = unknown>(endpoint: string) => this.request<T>(endpoint, { method: 'GET' });
+  public post = <T = unknown>(endpoint: string, data: unknown) => this.request<T>(endpoint, { method: 'POST', body: JSON.stringify(data) });
+  public put = <T = unknown>(endpoint: string, data: unknown) => this.request<T>(endpoint, { method: 'PUT', body: JSON.stringify(data) });
+  public delete = <T = unknown>(endpoint: string) => this.request<T>(endpoint, { method: 'DELETE' });
 
-  // Cotizaciones
-  createQuotation = (data: any) =>
+  createQuotation = (data: unknown) =>
     this.request('/api/quotations', {
       method: 'POST',
       body: JSON.stringify(data)
@@ -99,18 +107,12 @@ class ApiClient {
       body: JSON.stringify({ code })
     });
 
-  // Descargar PDF de cotización
   downloadQuotationPdf = (code: string): void => {
     window.open(`${this.baseUrl}/api/quotations/${code}/pdf`, '_blank');
   };
 
-  // Productos
-  getProducts = async (params?: any) => {
-    const queryParams = params ? new URLSearchParams(params).toString() : '';
-    const endpoint = queryParams ? `/api/products?${queryParams}` : '/api/products';
-
-    return this.request(endpoint, { method: 'GET' });
-  };
+  getProducts = async (params?: QueryParams) =>
+    this.request(`/api/products${this.buildQuery(params)}`, { method: 'GET' });
 
   getProductById = async (id: number) =>
     this.request(`/api/products/${id}`, { method: 'GET' });
@@ -118,8 +120,7 @@ class ApiClient {
   getProductsByComponentType = async (type: string) =>
     this.request(`/api/products/by-component/${type}`, { method: 'GET' });
 
-  // Compatibility System
-  filterCompatibleProducts = async (targetComponentType: string, selectedProducts: any[]) =>
+  filterCompatibleProducts = async (targetComponentType: string, selectedProducts: number[]) =>
     this.request('/api/compatibility/filter', {
       method: 'POST',
       body: JSON.stringify({
@@ -137,24 +138,16 @@ class ApiClient {
   getAttributesByComponentType = async (componentType: string) =>
     this.request(`/api/compatibility/attributes/${componentType}`, { method: 'GET' });
 
-  // Deprecated methods kept for backward compatibility if needed, but should be removed
-  checkCompatibility = async (parentId: number, childId: number) => {
+  checkCompatibility = async (_parentId: number, _childId: number) => {
     console.warn('checkCompatibility is deprecated. Use validateBuild instead.');
     return { isCompatible: true };
   };
 
-  // Laptops
-  getLaptops = async (params?: any) => {
-    const queryParams = params ? new URLSearchParams(params).toString() : '';
-    const endpoint = queryParams ? `/api/laptops?${queryParams}` : '/api/laptops';
-    return this.request(endpoint, { method: 'GET' });
-  };
+  getLaptops = async (params?: QueryParams) =>
+    this.request(`/api/laptops${this.buildQuery(params)}`, { method: 'GET' });
 
-  getCotizadorLaptops = async (params?: any) => {
-    const queryParams = params ? new URLSearchParams(params).toString() : '';
-    const endpoint = queryParams ? `/api/cotizador/laptops?${queryParams}` : '/api/cotizador/laptops';
-    return this.request(endpoint, { method: 'GET' });
-  };
+  getCotizadorLaptops = async (params?: QueryParams) =>
+    this.request(`/api/cotizador/laptops${this.buildQuery(params)}`, { method: 'GET' });
 
   getLaptopSubcategories = async () =>
     this.request('/api/laptops/subcategories', { method: 'GET' });

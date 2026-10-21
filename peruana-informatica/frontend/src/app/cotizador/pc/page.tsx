@@ -2,31 +2,41 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import apiClient from '@/utils/api';
+import apiClient, { type QueryParams } from '@/utils/api';
 import QuotationSummary from '@/components/quotation/QuotationSummary';
 import Link from 'next/link';
+import type { CatalogProduct } from '@/types/product';
 
-interface Product {
-  cod_producto: number;
-  name: string;
-  slug: string;
-  description: string;
-  price: number;
-  priceWeb?: number;
-  priceCot?: number;
-  priceDis?: number;
-  stock: number;
-  codigo_interno: string;
-  component_type?: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  component_specs?: any;
-  socket_type?: string;
-  ram_type?: string;
-  form_factor?: string;
-  has_integrated_graphics?: boolean;
-  tdp_watts?: number;
-  [key: string]: string | number | boolean | undefined | object;
+type Product = CatalogProduct & { cod_producto: number; stock: number };
+
+interface ProductsResponse {
+  products?: Product[];
+  data?: Product[];
+  total?: number;
+  totalPages?: number;
 }
+
+interface QuotationItem {
+  product_id: number;
+  product_name: string;
+  product_price: number;
+  quantity: number;
+  subtotal: number;
+  product: Product;
+}
+
+const resolvePrice = (product: Product) =>
+  Math.ceil(
+    Number(
+      product.priceDis ||
+      product.price_dis ||
+      product.priceCot ||
+      product.price_cot ||
+      product.priceWeb ||
+      product.price_web ||
+      product.price
+    )
+  );
 
 interface PCBuild {
   motherboard?: Product;
@@ -90,7 +100,7 @@ export default function PCBuilder() {
         .filter(p => p !== undefined && p !== null)
         .map(p => (p as Product).cod_producto);
 
-      const params: any = {
+      const params: QueryParams = {
         page: page.toString(),
         limit: '12',
       };
@@ -104,7 +114,7 @@ export default function PCBuilder() {
         params.component_type = componentType;
       } else {
         // 2. Pedir al backend los IDs compatibles
-        const compatibilityResult = await apiClient.filterCompatibleProducts(componentType, selectedProductIds) as any;
+        const compatibilityResult = await apiClient.filterCompatibleProducts(componentType, selectedProductIds) as { data?: { compatibleProductIds?: number[] } };
         const validIds = compatibilityResult.data?.compatibleProductIds || [];
 
         console.log(`🔍 Compatibility for ${componentType}:`, validIds.length, 'valid IDs found');
@@ -124,12 +134,12 @@ export default function PCBuilder() {
         params.ids = validIds.join(',');
       }
 
-      const response = await apiClient.getProducts(params) as any;
-      const fetchedProducts = Array.isArray(response.products) ? response.products : response.data || response;
+      const response = await apiClient.getProducts(params) as ProductsResponse | Product[];
+      const fetchedProducts = Array.isArray(response) ? response : response.products || response.data || [];
 
       // Actualizar estados
-      setTotalPages(response.totalPages || 1);
-      setTotalProducts(response.total || 0);
+      setTotalPages(Array.isArray(response) ? 1 : response.totalPages || 1);
+      setTotalProducts(Array.isArray(response) ? response.length : response.total || 0);
       setCurrentPage(page);
       setCompatibleProducts(fetchedProducts);
 
@@ -189,15 +199,15 @@ export default function PCBuilder() {
 
   // Generar items para el resumen
   const getQuotationItems = () => {
-    const items: any[] = [];
+    const items: QuotationItem[] = [];
     Object.entries(pcBuild).forEach(([key, product]) => {
       if (product) {
         items.push({
           product_id: product.cod_producto,
           product_name: product.name,
-          product_price: Math.ceil(Number((product as any).priceDis || (product as any).price_dis || (product as any).priceCot || (product as any).price_cot || (product as any).priceWeb || (product as any).price_web || product.price)),
+          product_price: resolvePrice(product),
           quantity: 1,
-          subtotal: Math.ceil(Number((product as any).priceDis || (product as any).price_dis || (product as any).priceCot || (product as any).price_cot || (product as any).priceWeb || (product as any).price_web || product.price)),
+          subtotal: resolvePrice(product),
           product: product
         });
       }
@@ -395,9 +405,9 @@ export default function PCBuilder() {
                     <div className="flex justify-between items-center mt-auto">
                       <div className="flex flex-col items-end">
                         <span className="text-lg font-bold text-blue-600">
-                          S/. {Math.ceil(Number((product as any).priceDis || (product as any).price_dis || (product as any).priceCot || (product as any).price_cot || (product as any).priceWeb || (product as any).price_web || product.price)).toFixed(2)}
+                          S/. {resolvePrice(product).toFixed(2)}
                         </span>
-                        {(Number((product as any).priceDis || (product as any).price_dis) > 0 || Number((product as any).priceCot || (product as any).price_cot) > 0) && (
+                        {(Number(product.priceDis || product.price_dis) > 0 || Number(product.priceCot || product.price_cot) > 0) && (
                           <span className="text-xs text-green-600 font-bold bg-green-50 px-2 py-0.5 rounded">Precio Especial</span>
                         )}
                       </div>
@@ -497,7 +507,8 @@ export default function PCBuilder() {
             onRemoveItem={(index) => {
               // Lógica para remover item (resetear el paso correspondiente)
               const item = getQuotationItems()[index];
-              const type = item.product?.component_type?.toLowerCase();
+              if (!item) return;
+              const type = item.product.component_type?.toLowerCase();
               if (type) {
                 setPcBuild(prev => ({ ...prev, [type]: undefined }));
                 // Volver al paso de ese componente

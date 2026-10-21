@@ -5,14 +5,6 @@ import { useRouter } from 'next/navigation';
 import apiClient from '@/utils/api';
 import Link from 'next/link';
 
-interface Product {
-    id: number;
-    cod_producto: number;
-    name: string;
-    price: number;
-    component_type?: string;
-}
-
 interface QuotationItem {
     product_id: number;
     product_name: string;

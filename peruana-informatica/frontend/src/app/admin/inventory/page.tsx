@@ -9,14 +9,12 @@ import { useSession } from 'next-auth/react';
 import { Package, AlertTriangle, TrendingDown, Search, Download } from 'lucide-react';
 import { toast } from 'sonner';
 import { getApiBase } from '@/lib/apiBase';
+import type { CatalogProduct } from '@/types/product';
 
-interface Product {
+interface Product extends CatalogProduct {
   cod_producto: string;
-  name: string;
   stock: number;
   price: number;
-  productBrand?: { name: string };
-  productCategory?: { name: string };
 }
 
 export default function InventoryPage() {

@@ -177,6 +177,14 @@
 - **Evidencia:** sin SWR/react-query; `useEffect+useState` en todas partes; `Header/Footer/MegaMenu/Navigation` refetchean settings/categorías por página (waterfall); 54/61 páginas client; SEO por página imposible en client components.
 - **Tareas:** adoptar SWR/TanStack Query; mover data de primer paint a Server Components; `generateMetadata` en páginas públicas; `metadataBase`.
 - **Aceptación:** sin refetch duplicado; metadata por página; menos JS cliente.
+- **Estado:** hecho.
+  - Hecho: `swr` instalado; `SWRProvider` en el root layout (`dedupingInterval` 30s, sin refetch por foco) y `lib/swr/publicData.ts` con keys compartidas (`public-settings`, `menu-categories`).
+  - Hecho: `Header`, `Footer` y `MegaMenu` consumen las mismas keys → una sola request de settings y una de categorías por navegación (antes 4+).
+  - Hecho: `metadataBase` en el root layout; `generateMetadata` para `blog/[slug]` (título, descripción, keywords, canonical, OG/Twitter) y metadata estática para `/blog` y `/products`; ya existía para `products/[slug]`.
+  - Hecho: `models/Product` pasó de clase a interfaz plana (`isProductAvailable()` movido a `lib/product.ts`), habilitando el boundary RSC.
+  - Hecho: home (`app/page.tsx`) es Server Component con `Promise.all` de destacados/nuevos/remates; sin skeletons ni waterfall de cliente.
+  - Hecho: detalle de producto dividido en `page.tsx` (server: producto + relacionados + settings) y `ProductDetailClient.tsx` (carrito, wishlist, tabs, cantidad), con `key={slug}`.
+  - Verificado: `tsc` 0, lint 0 errores (267 warnings), `next build` OK; `650160b` y `d88b0f6`.
 
 ### P2.9 — Swagger real
 - **Evidencia:** `/api-docs` montado (`server.ts:170`) pero **cero** anotaciones `@openapi` → docs vacías; `docs/technical/*` describe endpoints inexistentes.

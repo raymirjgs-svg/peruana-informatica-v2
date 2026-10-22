@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { Coupon } from '../models/Coupon';
 import { buildPaginationMeta, getSafetyLimit, resolvePagination } from '../utils/pagination';
-import { logger } from '../config/logger';
+import { sendError } from '../middleware/errorHandler';
 
 const COUPON_TYPES = ['percentage', 'fixed'];
 
@@ -99,11 +99,7 @@ export class CouponController {
                 }
             });
         } catch (error) {
-            logger.error('Error validating coupon:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al validar cupón'
-            });
+            return sendError(res, error, 'Error al validar cupón');
         }
     }
 
@@ -155,11 +151,7 @@ export class CouponController {
                 }
             });
         } catch (error) {
-            logger.error('Error applying coupon:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al aplicar cupón'
-            });
+            return sendError(res, error, 'Error al aplicar cupón');
         }
     }
 
@@ -200,11 +192,7 @@ export class CouponController {
                 data: coupons
             });
         } catch (error) {
-            logger.error('Error fetching coupons:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al obtener cupones'
-            });
+            return sendError(res, error, 'Error al obtener cupones');
         }
     }
 
@@ -258,8 +246,6 @@ export class CouponController {
                 data: coupon
             });
         } catch (error: any) {
-            logger.error('Error creating coupon:', error);
-
             if (error.name === 'SequelizeUniqueConstraintError') {
                 return res.status(400).json({
                     success: false,
@@ -267,10 +253,7 @@ export class CouponController {
                 });
             }
 
-            return res.status(500).json({
-                success: false,
-                message: 'Error al crear cupón'
-            });
+            return sendError(res, error, 'Error al crear cupón');
         }
     }
 
@@ -315,11 +298,7 @@ export class CouponController {
                 data: coupon
             });
         } catch (error) {
-            logger.error('Error updating coupon:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al actualizar cupón'
-            });
+            return sendError(res, error, 'Error al actualizar cupón');
         }
     }
 
@@ -346,11 +325,7 @@ export class CouponController {
                 message: 'Cupón eliminado exitosamente'
             });
         } catch (error) {
-            logger.error('Error deleting coupon:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al eliminar cupón'
-            });
+            return sendError(res, error, 'Error al eliminar cupón');
         }
     }
 
@@ -380,11 +355,7 @@ export class CouponController {
                 data: coupon
             });
         } catch (error) {
-            logger.error('Error toggling coupon status:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al cambiar estado del cupón'
-            });
+            return sendError(res, error, 'Error al cambiar estado del cupón');
         }
     }
 }

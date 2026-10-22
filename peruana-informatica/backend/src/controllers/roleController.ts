@@ -3,7 +3,8 @@ import { Role } from '../models/Role';
 import { Permission } from '../models/Permission';
 import { User } from '../models/User';
 import { RolePermission } from '../models/RolePermission';
-import { logger, logAudit } from '../config/logger';
+import { logAudit } from '../config/logger';
+import { sendError } from '../middleware/errorHandler';
 
 export class RoleController {
     /**
@@ -25,8 +26,7 @@ export class RoleController {
                 data: roles
             });
         } catch (error) {
-            logger.error('Error fetching roles:', error);
-            return res.status(500).json({ error: 'Error al obtener roles' });
+            return sendError(res, error, 'Error al obtener roles');
         }
     }
 
@@ -53,8 +53,7 @@ export class RoleController {
                 data: role
             });
         } catch (error) {
-            logger.error('Error fetching role:', error);
-            return res.status(500).json({ error: 'Error al obtener rol' });
+            return sendError(res, error, 'Error al obtener rol');
         }
     }
 
@@ -90,11 +89,10 @@ export class RoleController {
                 message: 'Rol creado exitosamente'
             });
         } catch (error: any) {
-            logger.error('Error creating role:', error);
             if (error.name === 'SequelizeUniqueConstraintError') {
                 return res.status(400).json({ error: 'Ya existe un rol con ese nombre o slug' });
             }
-            return res.status(500).json({ error: 'Error al crear rol' });
+            return sendError(res, error, 'Error al crear rol');
         }
     }
 
@@ -142,11 +140,10 @@ export class RoleController {
                 message: 'Rol actualizado exitosamente'
             });
         } catch (error: any) {
-            logger.error('Error updating role:', error);
             if (error.name === 'SequelizeUniqueConstraintError') {
                 return res.status(400).json({ error: 'Ya existe un rol con ese nombre o slug' });
             }
-            return res.status(500).json({ error: 'Error al actualizar rol' });
+            return sendError(res, error, 'Error al actualizar rol');
         }
     }
 
@@ -183,8 +180,7 @@ export class RoleController {
                 message: 'Rol eliminado exitosamente'
             });
         } catch (error) {
-            logger.error('Error deleting role:', error);
-            return res.status(500).json({ error: 'Error al eliminar rol' });
+            return sendError(res, error, 'Error al eliminar rol');
         }
     }
 
@@ -214,8 +210,7 @@ export class RoleController {
                 }
             });
         } catch (error) {
-            logger.error('Error fetching permissions:', error);
-            return res.status(500).json({ error: 'Error al obtener permisos' });
+            return sendError(res, error, 'Error al obtener permisos');
         }
     }
 
@@ -291,8 +286,7 @@ export class RoleController {
                 message: 'Rol asignado exitosamente'
             });
         } catch (error) {
-            logger.error('Error assigning role:', error);
-            return res.status(500).json({ error: 'Error al asignar rol' });
+            return sendError(res, error, 'Error al asignar rol');
         }
     }
 }

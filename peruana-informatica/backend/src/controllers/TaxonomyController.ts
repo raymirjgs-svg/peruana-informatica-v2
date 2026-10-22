@@ -4,7 +4,7 @@ import { SubCategory } from '../models/SubCategory';
 import { Op } from 'sequelize';
 import { ProductTaxonomyService } from '../services/ProductTaxonomyService';
 import { buildPaginationMeta, getSafetyLimit, resolvePagination } from '../utils/pagination';
-import { logger } from '../config/logger';
+import { sendError } from '../middleware/errorHandler';
 
 /**
  * Controlador para gestionar marcas, categorías y subcategorías de productos
@@ -49,12 +49,7 @@ export class TaxonomyController {
                 data: producto
             });
         } catch (error: any) {
-            logger.error('Error en TaxonomyController.assignTaxonomy:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al asignar taxonomía',
-                error: 'Error al procesar la taxonomía'
-            });
+            return sendError(res, error, 'Error al asignar taxonomía');
         }
     }
 
@@ -139,12 +134,7 @@ export class TaxonomyController {
                 }
             });
         } catch (error: any) {
-            logger.error('Error en TaxonomyController.bulkAssignTaxonomy:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error en asignación masiva',
-                error: 'Error al procesar la taxonomía'
-            });
+            return sendError(res, error, 'Error en asignación masiva');
         }
     }
 
@@ -162,12 +152,7 @@ export class TaxonomyController {
                 total: brands.length
             });
         } catch (error: any) {
-            logger.error('Error en TaxonomyController.getBrands:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al obtener marcas',
-                error: 'Error al procesar la taxonomía'
-            });
+            return sendError(res, error, 'Error al obtener marcas');
         }
     }
 
@@ -185,12 +170,7 @@ export class TaxonomyController {
                 total: categories.length
             });
         } catch (error: any) {
-            logger.error('Error en TaxonomyController.getCategories:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al obtener categorías',
-                error: 'Error al procesar la taxonomía'
-            });
+            return sendError(res, error, 'Error al obtener categorías');
         }
     }
 
@@ -209,12 +189,7 @@ export class TaxonomyController {
                 total: subCategories.length
             });
         } catch (error: any) {
-            logger.error('Error en TaxonomyController.getSubCategories:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al obtener subcategorías',
-                error: 'Error al procesar la taxonomía'
-            });
+            return sendError(res, error, 'Error al obtener subcategorías');
         }
     }
 
@@ -242,12 +217,7 @@ export class TaxonomyController {
                 data: producto
             });
         } catch (error: any) {
-            logger.error('Error en TaxonomyController.syncFromAPI:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al sincronizar taxonomía desde API',
-                error: 'Error al procesar la taxonomía'
-            });
+            return sendError(res, error, 'Error al sincronizar taxonomía desde API');
         }
     }
 
@@ -290,11 +260,7 @@ export class TaxonomyController {
 
             res.json(categories);
         } catch (error: any) {
-            logger.error('Error getting categories:', error);
-            res.status(500).json({
-                error: 'Error al obtener categorías',
-                code: 'CATEGORIES_FETCH_ERROR'
-            });
+            return sendError(res, error, 'Error al obtener categorías', 500, 'CATEGORIES_FETCH_ERROR');
         }
     }
 
@@ -328,11 +294,7 @@ export class TaxonomyController {
                 category
             });
         } catch (error) {
-            logger.error('Error creating category:', error);
-            res.status(500).json({
-                error: 'Error al crear categoría',
-                code: 'CATEGORY_CREATE_ERROR'
-            });
+            return sendError(res, error, 'Error al crear categoría', 500, 'CATEGORY_CREATE_ERROR');
         }
     }
 
@@ -377,11 +339,7 @@ export class TaxonomyController {
                 category
             });
         } catch (error) {
-            logger.error('Error updating category:', error);
-            res.status(500).json({
-                error: 'Error al actualizar categoría',
-                code: 'CATEGORY_UPDATE_ERROR'
-            });
+            return sendError(res, error, 'Error al actualizar categoría', 500, 'CATEGORY_UPDATE_ERROR');
         }
     }
 
@@ -419,11 +377,7 @@ export class TaxonomyController {
                 message: 'Categoría eliminada exitosamente'
             });
         } catch (error) {
-            logger.error('Error deleting category:', error);
-            res.status(500).json({
-                error: 'Error al eliminar categoría',
-                code: 'CATEGORY_DELETE_ERROR'
-            });
+            return sendError(res, error, 'Error al eliminar categoría', 500, 'CATEGORY_DELETE_ERROR');
         }
     }
 
@@ -474,11 +428,7 @@ export class TaxonomyController {
 
             res.json(subcategories);
         } catch (error) {
-            logger.error('Error getting subcategories:', error);
-            res.status(500).json({
-                error: 'Error al obtener subcategorías',
-                code: 'SUBCATEGORIES_FETCH_ERROR'
-            });
+            return sendError(res, error, 'Error al obtener subcategorías', 500, 'SUBCATEGORIES_FETCH_ERROR');
         }
     }
 
@@ -531,11 +481,7 @@ export class TaxonomyController {
                 subcategory: subcategoryWithCategory
             });
         } catch (error) {
-            logger.error('Error creating subcategory:', error);
-            res.status(500).json({
-                error: 'Error al crear subcategoría',
-                code: 'SUBCATEGORY_CREATE_ERROR'
-            });
+            return sendError(res, error, 'Error al crear subcategoría', 500, 'SUBCATEGORY_CREATE_ERROR');
         }
     }
 
@@ -601,11 +547,7 @@ export class TaxonomyController {
                 subcategory: updatedSubcategory
             });
         } catch (error) {
-            logger.error('Error updating subcategory:', error);
-            res.status(500).json({
-                error: 'Error al actualizar subcategoría',
-                code: 'SUBCATEGORY_UPDATE_ERROR'
-            });
+            return sendError(res, error, 'Error al actualizar subcategoría', 500, 'SUBCATEGORY_UPDATE_ERROR');
         }
     }
 
@@ -632,11 +574,7 @@ export class TaxonomyController {
                 message: 'Subcategoría eliminada exitosamente'
             });
         } catch (error) {
-            logger.error('Error deleting subcategory:', error);
-            res.status(500).json({
-                error: 'Error al eliminar subcategoría',
-                code: 'SUBCATEGORY_DELETE_ERROR'
-            });
+            return sendError(res, error, 'Error al eliminar subcategoría', 500, 'SUBCATEGORY_DELETE_ERROR');
         }
     }
 }

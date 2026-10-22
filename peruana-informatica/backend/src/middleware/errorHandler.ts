@@ -18,11 +18,30 @@ export class CustomError extends Error implements AppError {
   }
 }
 
+export const sendError = (
+  res: Response,
+  error: unknown,
+  message: string,
+  statusCode: number = 500,
+  code: string = 'INTERNAL_ERROR'
+) => {
+  const detail = error instanceof Error ? error.message : String(error);
+  logger.error(message, { detail, statusCode, code });
+
+  return res.status(statusCode).json({
+    success: false,
+    message,
+    error: message,
+    code,
+    timestamp: new Date().toISOString(),
+  });
+};
+
 export const errorHandler = (
   err: AppError,
   req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ) => {
   logger.error('Error:', {
     message: err.message,
@@ -33,10 +52,12 @@ export const errorHandler = (
   });
 
   const statusCode = err.statusCode || 500;
-  const code = err.code || 'INTERNAL_ERROR';
-  const message = statusCode === 500 ? 'Error interno del servidor' : err.message;
+  const code = err.code || (statusCode >= 500 ? 'INTERNAL_ERROR' : 'REQUEST_ERROR');
+  const message = statusCode >= 500 ? 'Error interno del servidor' : err.message;
 
   res.status(statusCode).json({
+    success: false,
+    message,
     error: message,
     code,
     timestamp: new Date().toISOString(),
@@ -44,9 +65,7 @@ export const errorHandler = (
   });
 };
 
-export const notFoundHandler = (req: Request, res: Response, next: NextFunction) => {
-  logger.info(`❌ 404 Not Found: ${req.method} ${req.originalUrl}`);
-  const error = new Error(`Recurso no encontrado - ${req.originalUrl}`);
-  (error as any).statusCode = 404;
-  next(error);
+export const notFoundHandler = (req: Request, _res: Response, next: NextFunction) => {
+  logger.info(`404 Not Found: ${req.method} ${req.originalUrl}`);
+  next(new CustomError('Recurso no encontrado', 404, 'NOT_FOUND'));
 };

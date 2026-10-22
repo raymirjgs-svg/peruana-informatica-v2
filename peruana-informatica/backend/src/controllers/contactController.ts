@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { Contact } from "../models/Contact";
 import { Op } from "sequelize";
 import { logger } from '../config/logger';
+import { sendError } from '../middleware/errorHandler';
 
 export class ContactController {
   // Crear un nuevo contacto (formulario público)
@@ -109,12 +110,7 @@ export class ContactController {
         });
       }
 
-      res.status(500).json({
-        error: "Error interno del servidor",
-        message:
-          "Ocurrió un error al procesar tu mensaje. Por favor inténtalo de nuevo.",
-        code: "INTERNAL_SERVER_ERROR",
-      });
+      return sendError(res, error, 'Ocurrió un error al procesar tu mensaje. Por favor inténtalo de nuevo.', 500, 'INTERNAL_SERVER_ERROR');
     }
   }
 
@@ -189,11 +185,7 @@ export class ContactController {
       });
     } catch (error) {
       logger.error("Error fetching contacts:", error);
-      res.status(500).json({
-        error: "Error interno del servidor",
-        message: "Error al obtener los contactos",
-        code: "INTERNAL_SERVER_ERROR",
-      });
+      return sendError(res, error, 'Error al obtener los contactos', 500, 'INTERNAL_SERVER_ERROR');
     }
   }
 
@@ -218,11 +210,7 @@ export class ContactController {
       });
     } catch (error) {
       logger.error("Error fetching contact:", error);
-      res.status(500).json({
-        error: "Error interno del servidor",
-        message: "Error al obtener el contacto",
-        code: "INTERNAL_SERVER_ERROR",
-      });
+      return sendError(res, error, 'Error al obtener el contacto', 500, 'INTERNAL_SERVER_ERROR');
     }
   }
 
@@ -259,11 +247,7 @@ export class ContactController {
       });
     } catch (error) {
       logger.error("Error updating contact status:", error);
-      res.status(500).json({
-        error: "Error interno del servidor",
-        message: "Error al actualizar el estado del contacto",
-        code: "INTERNAL_SERVER_ERROR",
-      });
+      return sendError(res, error, 'Error al actualizar el estado del contacto', 500, 'INTERNAL_SERVER_ERROR');
     }
   }
 
@@ -290,11 +274,7 @@ export class ContactController {
       });
     } catch (error) {
       logger.error("Error deleting contact:", error);
-      res.status(500).json({
-        error: "Error interno del servidor",
-        message: "Error al eliminar el contacto",
-        code: "INTERNAL_SERVER_ERROR",
-      });
+      return sendError(res, error, 'Error al eliminar el contacto', 500, 'INTERNAL_SERVER_ERROR');
     }
   }
 
@@ -358,11 +338,7 @@ export class ContactController {
       });
     } catch (error) {
       logger.error("Error fetching contact stats:", error);
-      res.status(500).json({
-        error: "Error interno del servidor",
-        message: "Error al obtener las estadísticas",
-        code: "INTERNAL_SERVER_ERROR",
-      });
+      return sendError(res, error, 'Error al obtener las estadísticas', 500, 'INTERNAL_SERVER_ERROR');
     }
   }
 
@@ -391,11 +367,7 @@ export class ContactController {
       });
     } catch (error) {
       logger.error("Error bulk resolving contacts:", error);
-      res.status(500).json({
-        error: "Error interno del servidor",
-        message: "Error al actualizar los contactos",
-        code: "INTERNAL_SERVER_ERROR",
-      });
+      return sendError(res, error, 'Error al actualizar los contactos', 500, 'INTERNAL_SERVER_ERROR');
     }
   }
 }

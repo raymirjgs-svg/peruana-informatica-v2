@@ -165,7 +165,13 @@
   - Hecho: `admin/products/page.tsx` (1498 ln) partido en `products/types.ts`, `products/utils.ts`, `hooks/useProductsData.ts` (datos, filtros y selección) y `hooks/useProductsForms.ts` (alta/edición/bulk); 11 componentes locales (toast, header, filtros, barra y modal bulk, vistas lista y grilla, preview, crear, editar y paginación); page 80 ln; `tsc` 0 y `next build` OK.
   - Hecho: `services/BlogService.ts` (544 ln) → 381 ln, con tipos en `services/blog/types.ts` y helpers puros en `services/blog/utils.ts`; los métodos estáticos delegan y se mantienen las firmas públicas. `tsc` 0 y `next build` OK.
   - Hecho: `products/[slug]/ProductDetailClient.tsx` (582 ln) → 197 ln, con `components/product/detail/{ProductGallery,ProductPurchasePanel,ProductTabs}.tsx`. `tsc` 0 y `next build` OK.
-  - Pendiente (>400 ln): `lista-distribucion` 670, `admin/settings` 596, `admin/categories` 594, `cotizador/pc` 524, `admin/company-settings` 518, `useProductsForms` 515, `cotizador/resumen` 502, `blog/[slug]` 495, `admin/carousel` 422, `admin/taxonomy` 420, `blog` 408, `admin/contacts` 407 (más las 2 páginas de cotizaciones, WIP del usuario).
+  - Hecho: `lista-distribucion/page.tsx` (670 ln) → 245 ln, con `components/{FiltersToolbar,ProductList,ProductDetailModal,Pagination,Summary}.tsx` y `productImage.ts`; `admin/settings/page.tsx` (596 ln) → 225 ln, con un componente por tab. Se eliminó el bloque duplicado del tab "Apariencia" (se renderizaba dos veces).
+  - Hecho: `admin/categories/page.tsx` (594 ln) → 319 ln y `admin/company-settings/page.tsx` (518 ln) → 243 ln, con `types.ts` y componentes por responsabilidad/tab.
+  - Hecho: `cotizador/pc/page.tsx` (524 ln) → 333 ln y `cotizador/resumen/page.tsx` (502 ln) → 197 ln (`BuildHeader`, `ProductSelectionPanel`, `BuildSummaryPanel`, `CustomerForm`, `ItemsSummary`, `SuccessScreen`).
+  - Hecho: `blog/page.tsx` (408 ln) → 148 ln y `blog/[slug]/page.tsx` (495 ln) → 193 ln, con 7 y 11 componentes respectivamente.
+  - Hecho: `admin/carousel` (422→296), `admin/taxonomy` (420→231) y `admin/contacts` (407→154).
+  - Hecho: `useProductsForms.ts` (515 ln) → composer de 67 ln que compone `useProductCreateForm` (285), `useProductEditForm` (136) y `useProductBulkUpdate` (125), manteniendo exactamente las mismas 51 claves de retorno. `tsc` 0 y `next build` OK.
+  - Pendiente (>400 ln): solo `admin/quotations/page.tsx` 527 y `admin/quotations/[id]/page.tsx` 450, ambos WIP del usuario. El resto del frontend está por debajo de 400 ln.
 
 ### P2.7 — Tipos unificados
 - **Evidencia:** triple `Product` (`models/Product.ts`, `types/index.ts` con `id:string` en conflicto, `models/ApiTypes.ts`); `CartItem` duplicado; ~148 `any` + 31 `as any` + 170 backend `any` + 17 `@ts-ignore`.

@@ -116,7 +116,9 @@ export default async function ProductSlugLayout({
         },
       },
     ];
-  } catch {}
+  } catch (error) {
+    console.error("Failed to build product JSON-LD", error);
+  }
 
   return (
     <>

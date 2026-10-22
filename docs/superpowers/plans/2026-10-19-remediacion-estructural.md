@@ -88,6 +88,11 @@
 - **Evidencia:** `middleware/errorHandler.ts` existe y está montado al final, pero hay **~195 `res.status(500)` inline** vs 2 `next(error)`; fuga de `error.message` en `productRoutes.ts:253,307`, `ExternalApiController.ts:20`, `SystemController.ts:34,59`, `TaxonomyController`, `SyncController`, `carouselRoutes.ts:299,307`, `uploadRoutes.ts:103`, etc.
 - **Tareas:** normalizar a `CustomError`+`next(err)`, sanear mensajes; montar/usar `middleware/logger.ts` (hoy importado y nunca usado).
 - **Aceptación:** respuestas de error uniformes y sin internals.
+- **Estado:** hecho.
+  - Hecho: `middleware/errorHandler.ts` expone `sendError(res, error, message, statusCode?, code?)`, que loguea y responde con el sobre estándar `{ success:false, message, error, code, timestamp }`; `errorHandler` y `notFoundHandler` usan el mismo sobre (`404` con `code: NOT_FOUND`, sin exponer la URL).
+  - Hecho: los **198** `res.status(500)` inline quedaron reemplazados por `sendError` (0 coincidencias de `status(500)` en `src`), preservando mensajes públicos en español y los `code` existentes. Los no-500 (400/401/403/404/409/429) no cambiaron.
+  - Hecho: `requestLogger` ya estaba montado en `server.ts:129` (la evidencia estaba desactualizada); los `logger.error` redundantes se eliminaron cuando el logger quedó sin uso.
+  - Verificado con MySQL real en `PORT=3999`: `/health` 200, `/api/products` 200, ruta inexistente → `404 {success:false,message,error,code:NOT_FOUND,timestamp}`, cupón inválido → `400` con `{success:false,message}`; `tsc` 0, 6 suites/37 tests, `npm run build` 0.
 
 ### P1.6 — Rate limiters no cableados
 - **Evidencia:** `paymentLimiter` definido y sin usar; sin límite en `POST /api/payments/*`, `/api/coupons/validate|apply`, `/api/auth/social-login`, `POST /api/admin/upload`.
@@ -108,6 +113,10 @@
 ### P1.9 — Fronteras de error/loading/not-found
 - **Evidencia:** no existen `app/error.tsx`, `app/loading.tsx`, `app/global-error.tsx`, `app/not-found.tsx`; ~11 lugares tragan errores con `console.error` (`app/page.tsx:32`, `products/[slug]:48,72`, `cart:54`, `Header:44`, `Footer:20`, etc.).
 - **Aceptación:** errores por ruta con UI consistente; sin `catch` silencioso en flujos de datos.
+- **Estado:** hecho.
+  - Hecho: existen `app/error.tsx`, `app/global-error.tsx`, `app/loading.tsx` y `app/not-found.tsx` con UI consistente (reintentar / volver al inicio, `digest` visible).
+  - Hecho: único `catch {}` silencioso (`products/[slug]/layout.tsx`) ahora loguea el fallo al construir el JSON-LD sin romper el render.
+  - Nota: los `console.error` restantes son diagnóstico de servicios/hooks, no capturas que traguen el error; se mantienen a la espera de error tracking (P3.5).
 
 ---
 

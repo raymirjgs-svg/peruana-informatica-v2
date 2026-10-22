@@ -3,26 +3,16 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import apiClient, { type QueryParams } from '@/utils/api';
-import QuotationSummary from '@/components/quotation/QuotationSummary';
-import Link from 'next/link';
-import type { CatalogProduct } from '@/types/product';
-
-type Product = CatalogProduct & { cod_producto: number; stock: number };
+import BuildHeader from './components/BuildHeader';
+import ProductSelectionPanel from './components/ProductSelectionPanel';
+import BuildSummaryPanel from './components/BuildSummaryPanel';
+import type { BuildStep, PCBuild, Product, QuotationItem } from './components/types';
 
 interface ProductsResponse {
   products?: Product[];
   data?: Product[];
   total?: number;
   totalPages?: number;
-}
-
-interface QuotationItem {
-  product_id: number;
-  product_name: string;
-  product_price: number;
-  quantity: number;
-  subtotal: number;
-  product: Product;
 }
 
 const resolvePrice = (product: Product) =>
@@ -37,16 +27,6 @@ const resolvePrice = (product: Product) =>
       product.price
     )
   );
-
-interface PCBuild {
-  motherboard?: Product;
-  cpu?: Product;
-  ram?: Product;
-  storage?: Product;
-  gpu?: Product;
-  case?: Product;
-  psu?: Product;
-}
 
 export default function PCBuilder() {
   const router = useRouter();
@@ -67,7 +47,7 @@ export default function PCBuilder() {
   const [totalProducts, setTotalProducts] = useState(0);
 
   // Tipos de componentes en orden
-  const componentSteps = [
+  const componentSteps: BuildStep[] = [
     { type: 'motherboard', name: 'Placa Madre', icon: '🔌' },
     { type: 'processor', name: 'Procesador', icon: '🧠' },
     { type: 'ram', name: 'Memoria RAM', icon: '💾' },
@@ -263,6 +243,39 @@ export default function PCBuilder() {
     router.push('/cotizador/resumen');
   };
 
+  const handlePrevious = () => {
+    setStep(prev => Math.max(1, prev - 1));
+  };
+
+  const handleNext = () => {
+    if (step < componentSteps.length) {
+      setStep(prev => prev + 1);
+      // Cargar siguientes
+      const nextType = componentSteps[step]!.type;
+      const parentId = pcBuild.motherboard ? pcBuild.motherboard.cod_producto : null;
+      loadCompatibleProducts(nextType, parentId);
+    } else {
+      setShowSummary(true);
+    }
+  };
+
+  const handleLoadAll = () => {
+    loadCompatibleProducts(componentSteps[step - 1]!.type, null);
+  };
+
+  const handleRemoveItem = (index: number) => {
+    // Lógica para remover item (resetear el paso correspondiente)
+    const item = getQuotationItems()[index];
+    if (!item) return;
+    const type = item.product.component_type?.toLowerCase();
+    if (type) {
+      setPcBuild(prev => ({ ...prev, [type]: undefined }));
+      // Volver al paso de ese componente
+      const stepIdx = componentSteps.findIndex(s => s.type.toLowerCase() === type);
+      if (stepIdx >= 0) goToStep(stepIdx);
+    }
+  };
+
   const currentStepName = componentSteps[step - 1]?.name || '';
 
   if (error) {
@@ -279,246 +292,42 @@ export default function PCBuilder() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-800">Arma tu PC</h1>
-        <Link href="/cotizador" className="text-blue-600 hover:underline">Volver al inicio</Link>
-      </div>
-
-      {/* Barra de progreso */}
-      <div className="mb-8 overflow-x-auto pb-4">
-        <div className="flex min-w-max">
-          {componentSteps.map((comp, index) => (
-            <div
-              key={comp.type}
-              className={`flex items-center ${index < componentSteps.length - 1 ? 'mr-4' : ''}`}
-              onClick={() => goToStep(index)}
-            >
-              <div className={`
-                w-10 h-10 rounded-full flex items-center justify-center cursor-pointer transition-colors
-                ${index < step - 1 ? 'bg-green-500 text-white' : index === step - 1 ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-500'}
-              `}>
-                {index < step - 1 ? '✓' : index + 1}
-              </div>
-              <span className={`ml-2 text-sm font-medium ${index === step - 1 ? 'text-blue-600' : 'text-gray-600'}`}>
-                {comp.name}
-              </span>
-              {index < componentSteps.length - 1 && (
-                <div className="w-12 h-1 bg-gray-200 ml-4 hidden md:block">
-                  <div className={`h-full ${index < step - 1 ? 'bg-green-500' : ''}`} style={{ width: index < step - 1 ? '100%' : '0%' }}></div>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
+      <BuildHeader steps={componentSteps} currentStep={step} onStepClick={goToStep} />
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         {/* Panel Principal de Selección */}
-        <div className="lg:col-span-3">
-          {compatibilityError && (
-            <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg flex items-start">
-              <span className="text-yellow-500 text-xl mr-3">⚠️</span>
-              <p className="text-yellow-700">{compatibilityError}</p>
-            </div>
-          )}
-
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-            <h2 className="text-xl font-semibold mb-4 flex items-center">
-              <span className="mr-2">{componentSteps[step - 1]!.icon}</span>
-              Selecciona {currentStepName}
-            </h2>
-
-            {/* Barra de búsqueda y filtros */}
-            <div className="mb-6 space-y-4">
-              {/* Búsqueda */}
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder={`Buscar ${currentStepName.toLowerCase()}...`}
-                  value={searchQuery}
-                  onChange={(e) => handleSearch(e.target.value)}
-                  className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-                <svg className="absolute left-3 top-3 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </div>
-
-              {/* Filtro de subcategorías (preparado para futuro) */}
-              <div className="flex items-center gap-4">
-                <label className="text-sm font-medium text-gray-700">Subcategoría:</label>
-                <select
-                  value={selectedSubcategory || ''}
-                  onChange={(e) => handleSubcategoryChange(e.target.value ? parseInt(e.target.value) : null)}
-                  className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-                  <option value="">Todas</option>
-                  {/* Las subcategorías se cargarán dinámicamente cuando existan */}
-                </select>
-                <span className="text-sm text-gray-500">
-                  {totalProducts} productos encontrados
-                </span>
-              </div>
-            </div>
-
-            {loading ? (
-              <div className="flex justify-center py-12">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-              </div>
-            ) : compatibleProducts.length === 0 ? (
-              <div className="text-center py-12 bg-gray-50 rounded-lg border border-gray-200">
-                <div className="mx-auto w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mb-4 text-3xl">
-                  {componentSteps[step - 1]!.icon}
-                </div>
-                <h3 className="text-lg font-medium text-gray-800 mb-2">No encontramos {currentStepName} compatibles</h3>
-                <p className="text-gray-600 mb-6 max-w-md mx-auto">
-                  No hay productos disponibles en esta categoría que sean compatibles con tu selección actual.
-                </p>
-                <button
-                  onClick={() => loadCompatibleProducts(componentSteps[step - 1]!.type, null)}
-                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-                >
-                  Ver todo el catálogo de {currentStepName}
-                </button>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {compatibleProducts.map((product) => (
-                  <div
-                    key={`product-${product.cod_producto}`}
-                    onClick={() => selectComponent(product)}
-                    className={`
-                      border rounded-lg p-4 cursor-pointer transition-all hover:shadow-md
-                      ${getCurrentSelection()?.cod_producto === product.cod_producto ? 'border-blue-500 ring-2 ring-blue-100 bg-blue-50' : 'border-gray-200 hover:border-blue-300'}
-                    `}
-                  >
-                    <div className="flex justify-between items-start mb-2">
-                      <h3 className="font-medium text-gray-800 line-clamp-2 h-12">{product.name}</h3>
-                    </div>
-
-                    <div className="text-sm text-gray-500 mb-3 space-y-1">
-                      {product.socket_type && <div>Socket: {product.socket_type}</div>}
-                      {product.ram_type && <div>Tipo: {product.ram_type}</div>}
-                      {product.form_factor && <div>Forma: {product.form_factor}</div>}
-                    </div>
-
-                    <div className="flex justify-between items-center mt-auto">
-                      <div className="flex flex-col items-end">
-                        <span className="text-lg font-bold text-blue-600">
-                          S/. {resolvePrice(product).toFixed(2)}
-                        </span>
-                        {(Number(product.priceDis || product.price_dis) > 0 || Number(product.priceCot || product.price_cot) > 0) && (
-                          <span className="text-xs text-green-600 font-bold bg-green-50 px-2 py-0.5 rounded">Precio Especial</span>
-                        )}
-                      </div>
-                      <span className={`text-xs px-2 py-1 rounded-full ${product.stock > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                        {product.stock > 0 ? 'Stock' : 'Agotado'}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Paginación */}
-          {!loading && compatibleProducts.length > 0 && totalPages > 1 && (
-            <div className="mt-6 flex justify-center items-center gap-2">
-              <button
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 1}
-                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                ← Anterior
-              </button>
-
-              <div className="flex gap-1">
-                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                  let pageNum;
-                  if (totalPages <= 5) {
-                    pageNum = i + 1;
-                  } else if (currentPage <= 3) {
-                    pageNum = i + 1;
-                  } else if (currentPage >= totalPages - 2) {
-                    pageNum = totalPages - 4 + i;
-                  } else {
-                    pageNum = currentPage - 2 + i;
-                  }
-
-                  return (
-                    <button
-                      key={pageNum}
-                      onClick={() => handlePageChange(pageNum)}
-                      className={`px-3 py-2 rounded-lg ${currentPage === pageNum
-                        ? 'bg-blue-600 text-white'
-                        : 'border border-gray-300 text-gray-700 hover:bg-gray-50'
-                        }`}
-                    >
-                      {pageNum}
-                    </button>
-                  );
-                })}
-              </div>
-
-              <button
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage === totalPages}
-                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Siguiente →
-              </button>
-            </div>
-          )}
-
-
-          <div className="flex justify-between">
-            <button
-              onClick={() => setStep(prev => Math.max(1, prev - 1))}
-              disabled={step === 1}
-              className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50"
-            >
-              Anterior
-            </button>
-
-            <button
-              onClick={() => {
-                if (step < componentSteps.length) {
-                  setStep(prev => prev + 1);
-                  // Cargar siguientes
-                  const nextType = componentSteps[step]!.type;
-                  const parentId = pcBuild.motherboard ? pcBuild.motherboard.cod_producto : null;
-                  loadCompatibleProducts(nextType, parentId);
-                } else {
-                  setShowSummary(true);
-                }
-              }}
-              disabled={!getCurrentSelection()}
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
-            >
-              {step === componentSteps.length ? 'Finalizar' : 'Siguiente'}
-            </button>
-          </div>
-        </div>
+        <ProductSelectionPanel
+          steps={componentSteps}
+          step={step}
+          currentStepName={currentStepName}
+          compatibilityError={compatibilityError}
+          searchQuery={searchQuery}
+          onSearch={handleSearch}
+          selectedSubcategory={selectedSubcategory}
+          onSubcategoryChange={handleSubcategoryChange}
+          totalProducts={totalProducts}
+          loading={loading}
+          products={compatibleProducts}
+          currentSelection={getCurrentSelection()}
+          onSelect={selectComponent}
+          onLoadAll={handleLoadAll}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+          onPrevious={handlePrevious}
+          onNext={handleNext}
+          isFirstStep={step === 1}
+          isLastStep={step === componentSteps.length}
+          canProceed={!!getCurrentSelection()}
+          resolvePrice={resolvePrice}
+        />
 
         {/* Panel Lateral de Resumen */}
-        <div className="lg:col-span-1">
-          <QuotationSummary
-            items={getQuotationItems()}
-            onRemoveItem={(index) => {
-              // Lógica para remover item (resetear el paso correspondiente)
-              const item = getQuotationItems()[index];
-              if (!item) return;
-              const type = item.product.component_type?.toLowerCase();
-              if (type) {
-                setPcBuild(prev => ({ ...prev, [type]: undefined }));
-                // Volver al paso de ese componente
-                const stepIdx = componentSteps.findIndex(s => s.type.toLowerCase() === type);
-                if (stepIdx >= 0) goToStep(stepIdx);
-              }
-            }}
-            onCreateQuotation={handleCreateQuotation}
-          />
-        </div>
+        <BuildSummaryPanel
+          items={getQuotationItems()}
+          onRemoveItem={handleRemoveItem}
+          onCreateQuotation={handleCreateQuotation}
+        />
       </div>
     </div>
   );

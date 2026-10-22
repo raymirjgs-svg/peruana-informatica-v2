@@ -4,8 +4,36 @@ import { PeruanaInformaticaService } from '../../services/PeruanaInformaticaServ
 import { geminiService } from '../../services/GeminiService';
 import os from 'os';
 
+interface ServiceHealth {
+    status: string;
+    latency: number;
+    message?: string;
+}
+
+interface SystemHealthData {
+    database: ServiceHealth;
+    externalApi: ServiceHealth;
+    geminiApi: ServiceHealth;
+    googleAuth: { status: string; message?: string };
+    system: {
+        uptime: number;
+        memoryUsage: NodeJS.MemoryUsage;
+        freeMemory: number;
+        totalMemory: number;
+        loadAvg: number[];
+    };
+    timestamp: string;
+}
+
+interface ServiceCheckResult {
+    type: 'database' | 'externalApi' | 'geminiApi';
+    status: string;
+    latency: number;
+    message?: string;
+}
+
 export const getSystemHealth = async (req: Request, res: Response) => {
-    const healthData: any = {
+    const healthData: SystemHealthData = {
         database: { status: 'unknown', latency: 0 },
         externalApi: { status: 'unknown', latency: 0 },
         geminiApi: { status: 'unknown', latency: 0 },
@@ -25,24 +53,24 @@ export const getSystemHealth = async (req: Request, res: Response) => {
     // Probamos todos los servicios en paralelo para mejorar el tiempo de respuesta
     const results = await Promise.allSettled([
         // 1. Base de Datos
-        (async () => {
+        (async (): Promise<ServiceCheckResult> => {
             const dbStart = Date.now();
             try {
                 await sequelize.authenticate();
                 return { type: 'database', status: 'ok', latency: Date.now() - dbStart };
-            } catch (error: any) {
+            } catch {
                 return { type: 'database', status: 'error', message: 'No disponible', latency: Date.now() - dbStart };
             }
         })(),
 
         // 2. API Externa
-        (async () => {
+        (async (): Promise<ServiceCheckResult> => {
             const apiHealth = await PeruanaInformaticaService.checkHealth();
             return { type: 'externalApi', ...apiHealth };
         })(),
 
         // 3. Gemini API
-        (async () => {
+        (async (): Promise<ServiceCheckResult> => {
             const geminiStart = Date.now();
             try {
                 if (process.env.GEMINI_API_KEY) {
@@ -55,14 +83,14 @@ export const getSystemHealth = async (req: Request, res: Response) => {
                     };
                 }
                 return { type: 'geminiApi', status: 'error', message: 'Falta GEMINI_API_KEY', latency: 0 };
-            } catch (error: any) {
+            } catch {
                 return { type: 'geminiApi', status: 'error', message: 'No disponible', latency: Date.now() - geminiStart };
             }
         })()
     ]);
 
     // Procesar resultados
-    results.forEach((result: any) => {
+    results.forEach((result) => {
         if (result.status === 'fulfilled') {
             const val = result.value;
             if (val.type === 'database') {

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { Op } from 'sequelize';
-import { Product } from '../../models/Product';
+import { Op, type Order, type WhereOptions } from 'sequelize';
+import { Product, type ProductAttributes } from '../../models/Product';
 import { Brand } from '../../models/Brand';
 import { Category } from '../../models/Category';
 import { SubCategory } from '../../models/SubCategory';
@@ -18,7 +18,7 @@ export class ProductController {
             const limit = parseInt(req.query.limit as string) || 20;
             const offset = (page - 1) * limit;
 
-            const where: any = {};
+            const where: WhereOptions<ProductAttributes> = {};
 
             // Búsqueda inteligente (Smart Search)
             if (req.query.search) {
@@ -27,7 +27,7 @@ export class ProductController {
                 if (searchTerms.length > 0) {
                     // El producto debe coincidir con TODOS los términos de búsqueda (AND implícito entre términos)
                     // Pero cada término puede estar en CUALQUIERA de los campos (OR entre campos)
-                    where[Op.and] = searchTerms.map(term => ({
+                    const searchConditions: WhereOptions<ProductAttributes>[] = searchTerms.map(term => ({
                         [Op.or]: [
                             { name: { [Op.like]: `%${term}%` } },
                             { description: { [Op.like]: `%${term}%` } },
@@ -35,6 +35,7 @@ export class ProductController {
                             { keywords: { [Op.like]: `%${term}%` } }
                         ]
                     }));
+                    Object.assign(where, { [Op.and]: searchConditions });
                 }
             }
 
@@ -46,11 +47,11 @@ export class ProductController {
             }
 
             if (req.query.category) {
-                where.category_id = req.query.category;
+                where.category_id = req.query.category as string;
             }
 
             if (req.query.brand) {
-                where.brand_id = req.query.brand;
+                where.brand_id = req.query.brand as string;
             }
 
             // Filtro de stock
@@ -79,7 +80,7 @@ export class ProductController {
                 'codigo_interno': 'codigo_interno'
             };
             const orderField = validSortFields[sortField] || 'cod_producto';
-            const order: any = [[orderField, sortOrder === 'ASC' ? 'ASC' : 'DESC']];
+            const order: Order = [[orderField, sortOrder === 'ASC' ? 'ASC' : 'DESC']];
 
             const { rows: products, count: total } = await Product.findAndCountAll({
                 where,
@@ -181,9 +182,8 @@ export class ProductController {
             }
 
             // Incluir alias id
-            const json = product.toJSON();
-            // @ts-ignore
-            res.json({ ...json, id: product.cod_producto, subcategory_ids: json.subCategories?.map((s: any) => s.id) || [] });
+            const json = product.toJSON() as ProductAttributes & { subCategories?: Array<{ id: number }> };
+            res.json({ ...json, id: product.cod_producto, subcategory_ids: json.subCategories?.map((s) => s.id) || [] });
         } catch (error) {
             logger.error('Error getting product:', error);
             return sendError(res, error, 'Error al obtener producto', 500, 'PRODUCT_FETCH_ERROR');
@@ -207,10 +207,10 @@ export class ProductController {
             });
 
             res.status(201).json(newProduct);
-        } catch (error: any) {
+        } catch (error) {
             await transaction.rollback();
 
-            if (error?.code === 'DUPLICATE_CODIGO_INTERNO') {
+            if (error instanceof Error && (error as Error & { code?: string }).code === 'DUPLICATE_CODIGO_INTERNO') {
                 return res.status(409).json({
                     error: 'Error interno',
                     code: 'DUPLICATE_CODIGO_INTERNO',
@@ -264,10 +264,10 @@ export class ProductController {
                 'is_new',
                 'is_clearance'
             ];
-            const updates: any = {};
+            const updates: Partial<ProductAttributes> = {};
             allowedFields.forEach(field => {
                 if (req.body[field] !== undefined) {
-                    updates[field] = req.body[field];
+                    updates[field as keyof ProductAttributes] = req.body[field];
                 }
             });
 

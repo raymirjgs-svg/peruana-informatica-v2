@@ -1,8 +1,11 @@
 import { Request, Response } from 'express';
-import { Carousel } from '../../models/Carousel';
+import { Carousel, CarouselAttributes } from '../../models/Carousel';
 import { sequelize } from '../../database/connection';
 import { buildPaginationMeta, getSafetyLimit, resolvePagination } from '../../utils/pagination';
 import { sendError } from '../../middleware/errorHandler';
+
+type CarouselUpdateInput = Partial<Pick<CarouselAttributes,
+    'title' | 'description' | 'buttonText' | 'buttonUrl' | 'backgroundColor' | 'imageUrl' | 'isActive' | 'order'>>;
 
 export class CarouselController {
     /**
@@ -119,8 +122,8 @@ export class CarouselController {
                 });
             }
 
-            const allowedFields = ['title', 'description', 'buttonText', 'buttonUrl', 'backgroundColor', 'imageUrl', 'isActive', 'order'];
-            const updates: any = {};
+            const allowedFields: (keyof CarouselUpdateInput)[] = ['title', 'description', 'buttonText', 'buttonUrl', 'backgroundColor', 'imageUrl', 'isActive', 'order'];
+            const updates: CarouselUpdateInput = {};
             allowedFields.forEach(field => {
                 if (req.body[field] !== undefined) {
                     updates[field] = req.body[field];
@@ -198,7 +201,7 @@ export class CarouselController {
     static async uploadImage(req: Request, res: Response) {
         try {
             // req.file viene de multer middleware en la ruta
-            const file = (req as any).file;
+            const file = req.file;
             
             if (!file) {
                 return res.status(400).json({
@@ -215,8 +218,8 @@ export class CarouselController {
                 filename: file.filename,
                 message: 'Imagen subida correctamente'
             });
-        } catch (error: any) {
-            if (error.message.includes('Solo se permiten imágenes')) {
+        } catch (error) {
+            if (error instanceof Error && error.message.includes('Solo se permiten imágenes')) {
                 return res.status(400).json({
                     error: 'Error interno',
                     code: 'INVALID_FILE_TYPE'

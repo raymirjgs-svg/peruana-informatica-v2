@@ -14,7 +14,7 @@ export class WishlistController {
      */
     async getUserWishlist(req: Request, res: Response) {
         try {
-            const userId = (req as any).user?.id; // Assumes auth middleware sets req.user
+            const userId = req.user?.id; // Assumes auth middleware sets req.user
 
             if (!userId) {
                 return res.status(401).json({
@@ -67,7 +67,7 @@ export class WishlistController {
      */
     async addToWishlist(req: Request, res: Response) {
         try {
-            const userId = (req as any).user?.id;
+            const userId = req.user?.id;
             const { product_id } = req.body;
 
             if (!userId) {
@@ -120,7 +120,7 @@ export class WishlistController {
      */
     async removeFromWishlist(req: Request, res: Response) {
         try {
-            const userId = (req as any).user?.id;
+            const userId = req.user?.id;
             const { productId } = req.params;
 
             if (!userId) {
@@ -158,7 +158,7 @@ export class WishlistController {
      */
     async clearWishlist(req: Request, res: Response) {
         try {
-            const userId = (req as any).user?.id;
+            const userId = req.user?.id;
 
             if (!userId) {
                 return res.status(401).json({
@@ -185,7 +185,7 @@ export class WishlistController {
      */
     async checkWishlist(req: Request, res: Response) {
         try {
-            const userId = (req as any).user?.id;
+            const userId = req.user?.id;
             const { productId } = req.params;
 
             if (!userId) {

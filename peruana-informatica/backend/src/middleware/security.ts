@@ -32,7 +32,7 @@ export const searchRateLimit = createRateLimit(
 
 // Sanitización básica de inputs
 export const sanitizeInput = (req: Request, res: Response, next: NextFunction) => {
-  const sanitize = (obj: any): any => {
+  const sanitize = (obj: unknown): unknown => {
     if (typeof obj === 'string') {
       return obj.trim().replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
     }
@@ -40,9 +40,10 @@ export const sanitizeInput = (req: Request, res: Response, next: NextFunction) =
       return obj.map(sanitize);
     }
     if (obj && typeof obj === 'object') {
-      const sanitized: any = {};
-      for (const key in obj) {
-        sanitized[key] = sanitize(obj[key]);
+      const sanitized: Record<string, unknown> = {};
+      const source = obj as Record<string, unknown>;
+      for (const key in source) {
+        sanitized[key] = sanitize(source[key]);
       }
       return sanitized;
     }

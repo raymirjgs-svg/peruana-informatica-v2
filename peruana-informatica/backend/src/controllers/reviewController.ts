@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
-import { Review } from '../models/Review';
+import { Review, type ReviewAttributes } from '../models/Review';
 import { Product } from '../models/Product';
 import { User } from '../models/User';
 import { Order } from '../models/Order';
 import { Image } from '../models/Image';
 import { OrderItem } from '../models/OrderItem';
-import { Op } from 'sequelize';
+import { Op, type Order as SequelizeOrder, type WhereOptions } from 'sequelize';
 import { logger } from '../config/logger';
 import { sendError } from '../middleware/errorHandler';
 
@@ -114,7 +114,7 @@ export class ReviewController {
             // Sorting
             const sort = req.query.sort as string; // 'newest', 'oldest', 'highest', 'lowest', 'helpful'
 
-            const where: any = {
+            const where: WhereOptions<ReviewAttributes> = {
                 product_id: productId,
                 status: 'approved'
             };
@@ -127,7 +127,7 @@ export class ReviewController {
                 where.verified_purchase = true;
             }
 
-            let order: any = [['created_at', 'DESC']]; // Default: Newest
+            let order: SequelizeOrder = [['created_at', 'DESC']]; // Default: Newest
 
             switch (sort) {
                 case 'oldest':
@@ -265,7 +265,7 @@ export class ReviewController {
             const offset = (page - 1) * limit;
             const status = req.query.status as string;
 
-            const where: any = {};
+            const where: WhereOptions<ReviewAttributes> = {};
             if (status && ['pending', 'approved', 'rejected'].includes(status)) {
                 where.status = status;
             }

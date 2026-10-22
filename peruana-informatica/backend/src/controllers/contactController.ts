@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { Contact } from "../models/Contact";
-import { Op } from "sequelize";
+import { Op, ValidationError, type WhereOptions } from "sequelize";
 import { logger } from '../config/logger';
 import { sendError } from '../middleware/errorHandler';
 
@@ -89,15 +89,15 @@ export class ContactController {
           createdAt: newContact.createdAt,
         },
       });
-    } catch (error: any) {
+    } catch (error) {
       logger.error("❌ Error creating contact:", error);
-      logger.error("Error stack:", error.stack);
-      logger.error("Error name:", error.name);
-      logger.error("Error message:", error.message);
+      logger.error("Error stack:", error instanceof Error ? error.stack : undefined);
+      logger.error("Error name:", error instanceof Error ? error.name : undefined);
+      logger.error("Error message:", error instanceof Error ? error.message : undefined);
 
       // Manejar errores de validación de Sequelize
-      if (error.name === "SequelizeValidationError") {
-        const validationErrors = error.errors.map((err: any) => ({
+      if (error instanceof ValidationError) {
+        const validationErrors = error.errors.map((err) => ({
           field: err.path,
           message: 'Error interno',
         }));
@@ -126,7 +126,7 @@ export class ContactController {
       const endDate = req.query.endDate as string;
 
       const offset = (page - 1) * limit;
-      const whereClause: any = {};
+      const whereClause: WhereOptions = {};
 
       // Filtros
       if (status && ["pending", "resolved", "spam"].includes(status)) {
@@ -138,11 +138,13 @@ export class ContactController {
       }
 
       if (search) {
-        whereClause[Op.or] = [
-          { nombre: { [Op.like]: `%${search}%` } },
-          { email: { [Op.like]: `%${search}%` } },
-          { mensaje: { [Op.like]: `%${search}%` } },
-        ];
+        Object.assign(whereClause, {
+          [Op.or]: [
+            { nombre: { [Op.like]: `%${search}%` } },
+            { email: { [Op.like]: `%${search}%` } },
+            { mensaje: { [Op.like]: `%${search}%` } },
+          ],
+        });
       }
 
       if (startDate && endDate) {

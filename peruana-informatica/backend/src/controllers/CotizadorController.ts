@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import { Product } from '../models/Product';
+import { Product, type ProductAttributes } from '../models/Product';
 import { SubCategory } from '../models/SubCategory';
 import { Setting } from '../models/Setting';
-import { Op, Sequelize } from 'sequelize';
+import { Op, Sequelize, type Includeable, type IncludeOptions, type WhereOptions } from 'sequelize';
 import { logger } from '../config/logger';
 import { sendError } from '../middleware/errorHandler';
 
@@ -13,7 +13,7 @@ const getActivePriceColumn = async () => {
 };
 
 // Helper function to extract component specs
-const extractComponentSpecs = (product: any) => {
+const extractComponentSpecs = (product: { description?: string | null }) => {
     const description = product.description || '';
     const cleanDescription = description.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
 
@@ -65,7 +65,7 @@ export const getCotizadorLaptops = async (req: Request, res: Response) => {
         if (activePriceCol === 'pre_cot') activePriceCol = 'pre_web';
 
         // Map setting value to actual DB column name
-        let priceField = 'price'; // Default to pre_cli (price property)
+        let priceField: 'price' | 'price_web' | 'price_dis' = 'price'; // Default to pre_cli (price property)
         if (activePriceCol === 'pre_web') priceField = 'price_web';
         if (activePriceCol === 'pre_dis') priceField = 'price_dis';
         if (activePriceCol === 'pre_cli') priceField = 'price';
@@ -73,63 +73,42 @@ export const getCotizadorLaptops = async (req: Request, res: Response) => {
         logger.info('Mapped Price Field for Sorting:', priceField);
 
         // Build filter conditions
-        const whereClause: any = {
-            [Op.or]: [
-                { category_id: 1 },
-                { name: { [Op.like]: '%laptop%' } },
-                { name: { [Op.like]: '%Laptop%' } }
-            ],
-            is_active: true,
-            stock: { [Op.gt]: 0 }
-        };
-
-        // Strict Price Filtering Logic
-        // We ensure the selected price field exists and is greater than 0
-        whereClause[priceField] = {
-            [Op.and]: [
-                { [Op.ne]: null },
-                { [Op.gt]: 0 }
-            ]
-        };
-
-        // Add ranges if specified, on the correct field
-        if (minPrice) {
-            whereClause[priceField] = { ...whereClause[priceField], [Op.gte]: parseFloat(minPrice as string) };
-        }
-        if (maxPrice) {
-            whereClause[priceField] = { ...whereClause[priceField], [Op.lte]: parseFloat(maxPrice as string) };
-        }
+        let orConditions: WhereOptions<ProductAttributes>[] = [
+            { category_id: 1 },
+            { name: { [Op.like]: '%laptop%' } },
+            { name: { [Op.like]: '%Laptop%' } }
+        ];
 
         if (search) {
-            whereClause[Op.or] = [
+            orConditions = [
                 { name: { [Op.like]: `%${search}%` } },
                 { description: { [Op.like]: `%${search}%` } }
             ];
         }
 
         // Subcategory Logic
-        const includeConditions: any = [
-            {
-                model: SubCategory,
-                as: 'subCategories',
-                attributes: ['id', 'name', 'slug'],
-                through: { attributes: [] },
-                required: false
-            }
-        ];
+        const subCategoryInclude: IncludeOptions = {
+            model: SubCategory,
+            as: 'subCategories',
+            attributes: ['id', 'name', 'slug'],
+            through: { attributes: [] },
+            required: false
+        };
 
         if (subcategory) {
-            includeConditions[0].required = true;
-            includeConditions[0].where = { slug: subcategory };
+            subCategoryInclude.required = true;
+            subCategoryInclude.where = { slug: subcategory as string };
         }
+
+        const includeConditions: Includeable[] = [subCategoryInclude];
 
         // Processor/RAM/Storage filters
         const { processor, ram, storage } = req.query;
-        if (!whereClause[Op.and]) whereClause[Op.and] = [];
+        const andConditions: ReturnType<typeof Sequelize.literal>[] = [];
 
         const addSubcategoryFilter = (slug: string) => {
             const sanitizedSlug = slug.replace(/[^a-zA-Z0-9-]/g, '');
-            whereClause[Op.and].push(Sequelize.literal(`
+            andConditions.push(Sequelize.literal(`
                 EXISTS (
                 SELECT 1 
                 FROM product_sub_categories psc
@@ -143,6 +122,23 @@ export const getCotizadorLaptops = async (req: Request, res: Response) => {
         if (ram) addSubcategoryFilter(ram as string);
         if (storage) addSubcategoryFilter(storage as string);
 
+        // Strict Price Filtering Logic
+        // We ensure the selected price field exists and is greater than 0
+        const whereClause: WhereOptions<ProductAttributes> = {
+            [Op.or]: orConditions,
+            [Op.and]: andConditions,
+            is_active: true,
+            stock: { [Op.gt]: 0 },
+            [priceField]: {
+                [Op.and]: [
+                    { [Op.ne]: null },
+                    { [Op.gt]: 0 }
+                ],
+                ...(minPrice ? { [Op.gte]: parseFloat(minPrice as string) } : {}),
+                ...(maxPrice ? { [Op.lte]: parseFloat(maxPrice as string) } : {})
+            }
+        };
+
         const laptops = await Product.findAll({
             where: whereClause,
             include: includeConditions,
@@ -150,10 +146,10 @@ export const getCotizadorLaptops = async (req: Request, res: Response) => {
         });
 
         const laptopsWithDynamicPrice = laptops.map(laptop => {
-            const laptopData: any = laptop.toJSON();
+            const laptopData: ProductAttributes = laptop.toJSON();
 
             // Swap price with the selected price type
-            let finalPrice = laptopData.price; // Default (pre_cli)
+            let finalPrice: ProductAttributes['price'] | undefined = laptopData.price; // Default (pre_cli)
 
             if (activePriceCol === 'pre_web') finalPrice = laptopData.price_web;
             if (activePriceCol === 'pre_dis') finalPrice = laptopData.price_dis;
@@ -161,7 +157,7 @@ export const getCotizadorLaptops = async (req: Request, res: Response) => {
             // Strict Mode: If query filtering somehow failed, we double check here
             // But since we added the WHERE clause, this should always be valid > 0
 
-            laptopData.price = finalPrice; // Overwrite the main price field for the frontend
+            laptopData.price = finalPrice as ProductAttributes['price']; // Overwrite the main price field for the frontend
 
             // Specs
             if (!laptopData.component_specs || Object.keys(laptopData.component_specs).length === 0) {
@@ -172,7 +168,7 @@ export const getCotizadorLaptops = async (req: Request, res: Response) => {
 
         res.json(laptopsWithDynamicPrice);
 
-    } catch (error: any) {
+    } catch (error) {
         logger.error('Error fetching cotizador laptops:', error);
         return sendError(res, error, 'Error interno');
     }

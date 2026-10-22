@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
-import { Product } from '../models/Product';
+import { Product, type ProductAttributes } from '../models/Product';
 import { SubCategory } from '../models/SubCategory';
 import { ProductSubCategory } from '../models/ProductSubCategory';
-import { Op, Sequelize } from 'sequelize';
+import { Op, Sequelize, type Includeable, type IncludeOptions, type WhereOptions } from 'sequelize';
 import { logger } from '../config/logger';
 import { sendError } from '../middleware/errorHandler';
 
-const extractComponentSpecs = (product: any) => {
+const extractComponentSpecs = (product: { description?: string | null }) => {
   const description = product.description || '';
   const cleanDescription = description.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
 
@@ -75,57 +75,43 @@ export const getLaptopsWithSubcategories = async (req: Request, res: Response) =
   try {
     const { subcategory, minPrice, maxPrice, search } = req.query;
 
-    const whereClause: any = {
-      [Op.or]: [
-        { category_id: 1 },
-        { name: { [Op.like]: '%laptop%' } },
-        { name: { [Op.like]: '%Laptop%' } }
-      ],
-      is_active: true,
-      stock: { [Op.gt]: 0 }
-    };
-
-    if (minPrice) {
-      whereClause.price = { ...whereClause.price, [Op.gte]: parseFloat(minPrice as string) };
-    }
-    if (maxPrice) {
-      whereClause.price = { ...whereClause.price, [Op.lte]: parseFloat(maxPrice as string) };
-    }
+    let orConditions: WhereOptions<ProductAttributes>[] = [
+      { category_id: 1 },
+      { name: { [Op.like]: '%laptop%' } },
+      { name: { [Op.like]: '%Laptop%' } }
+    ];
 
     if (search) {
-      whereClause[Op.or] = [
+      orConditions = [
         { name: { [Op.like]: '%${search}%' } },
         { description: { [Op.like]: '%${search}%' } }
       ];
     }
 
-    const includeConditions: any = [
-      {
-        model: SubCategory,
-        as: 'subCategories',
-        attributes: ['id', 'name', 'slug'],
-        through: { attributes: [] },
-        required: false
-      }
-    ];
+    const subCategoryInclude: IncludeOptions = {
+      model: SubCategory,
+      as: 'subCategories',
+      attributes: ['id', 'name', 'slug'],
+      through: { attributes: [] },
+      required: false
+    };
 
     if (subcategory) {
-      includeConditions[0].required = true;
-      includeConditions[0].where = {
-        slug: subcategory
+      subCategoryInclude.required = true;
+      subCategoryInclude.where = {
+        slug: subcategory as string
       };
     }
 
-    const { processor, ram, storage } = req.query;
+    const includeConditions: Includeable[] = [subCategoryInclude];
 
-    if (!whereClause[Op.and]) {
-      whereClause[Op.and] = [];
-    }
+    const { processor, ram, storage } = req.query;
+    const andConditions: ReturnType<typeof Sequelize.literal>[] = [];
 
     const addSubcategoryFilter = (slug: string) => {
       const sanitizedSlug = slug.replace(/[^a-zA-Z0-9-]/g, '');
 
-      whereClause[Op.and].push(Sequelize.literal(`
+      andConditions.push(Sequelize.literal(`
         EXISTS (
           SELECT 1 
           FROM product_sub_categories psc
@@ -140,6 +126,19 @@ export const getLaptopsWithSubcategories = async (req: Request, res: Response) =
     if (ram) addSubcategoryFilter(ram as string);
     if (storage) addSubcategoryFilter(storage as string);
 
+    const whereClause: WhereOptions<ProductAttributes> = {
+      [Op.or]: orConditions,
+      [Op.and]: andConditions,
+      is_active: true,
+      stock: { [Op.gt]: 0 },
+      ...(minPrice || maxPrice ? {
+        price: {
+          ...(minPrice ? { [Op.gte]: parseFloat(minPrice as string) } : {}),
+          ...(maxPrice ? { [Op.lte]: parseFloat(maxPrice as string) } : {})
+        }
+      } : {})
+    };
+
     const laptops = await Product.findAll({
       where: whereClause,
       include: includeConditions,
@@ -147,7 +146,7 @@ export const getLaptopsWithSubcategories = async (req: Request, res: Response) =
     });
 
     const laptopsWithSpecs = laptops.map(laptop => {
-      const laptopData: any = laptop.toJSON();
+      const laptopData: ProductAttributes = laptop.toJSON();
 
       if (laptopData.component_specs && Object.keys(laptopData.component_specs).length > 0) {
         return laptopData;

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { SeoSettings } from "../models/SeoSettings";
-import { Op } from "sequelize";
+import { Op, ValidationError, type WhereOptions } from "sequelize";
 import { pickSeoSettingsFields } from "../utils/seoFields";
 import { sendError } from '../middleware/errorHandler';
 
@@ -10,7 +10,7 @@ export class SeoPageController {
       const { page_type } = req.params;
       const { page_identifier } = req.query;
 
-      const whereClause: any = { page_type };
+      const whereClause: WhereOptions = { page_type };
 
       if (page_identifier) {
         whereClause.page_identifier = page_identifier;
@@ -46,7 +46,7 @@ export class SeoPageController {
       const { page_type } = req.params;
       const { page_identifier } = req.query;
 
-      const whereClause: any = { page_type };
+      const whereClause: WhereOptions = { page_type };
 
       if (page_identifier) {
         whereClause.page_identifier = page_identifier;
@@ -73,9 +73,9 @@ export class SeoPageController {
         message: "Configuración SEO actualizada exitosamente",
         data: seoSettings,
       });
-    } catch (error: any) {
-      if (error.name === "SequelizeValidationError") {
-        const validationErrors = error.errors.map((err: any) => ({
+    } catch (error) {
+      if (error instanceof ValidationError) {
+        const validationErrors = error.errors.map((err) => ({
           field: err.path,
           message: 'Error interno',
         }));

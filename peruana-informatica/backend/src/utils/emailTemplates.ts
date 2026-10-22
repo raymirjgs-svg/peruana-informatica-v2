@@ -1,13 +1,26 @@
+interface TemplateOrder {
+    id: number;
+    tracking_code?: string;
+    customer_name?: string;
+    total_amount?: string | number;
+}
+
+interface TemplateOrderItem {
+    product_name: string;
+    quantity: number;
+    price: string | number;
+}
+
 export const emailTemplates = {
-    orderConfirmation: (order: any, items: any[]) => {
+    orderConfirmation: (order: TemplateOrder, items: TemplateOrderItem[]) => {
         const itemsHtml = items.map(item => `
             <tr>
                 <td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">
                     <div style="font-weight: 500; color: #111827;">${item.product_name}</div>
                 </td>
                 <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: center; color: #4b5563;">${item.quantity}</td>
-                <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: right; color: #4b5563;">S/ ${parseFloat(item.price).toFixed(2)}</td>
-                <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: right; font-weight: 500; color: #111827;">S/ ${(parseFloat(item.price) * item.quantity).toFixed(2)}</td>
+                <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: right; color: #4b5563;">S/ ${parseFloat(String(item.price)).toFixed(2)}</td>
+                <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: right; font-weight: 500; color: #111827;">S/ ${(parseFloat(String(item.price)) * item.quantity).toFixed(2)}</td>
             </tr>
         `).join('');
 
@@ -84,7 +97,7 @@ export const emailTemplates = {
 
                             <div class="total-section">
                                 <span class="total-label">TOTAL A PAGAR</span>
-                                <span class="total-amount">S/ ${parseFloat(order.total_amount).toFixed(2)}</span>
+                                <span class="total-amount">S/ ${parseFloat(String(order.total_amount)).toFixed(2)}</span>
                             </div>
 
                             <div class="cta-box">
@@ -129,7 +142,7 @@ export const emailTemplates = {
     // Add other templates (adminNotification, paymentVerified) here using the same style...
     // For brevity in this step, I'll only fully style the main one, but in a real scenario I'd do all.
     // I will add placeholders for the others reusing the style to avoid TS errors if I strictly strictly replace.
-    adminNotification: (order: any, itemsList: string) => {
+    adminNotification: (order: TemplateOrder, itemsList: string) => {
         return `
             <!DOCTYPE html>
             <html>
@@ -140,7 +153,7 @@ export const emailTemplates = {
                 <h1>🔔 Nuevo Pedido #${order.id}</h1>
                 <p>Código de seguimiento: <strong>${order.tracking_code || '—'}</strong></p>
                 <p>Cliente: ${order.customer_name}</p>
-                <p>Total: S/ ${parseFloat(order.total_amount).toFixed(2)}</p>
+                <p>Total: S/ ${parseFloat(String(order.total_amount)).toFixed(2)}</p>
                 <pre>${itemsList}</pre>
                 <a href="${process.env.ADMIN_URL || 'http://localhost:3000'}/admin/orders/${order.id}">Ver Pedido</a>
             </body>
@@ -148,7 +161,7 @@ export const emailTemplates = {
         `;
     },
 
-    paymentVerified: (order: any) => {
+    paymentVerified: (order: TemplateOrder) => {
         return `
             <!DOCTYPE html>
             <html>

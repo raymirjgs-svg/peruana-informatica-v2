@@ -4,6 +4,12 @@ import bcrypt from 'bcryptjs';
 import { logger } from '../config/logger';
 import { sendError } from '../middleware/errorHandler';
 
+type RequestWithUserId = Request & {
+    user?: {
+        userId?: number;
+    };
+};
+
 export class CustomerProfileController {
     /**
      * Get current user's profile
@@ -11,7 +17,7 @@ export class CustomerProfileController {
      */
     static async getProfile(req: Request, res: Response): Promise<void> {
         try {
-            const userId = (req as any).user?.userId;
+            const userId = (req as RequestWithUserId).user?.userId;
 
             if (!userId) {
                 res.status(401).json({ message: 'Unauthorized' });
@@ -43,7 +49,7 @@ export class CustomerProfileController {
      */
     static async updateProfile(req: Request, res: Response): Promise<void> {
         try {
-            const userId = (req as any).user?.userId;
+            const userId = (req as RequestWithUserId).user?.userId;
 
             if (!userId) {
                 res.status(401).json({ message: 'Unauthorized' });
@@ -98,7 +104,7 @@ export class CustomerProfileController {
      */
     static async changePassword(req: Request, res: Response): Promise<void> {
         try {
-            const userId = (req as any).user?.userId;
+            const userId = (req as RequestWithUserId).user?.userId;
 
             if (!userId) {
                 res.status(401).json({ message: 'Unauthorized' });
@@ -161,7 +167,7 @@ export class CustomerProfileController {
      */
     static async getMyOrders(req: Request, res: Response): Promise<void> {
         try {
-            const userId = (req as any).user?.userId;
+            const userId = (req as RequestWithUserId).user?.userId;
 
             if (!userId) {
                 res.status(401).json({ message: 'Unauthorized' });

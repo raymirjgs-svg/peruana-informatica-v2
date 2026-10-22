@@ -8,6 +8,8 @@ import { EmailService } from '../../services/EmailService';
 import { logger } from '../../config/logger';
 import { sendError } from '../../middleware/errorHandler';
 
+type OrderWithItems = Order & { items?: OrderItem[] };
+
 const VERIFIABLE_ORDER_STATUSES = [
     'pending',
     'pending_approval',
@@ -26,7 +28,7 @@ export const verifyPayment = async (req: Request, res: Response) => {
             return res.status(404).json({ error: 'Pedido no encontrado' });
         }
 
-        const currentUser = (req as any).user;
+        const currentUser = req.user;
         const verifiedBy = currentUser?.email || (currentUser?.id != null ? String(currentUser.id) : 'Admin');
 
         if (verified && !VERIFIABLE_ORDER_STATUSES.includes(order.status)) {
@@ -78,7 +80,7 @@ export const generateInvoice = async (req: Request, res: Response) => {
                 model: OrderItem,
                 as: 'items'
             }]
-        });
+        }) as OrderWithItems | null;
 
         if (!order) {
             return res.status(404).json({ error: 'Pedido no encontrado' });
@@ -143,12 +145,12 @@ export const generateInvoice = async (req: Request, res: Response) => {
         doc.text('─'.repeat(80));
 
         // Items
-        const items = (order as any).items || [];
-        items.forEach((item: any) => {
+        const items = order.items || [];
+        items.forEach((item) => {
             const quantity = item.quantity.toString().padEnd(6);
             const description = item.product_name.substring(0, 40).padEnd(42);
-            const price = `S/ ${parseFloat(item.price).toFixed(2)}`.padEnd(10);
-            const total = `S/ ${(parseFloat(item.price) * item.quantity).toFixed(2)}`;
+            const price = `S/ ${parseFloat(String(item.price)).toFixed(2)}`.padEnd(10);
+            const total = `S/ ${(parseFloat(String(item.price)) * item.quantity).toFixed(2)}`;
 
             doc.text(`${quantity} ${description} ${price} ${total}`);
         });

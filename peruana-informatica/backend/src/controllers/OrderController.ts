@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { Transaction } from 'sequelize';
 import { Order } from '../models/Order';
 import { OrderItem } from '../models/OrderItem';
 import { Product } from '../models/Product';
@@ -11,15 +12,38 @@ import { generateTrackingCode } from '../utils/trackingCode';
 import { logger } from '../config/logger';
 import { sendError } from '../middleware/errorHandler';
 
-async function createOrderWithTrackingCode(values: any, transaction: any) {
+interface OrderCreationValues {
+    customer_name: string;
+    customer_email: string;
+    customer_phone: string;
+    customer_document?: string;
+    total_amount: number;
+    coupon_code: string | null;
+    discount_amount: number;
+    status: string;
+}
+
+interface CartItemInput {
+    product_id: number | string;
+    quantity?: number;
+}
+
+interface ProcessedOrderItem {
+    product_id: number;
+    product_name: string;
+    price: number;
+    quantity: number;
+}
+
+async function createOrderWithTrackingCode(values: OrderCreationValues, transaction: Transaction) {
     for (let attempt = 0; attempt < 8; attempt++) {
         try {
             return await Order.create(
                 { ...values, tracking_code: generateTrackingCode() },
                 { transaction }
             );
-        } catch (error: any) {
-            if (error?.name === 'SequelizeUniqueConstraintError') continue;
+        } catch (error) {
+            if (error instanceof Error && error.name === 'SequelizeUniqueConstraintError') continue;
             throw error;
         }
     }
@@ -39,16 +63,17 @@ export const createOrder = async (req: Request, res: Response) => {
 
         // 1. Calculate total server-side
         let totalAmount = 0;
-        const processedItems = [];
+        const processedItems: ProcessedOrderItem[] = [];
+        const cartItems = items as CartItemInput[];
 
-        const requestedIds = [...new Set(items.map((item: any) => Number(item.product_id)))];
+        const requestedIds = [...new Set(cartItems.map((item) => Number(item.product_id)))];
         const products = await Product.findAll({
             where: { cod_producto: requestedIds },
             transaction: t
         });
         const productsById = new Map(products.map((product) => [Number(product.cod_producto), product]));
 
-        for (const item of items) {
+        for (const item of cartItems) {
             const product = productsById.get(Number(item.product_id));
 
             if (!product) {

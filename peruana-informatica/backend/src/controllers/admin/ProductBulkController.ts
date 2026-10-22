@@ -7,14 +7,51 @@ import { PeruanaInformaticaService } from '../../services/PeruanaInformaticaServ
 import { createProductRecord } from '../../services/productRecordService';
 import { logger } from '../../config/logger';
 import { sendError } from '../../middleware/errorHandler';
+import { type ProductAttributes } from '../../models/Product';
+
+interface ImportProductInput {
+    codigo_interno?: string;
+    codigo?: string;
+    name?: string;
+    nombre?: string;
+    description?: string;
+    descripcion?: string;
+    price?: number | string;
+    precio?: number | string;
+    pre_cli?: number | string;
+    stock?: number;
+    category_id?: number;
+    brand_id?: number;
+    image?: string;
+    keywords?: string;
+    component_type?: string;
+    additional_images?: string[];
+    subcategory_ids?: number[];
+    seo_title?: string;
+    seo_description?: string;
+}
+
+interface BulkSuccessItem {
+    codigo: string;
+    productId: number;
+    name: string;
+}
+
+interface BulkErrorItem {
+    codigo: string;
+    error: string;
+}
+
+type BulkUpdateFields = Partial<Pick<ProductAttributes,
+    'category_id' | 'brand_id' | 'component_type' | 'socket_type' | 'ram_type' | 'form_factor'>>;
 
 export class ProductBulkController {
     async importJson(req: Request, res: Response) {
         try {
             const payload = req.body;
-            const items = Array.isArray(payload)
-                ? payload
-                : (Array.isArray(payload?.products) ? payload.products : null);
+            const items: ImportProductInput[] | null = Array.isArray(payload)
+                ? payload as ImportProductInput[]
+                : (Array.isArray(payload?.products) ? payload.products as ImportProductInput[] : null);
 
             if (!items) {
                 return res.status(400).json({
@@ -23,9 +60,9 @@ export class ProductBulkController {
                 });
             }
 
-            const success: any[] = [];
-            const updated: any[] = [];
-            const errors: any[] = [];
+            const success: BulkSuccessItem[] = [];
+            const updated: BulkSuccessItem[] = [];
+            const errors: BulkErrorItem[] = [];
 
             for (const raw of items) {
                 const codigo = raw?.codigo_interno ?? raw?.codigo ?? null;
@@ -62,11 +99,11 @@ export class ProductBulkController {
                         productId: product.cod_producto,
                         name: product.name
                     });
-                } catch (error: any) {
+                } catch (error) {
                     await transaction.rollback();
                     errors.push({
                         codigo: codigo ?? 'sin_codigo',
-                        error: error?.message || 'Error al crear producto'
+                        error: error instanceof Error ? error.message : 'Error al crear producto'
                     });
                 }
             }
@@ -96,12 +133,12 @@ export class ProductBulkController {
             const { product_ids, subcategory_ids, ...updates } = req.body;
 
             // Filtrar campos permitidos para actualización masiva
-            const allowedFields = ['category_id', 'brand_id', 'component_type', 'socket_type', 'ram_type', 'form_factor'];
-            const cleanUpdates: any = {};
+            const allowedFields: (keyof BulkUpdateFields)[] = ['category_id', 'brand_id', 'component_type', 'socket_type', 'ram_type', 'form_factor'];
+            const cleanUpdates: BulkUpdateFields = {};
 
             Object.keys(updates).forEach(key => {
-                if (allowedFields.includes(key) && updates[key] !== undefined) {
-                    cleanUpdates[key] = updates[key];
+                if (allowedFields.includes(key as keyof BulkUpdateFields) && updates[key] !== undefined) {
+                    cleanUpdates[key as keyof BulkUpdateFields] = updates[key];
                 }
             });
 

@@ -19,14 +19,38 @@ const SEO_SETTINGS_EDITABLE_FIELDS = [
   "is_active"
 ];
 
-export function pickSeoSettingsFields(body: any): Record<string, any> {
-  const data: Record<string, any> = {};
+export interface SeoSettingsUpdateInput {
+  page_type?: string;
+  page_identifier?: string;
+  meta_title?: string;
+  meta_description?: string;
+  meta_keywords?: string;
+  og_title?: string;
+  og_description?: string;
+  og_image?: string;
+  twitter_title?: string;
+  twitter_description?: string;
+  twitter_image?: string;
+  canonical_url?: string;
+  robots?: string;
+  schema_markup?: string;
+  custom_head?: string;
+  priority?: number;
+  change_frequency?: "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never";
+  is_active?: boolean;
+}
 
-  for (const field of SEO_SETTINGS_EDITABLE_FIELDS) {
-    if (body && Object.prototype.hasOwnProperty.call(body, field)) {
-      data[field] = body[field];
+export function pickSeoSettingsFields(body: unknown): SeoSettingsUpdateInput {
+  const data: Record<string, unknown> = {};
+
+  if (body && typeof body === 'object') {
+    const source = body as Record<string, unknown>;
+    for (const field of SEO_SETTINGS_EDITABLE_FIELDS) {
+      if (Object.prototype.hasOwnProperty.call(source, field)) {
+        data[field] = source[field];
+      }
     }
   }
 
-  return data;
+  return data as SeoSettingsUpdateInput;
 }

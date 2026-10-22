@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { ValidationError, type WhereOptions } from "sequelize";
 import { SeoSettings } from "../models/SeoSettings";
 import { pickSeoSettingsFields } from "../utils/seoFields";
 import { logger } from '../config/logger';
@@ -8,7 +9,7 @@ export class SeoController {
   static async getAll(req: Request, res: Response) {
     try {
       const { page_type, is_active } = req.query;
-      const whereClause: any = {};
+      const whereClause: WhereOptions = {};
 
       if (page_type) {
         whereClause.page_type = page_type;
@@ -114,11 +115,11 @@ export class SeoController {
         message: "Configuración SEO creada exitosamente",
         data: newSeoSettings,
       });
-    } catch (error: any) {
+    } catch (error) {
       logger.error("❌ Error creating SEO settings:", error);
 
-      if (error.name === "SequelizeValidationError") {
-        const validationErrors = error.errors.map((err: any) => ({
+      if (error instanceof ValidationError) {
+        const validationErrors = error.errors.map((err) => ({
           field: err.path,
           message: 'Error interno',
         }));
@@ -197,11 +198,11 @@ export class SeoController {
         message: "Configuración SEO actualizada exitosamente",
         data: seoSettings,
       });
-    } catch (error: any) {
+    } catch (error) {
       logger.error("❌ Error updating SEO settings:", error);
 
-      if (error.name === "SequelizeValidationError") {
-        const validationErrors = error.errors.map((err: any) => ({
+      if (error instanceof ValidationError) {
+        const validationErrors = error.errors.map((err) => ({
           field: err.path,
           message: 'Error interno',
         }));

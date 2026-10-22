@@ -18,16 +18,32 @@ const DISCOUNT_EDITABLE_FIELDS = [
     'is_active'
 ];
 
-function pickDiscountFields(body: any): Record<string, any> {
-    const data: Record<string, any> = {};
+interface DiscountUpdateInput {
+    name?: string;
+    description?: string;
+    discount_type?: 'percentage' | 'fixed';
+    discount_value?: number;
+    applies_to?: 'all' | 'category' | 'product';
+    category_id?: number;
+    product_id?: number;
+    valid_from?: Date;
+    valid_until?: Date;
+    is_active?: boolean;
+}
 
-    for (const field of DISCOUNT_EDITABLE_FIELDS) {
-        if (body && Object.prototype.hasOwnProperty.call(body, field)) {
-            data[field] = body[field];
+function pickDiscountFields(body: unknown): DiscountUpdateInput {
+    const data: Record<string, unknown> = {};
+
+    if (body && typeof body === 'object') {
+        const source = body as Record<string, unknown>;
+        for (const field of DISCOUNT_EDITABLE_FIELDS) {
+            if (Object.prototype.hasOwnProperty.call(source, field)) {
+                data[field] = source[field];
+            }
         }
     }
 
-    return data;
+    return data as DiscountUpdateInput;
 }
 
 class DiscountController {

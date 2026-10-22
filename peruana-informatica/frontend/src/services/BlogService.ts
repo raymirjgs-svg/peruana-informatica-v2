@@ -105,18 +105,11 @@ interface ContentGenerationRequest {
 }
 
 import { API_CONFIG } from '@/config/api';
-import { getAdminAuthHeaders } from '@/lib/adminAuth';
+import apiClient from '../utils/api';
 
 class BlogService {
   private static readonly BASE_URL = API_CONFIG.BASE_URL;
   private static readonly API_BASE = API_CONFIG.API_BASE_URL;
-
-  private static getAuthHeaders(): Record<string, string> {
-    return {
-      ...getAdminAuthHeaders(),
-      'Content-Type': 'application/json',
-    };
-  }
 
   // ====================== PUBLIC API ======================
 
@@ -141,37 +134,27 @@ class BlogService {
         });
       }
 
-      const url = `${this.API_BASE}/api/blog${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+      const endpoint = `/api/blog${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
 
-      console.log('🔍 Fetching blog posts from:', url);
+      console.log('🔍 Fetching blog posts from:', `${this.API_BASE}${endpoint}`);
       console.log('📍 API Base:', this.API_BASE);
 
       // Add timeout to fetch request
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
 
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        signal: controller.signal
-      });
+      try {
+        const result = await apiClient.request<PaginatedResponse<BlogPost>>(endpoint, {
+          method: 'GET',
+          signal: controller.signal,
+        });
 
-      clearTimeout(timeoutId);
+        console.log('✅ Blog posts loaded:', result.data?.length || 0, 'posts');
 
-      console.log('📡 Blog response status:', response.status);
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('❌ Blog API error:', response.status, errorText);
-        throw new Error(`Error ${response.status}: ${errorText}`);
+        return result;
+      } finally {
+        clearTimeout(timeoutId);
       }
-
-      const result = await response.json();
-      console.log('✅ Blog posts loaded:', result.data?.length || 0, 'posts');
-
-      return result;
     } catch (error: any) {
       console.error('❌ Error fetching published posts:', error);
 
@@ -193,20 +176,9 @@ class BlogService {
    */
   static async getPostBySlug(slug: string): Promise<ApiResponse<BlogPost>> {
     try {
-      const response = await fetch(`${this.API_BASE}/api/blog/post/${slug}`, {
+      return await apiClient.request<ApiResponse<BlogPost>>(`/api/blog/post/${slug}`, {
         method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
       });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || 'Error al obtener el post');
-      }
-
-      return result;
     } catch (error) {
       console.error('Error fetching post by slug:', error);
       throw error;
@@ -218,20 +190,9 @@ class BlogService {
    */
   static async likePost(id: number): Promise<ApiResponse<{ likes: number }>> {
     try {
-      const response = await fetch(`${this.API_BASE}/api/blog/post/${id}/like`, {
+      return await apiClient.request<ApiResponse<{ likes: number }>>(`/api/blog/post/${id}/like`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
       });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || 'Error al dar like al post');
-      }
-
-      return result;
     } catch (error) {
       console.error('Error liking post:', error);
       throw error;
@@ -260,20 +221,12 @@ class BlogService {
         });
       }
 
-      const url = `${this.API_BASE}/api/blog/admin${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+      const endpoint = `/api/blog/admin${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
 
-      const response = await fetch(url, {
+      return await apiClient.request<PaginatedResponse<BlogPost>>(endpoint, {
         method: 'GET',
-        headers: this.getAuthHeaders(),
+        auth: 'admin',
       });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || 'Error al obtener los posts');
-      }
-
-      return result;
     } catch (error) {
       console.error('Error fetching all posts:', error);
       throw error;
@@ -285,18 +238,10 @@ class BlogService {
    */
   static async getBlogStats(): Promise<ApiResponse<BlogStats>> {
     try {
-      const response = await fetch(`${this.API_BASE}/api/blog/admin/stats`, {
+      return await apiClient.request<ApiResponse<BlogStats>>('/api/blog/admin/stats', {
         method: 'GET',
-        headers: this.getAuthHeaders(),
+        auth: 'admin',
       });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || 'Error al obtener las estadísticas');
-      }
-
-      return result;
     } catch (error) {
       console.error('Error fetching blog stats:', error);
       throw error;
@@ -308,19 +253,11 @@ class BlogService {
    */
   static async createPost(data: BlogFormData): Promise<ApiResponse<BlogPost>> {
     try {
-      const response = await fetch(`${this.API_BASE}/api/blog/admin`, {
+      return await apiClient.request<ApiResponse<BlogPost>>('/api/blog/admin', {
         method: 'POST',
-        headers: this.getAuthHeaders(),
-        body: JSON.stringify(data),
+        auth: 'admin',
+        body: data,
       });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || 'Error al crear el post');
-      }
-
-      return result;
     } catch (error) {
       console.error('Error creating post:', error);
       throw error;
@@ -332,18 +269,10 @@ class BlogService {
    */
   static async getPostById(id: number): Promise<ApiResponse<BlogPost>> {
     try {
-      const response = await fetch(`${this.API_BASE}/api/blog/admin/${id}`, {
+      return await apiClient.request<ApiResponse<BlogPost>>(`/api/blog/admin/${id}`, {
         method: 'GET',
-        headers: this.getAuthHeaders(),
+        auth: 'admin',
       });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || 'Error al obtener el post');
-      }
-
-      return result;
     } catch (error) {
       console.error('Error fetching post by ID:', error);
       throw error;
@@ -355,19 +284,11 @@ class BlogService {
    */
   static async updatePost(id: number, data: Partial<BlogFormData>): Promise<ApiResponse<BlogPost>> {
     try {
-      const response = await fetch(`${this.API_BASE}/api/blog/admin/${id}`, {
+      return await apiClient.request<ApiResponse<BlogPost>>(`/api/blog/admin/${id}`, {
         method: 'PUT',
-        headers: this.getAuthHeaders(),
-        body: JSON.stringify(data),
+        auth: 'admin',
+        body: data,
       });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || 'Error al actualizar el post');
-      }
-
-      return result;
     } catch (error) {
       console.error('Error updating post:', error);
       throw error;
@@ -379,18 +300,10 @@ class BlogService {
    */
   static async deletePost(id: number): Promise<ApiResponse<void>> {
     try {
-      const response = await fetch(`${this.API_BASE}/api/blog/admin/${id}`, {
+      return await apiClient.request<ApiResponse<void>>(`/api/blog/admin/${id}`, {
         method: 'DELETE',
-        headers: this.getAuthHeaders(),
+        auth: 'admin',
       });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || 'Error al eliminar el post');
-      }
-
-      return result;
     } catch (error) {
       console.error('Error deleting post:', error);
       throw error;
@@ -404,19 +317,11 @@ class BlogService {
    */
   static async generateTitles(data: AIGenerationRequest): Promise<ApiResponse<BlogTitleSuggestion[]>> {
     try {
-      const response = await fetch(`${this.API_BASE}/api/blog/admin/ai/generate-titles`, {
+      return await apiClient.request<ApiResponse<BlogTitleSuggestion[]>>('/api/blog/admin/ai/generate-titles', {
         method: 'POST',
-        headers: this.getAuthHeaders(),
-        body: JSON.stringify(data),
+        auth: 'admin',
+        body: data,
       });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || 'Error al generar títulos');
-      }
-
-      return result;
     } catch (error) {
       console.error('Error generating titles:', error);
       throw error;
@@ -441,20 +346,12 @@ class BlogService {
         });
       }
 
-      const url = `${this.API_BASE}/api/blog/admin/ai/title-suggestions${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+      const endpoint = `/api/blog/admin/ai/title-suggestions${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
 
-      const response = await fetch(url, {
+      return await apiClient.request<ApiResponse<BlogTitleSuggestion[]>>(endpoint, {
         method: 'GET',
-        headers: this.getAuthHeaders(),
+        auth: 'admin',
       });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || 'Error al obtener sugerencias');
-      }
-
-      return result;
     } catch (error) {
       console.error('Error fetching title suggestions:', error);
       throw error;
@@ -470,19 +367,15 @@ class BlogService {
     generated_image: boolean;
   }>> {
     try {
-      const response = await fetch(`${this.API_BASE}/api/blog/admin/ai/generate-content`, {
+      return await apiClient.request<ApiResponse<{
+        post: BlogPost;
+        suggestion: BlogTitleSuggestion;
+        generated_image: boolean;
+      }>>('/api/blog/admin/ai/generate-content', {
         method: 'POST',
-        headers: this.getAuthHeaders(),
-        body: JSON.stringify(data),
+        auth: 'admin',
+        body: data,
       });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || 'Error al generar contenido');
-      }
-
-      return result;
     } catch (error) {
       console.error('Error generating content:', error);
       throw error;
@@ -497,19 +390,11 @@ class BlogService {
     action: 'select' | 'reject'
   ): Promise<ApiResponse<BlogTitleSuggestion>> {
     try {
-      const response = await fetch(`${this.API_BASE}/api/blog/admin/ai/title-suggestions/${id}`, {
+      return await apiClient.request<ApiResponse<BlogTitleSuggestion>>(`/api/blog/admin/ai/title-suggestions/${id}`, {
         method: 'PUT',
-        headers: this.getAuthHeaders(),
-        body: JSON.stringify({ action }),
+        auth: 'admin',
+        body: { action },
       });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || 'Error al gestionar sugerencia');
-      }
-
-      return result;
     } catch (error) {
       console.error('Error managing title suggestion:', error);
       throw error;
@@ -636,15 +521,9 @@ class BlogService {
    */
   static async testConnection(): Promise<any> {
     try {
-      const response = await fetch(`${this.API_BASE}/api/blog/test`, {
+      return await apiClient.request('/api/blog/test', {
         method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
       });
-
-      const result = await response.json();
-      return result;
     } catch (error) {
       console.error('Blog connection test failed:', error);
       throw error;

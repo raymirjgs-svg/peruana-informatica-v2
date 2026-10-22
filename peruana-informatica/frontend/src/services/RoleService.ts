@@ -1,5 +1,4 @@
-import { API_CONFIG } from '../config/api';
-const API_BASE = API_CONFIG.API_BASE_URL;
+import apiClient from '../utils/api';
 
 export interface Role {
     id: number;
@@ -18,20 +17,40 @@ export interface Permission {
     description?: string;
 }
 
+interface RolesResponse {
+    success?: boolean;
+    data: Role[];
+}
+
+interface PermissionsResponse {
+    success?: boolean;
+    data: {
+        all: Permission[];
+        grouped: Record<string, Permission[]>;
+    };
+}
+
+interface RoleResponse {
+    success?: boolean;
+    data?: Role;
+}
+
+interface RoleMutationResponse {
+    success?: boolean;
+    message?: string;
+}
+
 class RoleService {
     /**
      * Get all roles
      */
     async getAllRoles(token?: string) {
         try {
-            const response = await fetch(`${API_BASE}/api/admin/roles`, {
+            return await apiClient.request<RolesResponse>('/api/admin/roles', {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
-
-            if (!response.ok) throw new Error('Failed to fetch roles');
-            return await response.json();
         } catch (error) {
             console.error('Error fetching roles:', error);
             throw error;
@@ -43,14 +62,11 @@ class RoleService {
      */
     async getRoleById(id: number, token?: string) {
         try {
-            const response = await fetch(`${API_BASE}/api/admin/roles/${id}`, {
+            return await apiClient.request<RoleResponse>(`/api/admin/roles/${id}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
-
-            if (!response.ok) throw new Error('Failed to fetch role');
-            return await response.json();
         } catch (error) {
             console.error('Error fetching role:', error);
             throw error;
@@ -62,17 +78,14 @@ class RoleService {
      */
     async createRole(data: { name: string; slug: string; description?: string; permissions: number[] }, token?: string) {
         try {
-            const response = await fetch(`${API_BASE}/api/admin/roles`, {
+            return await apiClient.request<RoleMutationResponse>('/api/admin/roles', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify(data)
+                body: data
             });
-
-            if (!response.ok) throw new Error('Failed to create role');
-            return await response.json();
         } catch (error) {
             console.error('Error creating role:', error);
             throw error;
@@ -84,17 +97,14 @@ class RoleService {
      */
     async updateRole(id: number, data: { name: string; slug: string; description?: string; permissions: number[] }, token?: string) {
         try {
-            const response = await fetch(`${API_BASE}/api/admin/roles/${id}`, {
+            return await apiClient.request<RoleMutationResponse>(`/api/admin/roles/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify(data)
+                body: data
             });
-
-            if (!response.ok) throw new Error('Failed to update role');
-            return await response.json();
         } catch (error) {
             console.error('Error updating role:', error);
             throw error;
@@ -106,15 +116,12 @@ class RoleService {
      */
     async deleteRole(id: number, token?: string) {
         try {
-            const response = await fetch(`${API_BASE}/api/admin/roles/${id}`, {
+            return await apiClient.request<RoleMutationResponse>(`/api/admin/roles/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
-
-            if (!response.ok) throw new Error('Failed to delete role');
-            return await response.json();
         } catch (error) {
             console.error('Error deleting role:', error);
             throw error;
@@ -126,14 +133,11 @@ class RoleService {
      */
     async getAllPermissions(token?: string) {
         try {
-            const response = await fetch(`${API_BASE}/api/admin/permissions`, {
+            return await apiClient.request<PermissionsResponse>('/api/admin/permissions', {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
-
-            if (!response.ok) throw new Error('Failed to fetch permissions');
-            return await response.json();
         } catch (error) {
             console.error('Error fetching permissions:', error);
             throw error;
@@ -145,17 +149,14 @@ class RoleService {
      */
     async assignRoleToUser(userId: number, roleId: number, token?: string) {
         try {
-            const response = await fetch(`${API_BASE}/api/admin/assign-role`, {
+            return await apiClient.request<RoleMutationResponse>('/api/admin/assign-role', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({ userId, roleId })
+                body: { userId, roleId }
             });
-
-            if (!response.ok) throw new Error('Failed to assign role');
-            return await response.json();
         } catch (error) {
             console.error('Error assigning role:', error);
             throw error;

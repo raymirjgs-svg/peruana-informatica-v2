@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 import Link from 'next/link';
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
-import { getApiBase } from '@/lib/apiBase';
+import apiClient from '@/utils/api';
 
 export default function RegisterPage() {
     const router = useRouter();
@@ -25,20 +25,10 @@ export default function RegisterPage() {
     const onSubmit = async (data: RegisterForm) => {
         setLoading(true);
         try {
-            const API_URL = getApiBase();
-            const response = await fetch(`${API_URL}/api/auth/register`, {
+            await apiClient.request('/api/auth/register', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
+                body: data,
             });
-
-            const result = await response.json();
-
-            if (!response.ok) {
-                throw new Error(result.message || 'Error al registrarse');
-            }
 
             toast.success('Cuenta creada exitosamente');
 

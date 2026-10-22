@@ -1,7 +1,7 @@
 // ============================================
 // 1. src/services/BrandService.ts (NUEVO)
 // ============================================
-import { API_CONFIG } from '@/config/api';
+import apiClient from '@/utils/api';
 
 export interface Brand {
   id: number;
@@ -10,23 +10,19 @@ export interface Brand {
 }
 
 export class BrandService {
-  private baseUrl = API_CONFIG.BASE_URL;
-
   async getBrands(): Promise<Brand[]> {
     try {
       // Asegurarse de que fetch solo se ejecute en el cliente
       if (typeof window === 'undefined') return [];
 
-      const response = await fetch(`${this.baseUrl}/api/brands`, {
+      const data = await apiClient.request<Brand[]>('/api/brands', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
         cache: 'no-store'
       });
-      if (!response.ok) throw new Error('Error fetching brands');
-      const data = await response.json();
-      return Array.isArray(data) ? (data as Brand[]) : [];
+      return Array.isArray(data) ? data : [];
     } catch (error) {
       console.error('Error:', error);
       return [];
@@ -35,10 +31,8 @@ export class BrandService {
 
   async getBrandBySlug(slug: string): Promise<Brand | null> {
     try {
-      const response = await fetch(`${this.baseUrl}/api/brands/${slug}`);
-      if (!response.ok) return null;
-      const data = await response.json();
-      return data as Brand;
+      const data = await apiClient.request<Brand>(`/api/brands/${slug}`);
+      return data;
     } catch (error) {
       console.error('Error:', error);
       return null;

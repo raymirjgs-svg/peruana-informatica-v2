@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { contactSchema, type ContactFormData } from '@/lib/validations/schemas';
 import { useState } from 'react';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
-import { getApiBase } from '@/lib/apiBase';
+import apiClient from '@/utils/api';
 
 export default function ContactPage() {
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
@@ -25,24 +25,16 @@ export default function ContactPage() {
     setErrorMessage('');
 
     try {
-      const response = await fetch(`getApiBase()/api/contacts`, {
+      await apiClient.request('/api/contacts', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+        body: {
           full_name: data.fullName,
           email: data.email,
           phone: data.phone || '',
           subject: data.subject || '',
           message: data.message,
-        }),
+        },
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Error al enviar el mensaje');
-      }
 
       setSubmitStatus('success');
       reset();

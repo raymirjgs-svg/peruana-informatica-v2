@@ -16,25 +16,17 @@ export interface CompanySettings {
     show_distributor_price_in_detail?: boolean;
 }
 
-import { API_CONFIG } from '../config/api';
+import apiClient from '../utils/api';
 
 export class SettingsService {
-    private static readonly API_BASE = API_CONFIG.API_BASE_URL;
-
     static async getPublicSettings(): Promise<CompanySettings> {
         try {
-            const response = await fetch(`${this.API_BASE}/api/company-settings`, {
+            return await apiClient.request<CompanySettings>('/api/company-settings', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
                 },
             });
-
-            if (!response.ok) {
-                throw new Error('Error fetching public settings');
-            }
-
-            return await response.json();
         } catch (error) {
             console.error('Error fetching settings:', error);
             // Retornar valores por defecto en caso de error para no romper la UI

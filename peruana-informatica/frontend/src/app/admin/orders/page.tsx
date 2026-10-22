@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { AdminLayout } from '@/components/admin/AdminLayout';
-import { API_CONFIG } from '@/config/api';
 import { getAdminAuthHeaders } from '@/lib/adminAuth';
 import { Order } from './types';
+import apiClient from '@/utils/api';
 import { OrderCard } from '@/components/admin/orders/OrderCard';
 import { InvoiceModal } from '@/components/admin/orders/InvoiceModal';
 
@@ -24,13 +24,17 @@ export default function AdminOrdersPage() {
   const fetchOrders = async (targetPage: number = page) => {
     setIsLoading(true);
     try {
-      const response = await fetch(`${API_CONFIG.API_BASE_URL}/api/admin/orders?page=${targetPage}&limit=${limit}`, {
+      const data = await apiClient.request<
+        Order[] | {
+          orders?: Order[];
+          pagination?: { total?: number; totalPages?: number; page?: number };
+        }
+      >(`/api/admin/orders?page=${targetPage}&limit=${limit}`, {
         headers: getAdminAuthHeaders()
       });
-      const data = await response.json();
       const list = Array.isArray(data) ? data : (data.orders ?? []);
       setOrders(list);
-      if (data?.pagination) {
+      if (!Array.isArray(data) && data.pagination) {
         setTotal(data.pagination.total ?? list.length);
         setTotalPages(data.pagination.totalPages ?? 1);
         setPage(data.pagination.page ?? targetPage);
@@ -48,22 +52,18 @@ export default function AdminOrdersPage() {
 
   const handleVerifyPayment = async (orderId: number, verified: boolean) => {
     try {
-      const response = await fetch(`${API_CONFIG.API_BASE_URL}/api/admin/payments/${orderId}/verify`, {
+      await apiClient.request(`/api/admin/payments/${orderId}/verify`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
           ...getAdminAuthHeaders()
         },
-        body: JSON.stringify({ verified, verified_by: 'Admin' })
+        body: { verified, verified_by: 'Admin' }
       });
 
-      if (response.ok) {
-        alert(verified ? 'Pago verificado correctamente' : 'Pago rechazado');
-        fetchOrders();
-        setSelectedOrder(null);
-      } else {
-        alert('Error al verificar pago');
-      }
+      alert(verified ? 'Pago verificado correctamente' : 'Pago rechazado');
+      fetchOrders();
+      setSelectedOrder(null);
     } catch (error) {
       alert('Error de conexión');
     }
@@ -86,23 +86,17 @@ export default function AdminOrdersPage() {
       formData.append('invoice_file', invoiceFile);
       formData.append('invoice_number', invoiceNumber);
 
-      const response = await fetch(`${API_CONFIG.API_BASE_URL}/api/admin/payments/${orderId}/upload-invoice`, {
+      await apiClient.request(`/api/admin/payments/${orderId}/upload-invoice`, {
         method: 'POST',
         headers: getAdminAuthHeaders(),
         body: formData
       });
 
-      const data = await response.json();
-
-      if (response.ok) {
-        alert('Comprobante cargado exitosamente');
-        fetchOrders();
-        setSelectedOrder(null);
-        setInvoiceNumber('');
-        setInvoiceFile(null);
-      } else {
-        alert(data.error || 'Error al cargar comprobante');
-      }
+      alert('Comprobante cargado exitosamente');
+      fetchOrders();
+      setSelectedOrder(null);
+      setInvoiceNumber('');
+      setInvoiceFile(null);
     } catch (error) {
       alert('Error de conexión');
     } finally {
@@ -112,16 +106,10 @@ export default function AdminOrdersPage() {
 
   const handleDownloadInvoice = async (filename: string) => {
     try {
-      const response = await fetch(`${API_CONFIG.API_BASE_URL}/api/admin/payments/invoices/${filename}`, {
-        headers: getAdminAuthHeaders()
+      const blob = await apiClient.request<Blob>(`/api/admin/payments/invoices/${filename}`, {
+        headers: getAdminAuthHeaders(),
+        responseType: 'blob'
       });
-
-      if (!response.ok) {
-        alert('Error al descargar comprobante');
-        return;
-      }
-
-      const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
@@ -137,16 +125,10 @@ export default function AdminOrdersPage() {
 
   const handleViewProof = async (orderId: number) => {
     try {
-      const response = await fetch(`${API_CONFIG.API_BASE_URL}/api/admin/orders/${orderId}/payment-proof`, {
-        headers: getAdminAuthHeaders()
+      const blob = await apiClient.request<Blob>(`/api/admin/orders/${orderId}/payment-proof`, {
+        headers: getAdminAuthHeaders(),
+        responseType: 'blob'
       });
-
-      if (!response.ok) {
-        alert('Error al cargar comprobante');
-        return;
-      }
-
-      const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       window.open(url, '_blank', 'noopener,noreferrer');
       setTimeout(() => window.URL.revokeObjectURL(url), 60000);

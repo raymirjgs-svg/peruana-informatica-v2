@@ -3,7 +3,8 @@
 import React, { useEffect, useState } from "react";
 import { getAdminAuthHeaders } from "@/lib/adminAuth";
 import type { Product } from "../types";
-import { getApiBase, isValidUrl } from "../utils";
+import { isValidUrl } from "../utils";
+import apiClient from "@/utils/api";
 
 interface UseProductsFormsParams {
   reloadProducts: () => Promise<void>;
@@ -90,10 +91,11 @@ export function useProductsForms({
     setSearchError(null);
 
     try {
-      const res = await fetch(`${getApiBase()}/admin/products/erp-lookup/${searchCode.trim()}`, { headers: { ...getAdminAuthHeaders() } });
-      const json = await res.json();
-
-      if (!res.ok) throw new Error(json.error || 'Error al buscar producto');
+      const json = await apiClient.request<{
+        found: boolean;
+        source: 'db' | 'erp';
+        product: { codigo: string; nombre: string; precio: number; stock: number };
+      }>(`/api/admin/products/erp-lookup/${searchCode.trim()}`, { headers: { ...getAdminAuthHeaders() } });
 
       if (json.found) {
         if (json.source === 'db') {
@@ -156,8 +158,9 @@ export function useProductsForms({
   useEffect(() => {
     if (form.category_id) {
       setLoadingSubcategories(true);
-      fetch(`${getApiBase()}/categories/${form.category_id}`)
-        .then(res => res.json())
+      apiClient.request<{ subCategories?: Array<{ id: number; name: string }> }>(
+        `/api/categories/${form.category_id}`,
+      )
         .then(data => {
           if (data && data.subCategories) {
             setSubcategories(data.subCategories);
@@ -180,8 +183,9 @@ export function useProductsForms({
     if (bulkCategory) {
       setLoadingBulkSubcategories(true);
       setBulkSubcategories([]); // Reset subcategories when category changes
-      fetch(`${getApiBase()}/categories/${bulkCategory}`)
-        .then(res => res.json())
+      apiClient.request<{ subCategories?: Array<{ id: number; name: string }> }>(
+        `/api/categories/${bulkCategory}`,
+      )
         .then(data => {
           if (data && data.subCategories) {
             setBulkSubcategoryOptions(data.subCategories);
@@ -205,13 +209,15 @@ export function useProductsForms({
     formData.append('image', file);
 
     try {
-      const res = await fetch(`${getApiBase()}/admin/upload`, {
-        method: 'POST',
-        headers: { ...getAdminAuthHeaders() },
-        body: formData
-      });
-      const data = await res.json();
-      if (res.ok && data.success) {
+      const data = await apiClient.request<{ success?: boolean; url?: string; error?: string }>(
+        '/api/admin/upload',
+        {
+          method: 'POST',
+          headers: { ...getAdminAuthHeaders() },
+          body: formData
+        }
+      );
+      if (data.success && data.url) {
         return data.url;
       } else {
         throw new Error(data.error || 'Error al subir imagen');
@@ -284,13 +290,11 @@ export function useProductsForms({
         }
       }
 
-      const res = await fetch(`${getApiBase()}/admin/products`, {
+      await apiClient.request('/api/admin/products', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...getAdminAuthHeaders() },
-        body: JSON.stringify(payload)
+        body: payload
       });
-      const json = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(json?.error || `Error ${res.status}`);
 
       resetCreateModal();
       await reloadProducts();
@@ -393,13 +397,11 @@ export function useProductsForms({
       if (editForm.seo_title) payload.seo_title = editForm.seo_title;
       if (editForm.seo_description) payload.seo_description = editForm.seo_description;
 
-      const res = await fetch(`${getApiBase()}/admin/products/${id}`, {
+      await apiClient.request(`/api/admin/products/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', ...getAdminAuthHeaders() },
-        body: JSON.stringify(payload)
+        body: payload
       });
-      const json = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(json?.error || `Error ${res.status}`);
       setEditingId(null);
       setShowEditModal(false);
       await reloadProducts();
@@ -432,13 +434,11 @@ export function useProductsForms({
       if (bulkRamType) payload.ram_type = bulkRamType;
       if (bulkFormFactor) payload.form_factor = bulkFormFactor;
 
-      const res = await fetch(`${getApiBase()}/admin/products/bulk-update`, {
+      const json = await apiClient.request<{ updated?: number }>('/api/admin/products/bulk-update', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json', ...getAdminAuthHeaders() },
-        body: JSON.stringify(payload)
+        body: payload
       });
-      const json = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(json?.error || `Error ${res.status}`);
 
       showToast(`${json.updated} producto(s) actualizado(s)`);
       clearSelection();

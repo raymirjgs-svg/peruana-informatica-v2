@@ -22,7 +22,7 @@ import {
   EyeOff,
   ShoppingCart
 } from 'lucide-react';
-import { getApiBase } from '@/lib/apiBase';
+import apiClient from '@/utils/api';
 
 interface PriceOption {
   value: string;
@@ -88,11 +88,9 @@ export default function SettingsPage() {
     announcement_bar_color: '#1e40af' // blue-800
   });
 
-  const apiBase = getApiBase();
 
   useEffect(() => {
-    fetch(`${apiBase}/api/admin/settings`, { headers: { ...getAdminAuthHeaders() } })
-      .then(res => res.json())
+    apiClient.request<Record<string, unknown>>('/api/admin/settings', { headers: { ...getAdminAuthHeaders() } })
       .then(data => {
         setSettings(prev => ({ ...prev, ...data }));
         setLoading(false);
@@ -114,10 +112,10 @@ export default function SettingsPage() {
     try {
       // Save all settings concurrently
       const promises = Object.entries(settings).map(([key, value]) =>
-        fetch(`${apiBase}/api/admin/settings/${key}`, {
+        apiClient.request(`/api/admin/settings/${key}`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json', ...getAdminAuthHeaders() },
-          body: JSON.stringify({ value: String(value) })
+          headers: { ...getAdminAuthHeaders() },
+          body: { value: String(value) }
         })
       );
 

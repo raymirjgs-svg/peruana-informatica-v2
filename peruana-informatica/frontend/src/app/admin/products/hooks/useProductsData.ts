@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { getAdminAuthHeaders } from "@/lib/adminAuth";
 import type { Product, ProductsResponse } from "../types";
-import { getApiBase } from "../utils";
+import apiClient from "@/utils/api";
 
 export function useProductsData() {
   const [data, setData] = useState<ProductsResponse | null>(null);
@@ -46,11 +46,9 @@ export function useProductsData() {
       if (filterStock) params.set('stock_filter', filterStock);
       if (sortBy) params.set('sort', sortBy);
       if (sortOrder) params.set('order', sortOrder);
-      const url = `${getApiBase()}/admin/products?${params.toString()}`;
-      const res = await fetch(url, { headers: { ...getAdminAuthHeaders() } });
-      const json = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(json?.error || `Error ${res.status}`);
-      setData(json as ProductsResponse);
+      const endpoint = `/api/admin/products?${params.toString()}`;
+      const json = await apiClient.request<ProductsResponse>(endpoint, { headers: { ...getAdminAuthHeaders() } });
+      setData(json);
     } catch (err: any) {
       setError(err?.message || "Error al cargar productos");
     } finally {
@@ -83,9 +81,10 @@ export function useProductsData() {
     if (!confirm('¿Sincronizar precios y stock de TODOS los productos con el ERP? Esto puede tomar varios minutos.')) return;
     setSyncingAll(true);
     try {
-      const res = await fetch(`${getApiBase()}/admin/products/sync-all`, { method: 'POST', headers: { ...getAdminAuthHeaders() } });
-      const json = await res.json();
-      if (!res.ok) throw new Error(json?.error || 'Error al sincronizar');
+      const json = await apiClient.request<{ updated?: number }>(
+        '/api/admin/products/sync-all',
+        { method: 'POST', headers: { ...getAdminAuthHeaders() } }
+      );
       showToast(`Sincronización completada: ${json.updated || 0} productos actualizados`, 'success');
       await reloadProducts();
     } catch (err: any) {
@@ -101,14 +100,12 @@ export function useProductsData() {
       try {
         await reloadProducts();
         // Cargar categorías y marcas desde admin
-        const [catRes, brandRes] = await Promise.all([
-          fetch(`${getApiBase()}/admin/categories`, { headers: { ...getAdminAuthHeaders() } }),
-          fetch(`${getApiBase()}/admin/brands`, { headers: { ...getAdminAuthHeaders() } })
+        const [cats, brs] = await Promise.all([
+          apiClient.request<Array<{ id: number; name: string }>>('/api/admin/categories', { headers: { ...getAdminAuthHeaders() } }),
+          apiClient.request<Array<{ id: number; name: string }>>('/api/admin/brands', { headers: { ...getAdminAuthHeaders() } })
         ]);
-        const cats = await catRes.json().catch(() => []);
-        const brs = await brandRes.json().catch(() => []);
-        if (catRes.ok) setCategories(cats.map((c: any) => ({ id: c.id, name: c.name })));
-        if (brandRes.ok) setBrands(brs.map((b: any) => ({ id: b.id, name: b.name })));
+        setCategories(cats.map(c => ({ id: c.id, name: c.name })));
+        setBrands(brs.map(b => ({ id: b.id, name: b.name })));
       } catch (err: any) {
         // ya se maneja en loaders individuales
       }
@@ -148,9 +145,7 @@ export function useProductsData() {
     setError(null);
     try {
       setDeletingId(id);
-      const res = await fetch(`${getApiBase()}/admin/products/${id}`, { method: 'DELETE', headers: { ...getAdminAuthHeaders() } });
-      const json = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(json?.error || `Error ${res.status}`);
+      await apiClient.request(`/api/admin/products/${id}`, { method: 'DELETE', headers: { ...getAdminAuthHeaders() } });
       await reloadProducts();
       showToast('Producto eliminado');
     } catch (err: any) {
@@ -162,12 +157,10 @@ export function useProductsData() {
 
   const toggleActive = async (id: number) => {
     try {
-      const res = await fetch(`${getApiBase()}/admin/products/${id}/toggle-active`, {
+      const json = await apiClient.request<{ message?: string }>(`/api/admin/products/${id}/toggle-active`, {
         method: 'PATCH',
         headers: { ...getAdminAuthHeaders() },
       });
-      const json = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(json?.error || `Error ${res.status}`);
       await reloadProducts();
       showToast(json.message || 'Estado actualizado');
     } catch (err: any) {

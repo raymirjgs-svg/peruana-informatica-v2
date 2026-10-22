@@ -1,5 +1,6 @@
 
 import { getAdminAuthHeaders } from "@/lib/adminAuth";
+import apiClient from "@/utils/api";
 
 interface SystemHealth {
     database: {
@@ -42,12 +43,7 @@ interface ApiResponse<T> {
     error?: string;
 }
 
-import { API_CONFIG } from '@/config/api';
-
 class SystemService {
-    private static readonly BASE_URL = API_CONFIG.BASE_URL;
-    private static readonly API_BASE = API_CONFIG.API_BASE_URL;
-
     private static getAuthHeaders(): Record<string, string> {
         return {
             ...getAdminAuthHeaders(),
@@ -56,17 +52,9 @@ class SystemService {
 
     static async getHealth(): Promise<SystemHealth> {
         try {
-            const response = await fetch(`${this.API_BASE}/api/admin/system/health-check`, {
+            return await apiClient.request<SystemHealth>('/api/admin/system/health-check', {
                 headers: this.getAuthHeaders(),
             });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.message || "Error al obtener el estado del sistema");
-            }
-
-            return data;
         } catch (error) {
             console.error("Error fetching system health:", error);
             throw error;

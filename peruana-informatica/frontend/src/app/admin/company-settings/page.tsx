@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { AdminLayout } from '@/components/admin/AdminLayout';
-import { API_CONFIG } from '@/config/api';
+import apiClient from '@/utils/api';
 import { getAdminAuthHeaders } from '@/lib/adminAuth';
 import {
   Building2,
@@ -76,10 +76,9 @@ export default function CompanySettingsPage() {
   const fetchSettings = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${API_CONFIG.API_BASE_URL}/api/admin/company-settings`, {
+      const data = await apiClient.request<CompanySettings>('/api/admin/company-settings', {
         headers: { ...getAdminAuthHeaders() },
       });
-      const data = await response.json();
       setSettings(data);
       setFormData({
         company_name: data.company_name || '',
@@ -122,26 +121,17 @@ export default function CompanySettingsPage() {
     setMessage(null);
 
     try {
-      const response = await fetch(`${API_CONFIG.API_BASE_URL}/api/admin/company-settings`, {
+      const data = await apiClient.request<{ settings: CompanySettings }>('/api/admin/company-settings', {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          ...getAdminAuthHeaders(),
-        },
-        body: JSON.stringify(formData),
+        headers: { ...getAdminAuthHeaders() },
+        body: formData,
       });
 
-      const data = await response.json();
-
-      if (response.ok) {
-        setMessage({ type: 'success', text: 'Configuración actualizada exitosamente' });
-        setSettings(data.settings);
-      } else {
-        setMessage({ type: 'error', text: data.error || 'Error al actualizar configuración' });
-      }
+      setMessage({ type: 'success', text: 'Configuración actualizada exitosamente' });
+      setSettings(data.settings);
     } catch (error) {
       console.error('Error updating settings:', error);
-      setMessage({ type: 'error', text: 'Error de conexión' });
+      setMessage({ type: 'error', text: error instanceof Error ? error.message : 'Error de conexión' });
     } finally {
       setSaving(false);
     }

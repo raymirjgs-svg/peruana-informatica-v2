@@ -1,6 +1,5 @@
-import { API_CONFIG } from '../config/api';
+import apiClient from '../utils/api';
 import type { PaginationMeta } from '../types';
-const API_BASE = API_CONFIG.API_BASE_URL;
 
 export interface DiscountPage {
     data: Discount[];
@@ -22,22 +21,25 @@ export interface Discount {
     is_active: boolean;
 }
 
+interface DiscountListResponse {
+    data: Discount[];
+    pagination: PaginationMeta;
+    summary?: { active: number; total: number };
+}
+
 class DiscountService {
     async getAllDiscounts(token: string): Promise<Discount[]> {
-        const response = await fetch(`${API_BASE}/api/admin/discounts`, {
-            headers: { 'Authorization': `Bearer ${token}` }
+        const result = await apiClient.request<DiscountListResponse>('/api/admin/discounts', {
+            headers: { Authorization: `Bearer ${token}` },
         });
-        if (!response.ok) throw new Error('Failed to fetch discounts');
-        const data = await response.json();
-        return data.data;
+        return result.data;
     }
 
     async getDiscountsPage(token: string, page = 1, limit = 20): Promise<DiscountPage> {
-        const response = await fetch(`${API_BASE}/api/admin/discounts?page=${page}&limit=${limit}`, {
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
-        if (!response.ok) throw new Error('Failed to fetch discounts');
-        const result = await response.json();
+        const result = await apiClient.request<DiscountListResponse>(
+            `/api/admin/discounts?page=${page}&limit=${limit}`,
+            { headers: { Authorization: `Bearer ${token}` } }
+        );
         return {
             data: result.data || [],
             pagination: result.pagination,
@@ -46,38 +48,26 @@ class DiscountService {
     }
 
     async createDiscount(data: Partial<Discount>, token: string) {
-        const response = await fetch(`${API_BASE}/api/admin/discounts`, {
+        return apiClient.request('/api/admin/discounts', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify(data)
+            headers: { Authorization: `Bearer ${token}` },
+            body: data,
         });
-        if (!response.ok) throw new Error('Failed to create discount');
-        return await response.json();
     }
 
     async updateDiscount(id: number, data: Partial<Discount>, token: string) {
-        const response = await fetch(`${API_BASE}/api/admin/discounts/${id}`, {
+        return apiClient.request(`/api/admin/discounts/${id}`, {
             method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify(data)
+            headers: { Authorization: `Bearer ${token}` },
+            body: data,
         });
-        if (!response.ok) throw new Error('Failed to update discount');
-        return await response.json();
     }
 
     async deleteDiscount(id: number, token: string) {
-        const response = await fetch(`${API_BASE}/api/admin/discounts/${id}`, {
+        return apiClient.request(`/api/admin/discounts/${id}`, {
             method: 'DELETE',
-            headers: { 'Authorization': `Bearer ${token}` }
+            headers: { Authorization: `Bearer ${token}` },
         });
-        if (!response.ok) throw new Error('Failed to delete discount');
-        return await response.json();
     }
 }
 

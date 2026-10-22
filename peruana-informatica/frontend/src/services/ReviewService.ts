@@ -1,5 +1,4 @@
-import { API_CONFIG } from '../config/api';
-const API_BASE = API_CONFIG.API_BASE_URL;
+import apiClient from '../utils/api';
 
 export interface Review {
     id: number;
@@ -36,6 +35,33 @@ export interface CreateReviewData {
     comment: string;
 }
 
+interface ReviewPagination {
+    currentPage: number;
+    totalPages: number;
+    totalReviews?: number;
+    total?: number;
+}
+
+interface ProductReviewsResponse {
+    success: boolean;
+    data: {
+        reviews: Review[];
+        pagination: ReviewPagination;
+    };
+}
+
+interface AdminReviewsResponse {
+    reviews: Review[];
+    pagination: ReviewPagination;
+    data?: AdminReviewsResponse;
+}
+
+interface ReviewMutationResponse {
+    success?: boolean;
+    data?: Review;
+    message?: string;
+}
+
 class ReviewService {
     /**
      * Get reviews for a product
@@ -56,15 +82,9 @@ class ReviewService {
             if (filters?.verifiedOnly) queryParams.append('verifiedOnly', 'true');
             if (filters?.sort) queryParams.append('sort', filters.sort);
 
-            const response = await fetch(
-                `${API_BASE}/api/reviews/product/${productId}?${queryParams.toString()}`
+            return await apiClient.request<ProductReviewsResponse>(
+                `/api/reviews/product/${productId}?${queryParams.toString()}`
             );
-
-            if (!response.ok) {
-                throw new Error('Failed to fetch reviews');
-            }
-
-            return await response.json();
         } catch (error) {
             console.error('Error fetching reviews:', error);
             throw error;
@@ -76,15 +96,9 @@ class ReviewService {
      */
     async getProductRatingSummary(productId: number): Promise<{ success: boolean; data: ReviewSummary }> {
         try {
-            const response = await fetch(
-                `${API_BASE}/api/reviews/product/${productId}/summary`
+            return await apiClient.request<{ success: boolean; data: ReviewSummary }>(
+                `/api/reviews/product/${productId}/summary`
             );
-
-            if (!response.ok) {
-                throw new Error('Failed to fetch rating summary');
-            }
-
-            return await response.json();
         } catch (error) {
             console.error('Error fetching rating summary:', error);
             throw error;
@@ -96,21 +110,13 @@ class ReviewService {
      */
     async createReview(data: CreateReviewData) {
         try {
-            const response = await fetch(`${API_BASE}/api/reviews`, {
+            return await apiClient.request<ReviewMutationResponse>('/api/reviews', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(data),
+                body: data,
             });
-
-            const result = await response.json();
-
-            if (!response.ok) {
-                throw new Error(result.message || 'Failed to create review');
-            }
-
-            return result;
         } catch (error) {
             console.error('Error creating review:', error);
             throw error;
@@ -122,18 +128,12 @@ class ReviewService {
      */
     async markHelpful(reviewId: number) {
         try {
-            const response = await fetch(
-                `${API_BASE}/api/reviews/${reviewId}/helpful`,
+            return await apiClient.request<ReviewMutationResponse>(
+                `/api/reviews/${reviewId}/helpful`,
                 {
                     method: 'POST',
                 }
             );
-
-            if (!response.ok) {
-                throw new Error('Failed to mark review as helpful');
-            }
-
-            return await response.json();
         } catch (error) {
             console.error('Error marking review as helpful:', error);
             throw error;
@@ -145,22 +145,17 @@ class ReviewService {
      */
     async getAllReviews(page: number = 1, limit: number = 20, status?: string, token?: string) {
         try {
-            let url = `${API_BASE}/api/reviews/admin/all?page=${page}&limit=${limit}`;
+            let url = `/api/reviews/admin/all?page=${page}&limit=${limit}`;
             if (status) {
                 url += `&status=${status}`;
             }
 
-            const response = await fetch(url, {
+            const result = await apiClient.request<AdminReviewsResponse>(url, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
 
-            if (!response.ok) {
-                throw new Error('Failed to fetch reviews');
-            }
-
-            const result = await response.json();
             // Handle both possible response structures
             if (result.data) {
                 return result.data;
@@ -186,18 +181,12 @@ class ReviewService {
      */
     async approveReview(reviewId: number, token?: string) {
         try {
-            const response = await fetch(`${API_BASE}/api/reviews/admin/${reviewId}/approve`, {
+            return await apiClient.request<ReviewMutationResponse>(`/api/reviews/admin/${reviewId}/approve`, {
                 method: 'PATCH',
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
-
-            if (!response.ok) {
-                throw new Error('Failed to approve review');
-            }
-
-            return await response.json();
         } catch (error) {
             console.error('Error approving review:', error);
             throw error;
@@ -209,18 +198,12 @@ class ReviewService {
      */
     async rejectReview(reviewId: number, token?: string) {
         try {
-            const response = await fetch(`${API_BASE}/api/reviews/admin/${reviewId}/reject`, {
+            return await apiClient.request<ReviewMutationResponse>(`/api/reviews/admin/${reviewId}/reject`, {
                 method: 'PATCH',
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
-
-            if (!response.ok) {
-                throw new Error('Failed to reject review');
-            }
-
-            return await response.json();
         } catch (error) {
             console.error('Error rejecting review:', error);
             throw error;
@@ -232,18 +215,12 @@ class ReviewService {
      */
     async deleteReview(reviewId: number, token?: string) {
         try {
-            const response = await fetch(`${API_BASE}/api/reviews/admin/${reviewId}`, {
+            return await apiClient.request<ReviewMutationResponse>(`/api/reviews/admin/${reviewId}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
-
-            if (!response.ok) {
-                throw new Error('Failed to delete review');
-            }
-
-            return await response.json();
         } catch (error) {
             console.error('Error deleting review:', error);
             throw error;

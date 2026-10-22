@@ -1,5 +1,4 @@
-import { API_CONFIG } from '../config/api';
-const API_BASE = API_CONFIG.API_BASE_URL;
+import apiClient from '../utils/api';
 
 export interface WishlistAnalytics {
     topProducts: Array<{
@@ -27,17 +26,11 @@ class WishlistService {
      */
     async getAnalytics(token?: string): Promise<{ success: boolean; data: WishlistAnalytics }> {
         try {
-            const response = await fetch(`${API_BASE}/api/admin/wishlists/analytics`, {
+            return await apiClient.request<{ success: boolean; data: WishlistAnalytics }>('/api/admin/wishlists/analytics', {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
-
-            if (!response.ok) {
-                throw new Error('Failed to fetch wishlist analytics');
-            }
-
-            return await response.json();
         } catch (error) {
             console.error('Error fetching wishlist analytics:', error);
             throw error;
@@ -49,20 +42,18 @@ class WishlistService {
      */
     async getAllWishlists(page: number = 1, limit: number = 20, token?: string) {
         try {
-            const response = await fetch(
-                `${API_BASE}/api/admin/wishlists?page=${page}&limit=${limit}`,
+            return await apiClient.request<{
+                success?: boolean;
+                data?: Array<Record<string, unknown>>;
+                pagination?: Record<string, unknown>;
+            }>(
+                `/api/admin/wishlists?page=${page}&limit=${limit}`,
                 {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
                 }
             );
-
-            if (!response.ok) {
-                throw new Error('Failed to fetch wishlists');
-            }
-
-            return await response.json();
         } catch (error) {
             console.error('Error fetching wishlists:', error);
             throw error;
@@ -74,20 +65,17 @@ class WishlistService {
      */
     async getWishlistsByProduct(productId: number, token?: string) {
         try {
-            const response = await fetch(
-                `${API_BASE}/api/admin/wishlists/product/${productId}`,
+            return await apiClient.request<{
+                success?: boolean;
+                data?: Array<Record<string, unknown>>;
+            }>(
+                `/api/admin/wishlists/product/${productId}`,
                 {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
                 }
             );
-
-            if (!response.ok) {
-                throw new Error('Failed to fetch product wishlists');
-            }
-
-            return await response.json();
         } catch (error) {
             console.error('Error fetching product wishlists:', error);
             throw error;

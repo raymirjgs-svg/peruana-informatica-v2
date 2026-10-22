@@ -1,9 +1,5 @@
 import type { MetadataRoute } from "next";
-import { getApiBase as getApiHost } from '@/lib/apiBase';
-
-function getApiBase() {
-  return `${getApiHost()}/api`;
-}
+import apiClient from '@/utils/api';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
@@ -12,15 +8,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   try {
     // Obtener posts publicados del blog (endpoint público)
-    const blogRes = await fetch(`${getApiBase()}/blog?limit=100`, {
+    const blogData = await apiClient.request<{ data?: Array<{ slug?: string; updatedAt?: string; published_at?: string; createdAt?: string }> }>('/api/blog?limit=100', {
       next: { revalidate: 3600 },
     });
+    const blogPosts = blogData.data || [];
 
-    if (blogRes.ok) {
-      const blogData = await blogRes.json();
-      const blogPosts = blogData.data || [];
-
-      for (const post of blogPosts) {
+    for (const post of blogPosts) {
         if (!post?.slug) continue;
         routes.push({
           url: `${siteUrl}/blog/${post.slug}`,
@@ -30,7 +23,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           changeFrequency: "monthly",
           priority: 0.6,
         });
-      }
     }
 
     // Rutas base públicas (no requieren credenciales)
@@ -68,36 +60,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     );
 
     // Agregar productos dinámicamente (primeras 500 URLs para evitar sitemap muy grande)
-    const productsRes = await fetch(
-      `${getApiBase()}/products?page=1&limit=500`,
-      {
-        next: { revalidate: 600 },
-      },
+    type SitemapProduct = { slug?: string; updated_at?: string; createdAt?: string };
+    const productsData = await apiClient.request<SitemapProduct[] | { products?: SitemapProduct[] }>(
+      '/api/products?page=1&limit=500',
+      { next: { revalidate: 600 } },
     );
+    const products = Array.isArray(productsData)
+      ? productsData
+      : productsData.products || [];
 
-    if (productsRes.ok) {
-      const productsData = await productsRes.json();
-      const products = Array.isArray(productsData)
-        ? productsData
-        : productsData.products || [];
+    for (const product of products) {
+      if (!product?.slug) continue;
 
-      for (const product of products) {
-        if (!product?.slug) continue;
-
-        // Evitar duplicados si ya existe en configuraciones SEO
-        const existingRoute = routes.find(
-          (r) => r.url === `${siteUrl}/products/${product.slug}`,
-        );
-        if (!existingRoute) {
-          routes.push({
-            url: `${siteUrl}/products/${product.slug}`,
-            lastModified: new Date(
-              product.updated_at || product.createdAt || new Date(),
-            ),
-            changeFrequency: "weekly",
-            priority: 0.6,
-          });
-        }
+      // Evitar duplicados si ya existe en configuraciones SEO
+      const existingRoute = routes.find(
+        (r) => r.url === `${siteUrl}/products/${product.slug}`,
+      );
+      if (!existingRoute) {
+        routes.push({
+          url: `${siteUrl}/products/${product.slug}`,
+          lastModified: new Date(
+            product.updated_at || product.createdAt || new Date(),
+          ),
+          changeFrequency: "weekly",
+          priority: 0.6,
+        });
       }
     }
   } catch (error) {

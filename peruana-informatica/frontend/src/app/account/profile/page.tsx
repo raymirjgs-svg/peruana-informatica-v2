@@ -12,7 +12,7 @@ import { SecurityForm } from '@/components/account/profile/SecurityForm';
 import { GoogleAccountNotice } from '@/components/account/profile/GoogleAccountNotice';
 import { OrdersTab } from '@/components/account/profile/OrdersTab';
 import { WishlistTab } from '@/components/account/profile/WishlistTab';
-import { getApiBase } from '@/lib/apiBase';
+import apiClient from '@/utils/api';
 
 type TabType = 'profile' | 'orders' | 'wishlist';
 
@@ -50,17 +50,12 @@ export default function ProfilePage() {
 
     const loadProfile = async () => {
         try {
-            const API_URL = getApiBase();
-            const response = await fetch(`${API_URL}/api/customers/profile`, {
+            const data = await apiClient.request<{ user: ProfileData }>('/api/customers/profile', {
                 headers: {
                     'Authorization': `Bearer ${(session as any)?.accessToken}`
                 }
             });
-
-            if (response.ok) {
-                const data = await response.json();
-                setProfile(data.user);
-            }
+            setProfile(data.user);
         } catch (error) {
             console.error('Error loading profile:', error);
         }
@@ -68,17 +63,12 @@ export default function ProfilePage() {
 
     const loadOrders = async () => {
         try {
-            const API_URL = getApiBase();
-            const response = await fetch(`${API_URL}/api/customers/orders`, {
+            const data = await apiClient.request<{ orders?: CustomerOrder[] }>('/api/customers/orders', {
                 headers: {
                     'Authorization': `Bearer ${(session as any)?.accessToken}`
                 }
             });
-
-            if (response.ok) {
-                const data = await response.json();
-                setOrders(data.orders || []);
-            }
+            setOrders(data.orders || []);
         } catch (error) {
             console.error('Error loading orders:', error);
         }
@@ -86,17 +76,12 @@ export default function ProfilePage() {
 
     const loadWishlist = async () => {
         try {
-            const API_URL = getApiBase();
-            const response = await fetch(`${API_URL}/api/wishlist`, {
+            const data = await apiClient.request<{ items?: WishlistItem[] }>('/api/wishlist', {
                 headers: {
                     'Authorization': `Bearer ${(session as any)?.accessToken}`
                 }
             });
-
-            if (response.ok) {
-                const data = await response.json();
-                setWishlist(data.items || []);
-            }
+            setWishlist(data.items || []);
         } catch (error) {
             console.error('Error loading wishlist:', error);
         }
@@ -108,28 +93,20 @@ export default function ProfilePage() {
         setMessage('');
 
         try {
-            const API_URL = getApiBase();
-            const response = await fetch(`${API_URL}/api/customers/profile`, {
+            await apiClient.request('/api/customers/profile', {
                 method: 'PATCH',
                 headers: {
-                    'Content-Type': 'application/json',
                     'Authorization': `Bearer ${(session as any)?.accessToken}`
                 },
-                body: JSON.stringify({
+                body: {
                     first_name: profile.first_name,
                     last_name: profile.last_name,
                     phone: profile.phone
-                })
+                }
             });
 
-            const data = await response.json();
-
-            if (response.ok) {
-                setMessage('success');
-                setTimeout(() => setMessage(''), 3000);
-            } else {
-                setMessage('error');
-            }
+            setMessage('success');
+            setTimeout(() => setMessage(''), 3000);
         } catch (error) {
             setMessage('error');
         } finally {
@@ -155,28 +132,20 @@ export default function ProfilePage() {
         }
 
         try {
-            const API_URL = getApiBase();
-            const response = await fetch(`${API_URL}/api/customers/password`, {
+            await apiClient.request('/api/customers/password', {
                 method: 'PATCH',
                 headers: {
-                    'Content-Type': 'application/json',
                     'Authorization': `Bearer ${(session as any)?.accessToken}`
                 },
-                body: JSON.stringify({
+                body: {
                     currentPassword: passwords.currentPassword,
                     newPassword: passwords.newPassword
-                })
+                }
             });
 
-            const data = await response.json();
-
-            if (response.ok) {
-                setMessage('password-success');
-                setPasswords({ currentPassword: '', newPassword: '', confirmPassword: '' });
-                setTimeout(() => setMessage(''), 3000);
-            } else {
-                setMessage('password-error');
-            }
+            setMessage('password-success');
+            setPasswords({ currentPassword: '', newPassword: '', confirmPassword: '' });
+            setTimeout(() => setMessage(''), 3000);
         } catch (error) {
             setMessage('password-error');
         } finally {

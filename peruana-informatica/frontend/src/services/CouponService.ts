@@ -1,6 +1,5 @@
-import { API_CONFIG } from '../config/api';
+import apiClient from '../utils/api';
 import type { PaginationMeta } from '../types';
-const API_BASE = API_CONFIG.API_BASE_URL;
 
 export interface CouponPage {
     data: Coupon[];
@@ -37,6 +36,12 @@ export interface PromoBanner {
     is_active?: boolean;
 }
 
+interface CouponMutationResponse {
+    success?: boolean;
+    data?: Coupon;
+    message?: string;
+}
+
 class CouponService {
     // --- PUBLIC METHODS ---
 
@@ -45,32 +50,21 @@ class CouponService {
      */
     async validateCoupon(code: string, purchaseAmount: number): Promise<{ success: boolean; data?: Coupon; message?: string }> {
         try {
-            const response = await fetch(`${API_BASE}/api/coupons/validate`, {
+            return await apiClient.request<{ success: boolean; data?: Coupon; message?: string }>('/api/coupons/validate', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
+                body: {
                     code: code.toUpperCase(),
                     purchase_amount: purchaseAmount
-                }),
+                },
             });
-
-            const result = await response.json();
-
-            if (!response.ok) {
-                return {
-                    success: false,
-                    message: result.message || 'Error al validar cupón'
-                };
-            }
-
-            return result;
         } catch (error) {
             console.error('Error validating coupon:', error);
             return {
                 success: false,
-                message: 'Error de conexión al validar cupón'
+                message: error instanceof Error ? error.message : 'Error de conexión al validar cupón'
             };
         }
     }
@@ -80,20 +74,18 @@ class CouponService {
      */
     async applyCoupon(code: string): Promise<{ success: boolean; message?: string }> {
         try {
-            const response = await fetch(`${API_BASE}/api/coupons/apply`, {
+            return await apiClient.request<{ success: boolean; message?: string }>('/api/coupons/apply', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ code: code.toUpperCase() }),
+                body: { code: code.toUpperCase() },
             });
-
-            return await response.json();
         } catch (error) {
             console.error('Error applying coupon:', error);
             return {
                 success: false,
-                message: 'Error al aplicar cupón'
+                message: error instanceof Error ? error.message : 'Error al aplicar cupón'
             };
         }
     }
@@ -103,13 +95,7 @@ class CouponService {
      */
     async getActiveBanners(): Promise<{ success: boolean; data?: PromoBanner[] }> {
         try {
-            const response = await fetch(`${API_BASE}/api/promo-banners/active`);
-
-            if (!response.ok) {
-                throw new Error('Failed to fetch banners');
-            }
-
-            return await response.json();
+            return await apiClient.request<{ success: boolean; data?: PromoBanner[] }>('/api/promo-banners/active');
         } catch (error) {
             console.error('Error fetching banners:', error);
             return { success: false };
@@ -123,14 +109,12 @@ class CouponService {
      */
     async getAllCoupons(token: string): Promise<Coupon[]> {
         try {
-            const response = await fetch(`${API_BASE}/api/admin/coupons`, {
+            const result = await apiClient.request<{ data?: Coupon[] }>('/api/admin/coupons', {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
 
-            if (!response.ok) throw new Error('Failed to fetch coupons');
-            const result = await response.json();
             return result.data || [];
         } catch (error) {
             console.error('Error fetching coupons:', error);
@@ -143,14 +127,16 @@ class CouponService {
      */
     async getCouponsPage(token: string, page = 1, limit = 20): Promise<CouponPage> {
         try {
-            const response = await fetch(`${API_BASE}/api/admin/coupons?page=${page}&limit=${limit}`, {
+            const result = await apiClient.request<{
+                data?: Coupon[];
+                pagination: PaginationMeta;
+                summary?: { active: number; totalUses: number; total: number };
+            }>(`/api/admin/coupons?page=${page}&limit=${limit}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
 
-            if (!response.ok) throw new Error('Failed to fetch coupons');
-            const result = await response.json();
             return {
                 data: result.data || [],
                 pagination: result.pagination,
@@ -167,18 +153,14 @@ class CouponService {
      */
     async createCoupon(data: Partial<Coupon>, token: string) {
         try {
-            const response = await fetch(`${API_BASE}/api/admin/coupons`, {
+            return await apiClient.request<CouponMutationResponse>('/api/admin/coupons', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify(data)
+                body: data
             });
-
-            const result = await response.json();
-            if (!response.ok) throw new Error(result.message || 'Failed to create coupon');
-            return result;
         } catch (error) {
             console.error('Error creating coupon:', error);
             throw error;
@@ -190,18 +172,14 @@ class CouponService {
      */
     async updateCoupon(id: number, data: Partial<Coupon>, token: string) {
         try {
-            const response = await fetch(`${API_BASE}/api/admin/coupons/${id}`, {
+            return await apiClient.request<CouponMutationResponse>(`/api/admin/coupons/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify(data)
+                body: data
             });
-
-            const result = await response.json();
-            if (!response.ok) throw new Error(result.message || 'Failed to update coupon');
-            return result;
         } catch (error) {
             console.error('Error updating coupon:', error);
             throw error;
@@ -213,16 +191,12 @@ class CouponService {
      */
     async deleteCoupon(id: number, token: string) {
         try {
-            const response = await fetch(`${API_BASE}/api/admin/coupons/${id}`, {
+            return await apiClient.request<CouponMutationResponse>(`/api/admin/coupons/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
-
-            const result = await response.json();
-            if (!response.ok) throw new Error(result.message || 'Failed to delete coupon');
-            return result;
         } catch (error) {
             console.error('Error deleting coupon:', error);
             throw error;
@@ -234,18 +208,14 @@ class CouponService {
      */
     async toggleStatus(id: number, is_active: boolean, token: string) {
         try {
-            const response = await fetch(`${API_BASE}/api/admin/coupons/${id}/toggle`, {
+            return await apiClient.request<CouponMutationResponse>(`/api/admin/coupons/${id}/toggle`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({ is_active })
+                body: { is_active }
             });
-
-            const result = await response.json();
-            if (!response.ok) throw new Error(result.message || 'Failed to toggle status');
-            return result;
         } catch (error) {
             console.error('Error toggling status:', error);
             throw error;

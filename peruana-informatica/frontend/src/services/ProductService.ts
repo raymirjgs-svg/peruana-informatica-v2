@@ -1,63 +1,42 @@
 import { Product } from '@/models/Product';
 import { RawProduct, PaginatedResponse } from '@/models/ApiTypes';
-import {
-  NetworkError,
-  handleFetchError,
-  safeAsync,
-} from '@/lib/errors';
+import apiClient from '@/utils/api';
 import { API_CONFIG } from '@/config/api';
 import { cleanHtmlText } from '@/utils/text';
+
+interface ProductsResponse {
+  products?: RawProduct[];
+  total?: number;
+  totalPages?: number;
+  filters?: unknown;
+}
 
 export class ProductService {
   private baseUrl = API_CONFIG.BASE_URL;
   private apiBase = API_CONFIG.API_BASE_URL;
 
   /**
-   * Realiza un fetch con manejo de errores mejorado
+   * Test de conexión con el backend
    */
-  private async fetchWithErrorHandling(url: string, options?: RequestInit): Promise<Response> {
+  async testConnection(): Promise<boolean> {
     try {
-      const response = await fetch(url, {
-        ...options,
+      await apiClient.request('/api/health', {
+        baseUrl: this.baseUrl,
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
           'Cache-Control': 'no-cache, no-store, must-revalidate',
           'Pragma': 'no-cache',
           'Expires': '0',
-          ...options?.headers,
         },
       });
 
-      if (!response.ok) {
-        await handleFetchError(response);
-      }
-
-      return response;
+      console.log('✅ Backend connection successful');
+      return true;
     } catch (error) {
-      if (error instanceof TypeError && error.message.includes('fetch')) {
-        throw new NetworkError(
-          'No se puede conectar al servidor. Verifica que el backend esté corriendo en ' + this.baseUrl
-        );
-      }
-      throw error;
-    }
-  }
-
-  /**
-   * Test de conexión con el backend
-   */
-  async testConnection(): Promise<boolean> {
-    const [error, response] = await safeAsync(
-      this.fetchWithErrorHandling(`${this.baseUrl}/api/health`)
-    );
-
-    if (error) {
-      console.error('❌ Test connection failed:', error.message);
+      console.error('❌ Test connection failed:', error instanceof Error ? error.message : error);
       return false;
     }
-
-    console.log('✅ Backend connection successful');
-    return true;
   }
 
   /**
@@ -222,24 +201,24 @@ export class ProductService {
   ): Promise<PaginatedResponse<Product>> {
     try {
       const timestamp = new Date().getTime();
-      let url = `${this.apiBase}/api/products?page=${page}&limit=${pageSize}&t=${timestamp}`;
+      let endpoint = `/api/products?page=${page}&limit=${pageSize}&t=${timestamp}`;
 
-      if (filters.featured) url += '&featured=true';
-      if (filters.new) url += '&new=true';
-      if (filters.clearance) url += '&clearance=true';
-      if (filters.search) url += `&search=${encodeURIComponent(filters.search)}`;
+      if (filters.featured) endpoint += '&featured=true';
+      if (filters.new) endpoint += '&new=true';
+      if (filters.clearance) endpoint += '&clearance=true';
+      if (filters.search) endpoint += `&search=${encodeURIComponent(filters.search)}`;
 
       // Validate URL
-      try { new URL(url); } catch (e) {
+      try { new URL(`${this.apiBase}${endpoint}`); } catch (e) {
         return { products: [], total: 0, totalPages: 0, currentPage: page };
       }
 
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 5000);
 
-      let response;
       try {
-        response = await fetch(url, {
+        const data = await apiClient.request<RawProduct[] | ProductsResponse>(endpoint, {
+          baseUrl: this.apiBase,
           cache: 'no-store',
           headers: {
             'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -248,32 +227,23 @@ export class ProductService {
           },
           signal: controller.signal
         });
-      } catch (e) {
+
+        // Type casting safely
+        const rawProducts: RawProduct[] = Array.isArray(data) ? data : (data.products || []);
+        const total = !Array.isArray(data) && typeof data.total === 'number' ? data.total : rawProducts.length;
+        const totalPages = !Array.isArray(data) && typeof data.totalPages === 'number' ? data.totalPages : Math.ceil(total / pageSize);
+
+        const products = rawProducts.map(item => this.mapToProduct(item));
+
+        return {
+          products,
+          total,
+          totalPages,
+          currentPage: page
+        };
+      } finally {
         clearTimeout(timeoutId);
-        return { products: [], total: 0, totalPages: 0, currentPage: page };
       }
-
-      clearTimeout(timeoutId);
-
-      if (!response.ok) {
-        return { products: [], total: 0, totalPages: 0, currentPage: page };
-      }
-
-      const data = await response.json().catch(() => ({ products: [], total: 0 }));
-
-      // Type casting safely
-      const rawProducts: RawProduct[] = Array.isArray(data) ? data : (data.products || []);
-      const total = typeof data.total === 'number' ? data.total : rawProducts.length;
-      const totalPages = typeof data.totalPages === 'number' ? data.totalPages : Math.ceil(total / pageSize);
-
-      const products = rawProducts.map(item => this.mapToProduct(item));
-
-      return {
-        products,
-        total,
-        totalPages,
-        currentPage: page
-      };
 
     } catch (error) {
       return { products: [], total: 0, totalPages: 0, currentPage: page };
@@ -283,11 +253,12 @@ export class ProductService {
   async getProductsWithFilters(queryParams: string): Promise<PaginatedResponse<Product> & { filters?: any }> {
     try {
       const timestamp = new Date().getTime();
-      const url = `${this.apiBase}/api/products?${queryParams}&t=${timestamp}`;
+      const endpoint = `/api/products?${queryParams}&t=${timestamp}`;
 
-      try { new URL(url); } catch (e) { throw new Error(`Invalid URL: ${url}`); }
+      try { new URL(`${this.apiBase}${endpoint}`); } catch (e) { throw new Error(`Invalid URL: ${this.apiBase}${endpoint}`); }
 
-      const response = await fetch(url, {
+      const data = await apiClient.request<RawProduct[] | ProductsResponse>(endpoint, {
+        baseUrl: this.apiBase,
         cache: 'no-store',
         headers: {
           'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -296,20 +267,17 @@ export class ProductService {
         }
       });
 
-      if (!response.ok) {
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
-      }
-
-      const data = await response.json();
       const rawProducts: RawProduct[] = Array.isArray(data) ? data : (data.products || []);
 
       const products = rawProducts.map(item => this.mapToProduct(item));
 
+      const total = !Array.isArray(data) && data.total ? data.total : products.length;
+
       return {
         products,
-        total: data.total || products.length,
-        totalPages: data.totalPages || Math.ceil((data.total || products.length) / 12),
-        filters: data.filters || {},
+        total,
+        totalPages: !Array.isArray(data) && data.totalPages ? data.totalPages : Math.ceil(total / 12),
+        filters: !Array.isArray(data) ? data.filters || {} : {},
       };
     } catch (error) {
       console.error('Error fetching filtered products:', error);
@@ -321,14 +289,12 @@ export class ProductService {
     try {
       const cleanSlug = slug.replace(/%22/g, '').replace(/"/g, '').trim();
       const timestamp = new Date().getTime();
-      const response = await fetch(`${this.apiBase}/api/products/slug/${cleanSlug}?t=${timestamp}`, {
+      const item = await apiClient.request<RawProduct>(`/api/products/slug/${cleanSlug}?t=${timestamp}`, {
+        baseUrl: this.apiBase,
         cache: 'no-store',
         headers: { 'Cache-Control': 'no-cache' }
       });
 
-      if (!response.ok) return null;
-
-      const item: RawProduct = await response.json();
       return this.mapToProduct(item);
     } catch (error) {
       console.error('Error fetching product by slug:', error);
@@ -339,14 +305,12 @@ export class ProductService {
   async getProductById(id: number): Promise<Product | null> {
     try {
       const timestamp = new Date().getTime();
-      const response = await fetch(`${this.apiBase}/api/products/${id}?t=${timestamp}`, {
+      const item = await apiClient.request<RawProduct>(`/api/products/${id}?t=${timestamp}`, {
+        baseUrl: this.apiBase,
         cache: 'no-store',
         headers: { 'Cache-Control': 'no-cache' }
       });
 
-      if (!response.ok) return null;
-
-      const item: RawProduct = await response.json();
       return this.mapToProduct(item);
     } catch (error) {
       console.error('Error fetching product by id:', error);
@@ -358,14 +322,12 @@ export class ProductService {
     try {
       if (!query || query.trim().length === 0) return [];
       const timestamp = new Date().getTime();
-      const response = await fetch(`${this.apiBase}/api/products/utils/suggestions?q=${encodeURIComponent(query)}&limit=${limit}&t=${timestamp}`, {
+      const rawProducts = await apiClient.request<RawProduct[]>(`/api/products/utils/suggestions?q=${encodeURIComponent(query)}&limit=${limit}&t=${timestamp}`, {
+        baseUrl: this.apiBase,
         cache: 'no-store',
         headers: { 'Cache-Control': 'no-cache' }
       });
 
-      if (!response.ok) return [];
-
-      const rawProducts: RawProduct[] = await response.json();
       return rawProducts.map(item => this.mapToProduct(item));
     } catch (error) {
       console.warn('Error fetching suggestions:', error);

@@ -1,10 +1,18 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import { escapeJsonLd } from "@/lib/sanitize";
-import { getApiBase as getApiHost } from '@/lib/apiBase';
+import apiClient from '@/utils/api';
 
-function getApiBase() {
-  return `${getApiHost()}/api`;
+interface ProductSeo {
+  id?: number | string;
+  name?: string;
+  description?: string;
+  seo_title?: string;
+  seo_description?: string;
+  image?: string;
+  price?: number;
+  stock?: number;
+  productBrand?: { name?: string };
 }
 
 export async function generateMetadata({
@@ -15,16 +23,10 @@ export async function generateMetadata({
   const resolvedParams = await params;
   const slug = resolvedParams.slug;
   try {
-    const res = await fetch(`${getApiBase()}/products/slug/${slug}`, {
+    const p = await apiClient.request<ProductSeo>(`/api/products/slug/${slug}`, {
       next: { revalidate: 300 },
     });
-    if (!res.ok)
-      return {
-        title: `Producto | Peruana Informática`,
-        description: "Detalle de producto",
-      };
-    const p = await res.json();
-    const rawTitle: string = p.seo_title || p.name;
+    const rawTitle: string = p.seo_title || p.name || "";
     const rawDesc: string = p.seo_description || p.description || "";
     const title = `${rawTitle} | Peruana Informática`;
     const description = rawDesc.toString().substring(0, 160);
@@ -69,54 +71,51 @@ export default async function ProductSlugLayout({
   const slug = resolvedParams.slug;
   let jsonLd: any = null;
   try {
-    const res = await fetch(`${getApiBase()}/products/slug/${slug}`, {
+    const p = await apiClient.request<ProductSeo>(`/api/products/slug/${slug}`, {
       next: { revalidate: 300 },
     });
-    if (res.ok) {
-      const p = await res.json();
-      const siteUrl =
-        process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-      const url = `${siteUrl}/products/${slug}`;
-      const image = p.image || `https://placehold.co/1200x630?text=Imagen+no+disponible`;
-      jsonLd = [
-        {
-          "@context": "https://schema.org",
-          "@type": "BreadcrumbList",
-          itemListElement: [
-            { "@type": "ListItem", position: 1, name: "Inicio", item: siteUrl },
-            {
-              "@type": "ListItem",
-              position: 2,
-              name: "Productos",
-              item: `${siteUrl}/products`,
-            },
-            { "@type": "ListItem", position: 3, name: p.name, item: url },
-          ],
-        },
-        {
-          "@context": "https://schema.org",
-          "@type": "Product",
-          name: p.name,
-          description: p.description,
-          image: [image],
-          sku: String(p.id),
-          url,
-          brand: p.productBrand?.name
-            ? { "@type": "Brand", name: p.productBrand.name }
-            : undefined,
-          offers: {
-            "@type": "Offer",
-            priceCurrency: "PEN",
-            price: String(p.price),
-            availability:
-              (p.stock ?? 0) > 0
-                ? "https://schema.org/InStock"
-                : "https://schema.org/OutOfStock",
-            url,
+    const siteUrl =
+      process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+    const url = `${siteUrl}/products/${slug}`;
+    const image = p.image || `https://placehold.co/1200x630?text=Imagen+no+disponible`;
+    jsonLd = [
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Inicio", item: siteUrl },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: "Productos",
+            item: `${siteUrl}/products`,
           },
+          { "@type": "ListItem", position: 3, name: p.name, item: url },
+        ],
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        name: p.name,
+        description: p.description,
+        image: [image],
+        sku: String(p.id),
+        url,
+        brand: p.productBrand?.name
+          ? { "@type": "Brand", name: p.productBrand.name }
+          : undefined,
+        offers: {
+          "@type": "Offer",
+          priceCurrency: "PEN",
+          price: String(p.price),
+          availability:
+            (p.stock ?? 0) > 0
+              ? "https://schema.org/InStock"
+              : "https://schema.org/OutOfStock",
+          url,
         },
-      ];
-    }
+      },
+    ];
   } catch {}
 
   return (

@@ -1,5 +1,5 @@
-import { API_CONFIG } from '@/config/api';
 import { getAuthToken } from '@/lib/authTokens';
+import apiClient, { ApiError } from '../utils/api';
 import type { Product } from '@/models/Product';
 
 export interface CartItem {
@@ -15,54 +15,44 @@ export interface Cart {
 }
 
 class CartService {
-    private apiBase = API_CONFIG.API_BASE_URL + '/api/cart';
-
     private getToken(): string | null {
         return getAuthToken('customer');
-    }
-
-    private getHeaders() {
-        const token = this.getToken();
-        return {
-            'Content-Type': 'application/json',
-            'Authorization': token ? `Bearer ${token}` : ''
-        };
     }
 
     // Get Cart
     async getCart(): Promise<{ cart: Cart; items: CartItem[] }> {
         if (!this.getToken()) throw new Error('No auth token');
 
-        const response = await fetch(this.apiBase, {
-            headers: this.getHeaders()
-        });
-
-        if (response.status === 401) {
-            console.warn('Unauthorized cart fetch - Token likely expired');
-            throw new Error('Unauthorized');
+        try {
+            return await apiClient.request<{ cart: Cart; items: CartItem[] }>('/api/cart', {
+                auth: 'customer'
+            });
+        } catch (error) {
+            if (error instanceof ApiError && error.status === 401) {
+                console.warn('Unauthorized cart fetch - Token likely expired');
+                throw new Error('Unauthorized');
+            }
+            throw error;
         }
-
-        if (!response.ok) throw new Error('Error getting cart');
-        return await response.json();
     }
 
     // Sync Cart
     async syncCart(localItems: { id: number; quantity: number }[]): Promise<{ cart: Cart; items: CartItem[] }> {
         if (!this.getToken()) throw new Error('No auth token');
 
-        const response = await fetch(`${this.apiBase}/sync`, {
-            method: 'POST',
-            headers: this.getHeaders(),
-            body: JSON.stringify({ items: localItems })
-        });
-
-        if (response.status === 401) {
-            console.warn('Unauthorized cart sync - Token likely expired');
-            throw new Error('Unauthorized');
+        try {
+            return await apiClient.request<{ cart: Cart; items: CartItem[] }>('/api/cart/sync', {
+                method: 'POST',
+                auth: 'customer',
+                body: { items: localItems }
+            });
+        } catch (error) {
+            if (error instanceof ApiError && error.status === 401) {
+                console.warn('Unauthorized cart sync - Token likely expired');
+                throw new Error('Unauthorized');
+            }
+            throw error;
         }
-
-        if (!response.ok) throw new Error('Error syncing cart');
-        return await response.json();
     }
 
     // Update Item
@@ -70,30 +60,27 @@ class CartService {
     async updateItem(productId: number, quantity: number) {
         if (!this.getToken()) return null; // Skip if no token
 
-        const response = await fetch(`${this.apiBase}/item`, {
-            method: 'POST',
-            headers: this.getHeaders(),
-            body: JSON.stringify({ productId, quantity })
-        });
-
-        if (response.status === 401) {
-            console.warn('Unauthorized cart update - Token likely expired');
-            return null;
+        try {
+            return await apiClient.request<unknown>('/api/cart/item', {
+                method: 'POST',
+                auth: 'customer',
+                body: { productId, quantity }
+            });
+        } catch (error) {
+            if (error instanceof ApiError && error.status === 401) {
+                console.warn('Unauthorized cart update - Token likely expired');
+                return null;
+            }
+            throw error;
         }
-
-        if (!response.ok) throw new Error('Error updating item');
-        return await response.json();
     }
 
     // Remove Item
     async removeItem(productId: number) {
-        const response = await fetch(`${this.apiBase}/item/${productId}`, {
+        return await apiClient.request<unknown>(`/api/cart/item/${productId}`, {
             method: 'DELETE',
-            headers: this.getHeaders()
+            auth: 'customer'
         });
-
-        if (!response.ok) throw new Error('Error removing item');
-        return await response.json();
     }
 }
 

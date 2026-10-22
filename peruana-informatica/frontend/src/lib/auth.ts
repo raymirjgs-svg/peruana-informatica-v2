@@ -1,7 +1,7 @@
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
-import { getApiBase } from '@/lib/apiBase';
+import apiClient from '@/utils/api';
 
 declare module "next-auth" {
     interface User {
@@ -35,24 +35,18 @@ export const authOptions: NextAuthOptions = {
                 if (!email || !credentials?.password) return null;
 
                 try {
-                    // Always query backend on port 3001
-                    const apiBase = getApiBase();
-
-                    const res = await fetch(`${apiBase}/api/auth/login`, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                            email,
-                            password: credentials.password,
-                        }),
+                    const data = await apiClient.request<{
+                        accessToken?: string;
+                        user?: { id?: string | number; username?: string; email?: string; role?: string };
+                    }>('/api/auth/login', {
+                        method: 'POST',
+                        body: { email, password: credentials.password },
                     });
 
-                    const data = await res.json();
-
-                    if (res.ok && data.accessToken) { // Backend returns accessToken, not token
+                    if (data.accessToken) {
                         return {
-                            id: data.user?.id || "1",
-                            username: data.user?.username || data.user?.email?.split('@')[0],
+                            id: String(data.user?.id || "1"),
+                            username: String(data.user?.username || data.user?.email?.split('@')[0] || email.split('@')[0]),
                             token: data.accessToken,
                             role: data.user?.role || 'customer'
                         };
@@ -79,27 +73,24 @@ export const authOptions: NextAuthOptions = {
         async signIn({ user, account, profile }) {
             if (account?.provider === "google") {
                 try {
-                    const apiBase = getApiBase();
-
-                    // Send Google data to backend to find/create user
-                    const res = await fetch(`${apiBase}/api/auth/social-login`, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
+                    const data = await apiClient.request<{
+                        accessToken?: string;
+                        user: { id: string | number; username: string; role: string };
+                    }>('/api/auth/social-login', {
+                        method: 'POST',
+                        body: {
                             email: user.email,
                             googleId: account.providerAccountId,
                             firstName: profile?.name?.split(" ")[0] || "Usuario",
                             lastName: profile?.name?.split(" ").slice(1).join(" ") || "Google",
                             photoUrl: user.image
-                        }),
+                        },
                     });
 
-                    const data = await res.json();
-
-                    if (res.ok && data.accessToken) {
+                    if (data.accessToken) {
                         // Attach backend token to user object for JWT callback
                         user.token = data.accessToken;
-                        user.id = data.user.id;
+                        user.id = String(data.user.id);
                         user.username = data.user.username;
                         user.role = data.user.role;
                         return true;

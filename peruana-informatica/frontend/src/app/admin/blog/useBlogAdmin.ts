@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { getAdminAuthHeaders } from '@/lib/adminAuth';
 import { BlogPost, TitleSuggestion, BlogStats, PostFormData } from './types';
-import { getApiBase } from '@/lib/apiBase';
+import apiClient from '@/utils/api';
 
 export function useBlogAdmin() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -44,9 +44,6 @@ export function useBlogAdmin() {
   const [apiKey, setApiKey] = useState("");
   const [savingApiKey, setSavingApiKey] = useState(false);
 
-  // Configuración de la API
-  const API_BASE = getApiBase();
-
   const getAuthHeaders = () => ({
     ...getAdminAuthHeaders(),
     "Content-Type": "application/json",
@@ -55,63 +52,43 @@ export function useBlogAdmin() {
   const loadBlogData = useCallback(async () => {
     try {
       setLoading(true);
-      const [postsResponse, statsResponse, suggestionsResponse] =
-        await Promise.all([
-          fetch(`${API_BASE}/api/blog/admin?limit=20`, {
+      const [postsData, statsData, suggestionsData] = await Promise.all([
+        apiClient.request<{ data?: BlogPost[] }>('/api/blog/admin?limit=20', {
+          headers: getAuthHeaders(),
+        }),
+        apiClient.request<{ data?: BlogStats }>('/api/blog/admin/stats', {
+          headers: getAuthHeaders(),
+        }),
+        apiClient.request<{ data?: TitleSuggestion[] }>(
+          '/api/blog/admin/ai/title-suggestions?status=pending',
+          {
             headers: getAuthHeaders(),
-          }),
-          fetch(`${API_BASE}/api/blog/admin/stats`, {
-            headers: getAuthHeaders(),
-          }),
-          fetch(
-            `${API_BASE}/api/blog/admin/ai/title-suggestions?status=pending`,
-            {
-              headers: getAuthHeaders(),
-            },
-          ),
-        ]);
+          },
+        ),
+      ]);
 
-      if (postsResponse.ok) {
-        const postsData = await postsResponse.json();
-        setPosts(postsData.data || []);
-      }
-
-      if (statsResponse.ok) {
-        const statsData = await statsResponse.json();
-        setStats(statsData.data);
-      }
-
-      if (suggestionsResponse.ok) {
-        const suggestionsData = await suggestionsResponse.json();
-        setTitleSuggestions(suggestionsData.data || []);
-      }
+      setPosts(postsData.data || []);
+      setStats(statsData.data ?? null);
+      setTitleSuggestions(suggestionsData.data || []);
     } catch (err: any) {
       setError(err.message || "Error al cargar los datos del blog");
     } finally {
       setLoading(false);
     }
-  }, [API_BASE]);
+  }, []);
 
   const generateTitles = async () => {
     try {
       setGeneratingTitles(true);
-      const response = await fetch(
-        `${API_BASE}/api/blog/admin/ai/generate-titles`,
-        {
-          method: "POST",
-          headers: getAuthHeaders(),
-          body: JSON.stringify({
-            topic: "tecnología",
-            count: 5,
-            model: "gemini-2.0-flash-exp",
-          }),
+      await apiClient.request('/api/blog/admin/ai/generate-titles', {
+        method: "POST",
+        headers: getAuthHeaders(),
+        body: {
+          topic: "tecnología",
+          count: 5,
+          model: "gemini-2.0-flash-exp",
         },
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Error generando títulos");
-      }
+      });
 
       await loadBlogData();
       setModalType("suggestions");
@@ -127,24 +104,18 @@ export function useBlogAdmin() {
   const generateContentFromTitle = async (suggestionId: number) => {
     try {
       setGeneratingContent(true);
-      const response = await fetch(
-        `${API_BASE}/api/blog/admin/ai/generate-content`,
+      const result = await apiClient.request<{ data: { post: BlogPost } }>(
+        '/api/blog/admin/ai/generate-content',
         {
           method: "POST",
           headers: getAuthHeaders(),
-          body: JSON.stringify({
+          body: {
             title_suggestion_id: suggestionId,
             model: "gemini-2.0-flash-exp",
-          }),
+          },
         },
       );
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Error generando contenido");
-      }
-
-      const result = await response.json();
       await loadBlogData();
 
       // Abrir el post generado para edición
@@ -165,10 +136,10 @@ export function useBlogAdmin() {
     action: "select" | "reject",
   ) => {
     try {
-      await fetch(`${API_BASE}/api/blog/admin/ai/title-suggestions/${id}`, {
+      await apiClient.request(`/api/blog/admin/ai/title-suggestions/${id}`, {
         method: "PUT",
         headers: getAuthHeaders(),
-        body: JSON.stringify({ action }),
+        body: { action },
       });
 
       await loadBlogData();
@@ -180,10 +151,10 @@ export function useBlogAdmin() {
   // Actualizar estado del post
   const updatePostStatus = async (id: number, status: string) => {
     try {
-      await fetch(`${API_BASE}/api/blog/admin/${id}`, {
+      await apiClient.request(`/api/blog/admin/${id}`, {
         method: "PUT",
         headers: getAuthHeaders(),
-        body: JSON.stringify({ status }),
+        body: { status },
       });
 
       await loadBlogData();
@@ -197,7 +168,7 @@ export function useBlogAdmin() {
     if (!confirm("¿Estás seguro de eliminar este post?")) return;
 
     try {
-      await fetch(`${API_BASE}/api/blog/admin/${id}`, {
+      await apiClient.request(`/api/blog/admin/${id}`, {
         method: "DELETE",
         headers: getAuthHeaders(),
       });
@@ -219,15 +190,10 @@ export function useBlogAdmin() {
 
     try {
       setLoadingDemo(true);
-      const response = await fetch(`${API_BASE}/api/blog/admin/demo`, {
+      await apiClient.request('/api/blog/admin/demo', {
         method: "POST",
         headers: getAuthHeaders(),
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Error cargando datos demo");
-      }
 
       await loadBlogData();
       alert("✅ Posts de demostración cargados exitosamente");
@@ -247,16 +213,11 @@ export function useBlogAdmin() {
 
     try {
       setSavingApiKey(true);
-      const response = await fetch(`${API_BASE}/api/blog/admin/config/gemini`, {
+      await apiClient.request('/api/blog/admin/config/gemini', {
         method: "POST",
         headers: getAuthHeaders(),
-        body: JSON.stringify({ apiKey: apiKey.trim() }),
+        body: { apiKey: apiKey.trim() },
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Error guardando API Key");
-      }
 
       await loadBlogData();
       setIsModalOpen(false);
@@ -320,22 +281,17 @@ export function useBlogAdmin() {
     try {
       setSavingPost(true);
 
-      const url = selectedPost
-        ? `${API_BASE}/api/blog/admin/${selectedPost.id}`
-        : `${API_BASE}/api/blog/admin`;
+      const endpoint = selectedPost
+        ? `/api/blog/admin/${selectedPost.id}`
+        : '/api/blog/admin';
 
       const method = selectedPost ? "PUT" : "POST";
 
-      const response = await fetch(url, {
+      await apiClient.request(endpoint, {
         method,
         headers: getAuthHeaders(),
-        body: JSON.stringify(formData),
+        body: formData,
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Error guardando post");
-      }
 
       await loadBlogData();
       setIsModalOpen(false);

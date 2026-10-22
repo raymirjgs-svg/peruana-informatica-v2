@@ -1,34 +1,37 @@
 import { PromoBanner } from './CouponService';
 import type { PaginationMeta } from '../types';
-
-import { API_CONFIG } from '../config/api';
-const API_BASE = API_CONFIG.API_BASE_URL;
+import apiClient from '../utils/api';
 
 export interface PromoBannerPage {
     data: PromoBanner[];
     pagination: PaginationMeta;
 }
 
+interface PromoBannerMutationResponse {
+    success?: boolean;
+    data?: PromoBanner;
+    message?: string;
+}
+
 class PromoBannerService {
     async getAllBanners(token: string): Promise<PromoBanner[]> {
-        const response = await fetch(`${API_BASE}/api/admin/promo-banners`, {
+        const result = await apiClient.request<{ data?: PromoBanner[] }>('/api/admin/promo-banners', {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
         });
-        if (!response.ok) throw new Error('Failed to fetch banners');
-        const result = await response.json();
         return result.data || [];
     }
 
     async getBannersPage(token: string, page = 1, limit = 20): Promise<PromoBannerPage> {
-        const response = await fetch(`${API_BASE}/api/admin/promo-banners?page=${page}&limit=${limit}`, {
+        const result = await apiClient.request<{
+            data?: PromoBanner[];
+            pagination: PaginationMeta;
+        }>(`/api/admin/promo-banners?page=${page}&limit=${limit}`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
         });
-        if (!response.ok) throw new Error('Failed to fetch banners');
-        const result = await response.json();
         return {
             data: result.data || [],
             pagination: result.pagination
@@ -36,57 +39,43 @@ class PromoBannerService {
     }
 
     async createBanner(data: Partial<PromoBanner>, token: string) {
-        const response = await fetch(`${API_BASE}/api/admin/promo-banners`, {
+        return await apiClient.request<PromoBannerMutationResponse>('/api/admin/promo-banners', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify(data)
+            body: data
         });
-        if (!response.ok) {
-            const err = await response.json();
-            throw new Error(err.message || 'Failed to create banner');
-        }
-        return await response.json();
     }
 
     async updateBanner(id: number, data: Partial<PromoBanner>, token: string) {
-        const response = await fetch(`${API_BASE}/api/admin/promo-banners/${id}`, {
+        return await apiClient.request<PromoBannerMutationResponse>(`/api/admin/promo-banners/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify(data)
+            body: data
         });
-        if (!response.ok) {
-            const err = await response.json();
-            throw new Error(err.message || 'Failed to update banner');
-        }
-        return await response.json();
     }
 
     async deleteBanner(id: number, token: string) {
-        const response = await fetch(`${API_BASE}/api/admin/promo-banners/${id}`, {
+        return await apiClient.request<PromoBannerMutationResponse>(`/api/admin/promo-banners/${id}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${token}`
             }
         });
-        if (!response.ok) throw new Error('Failed to delete banner');
-        return await response.json();
     }
 
     async toggleStatus(id: number, token: string) {
-        const response = await fetch(`${API_BASE}/api/admin/promo-banners/${id}/toggle`, {
+        return await apiClient.request<PromoBannerMutationResponse>(`/api/admin/promo-banners/${id}/toggle`, {
             method: 'PATCH',
             headers: {
                 'Authorization': `Bearer ${token}`
             }
         });
-        if (!response.ok) throw new Error('Failed to toggle status');
-        return await response.json();
     }
 }
 

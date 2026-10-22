@@ -1,4 +1,4 @@
-import { API_CONFIG } from '@/config/api';
+import apiClient from '@/utils/api';
 import { getAdminAuthHeaders } from '@/lib/adminAuth';
 
 export interface Customer {
@@ -36,9 +36,29 @@ export interface CustomerFilters {
     isBlocked?: string;
 }
 
-export class CustomerService {
-    private static readonly BASE_URL = `${API_CONFIG.BASE_URL}/api/admin/customers`;
+interface CustomersResponse {
+    success?: boolean;
+    customers: Customer[];
+    pagination: {
+        totalPages: number;
+        [key: string]: unknown;
+    };
+}
 
+interface CustomerResponse {
+    success?: boolean;
+    data?: Customer;
+    customer?: Customer;
+    message?: string;
+}
+
+interface CustomerOrdersResponse {
+    success?: boolean;
+    data?: Array<Record<string, unknown>>;
+    orders?: Array<Record<string, unknown>>;
+}
+
+export class CustomerService {
     /**
      * Get paginated list of customers with filters
      */
@@ -51,7 +71,7 @@ export class CustomerService {
         if (filters?.authProvider) params.append('authProvider', filters.authProvider);
         if (filters?.isBlocked) params.append('isBlocked', filters.isBlocked);
 
-        const response = await fetch(`${this.BASE_URL}?${params.toString()}`, {
+        return await apiClient.request<CustomersResponse>(`/api/admin/customers?${params.toString()}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -59,16 +79,13 @@ export class CustomerService {
             },
             cache: 'no-store'
         });
-
-        if (!response.ok) throw new Error('Error fetching customers');
-        return await response.json();
     }
 
     /**
      * Get customer by ID
      */
     static async getCustomerById(id: number) {
-        const response = await fetch(`${this.BASE_URL}/${id}`, {
+        return await apiClient.request<CustomerResponse>(`/api/admin/customers/${id}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -76,32 +93,26 @@ export class CustomerService {
             },
             cache: 'no-store'
         });
-
-        if (!response.ok) throw new Error('Error fetching customer');
-        return await response.json();
     }
 
     /**
      * Toggle block/unblock customer
      */
     static async toggleBlockCustomer(id: number) {
-        const response = await fetch(`${this.BASE_URL}/${id}/block`, {
+        return await apiClient.request<CustomerResponse>(`/api/admin/customers/${id}/block`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
                 ...getAdminAuthHeaders(),
             }
         });
-
-        if (!response.ok) throw new Error('Error toggling customer block');
-        return await response.json();
     }
 
     /**
      * Get customer statistics
      */
     static async getCustomerStats(): Promise<CustomerStats> {
-        const response = await fetch(`${this.BASE_URL}/stats`, {
+        return await apiClient.request<CustomerStats>('/api/admin/customers/stats', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -109,16 +120,13 @@ export class CustomerService {
             },
             cache: 'no-store'
         });
-
-        if (!response.ok) throw new Error('Error fetching stats');
-        return await response.json();
     }
 
     /**
      * Get customer orders
      */
     static async getCustomerOrders(id: number) {
-        const response = await fetch(`${this.BASE_URL}/${id}/orders`, {
+        return await apiClient.request<CustomerOrdersResponse>(`/api/admin/customers/${id}/orders`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -126,8 +134,5 @@ export class CustomerService {
             },
             cache: 'no-store'
         });
-
-        if (!response.ok) throw new Error('Error fetching orders');
-        return await response.json();
     }
 }

@@ -6,7 +6,7 @@ import { ProductService } from '@/services/ProductService';
 import { Product } from '@/models/Product';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { getAdminAuthHeaders } from '@/lib/adminAuth';
-import { getApiBase } from '@/lib/apiBase';
+import apiClient from '@/utils/api';
 
 interface Brand {
   id: number;
@@ -25,7 +25,6 @@ interface SubCategory {
 }
 
 const productService = new ProductService();
-const API_URL = getApiBase();
 
 export default function TaxonomyPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -87,22 +86,17 @@ export default function TaxonomyPage() {
   const handleAssignTaxonomy = async (productId: number, codigoInterno?: string) => {
     try {
       setAssigning(true);
-      // Remove /api if present to avoid double slash if API_URL has it
-      const base = API_URL.endsWith('/api') ? API_URL.slice(0, -4) : API_URL;
-
-      const response = await fetch(`${base}/api/admin/taxonomy/assign`, {
+      const result = await apiClient.request<{ success: boolean; message?: string }>('/api/admin/taxonomy/assign', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', ...getAdminAuthHeaders() },
-        body: JSON.stringify({
+        headers: { ...getAdminAuthHeaders() },
+        body: {
           productId: codigoInterno ? undefined : productId,
           codigoInterno: codigoInterno,
           brandName: formData.brandName || undefined,
           categoryName: formData.categoryName || undefined,
           subCategoryNames: formData.subCategoryNames.length > 0 ? formData.subCategoryNames : undefined
-        })
+        }
       });
-
-      const result = await response.json();
 
       if (result.success) {
         toast.success('Taxonomía asignada exitosamente');
@@ -127,21 +121,16 @@ export default function TaxonomyPage() {
 
     try {
       setAssigning(true);
-      // Remove /api if present to avoid double slash if API_URL has it
-      const base = API_URL.endsWith('/api') ? API_URL.slice(0, -4) : API_URL;
-
-      const response = await fetch(`${base}/api/admin/taxonomy/bulk-assign`, {
+      const result = await apiClient.request<{ success: boolean; message?: string; data?: { count?: number } }>('/api/admin/taxonomy/bulk-assign', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', ...getAdminAuthHeaders() },
-        body: JSON.stringify({
+        headers: { ...getAdminAuthHeaders() },
+        body: {
           productIds: bulkFormData.productIds,
           brandName: bulkFormData.brandName || undefined,
           categoryName: bulkFormData.categoryName || undefined,
           subCategoryNames: bulkFormData.subCategoryNames.length > 0 ? bulkFormData.subCategoryNames : undefined
-        })
+        }
       });
-
-      const result = await response.json();
 
       if (result.success) {
         toast.success(`Taxonomía asignada a ${result.data?.count || bulkFormData.productIds.length} productos`);

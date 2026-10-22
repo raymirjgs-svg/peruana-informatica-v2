@@ -1,9 +1,17 @@
 import { API_CONFIG } from '@/config/api';
-import { getAuthHeaders } from '@/lib/authTokens';
+import { getAuthHeaders, type AuthScope } from '@/lib/authTokens';
 
 const API_BASE_URL = API_CONFIG.API_BASE_URL;
 
-export type QueryParams = Record<string, string | number | boolean | undefined>;
+export type QueryParams = Record<string, string | number | boolean | undefined | null>;
+
+export interface RequestOptions extends Omit<RequestInit, 'body' | 'headers'> {
+  body?: unknown;
+  headers?: HeadersInit;
+  auth?: AuthScope | false;
+  baseUrl?: string;
+  responseType?: 'json' | 'text' | 'blob';
+}
 
 interface ApiErrorDetail {
   param?: string;
@@ -17,6 +25,57 @@ interface ApiErrorBody {
   details?: ApiErrorDetail[];
 }
 
+export class ApiError extends Error {
+  public readonly status: number;
+
+  constructor(message: string, status: number) {
+    super(message);
+    this.name = 'ApiError';
+    this.status = status;
+  }
+}
+
+export function buildQueryString(params?: QueryParams): string {
+  if (!params) return '';
+  const search = new URLSearchParams();
+  for (const [key, value] of Object.entries(params)) {
+    if (value !== undefined && value !== null && value !== '') search.set(key, String(value));
+  }
+  const query = search.toString();
+  return query ? `?${query}` : '';
+}
+
+function isRawBody(body: unknown): body is BodyInit {
+  return (
+    (typeof FormData !== 'undefined' && body instanceof FormData) ||
+    (typeof Blob !== 'undefined' && body instanceof Blob) ||
+    body instanceof ArrayBuffer ||
+    (typeof URLSearchParams !== 'undefined' && body instanceof URLSearchParams) ||
+    typeof body === 'string'
+  );
+}
+
+function parseErrorBody(text: string): string {
+  let message = 'Error en la solicitud';
+
+  try {
+    const errorJson = JSON.parse(text) as ApiErrorBody;
+    message = errorJson.message || errorJson.error || message;
+
+    if (Array.isArray(errorJson.details)) {
+      const details = errorJson.details
+        .map((detail) => `${detail.param || detail.path || 'Campo'}: ${detail.msg}`)
+        .join(', ');
+
+      if (details) message += ` (${details})`;
+    }
+  } catch {
+    if (text) message = text;
+  }
+
+  return message;
+}
+
 class ApiClient {
   private baseUrl: string;
 
@@ -24,47 +83,48 @@ class ApiClient {
     this.baseUrl = baseUrl;
   }
 
-  private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-    const url = `${this.baseUrl}${endpoint}`;
+  public async request<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
+    const { body, auth, baseUrl, headers, responseType = 'json', ...init } = options;
+    const url = `${baseUrl ?? this.baseUrl}${endpoint}`;
+    const resolvedAuth: AuthScope | false =
+      auth === undefined ? (endpoint.startsWith('/api/admin') ? 'admin' : false) : auth;
+    const rawBody = isRawBody(body);
+    const finalHeaders = new Headers(headers);
 
-    const config: RequestInit = {
-      ...options,
-      headers: {
-        'Content-Type': 'application/json',
-        ...(endpoint.startsWith('/api/admin') ? getAuthHeaders('admin') : {}),
-        ...options.headers,
-      },
-    };
+    if (!rawBody && body !== undefined && !finalHeaders.has('Content-Type')) {
+      finalHeaders.set('Content-Type', 'application/json');
+    }
+
+    if (resolvedAuth) {
+      const authHeaders = getAuthHeaders(resolvedAuth);
+      for (const [key, value] of Object.entries(authHeaders)) {
+        if (!finalHeaders.has(key)) finalHeaders.set(key, value);
+      }
+    }
 
     try {
-      const response = await fetch(url, config);
+      const response = await fetch(url, {
+        ...init,
+        headers: finalHeaders,
+        body: body === undefined ? undefined : rawBody ? body : JSON.stringify(body),
+      });
 
       if (!response.ok) {
-        const errorText = await response.text();
-        let errorMessage = 'Error en la solicitud';
-
-        try {
-          const errorJson = JSON.parse(errorText) as ApiErrorBody;
-          errorMessage = errorJson.message || errorJson.error || errorMessage;
-
-          if (Array.isArray(errorJson.details)) {
-            const detailMessages = errorJson.details
-              .map((detail) => `${detail.param || detail.path || 'Campo'}: ${detail.msg}`)
-              .join(', ');
-
-            if (detailMessages) {
-              errorMessage += ` (${detailMessages})`;
-            }
-          }
-        } catch {
-          errorMessage = errorText || errorMessage;
-        }
-
-        throw new Error(errorMessage);
+        throw new ApiError(parseErrorBody(await response.text()), response.status);
       }
 
-      const data = await response.json();
-      return data as T;
+      if (response.status === 204) return undefined as T;
+      if (responseType === 'blob') return (await response.blob()) as T;
+
+      const text = await response.text();
+      if (!text) return undefined as T;
+      if (responseType === 'text') return text as T;
+
+      try {
+        return JSON.parse(text) as T;
+      } catch {
+        return text as T;
+      }
     } catch (error) {
       if (error instanceof Error) {
         console.error(`API Error for endpoint ${endpoint}:`, error.message);
@@ -76,19 +136,19 @@ class ApiClient {
   }
 
   private buildQuery(params?: QueryParams): string {
-    if (!params) return '';
-    const search = new URLSearchParams();
-    for (const [key, value] of Object.entries(params)) {
-      if (value !== undefined && value !== '') search.set(key, String(value));
-    }
-    const query = search.toString();
-    return query ? `?${query}` : '';
+    return buildQueryString(params);
   }
 
-  public get = <T = unknown>(endpoint: string) => this.request<T>(endpoint, { method: 'GET' });
-  public post = <T = unknown>(endpoint: string, data: unknown) => this.request<T>(endpoint, { method: 'POST', body: JSON.stringify(data) });
-  public put = <T = unknown>(endpoint: string, data: unknown) => this.request<T>(endpoint, { method: 'PUT', body: JSON.stringify(data) });
-  public delete = <T = unknown>(endpoint: string) => this.request<T>(endpoint, { method: 'DELETE' });
+  public get = <T = unknown>(endpoint: string, params?: QueryParams) =>
+    this.request<T>(`${endpoint}${this.buildQuery(params)}`, { method: 'GET' });
+  public post = <T = unknown>(endpoint: string, data?: unknown, options: RequestOptions = {}) =>
+    this.request<T>(endpoint, { ...options, method: 'POST', body: data });
+  public put = <T = unknown>(endpoint: string, data?: unknown, options: RequestOptions = {}) =>
+    this.request<T>(endpoint, { ...options, method: 'PUT', body: data });
+  public patch = <T = unknown>(endpoint: string, data?: unknown, options: RequestOptions = {}) =>
+    this.request<T>(endpoint, { ...options, method: 'PATCH', body: data });
+  public delete = <T = unknown>(endpoint: string, options: RequestOptions = {}) =>
+    this.request<T>(endpoint, { ...options, method: 'DELETE' });
 
   createQuotation = (data: unknown) =>
     this.request('/api/quotations', {

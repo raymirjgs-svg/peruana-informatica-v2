@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { getApiBase } from '@/lib/apiBase';
+import apiClient from '@/utils/api';
 import type { OrderBase, OrderItem } from '@/types/order';
 
 interface Order extends OrderBase {
@@ -28,14 +28,7 @@ export default function OrderTrackingPage() {
   const fetchOrder = async () => {
     try {
       setLoading(true);
-      const apiUrl = getApiBase();
-      const response = await fetch(`${apiUrl}/api/client/orders/track/${code}`);
-
-      if (!response.ok) {
-        throw new Error('Pedido no encontrado');
-      }
-
-      const data = await response.json();
+      const data = await apiClient.request<Order>(`/api/client/orders/track/${code}`);
       setOrder(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al cargar el pedido');
@@ -47,14 +40,9 @@ export default function OrderTrackingPage() {
   const downloadInvoice = async () => {
     try {
       setDownloading(true);
-      const apiUrl = getApiBase();
-      const response = await fetch(`${apiUrl}/api/client/orders/track/${code}/invoice`);
-
-      if (!response.ok) {
-        throw new Error('Comprobante no disponible');
-      }
-
-      const blob = await response.blob();
+      const blob = await apiClient.request<Blob>(`/api/client/orders/track/${code}/invoice`, {
+        responseType: 'blob',
+      });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;

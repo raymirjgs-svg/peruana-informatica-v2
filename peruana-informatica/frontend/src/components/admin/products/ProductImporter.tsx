@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Button } from '../Button';
 import { getAdminAuthHeaders } from '@/lib/adminAuth';
-import { getApiBase as getApiHost } from '@/lib/apiBase';
+import apiClient from '@/utils/api';
 
 interface ImportResult {
     success: boolean;
@@ -27,10 +27,6 @@ export function ProductImporter() {
     const [result, setResult] = useState<ImportResult | null>(null);
     const [jsonText, setJsonText] = useState('');
     const [mode, setMode] = useState<'file' | 'text'>('file');
-
-    const getApiBase = () => {
-        return `${getApiHost()}/api`;
-    };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
@@ -68,32 +64,24 @@ export function ProductImporter() {
             setImporting(true);
             setResult(null);
 
-            const response = await fetch(`${getApiBase()}/admin/products/import-json`, {
+            const data = await apiClient.request<{
+                message?: string;
+                summary?: ImportResult['summary'];
+                details?: ImportResult['details'];
+            }>('/api/admin/products/import-json', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    ...getAdminAuthHeaders(),
-                },
-                body: JSON.stringify(jsonData)
+                headers: { ...getAdminAuthHeaders() },
+                body: jsonData
             });
 
-            const data = await response.json();
-
-            if (response.ok) {
-                setResult({
-                    success: true,
-                    message: data.message || 'Importación exitosa',
-                    summary: data.summary,
-                    details: data.details
-                });
-                setFile(null);
-                setJsonText('');
-            } else {
-                setResult({
-                    success: false,
-                    message: data.error || 'Error en la importación'
-                });
-            }
+            setResult({
+                success: true,
+                message: data.message || 'Importación exitosa',
+                summary: data.summary,
+                details: data.details
+            });
+            setFile(null);
+            setJsonText('');
         } catch (error: any) {
             setResult({
                 success: false,

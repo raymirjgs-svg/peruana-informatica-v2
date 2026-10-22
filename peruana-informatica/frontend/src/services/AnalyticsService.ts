@@ -1,5 +1,4 @@
-import { API_CONFIG } from '../config/api';
-const API_BASE = API_CONFIG.API_BASE_URL;
+import apiClient from '../utils/api';
 
 export interface KPIs {
     totalRevenue: string;
@@ -37,14 +36,11 @@ class AnalyticsService {
      */
     async getKPIs(token?: string): Promise<{ success: boolean; data: KPIs }> {
         try {
-            const response = await fetch(`${API_BASE}/api/admin/analytics/kpis`, {
+            return await apiClient.request<{ success: boolean; data: KPIs }>('/api/admin/analytics/kpis', {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
-
-            if (!response.ok) throw new Error('Failed to fetch KPIs');
-            return await response.json();
         } catch (error) {
             console.error('Error fetching KPIs:', error);
             throw error;
@@ -56,14 +52,11 @@ class AnalyticsService {
      */
     async getSalesOverview(period: string = '30d', token?: string): Promise<{ success: boolean; data: SalesDataPoint[] }> {
         try {
-            const response = await fetch(`${API_BASE}/api/admin/analytics/sales-overview?period=${period}`, {
+            return await apiClient.request<{ success: boolean; data: SalesDataPoint[] }>(`/api/admin/analytics/sales-overview?period=${period}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
-
-            if (!response.ok) throw new Error('Failed to fetch sales overview');
-            return await response.json();
         } catch (error) {
             console.error('Error fetching sales overview:', error);
             throw error;
@@ -75,14 +68,11 @@ class AnalyticsService {
      */
     async getTopProducts(limit: number = 10, token?: string): Promise<{ success: boolean; data: TopProduct[] }> {
         try {
-            const response = await fetch(`${API_BASE}/api/admin/analytics/top-products?limit=${limit}`, {
+            return await apiClient.request<{ success: boolean; data: TopProduct[] }>(`/api/admin/analytics/top-products?limit=${limit}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
-
-            if (!response.ok) throw new Error('Failed to fetch top products');
-            return await response.json();
         } catch (error) {
             console.error('Error fetching top products:', error);
             throw error;
@@ -94,14 +84,11 @@ class AnalyticsService {
      */
     async getSalesByPaymentMethod(token?: string) {
         try {
-            const response = await fetch(`${API_BASE}/api/admin/analytics/payment-methods`, {
+            return await apiClient.request<{ success: boolean; data: Array<Record<string, unknown>> }>('/api/admin/analytics/payment-methods', {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
-
-            if (!response.ok) throw new Error('Failed to fetch payment methods');
-            return await response.json();
         } catch (error) {
             console.error('Error fetching payment methods:', error);
             throw error;
@@ -113,14 +100,11 @@ class AnalyticsService {
      */
     async getRecentOrders(limit: number = 10, token?: string) {
         try {
-            const response = await fetch(`${API_BASE}/api/admin/analytics/recent-orders?limit=${limit}`, {
+            return await apiClient.request<{ success: boolean; data: Array<Record<string, unknown>> }>(`/api/admin/analytics/recent-orders?limit=${limit}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
-
-            if (!response.ok) throw new Error('Failed to fetch recent orders');
-            return await response.json();
         } catch (error) {
             console.error('Error fetching recent orders:', error);
             throw error;
@@ -132,14 +116,11 @@ class AnalyticsService {
      */
     async getConversionMetrics(token?: string) {
         try {
-            const response = await fetch(`${API_BASE}/api/admin/analytics/conversion`, {
+            return await apiClient.request<{ success: boolean; data: Record<string, unknown> }>('/api/admin/analytics/conversion', {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
-
-            if (!response.ok) throw new Error('Failed to fetch conversion metrics');
-            return await response.json();
         } catch (error) {
             console.error('Error fetching conversion metrics:', error);
             throw error;

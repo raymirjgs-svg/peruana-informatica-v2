@@ -11,7 +11,7 @@ import { SuccessStep } from './SuccessStep';
 import { PaymentStep } from './PaymentStep';
 import { CustomerStep } from './CustomerStep';
 import { CartStep } from './CartStep';
-import { getApiBase } from '@/lib/apiBase';
+import apiClient from '@/utils/api';
 
 export default function CartPage() {
   const { items, totalPrice, updateQuantity, removeItem, clearCart } = useCart();
@@ -32,12 +32,8 @@ export default function CartPage() {
   useEffect(() => {
     const fetchCheckoutMode = async () => {
       try {
-        const apiUrl = getApiBase();
-        const res = await fetch(`${apiUrl}/api/settings/checkout-mode`);
-        if (res.ok) {
-          const data = await res.json();
-          setCheckoutMode(data.mode);
-        }
+        const data = await apiClient.request<{ mode: 'direct' | 'approval' }>('/api/settings/checkout-mode');
+        setCheckoutMode(data.mode);
       } catch (error) {
         console.error('Error fetching checkout mode:', error);
       }
@@ -106,8 +102,6 @@ export default function CartPage() {
     setIsLoading(true);
     setError(null);
 
-    const apiUrl = getApiBase();
-
     try {
       const payload = {
         customer_name: customerData.name,
@@ -123,32 +117,23 @@ export default function CartPage() {
         total_amount: finalTotal
       };
 
-      const response = await fetch(`${apiUrl}/api/orders`, {
+      const data = await apiClient.request<{ order_id: number; tracking_code?: string | null; status?: string }>('/api/orders', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
+        body: payload
       });
 
-      const data = await response.json();
+      setOrderId(data.order_id);
+      setTrackingCode(data.tracking_code ?? null);
+      setOrderTotal(finalTotal);
 
-      if (response.ok) {
-        setOrderId(data.order_id);
-        setTrackingCode(data.tracking_code ?? null);
-        setOrderTotal(finalTotal);
-
-        if (data.status === 'pending_approval' || checkoutMode === 'approval') {
-          setStep('success');
-        } else {
-          setStep('payment');
-        }
-        clearCart();
+      if (data.status === 'pending_approval' || checkoutMode === 'approval') {
+        setStep('success');
       } else {
-        setError(data.error || 'No se pudo crear el pedido');
+        setStep('payment');
       }
-    } catch {
-      setError('Error de conexión. Por favor intente de nuevo.');
+      clearCart();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error de conexión. Por favor intente de nuevo.');
     } finally {
       setIsLoading(false);
     }
@@ -183,8 +168,6 @@ export default function CartPage() {
     setIsLoading(true);
     setError(null);
 
-    const apiUrl = getApiBase();
-
     try {
       const formData = new FormData();
       formData.append('payment_method', paymentMethod);
@@ -211,20 +194,14 @@ export default function CartPage() {
         formData.append('tax_address', invoiceData.tax_address);
       }
 
-      const response = await fetch(`${apiUrl}/api/payments/${orderId}/upload-proof`, {
+      await apiClient.request(`/api/payments/${orderId}/upload-proof`, {
         method: 'POST',
         body: formData
       });
 
-      const data = await response.json();
-
-      if (response.ok) {
-        setStep('success');
-      } else {
-        setError(data.error || 'No se pudo procesar el pago');
-      }
-    } catch {
-      setError('Error de conexión. Por favor intente de nuevo.');
+      setStep('success');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error de conexión. Por favor intente de nuevo.');
     } finally {
       setIsLoading(false);
     }

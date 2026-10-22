@@ -1,26 +1,14 @@
 import { ProductImage } from '@/models/Product';
 import { getAdminAuthHeaders } from '@/lib/adminAuth';
-import { getApiBase } from '@/lib/apiBase';
+import apiClient from '@/utils/api';
 
 export class ImageService {
-  private baseUrl = getApiBase();
-  private apiBase = (() => {
-    const trimmed = this.baseUrl.replace(/\/+$/, '');
-    return trimmed.endsWith('/api') ? trimmed : `${trimmed}/api`;
-  })();
-
   async getImagesByProduct(productId: number): Promise<ProductImage[]> {
     try {
-      const response = await fetch(`${this.apiBase}/admin/images/product/${productId}`, {
+      const images = await apiClient.request<ProductImage[]>(`/api/admin/images/product/${productId}`, {
         headers: { ...getAdminAuthHeaders() },
       });
-      
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || `Error ${response.status}: ${response.statusText}`);
-      }
-      
-      const images = await response.json();
+
       return images;
     } catch (error) {
       console.error('Error fetching product images:', error);
@@ -30,21 +18,15 @@ export class ImageService {
 
   async createImage(productId: number, imageUrl: string): Promise<ProductImage | null> {
     try {
-      const response = await fetch(`${this.apiBase}/admin/images/product/${productId}`, {
+      const image = await apiClient.request<ProductImage>(`/api/admin/images/product/${productId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           ...getAdminAuthHeaders(),
         },
-        body: JSON.stringify({ imagen: imageUrl }),
+        body: { imagen: imageUrl },
       });
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || `Error ${response.status}: ${response.statusText}`);
-      }
-
-      const image = await response.json();
       return image;
     } catch (error) {
       console.error('Error creating image:', error);
@@ -54,15 +36,10 @@ export class ImageService {
 
   async deleteImage(imageId: number): Promise<boolean> {
     try {
-      const response = await fetch(`${this.apiBase}/admin/images/${imageId}`, {
+      await apiClient.request<void>(`/api/admin/images/${imageId}`, {
         method: 'DELETE',
         headers: { ...getAdminAuthHeaders() },
       });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || `Error ${response.status}: ${response.statusText}`);
-      }
 
       return true;
     } catch (error) {

@@ -8,7 +8,7 @@ import { StatsCard } from '@/components/admin/StatsCard';
 import { useSession } from 'next-auth/react';
 import { Package, AlertTriangle, TrendingDown, Search, Download } from 'lucide-react';
 import { toast } from 'sonner';
-import { getApiBase } from '@/lib/apiBase';
+import apiClient from '@/utils/api';
 import type { CatalogProduct } from '@/types/product';
 
 interface Product extends CatalogProduct {
@@ -29,16 +29,11 @@ export default function InventoryPage() {
       if (!session?.accessToken) return;
 
       try {
-        const API_BASE = getApiBase();
-        const response = await fetch(`${API_BASE}/api/admin/products`, {
+        const result = await apiClient.request<{ products?: Product[] }>('/api/admin/products', {
           headers: {
             'Authorization': `Bearer ${session.accessToken}`
           }
         });
-
-        if (!response.ok) throw new Error('Failed to fetch inventory');
-
-        const result = await response.json();
         setProducts(result.products || []);
       } catch (error) {
         toast.error('Error al cargar inventario');

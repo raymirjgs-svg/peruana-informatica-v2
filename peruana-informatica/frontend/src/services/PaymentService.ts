@@ -1,5 +1,4 @@
-import { API_CONFIG } from '@/config/api';
-import { getAuthToken } from '@/lib/authTokens';
+import apiClient, { ApiError } from '../utils/api';
 
 export interface CreatePreferenceRequest {
     address: string;
@@ -14,51 +13,34 @@ export interface PaymentPreference {
 }
 
 class PaymentService {
-    private apiBase = API_CONFIG.API_BASE_URL + '/api/payment';
-
-    private getToken(): string | null {
-        return getAuthToken('customer');
-    }
-
-    private getHeaders() {
-        const token = this.getToken();
-        return {
-            'Content-Type': 'application/json',
-            'Authorization': token ? `Bearer ${token}` : ''
-        };
-    }
-
     async createPreference(data: CreatePreferenceRequest): Promise<PaymentPreference> {
-        const response = await fetch(`${this.apiBase}/create-preference`, {
-            method: 'POST',
-            headers: this.getHeaders(),
-            body: JSON.stringify(data),
-        });
-
-        if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.error || 'Error al crear preferencia de pago');
+        try {
+            return await apiClient.request<PaymentPreference>('/api/payment/create-preference', {
+                method: 'POST',
+                auth: 'customer',
+                body: data,
+            });
+        } catch (error) {
+            if (error instanceof ApiError && error.message === 'Error en la solicitud') {
+                throw new Error('Error al crear preferencia de pago');
+            }
+            throw error;
         }
-
-        return await response.json();
     }
 
     async createPreferenceForOrder(orderId: number): Promise<PaymentPreference> {
-        const response = await fetch(`${this.apiBase}/create-preference-order`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                // Send token if available, but optional if endpoint is public/generic
-                ...((this.getToken()) ? { 'Authorization': `Bearer ${this.getToken()}` } : {})
-            },
-            body: JSON.stringify({ orderId }),
-        });
-
-        if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.error || 'Error al generar link de pago');
+        try {
+            return await apiClient.request<PaymentPreference>('/api/payment/create-preference-order', {
+                method: 'POST',
+                auth: 'customer',
+                body: { orderId },
+            });
+        } catch (error) {
+            if (error instanceof ApiError && error.message === 'Error en la solicitud') {
+                throw new Error('Error al generar link de pago');
+            }
+            throw error;
         }
-        return await response.json();
     }
 }
 

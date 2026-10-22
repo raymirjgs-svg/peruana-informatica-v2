@@ -4,6 +4,7 @@ import { BlogPost } from "../../models/BlogPost";
 import { BlogTitleSuggestion } from "../../models/BlogTitleSuggestion";
 import { geminiService } from "../../services/GeminiService";
 import { logger } from "../../config/logger";
+import { sendError } from "../../middleware/errorHandler";
 
 export class BlogAdminController {
   static async getAllPosts(req: Request, res: Response) {
@@ -51,11 +52,7 @@ export class BlogAdminController {
       });
     } catch (error) {
       logger.error("Error fetching all posts:", error);
-      res.status(500).json({
-        error: "Error interno del servidor",
-        message: "Error al obtener los posts",
-        code: "INTERNAL_SERVER_ERROR",
-      });
+      return sendError(res, error, "Error al obtener los posts", 500, "INTERNAL_SERVER_ERROR");
     }
   }
 
@@ -160,11 +157,7 @@ export class BlogAdminController {
         });
       }
 
-      res.status(500).json({
-        error: "Error interno del servidor",
-        message: "Error al crear el post",
-        code: "INTERNAL_SERVER_ERROR",
-      });
+      return sendError(res, error, "Error al crear el post", 500, "INTERNAL_SERVER_ERROR");
     }
   }
 
@@ -188,11 +181,7 @@ export class BlogAdminController {
       });
     } catch (error) {
       logger.error("Error fetching post by ID:", error);
-      res.status(500).json({
-        error: "Error interno del servidor",
-        message: "Error al obtener el post",
-        code: "INTERNAL_SERVER_ERROR",
-      });
+      return sendError(res, error, "Error al obtener el post", 500, "INTERNAL_SERVER_ERROR");
     }
   }
 
@@ -267,11 +256,7 @@ export class BlogAdminController {
         });
       }
 
-      res.status(500).json({
-        error: "Error interno del servidor",
-        message: "Error al actualizar el post",
-        code: "INTERNAL_SERVER_ERROR",
-      });
+      return sendError(res, error, "Error al actualizar el post", 500, "INTERNAL_SERVER_ERROR");
     }
   }
 
@@ -297,11 +282,7 @@ export class BlogAdminController {
       });
     } catch (error) {
       logger.error("Error deleting blog post:", error);
-      res.status(500).json({
-        error: "Error interno del servidor",
-        message: "Error al eliminar el post",
-        code: "INTERNAL_SERVER_ERROR",
-      });
+      return sendError(res, error, "Error al eliminar el post", 500, "INTERNAL_SERVER_ERROR");
     }
   }
 
@@ -366,11 +347,7 @@ export class BlogAdminController {
       });
     } catch (error) {
       logger.error("Error fetching blog stats:", error);
-      res.status(500).json({
-        error: "Error interno del servidor",
-        message: "Error al obtener estadísticas",
-        code: "INTERNAL_SERVER_ERROR",
-      });
+      return sendError(res, error, "Error al obtener estadísticas", 500, "INTERNAL_SERVER_ERROR");
     }
   }
 }

@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { Page } from '../models/Page';
 import { Op } from 'sequelize';
 import { logger } from '../config/logger';
+import { sendError } from '../middleware/errorHandler';
 
 export class PageController {
 
@@ -36,7 +37,7 @@ export class PageController {
             });
         } catch (error) {
             logger.error('Error fetching pages:', error);
-            return res.status(500).json({ error: 'Error interno del servidor' });
+            return sendError(res, error, 'Error interno del servidor');
         }
     }
 
@@ -56,7 +57,7 @@ export class PageController {
             return res.json({ success: true, data: page });
         } catch (error) {
             logger.error('Error fetching page by slug:', error);
-            return res.status(500).json({ error: 'Error interno del servidor' });
+            return sendError(res, error, 'Error interno del servidor');
         }
     }
 
@@ -73,7 +74,7 @@ export class PageController {
             return res.json({ success: true, data: page });
         } catch (error) {
             logger.error('Error getting page:', error);
-            return res.status(500).json({ error: 'Error interno del servidor' });
+            return sendError(res, error, 'Error interno del servidor');
         }
     }
 
@@ -100,7 +101,7 @@ export class PageController {
             return res.status(201).json({ success: true, data: newPage });
         } catch (error) {
             logger.error('Error creating page:', error);
-            return res.status(500).json({ error: 'Error interno del servidor' });
+            return sendError(res, error, 'Error interno del servidor');
         }
     }
 
@@ -135,7 +136,7 @@ export class PageController {
             return res.json({ success: true, data: page });
         } catch (error) {
             logger.error('Error updating page:', error);
-            return res.status(500).json({ error: 'Error interno del servidor' });
+            return sendError(res, error, 'Error interno del servidor');
         }
     }
 
@@ -153,7 +154,7 @@ export class PageController {
             return res.json({ success: true, message: 'Página eliminada correctamente' });
         } catch (error) {
             logger.error('Error deleting page:', error);
-            return res.status(500).json({ error: 'Error interno del servidor' });
+            return sendError(res, error, 'Error interno del servidor');
         }
     }
 }

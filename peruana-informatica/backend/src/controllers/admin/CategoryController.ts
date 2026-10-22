@@ -3,6 +3,7 @@ import { Category } from '../../models/Category';
 import { Product } from '../../models/Product';
 import { Op } from 'sequelize';
 import { logger } from '../../config/logger';
+import { sendError } from '../../middleware/errorHandler';
 
 export class CategoryController {
     /**
@@ -30,11 +31,7 @@ export class CategoryController {
             res.json(categoriesWithCount);
         } catch (error) {
             logger.error('Error getting categories:', error);
-            res.status(500).json({
-                error: 'Error al obtener categorías',
-                code: 'CATEGORIES_FETCH_ERROR',
-                timestamp: new Date().toISOString()
-            });
+            return sendError(res, error, 'Error al obtener categorías', 500, 'CATEGORIES_FETCH_ERROR');
         }
     }
 
@@ -53,11 +50,7 @@ export class CategoryController {
             res.json(categories);
         } catch (error) {
             logger.error('Error getting menu categories:', error);
-            res.status(500).json({
-                error: 'Error al obtener categorías del menú',
-                code: 'MENU_CATEGORIES_ERROR',
-                timestamp: new Date().toISOString()
-            });
+            return sendError(res, error, 'Error al obtener categorías del menú', 500, 'MENU_CATEGORIES_ERROR');
         }
     }
 
@@ -88,11 +81,7 @@ export class CategoryController {
             res.json(category);
         } catch (error) {
             logger.error('Error getting category:', error);
-            res.status(500).json({
-                error: 'Error al obtener categoría',
-                code: 'CATEGORY_FETCH_ERROR',
-                timestamp: new Date().toISOString()
-            });
+            return sendError(res, error, 'Error al obtener categoría', 500, 'CATEGORY_FETCH_ERROR');
         }
     }
 
@@ -125,11 +114,7 @@ export class CategoryController {
             res.status(201).json(category);
         } catch (error) {
             logger.error('Error creating category:', error);
-            res.status(500).json({
-                error: 'Error al crear categoría',
-                code: 'CATEGORY_CREATE_ERROR',
-                timestamp: new Date().toISOString()
-            });
+            return sendError(res, error, 'Error al crear categoría', 500, 'CATEGORY_CREATE_ERROR');
         }
     }
 
@@ -180,11 +165,7 @@ export class CategoryController {
             res.json(category);
         } catch (error) {
             logger.error('Error updating category:', error);
-            res.status(500).json({
-                error: 'Error al actualizar categoría',
-                code: 'CATEGORY_UPDATE_ERROR',
-                timestamp: new Date().toISOString()
-            });
+            return sendError(res, error, 'Error al actualizar categoría', 500, 'CATEGORY_UPDATE_ERROR');
         }
     }
 
@@ -223,11 +204,7 @@ export class CategoryController {
             });
         } catch (error) {
             logger.error('Error deleting category:', error);
-            res.status(500).json({
-                error: 'Error al eliminar categoría',
-                code: 'CATEGORY_DELETE_ERROR',
-                timestamp: new Date().toISOString()
-            });
+            return sendError(res, error, 'Error al eliminar categoría', 500, 'CATEGORY_DELETE_ERROR');
         }
     }
 }

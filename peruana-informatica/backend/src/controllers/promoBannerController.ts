@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { PromoBanner } from '../models/PromoBanner';
 import { buildPaginationMeta, getSafetyLimit, resolvePagination } from '../utils/pagination';
 import { logger } from '../config/logger';
+import { sendError } from '../middleware/errorHandler';
 
 export class PromoBannerController {
     /**
@@ -29,10 +30,7 @@ export class PromoBannerController {
             });
         } catch (error) {
             logger.error('Error fetching banners:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al obtener banners'
-            });
+            return sendError(res, error, 'Error al obtener banners');
         }
     }
 
@@ -69,10 +67,7 @@ export class PromoBannerController {
             });
         } catch (error) {
             logger.error('Error fetching all banners:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al obtener banners'
-            });
+            return sendError(res, error, 'Error al obtener banners');
         }
     }
 
@@ -116,10 +111,7 @@ export class PromoBannerController {
             });
         } catch (error) {
             logger.error('Error creating banner:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al crear banner'
-            });
+            return sendError(res, error, 'Error al crear banner');
         }
     }
 
@@ -169,10 +161,7 @@ export class PromoBannerController {
             });
         } catch (error) {
             logger.error('Error updating banner:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al actualizar banner'
-            });
+            return sendError(res, error, 'Error al actualizar banner');
         }
     }
 
@@ -200,10 +189,7 @@ export class PromoBannerController {
             });
         } catch (error) {
             logger.error('Error deleting banner:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al eliminar banner'
-            });
+            return sendError(res, error, 'Error al eliminar banner');
         }
     }
 
@@ -234,10 +220,7 @@ export class PromoBannerController {
             });
         } catch (error) {
             logger.error('Error toggling banner status:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al cambiar estado del banner'
-            });
+            return sendError(res, error, 'Error al cambiar estado del banner');
         }
     }
 }

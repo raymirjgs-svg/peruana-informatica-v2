@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { User } from '../../models/User';
 import { Op } from 'sequelize';
 import { logger } from '../../config/logger';
+import { sendError } from '../../middleware/errorHandler';
 
 export class CustomerController {
     /**
@@ -69,10 +70,7 @@ export class CustomerController {
 
         } catch (error) {
             logger.error('❌ Error fetching customers:', error);
-            res.status(500).json({
-                message: 'Error fetching customers',
-                error: 'Error interno'
-            });
+            return void sendError(res, error, 'Error fetching customers');
         }
     }
 
@@ -99,10 +97,7 @@ export class CustomerController {
 
         } catch (error) {
             logger.error('❌ Error fetching customer:', error);
-            res.status(500).json({
-                message: 'Error fetching customer',
-                error: 'Error interno'
-            });
+            return void sendError(res, error, 'Error fetching customer');
         }
     }
 
@@ -144,10 +139,7 @@ export class CustomerController {
 
         } catch (error) {
             logger.error('❌ Error toggling customer block:', error);
-            res.status(500).json({
-                message: 'Error updating customer',
-                error: 'Error interno'
-            });
+            return void sendError(res, error, 'Error updating customer');
         }
     }
 
@@ -220,10 +212,7 @@ export class CustomerController {
 
         } catch (error) {
             logger.error('❌ Error fetching customer stats:', error);
-            res.status(500).json({
-                message: 'Error fetching statistics',
-                error: 'Error interno'
-            });
+            return void sendError(res, error, 'Error fetching statistics');
         }
     }
 
@@ -253,10 +242,7 @@ export class CustomerController {
 
         } catch (error) {
             logger.error('❌ Error fetching customer orders:', error);
-            res.status(500).json({
-                message: 'Error fetching orders',
-                error: 'Error interno'
-            });
+            return void sendError(res, error, 'Error fetching orders');
         }
     }
 }

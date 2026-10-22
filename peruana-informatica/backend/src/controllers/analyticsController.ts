@@ -7,6 +7,7 @@ import { Review } from '../models/Review';
 import { User } from '../models/User';
 import { Op } from 'sequelize';
 import { logger } from '../config/logger';
+import { sendError } from '../middleware/errorHandler';
 
 export class AnalyticsController {
 
@@ -62,7 +63,7 @@ export class AnalyticsController {
             });
         } catch (error) {
             logger.error('Error fetching sales overview:', error);
-            return res.status(500).json({ error: 'Error al obtener resumen de ventas' });
+            return sendError(res, error, 'Error al obtener resumen de ventas');
         }
     }
 
@@ -147,7 +148,7 @@ export class AnalyticsController {
             });
         } catch (error) {
             logger.error('Error fetching KPIs:', error);
-            return res.status(500).json({ error: 'Error al obtener KPIs' });
+            return sendError(res, error, 'Error al obtener KPIs');
         }
     }
 
@@ -207,7 +208,7 @@ export class AnalyticsController {
             });
         } catch (error) {
             logger.error('Error fetching top products:', error);
-            return res.status(500).json({ error: 'Error al obtener productos más vendidos' });
+            return sendError(res, error, 'Error al obtener productos más vendidos');
         }
     }
 
@@ -236,7 +237,7 @@ export class AnalyticsController {
             });
         } catch (error) {
             logger.error('Error fetching sales by payment method:', error);
-            return res.status(500).json({ error: 'Error al obtener ventas por método de pago' });
+            return sendError(res, error, 'Error al obtener ventas por método de pago');
         }
     }
 
@@ -259,7 +260,7 @@ export class AnalyticsController {
             });
         } catch (error) {
             logger.error('Error fetching recent orders:', error);
-            return res.status(500).json({ error: 'Error al obtener pedidos recientes' });
+            return sendError(res, error, 'Error al obtener pedidos recientes');
         }
     }
 
@@ -296,7 +297,7 @@ export class AnalyticsController {
             });
         } catch (error) {
             logger.error('Error fetchingconversion metrics:', error);
-            return res.status(500).json({ error: 'Error al obtener métricas de conversión' });
+            return sendError(res, error, 'Error al obtener métricas de conversión');
         }
     }
 }

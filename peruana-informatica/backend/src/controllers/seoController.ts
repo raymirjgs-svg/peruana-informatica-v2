@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { SeoSettings } from "../models/SeoSettings";
 import { pickSeoSettingsFields } from "../utils/seoFields";
 import { logger } from '../config/logger';
+import { sendError } from '../middleware/errorHandler';
 
 export class SeoController {
   static async getAll(req: Request, res: Response) {
@@ -28,11 +29,7 @@ export class SeoController {
       });
     } catch (error) {
       logger.error("Error fetching SEO settings:", error);
-      res.status(500).json({
-        error: "Error interno del servidor",
-        message: "Error al obtener las configuraciones SEO",
-        code: "INTERNAL_SERVER_ERROR",
-      });
+      return sendError(res, error, "Error al obtener las configuraciones SEO", 500, "INTERNAL_SERVER_ERROR");
     }
   }
 
@@ -134,11 +131,7 @@ export class SeoController {
         });
       }
 
-      res.status(500).json({
-        error: "Error interno del servidor",
-        message: "Error al crear la configuración SEO",
-        code: "INTERNAL_SERVER_ERROR",
-      });
+      return sendError(res, error, "Error al crear la configuración SEO", 500, "INTERNAL_SERVER_ERROR");
     }
   }
 
@@ -221,11 +214,7 @@ export class SeoController {
         });
       }
 
-      res.status(500).json({
-        error: "Error interno del servidor",
-        message: "Error al actualizar la configuración SEO",
-        code: "INTERNAL_SERVER_ERROR",
-      });
+      return sendError(res, error, "Error al actualizar la configuración SEO", 500, "INTERNAL_SERVER_ERROR");
     }
   }
 
@@ -250,11 +239,7 @@ export class SeoController {
       });
     } catch (error) {
       logger.error("Error fetching SEO settings by ID:", error);
-      res.status(500).json({
-        error: "Error interno del servidor",
-        message: "Error al obtener la configuración SEO",
-        code: "INTERNAL_SERVER_ERROR",
-      });
+      return sendError(res, error, "Error al obtener la configuración SEO", 500, "INTERNAL_SERVER_ERROR");
     }
   }
 
@@ -281,11 +266,7 @@ export class SeoController {
       });
     } catch (error) {
       logger.error("Error deleting SEO settings:", error);
-      res.status(500).json({
-        error: "Error interno del servidor",
-        message: "Error al eliminar la configuración SEO",
-        code: "INTERNAL_SERVER_ERROR",
-      });
+      return sendError(res, error, "Error al eliminar la configuración SEO", 500, "INTERNAL_SERVER_ERROR");
     }
   }
 }

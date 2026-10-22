@@ -5,6 +5,7 @@ import { Brand } from '../models/Brand';
 import { Category } from '../models/Category';
 import { SubCategory } from '../models/SubCategory';
 import { logger } from '../config/logger';
+import { sendError } from '../middleware/errorHandler';
 
 /**
  * Controlador para gestionar la sincronización con la API externa de Peruana Informática
@@ -35,11 +36,7 @@ export class SyncController {
             }
         } catch (error: any) {
             logger.error('Error en SyncController.solicitarToken:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al solicitar token',
-                error: 'Error en la sincronización'
-            });
+            return sendError(res, error, 'Error al solicitar token');
         }
     }
 
@@ -193,11 +190,7 @@ export class SyncController {
             }
         } catch (error: any) {
             logger.error('Error en SyncController.sincronizarProducto:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al sincronizar producto',
-                error: 'Error en la sincronización'
-            });
+            return sendError(res, error, 'Error al sincronizar producto');
         }
     }
 
@@ -292,11 +285,7 @@ export class SyncController {
             });
         } catch (error: any) {
             logger.error('Error en SyncController.sincronizarProductos:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al sincronizar productos',
-                error: 'Error en la sincronización'
-            });
+            return sendError(res, error, 'Error al sincronizar productos');
         }
     }
 
@@ -407,11 +396,7 @@ export class SyncController {
             });
         } catch (error: any) {
             logger.error('Error en SyncController.sincronizarTodosLosProductos:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al sincronizar todos los productos',
-                error: 'Error en la sincronización'
-            });
+            return sendError(res, error, 'Error al sincronizar todos los productos');
         }
     }
 
@@ -430,11 +415,7 @@ export class SyncController {
             });
         } catch (error: any) {
             logger.error('Error en SyncController.verificarToken:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al verificar token',
-                error: 'Error en la sincronización'
-            });
+            return sendError(res, error, 'Error al verificar token');
         }
     }
 }

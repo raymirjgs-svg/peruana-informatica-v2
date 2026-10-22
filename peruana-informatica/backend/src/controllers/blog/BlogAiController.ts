@@ -7,6 +7,7 @@ import { Op } from "sequelize";
 import * as fs from "fs";
 import * as path from "path";
 import { logger } from "../../config/logger";
+import { sendError } from "../../middleware/errorHandler";
 
 export class BlogAiController {
   static async generateTitles(req: Request, res: Response) {
@@ -69,11 +70,7 @@ export class BlogAiController {
         });
       }
       
-      res.status(500).json({
-        error: "Error generando títulos",
-        message: "Error al generar títulos con IA",
-        code: "AI_GENERATION_ERROR",
-      });
+      return sendError(res, error, "Error al generar títulos con IA", 500, "AI_GENERATION_ERROR");
     }
   }
 
@@ -104,11 +101,7 @@ export class BlogAiController {
       });
     } catch (error) {
       logger.error("Error fetching title suggestions:", error);
-      res.status(500).json({
-        error: "Error interno del servidor",
-        message: "Error al obtener las sugerencias",
-        code: "INTERNAL_SERVER_ERROR",
-      });
+      return sendError(res, error, "Error al obtener las sugerencias", 500, "INTERNAL_SERVER_ERROR");
     }
   }
 
@@ -219,11 +212,7 @@ export class BlogAiController {
         });
       }
       
-      res.status(500).json({
-        error: "Error generando contenido",
-        message: "Error al generar contenido con IA",
-        code: "AI_GENERATION_ERROR",
-      });
+      return sendError(res, error, "Error al generar contenido con IA", 500, "AI_GENERATION_ERROR");
     }
   }
 
@@ -260,11 +249,7 @@ export class BlogAiController {
       });
     } catch (error) {
       logger.error("Error managing title suggestion:", error);
-      res.status(500).json({
-        error: "Error interno del servidor",
-        message: "Error al gestionar la sugerencia",
-        code: "INTERNAL_SERVER_ERROR",
-      });
+      return sendError(res, error, "Error al gestionar la sugerencia", 500, "INTERNAL_SERVER_ERROR");
     }
   }
 
@@ -351,11 +336,7 @@ export class BlogAiController {
       });
     } catch (error: any) {
       logger.error("❌ Error configuring Gemini API Key:", error);
-      res.status(500).json({
-        error: "Error interno del servidor",
-        message: "Error al configurar API Key",
-        code: "CONFIG_ERROR",
-      });
+      return sendError(res, error, "Error al configurar API Key", 500, "CONFIG_ERROR");
     }
   }
 }

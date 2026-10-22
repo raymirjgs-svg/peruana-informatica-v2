@@ -9,6 +9,7 @@ import { Image } from '../../models/Image';
 import { sequelize } from '../../database/connection';
 import { createProductRecord } from '../../services/productRecordService';
 import { logger } from '../../config/logger';
+import { sendError } from '../../middleware/errorHandler';
 
 export class ProductController {
     async getProducts(req: Request, res: Response) {
@@ -131,11 +132,7 @@ export class ProductController {
             });
         } catch (error) {
             logger.error('Error getting products:', error);
-            res.status(500).json({
-                error: 'Error al obtener productos',
-                code: 'PRODUCTS_FETCH_ERROR',
-                timestamp: new Date().toISOString()
-            });
+            return sendError(res, error, 'Error al obtener productos', 500, 'PRODUCTS_FETCH_ERROR');
         }
     }
 
@@ -189,11 +186,7 @@ export class ProductController {
             res.json({ ...json, id: product.cod_producto, subcategory_ids: json.subCategories?.map((s: any) => s.id) || [] });
         } catch (error) {
             logger.error('Error getting product:', error);
-            res.status(500).json({
-                error: 'Error al obtener producto',
-                code: 'PRODUCT_FETCH_ERROR',
-                timestamp: new Date().toISOString()
-            });
+            return sendError(res, error, 'Error al obtener producto', 500, 'PRODUCT_FETCH_ERROR');
         }
     }
 
@@ -226,11 +219,7 @@ export class ProductController {
             }
 
             logger.error('Error creating product:', error);
-            res.status(500).json({
-                error: 'Error al crear producto',
-                code: 'PRODUCT_CREATION_ERROR',
-                timestamp: new Date().toISOString()
-            });
+            return sendError(res, error, 'Error al crear producto', 500, 'PRODUCT_CREATION_ERROR');
         }
     }
 
@@ -308,7 +297,7 @@ export class ProductController {
         } catch (error) {
             await transaction.rollback();
             logger.error('Error updating product:', error);
-            res.status(500).json({ error: 'Error al actualizar producto' });
+            return sendError(res, error, 'Error al actualizar producto');
         }
     }
 
@@ -328,7 +317,7 @@ export class ProductController {
             });
         } catch (error) {
             logger.error('Error toggling product status:', error);
-            res.status(500).json({ error: 'Error al cambiar estado del producto' });
+            return sendError(res, error, 'Error al cambiar estado del producto');
         }
     }
 
@@ -368,7 +357,7 @@ export class ProductController {
         } catch (error) {
             await transaction.rollback();
             logger.error('Error deleting product:', error);
-            res.status(500).json({ error: 'Error al eliminar producto' });
+            return sendError(res, error, 'Error al eliminar producto');
         }
     }
 }

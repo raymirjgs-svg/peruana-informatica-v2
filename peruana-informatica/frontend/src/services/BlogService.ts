@@ -1,111 +1,36 @@
-interface BlogPost {
-  id: number;
-  title: string;
-  slug: string;
-  excerpt?: string;
-  content: string;
-  featured_image?: string;
-  meta_title?: string;
-  meta_description?: string;
-  meta_keywords?: string;
-  author_name: string;
-  reading_time: number;
-  views: number;
-  likes: number;
-  status: 'draft' | 'published' | 'scheduled' | 'archived';
-  published_at?: string;
-  scheduled_at?: string;
-  is_featured: boolean;
-  ai_generated: boolean;
-  ai_prompt?: string;
-  ai_model?: string;
-  tags?: string;
-  categories?: string;
-  word_count: number;
-  createdAt: string;
-  updatedAt: string;
-}
-
-interface BlogTitleSuggestion {
-  id: number;
-  suggested_title: string;
-  topic?: string;
-  ai_prompt?: string;
-  ai_model?: string;
-  status: 'pending' | 'selected' | 'rejected' | 'used';
-  blog_post_id?: number;
-  generated_at: string;
-  selected_at?: string;
-  used_at?: string;
-}
-
-interface BlogStats {
-  totals: {
-    posts: number;
-    published: number;
-    drafts: number;
-    ai_generated: number;
-    views: number;
-    likes: number;
-    pending_suggestions: number;
-  };
-  popular_posts: BlogPost[];
-  recent_posts: BlogPost[];
-  ai_configured: boolean;
-}
-
-interface ApiResponse<T> {
-  success: boolean;
-  data?: T;
-  message?: string;
-  error?: string;
-  code?: string;
-}
-
-interface PaginatedResponse<T> {
-  success: boolean;
-  data: T[];
-  pagination: {
-    currentPage: number;
-    totalPages: number;
-    totalItems: number;
-    itemsPerPage: number;
-    hasNextPage: boolean;
-    hasPrevPage: boolean;
-  };
-}
-
-interface BlogFormData {
-  title: string;
-  slug?: string;
-  excerpt?: string;
-  content: string;
-  featured_image?: string;
-  meta_title?: string;
-  meta_description?: string;
-  meta_keywords?: string;
-  author_name?: string;
-  author_email?: string;
-  status?: 'draft' | 'published' | 'scheduled' | 'archived';
-  scheduled_at?: string;
-  is_featured?: boolean;
-  tags?: string;
-  categories?: string;
-}
-
-interface AIGenerationRequest {
-  topic?: string;
-  count?: number;
-  model?: string;
-}
-
-interface ContentGenerationRequest {
-  title_suggestion_id: number;
-  model?: string;
-}
-
 import { API_CONFIG } from '@/config/api';
 import apiClient from '../utils/api';
+import type {
+  AIGenerationRequest,
+  ApiResponse,
+  BlogFormData,
+  BlogPost,
+  BlogStats,
+  BlogTitleSuggestion,
+  ContentGenerationRequest,
+  PaginatedResponse,
+} from './blog/types';
+import {
+  calculateReadingTime as calculateBlogReadingTime,
+  formatDate as formatBlogDate,
+  generateExcerpt as generateBlogExcerpt,
+  generateSlug as generateBlogSlug,
+  getCategoriesArray as getBlogCategoriesArray,
+  getStatusColor as getBlogStatusColor,
+  getStatusOptions as getBlogStatusOptions,
+  getTagsArray as getBlogTagsArray,
+} from './blog/utils';
+
+export type {
+  AIGenerationRequest,
+  ApiResponse,
+  BlogFormData,
+  BlogPost,
+  BlogStats,
+  BlogTitleSuggestion,
+  ContentGenerationRequest,
+  PaginatedResponse,
+} from './blog/types';
 
 class BlogService {
   private static readonly BASE_URL = API_CONFIG.BASE_URL;
@@ -407,113 +332,35 @@ class BlogService {
    * Formatear fecha para mostrar
    */
   static formatDate(dateString: string): string {
-    try {
-      const date = new Date(dateString);
-      return date.toLocaleString('es-PE', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false,
-      });
-    } catch {
-      return dateString;
-    }
+    return formatBlogDate(dateString);
   }
 
-  /**
-   * Generar slug desde título
-   */
   static generateSlug(title: string): string {
-    return title
-      .toLowerCase()
-      .replace(/[áäâàã]/g, 'a')
-      .replace(/[éëêè]/g, 'e')
-      .replace(/[íïîì]/g, 'i')
-      .replace(/[óöôòõ]/g, 'o')
-      .replace(/[úüûù]/g, 'u')
-      .replace(/ñ/g, 'n')
-      .replace(/[^\w\s-]/g, '') // Eliminar caracteres especiales
-      .replace(/[\s_-]+/g, '-') // Reemplazar espacios y guiones por un solo guión
-      .replace(/^-+|-+$/g, ''); // Eliminar guiones al inicio y final
+    return generateBlogSlug(title);
   }
 
-  /**
-   * Obtener opciones de estado
-   */
   static getStatusOptions() {
-    return [
-      { value: 'draft', label: 'Borrador', color: 'gray' },
-      { value: 'published', label: 'Publicado', color: 'green' },
-      { value: 'scheduled', label: 'Programado', color: 'blue' },
-      { value: 'archived', label: 'Archivado', color: 'red' },
-    ];
+    return getBlogStatusOptions();
   }
 
-  /**
-   * Obtener color del estado
-   */
   static getStatusColor(status: string): string {
-    const statusColors: Record<string, string> = {
-      draft: 'bg-gray-100 text-gray-700 border-gray-200',
-      published: 'bg-green-100 text-green-700 border-green-200',
-      scheduled: 'bg-blue-100 text-blue-700 border-blue-200',
-      archived: 'bg-red-100 text-red-700 border-red-200'
-    };
-    return statusColors[status] || statusColors.draft || '';
+    return getBlogStatusColor(status);
   }
 
-  /**
-   * Calcular tiempo de lectura estimado
-   */
   static calculateReadingTime(content: string): number {
-    const wordsPerMinute = 200;
-    const wordCount = content.split(/\s+/).filter(word => word.length > 0).length;
-    return Math.max(1, Math.ceil(wordCount / wordsPerMinute));
+    return calculateBlogReadingTime(content);
   }
 
-  /**
-   * Obtener extracto desde contenido
-   */
   static generateExcerpt(content: string, maxLength: number = 160): string {
-    // Eliminar markdown y HTML
-    const plainText = content
-      .replace(/#{1,6}\s/g, '') // Headers markdown
-      .replace(/\*\*(.*?)\*\*/g, '$1') // Bold markdown
-      .replace(/\*(.*?)\*/g, '$1') // Italic markdown
-      .replace(/<[^>]*>/g, '') // HTML tags
-      .replace(/\n+/g, ' ') // Multiple line breaks
-      .trim();
-
-    if (plainText.length <= maxLength) {
-      return plainText;
-    }
-
-    const truncated = plainText.substring(0, maxLength);
-    const lastSpaceIndex = truncated.lastIndexOf(' ');
-
-    if (lastSpaceIndex > maxLength - 20) {
-      return truncated.substring(0, lastSpaceIndex) + '...';
-    }
-
-    return truncated + '...';
+    return generateBlogExcerpt(content, maxLength);
   }
 
-  /**
-   * Obtener tags como array
-   */
   static getTagsArray(tags?: string): string[] {
-    if (!tags) return [];
-    return tags.split(',').map(tag => tag.trim()).filter(Boolean);
+    return getBlogTagsArray(tags);
   }
 
-  /**
-   * Obtener categorías como array
-   */
   static getCategoriesArray(categories?: string): string[] {
-    if (!categories) return [];
-    return categories.split(',').map(cat => cat.trim()).filter(Boolean);
+    return getBlogCategoriesArray(categories);
   }
 
   /**
@@ -531,14 +378,4 @@ class BlogService {
   }
 }
 
-export {
-  BlogService,
-  type BlogPost,
-  type BlogTitleSuggestion,
-  type BlogStats,
-  type BlogFormData,
-  type AIGenerationRequest,
-  type ContentGenerationRequest,
-  type ApiResponse,
-  type PaginatedResponse,
-};
+export { BlogService };

@@ -7,42 +7,19 @@ import { getAdminAuthHeaders } from '@/lib/adminAuth';
 import {
   Building2,
   Phone,
-  Mail,
-  Globe,
-  MapPin,
-  Clock,
-  Facebook,
-  Instagram,
-  Twitter,
-  Linkedin,
   Save,
   RotateCcw,
   CheckCircle,
   AlertCircle,
   Loader2,
-  LayoutGrid,
   Store,
   Share2
 } from 'lucide-react';
-
-interface CompanySettings {
-  id: number;
-  company_name: string;
-  company_ruc: string;
-  company_address: string;
-  company_phone: string;
-  company_email: string;
-  company_whatsapp?: string;
-  company_website?: string;
-  store_address?: string;
-  store_hours?: string;
-  facebook_url?: string;
-  instagram_url?: string;
-  twitter_url?: string;
-  linkedin_url?: string;
-  logo_url?: string;
-  show_distributor_price_in_detail?: boolean;
-}
+import { GeneralTab } from './components/GeneralTab';
+import { ContactTab } from './components/ContactTab';
+import { LocationTab } from './components/LocationTab';
+import { SocialTab } from './components/SocialTab';
+import type { CompanySettings } from './components/types';
 
 export default function CompanySettingsPage() {
   const [activeTab, setActiveTab] = useState('general');
@@ -213,274 +190,22 @@ export default function CompanySettingsPage() {
 
           {/* General Tab */}
           {activeTab === 'general' && (
-            <div className="p-6 animate-fadeIn">
-              <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-                <Building2 className="h-5 w-5 text-blue-600" />
-                Información Institucional
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="group">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Nombre de la Empresa <span className="text-red-500">*</span>
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      name="company_name"
-                      value={formData.company_name}
-                      onChange={handleChange}
-                      required
-                      className="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
-                      placeholder="Peruana Informática"
-                    />
-                    <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                  </div>
-                </div>
-
-                <div className="group">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    RUC <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    name="company_ruc"
-                    value={formData.company_ruc}
-                    onChange={handleChange}
-                    required
-                    maxLength={11}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all font-mono"
-                    placeholder="20123456789"
-                  />
-                </div>
-
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Dirección Fiscal <span className="text-red-500">*</span>
-                  </label>
-                  <div className="relative">
-                    <textarea
-                      name="company_address"
-                      value={formData.company_address}
-                      onChange={handleChange}
-                      required
-                      rows={2}
-                      className="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all resize-none"
-                      placeholder="Av. Principal 123, Lima - Perú"
-                    />
-                    <MapPin className="absolute left-4 top-4 h-5 w-5 text-gray-400" />
-                  </div>
-                </div>
-
-                <div className="md:col-span-2 pt-4 border-t border-gray-100">
-                  <h3 className="text-lg font-bold text-gray-800 mb-4">Configuración Adicional</h3>
-                  <div className="flex items-center gap-4 p-4 border rounded-xl bg-orange-50 border-orange-200">
-                    <input
-                      type="checkbox"
-                      id="show_distributor_price_in_detail"
-                      name="show_distributor_price_in_detail"
-                      checked={formData.show_distributor_price_in_detail}
-                      onChange={handleChange}
-                      className="w-5 h-5 text-orange-600 rounded focus:ring-orange-500 border-gray-300"
-                    />
-                    <label htmlFor="show_distributor_price_in_detail" className="cursor-pointer">
-                      <div className="font-semibold text-gray-800">Mostrar Precio Distribuidor</div>
-                      <div className="text-sm text-gray-600">
-                        Habilita la visualización del precio de distribuidor en el detalle del producto.
-                      </div>
-                    </label>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <GeneralTab formData={formData} onChange={handleChange} />
           )}
 
           {/* Contact Tab */}
           {activeTab === 'contact' && (
-            <div className="p-6 animate-fadeIn">
-              <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-                <Phone className="h-5 w-5 text-green-600" />
-                Medios de Contacto
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Teléfono <span className="text-red-500">*</span>
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      name="company_phone"
-                      value={formData.company_phone}
-                      onChange={handleChange}
-                      required
-                      className="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
-                      placeholder="(01) 123-4567"
-                    />
-                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">WhatsApp</label>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      name="company_whatsapp"
-                      value={formData.company_whatsapp}
-                      onChange={handleChange}
-                      className="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
-                      placeholder="+51 999 888 777"
-                    />
-                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">W</div>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Email <span className="text-red-500">*</span>
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="email"
-                      name="company_email"
-                      value={formData.company_email}
-                      onChange={handleChange}
-                      required
-                      className="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
-                      placeholder="ventas@peruanainformatica.com"
-                    />
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Sitio Web</label>
-                  <div className="relative">
-                    <input
-                      type="url"
-                      name="company_website"
-                      value={formData.company_website}
-                      onChange={handleChange}
-                      className="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
-                      placeholder="https://www.peruanainformatica.com"
-                    />
-                    <Globe className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                  </div>
-                </div>
-              </div>
-            </div>
+            <ContactTab formData={formData} onChange={handleChange} />
           )}
 
           {/* Location Tab */}
           {activeTab === 'location' && (
-            <div className="p-6 animate-fadeIn">
-              <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-                <Store className="h-5 w-5 text-purple-600" />
-                Tienda Física y Horarios
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Dirección de Tienda</label>
-                  <div className="relative">
-                    <textarea
-                      name="store_address"
-                      value={formData.store_address}
-                      onChange={handleChange}
-                      rows={2}
-                      className="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all resize-none"
-                      placeholder="Av. Principal 123, Lima - Perú"
-                    />
-                    <MapPin className="absolute left-4 top-4 h-5 w-5 text-gray-400" />
-                  </div>
-                </div>
-
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Horario de Atención</label>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      name="store_hours"
-                      value={formData.store_hours}
-                      onChange={handleChange}
-                      className="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all"
-                      placeholder="Lunes a Viernes: 9:00 AM - 6:00 PM"
-                    />
-                    <Clock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                  </div>
-                </div>
-              </div>
-            </div>
+            <LocationTab formData={formData} onChange={handleChange} />
           )}
 
           {/* Social Tab */}
           {activeTab === 'social' && (
-            <div className="p-6 animate-fadeIn">
-              <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-                <Share2 className="h-5 w-5 text-pink-600" />
-                Redes Sociales
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Facebook</label>
-                  <div className="relative">
-                    <input
-                      type="url"
-                      name="facebook_url"
-                      value={formData.facebook_url}
-                      onChange={handleChange}
-                      className="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all"
-                      placeholder="https://facebook.com/usuario"
-                    />
-                    <Facebook className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-blue-600" />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Instagram</label>
-                  <div className="relative">
-                    <input
-                      type="url"
-                      name="instagram_url"
-                      value={formData.instagram_url}
-                      onChange={handleChange}
-                      className="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-all"
-                      placeholder="https://instagram.com/usuario"
-                    />
-                    <Instagram className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-pink-600" />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Twitter / X</label>
-                  <div className="relative">
-                    <input
-                      type="url"
-                      name="twitter_url"
-                      value={formData.twitter_url}
-                      onChange={handleChange}
-                      className="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-all"
-                      placeholder="https://twitter.com/usuario"
-                    />
-                    <Twitter className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-sky-500" />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">LinkedIn</label>
-                  <div className="relative">
-                    <input
-                      type="url"
-                      name="linkedin_url"
-                      value={formData.linkedin_url}
-                      onChange={handleChange}
-                      className="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-700 focus:border-blue-700 transition-all"
-                      placeholder="https://linkedin.com/company/usuario"
-                    />
-                    <Linkedin className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-blue-700" />
-                  </div>
-                </div>
-              </div>
-            </div>
+            <SocialTab formData={formData} onChange={handleChange} />
           )}
 
           {/* Footer Actions */}

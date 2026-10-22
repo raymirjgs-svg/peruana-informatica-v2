@@ -1,9 +1,11 @@
 import { Request, Response } from "express";
 import { BlogPost } from "../../models/BlogPost";
 import { BlogTitleSuggestion } from "../../models/BlogTitleSuggestion";
+import type { BlogTitleSuggestionAttributes } from "../../models/BlogTitleSuggestion";
 import { geminiService, GeminiService } from "../../services/GeminiService";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { Op } from "sequelize";
+import type { WhereOptions } from "sequelize";
 import * as fs from "fs";
 import * as path from "path";
 import { logger } from "../../config/logger";
@@ -50,11 +52,12 @@ export class BlogAiController {
         message: `${suggestions.length} títulos generados exitosamente`,
         data: savedSuggestions,
       });
-    } catch (error: any) {
+    } catch (error) {
       logger.error("❌ Error generating titles:", error);
-      
+      const errorMessage = error instanceof Error ? error.message : "";
+
       // Manejo específico de errores de la API de Gemini
-      if (error.message && error.message.includes("API_KEY")) {
+      if (errorMessage.includes("API_KEY")) {
         return res.status(401).json({
           error: "Error de autenticación",
           message: "La API Key de Gemini no es válida o ha expirado. Por favor configura una nueva API Key.",
@@ -62,7 +65,7 @@ export class BlogAiController {
         });
       }
       
-      if (error.message && error.message.includes("429")) {
+      if (errorMessage.includes("429")) {
         return res.status(429).json({
           error: "Límite de uso excedido",
           message: "Has alcanzado el límite de solicitudes a la API de Gemini. Por favor espera un momento antes de intentar de nuevo.",
@@ -76,18 +79,12 @@ export class BlogAiController {
 
   static async getTitleSuggestions(req: Request, res: Response) {
     try {
-      const { status, topic } = req.query;
-      const whereClause: any = {};
-
-      if (status) {
-        whereClause.status = status;
-      }
-
-      if (topic) {
-        whereClause.topic = {
-          [Op.like]: `%${topic}%`,
-        };
-      }
+      const status = req.query.status as BlogTitleSuggestionAttributes["status"] | undefined;
+      const topic = req.query.topic as string | undefined;
+      const whereClause: WhereOptions<BlogTitleSuggestionAttributes> = {
+        ...(status ? { status } : {}),
+        ...(topic ? { topic: { [Op.like]: `%${topic}%` } } : {}),
+      };
 
       const suggestions = await BlogTitleSuggestion.findAll({
         where: whereClause,
@@ -192,11 +189,12 @@ export class BlogAiController {
           generated_image: !!featuredImage,
         },
       });
-    } catch (error: any) {
+    } catch (error) {
       logger.error("❌ Error generating content:", error);
-      
+      const errorMessage = error instanceof Error ? error.message : "";
+
       // Manejo específico de errores de la API de Gemini
-      if (error.message && error.message.includes("API_KEY")) {
+      if (errorMessage.includes("API_KEY")) {
         return res.status(401).json({
           error: "Error de autenticación",
           message: "La API Key de Gemini no es válida o ha expirado. Por favor configura una nueva API Key.",
@@ -204,7 +202,7 @@ export class BlogAiController {
         });
       }
       
-      if (error.message && error.message.includes("429")) {
+      if (errorMessage.includes("429")) {
         return res.status(429).json({
           error: "Límite de uso excedido",
           message: "Has alcanzado el límite de solicitudes a la API de Gemini. Por favor espera un momento antes de intentar de nuevo.",
@@ -277,11 +275,12 @@ export class BlogAiController {
       // Verificar la API Key haciendo una llamada de prueba
       const testService = new GeminiService();
       // Temporalmente establecer la API Key para la verificación
-      (testService as any).genAI = new GoogleGenerativeAI(apiKey.trim());
-      (testService as any).model = (testService as any).genAI.getGenerativeModel({
+      const testGenAI = new GoogleGenerativeAI(apiKey.trim());
+      Reflect.set(testService, "genAI", testGenAI);
+      Reflect.set(testService, "model", testGenAI.getGenerativeModel({
         model: "gemini-2.0-flash-exp",
-      });
-      (testService as any).isConfigured = true;
+      }));
+      Reflect.set(testService, "isConfigured", true);
       
       const isValid = await testService.verifyApiKey();
       if (!isValid) {
@@ -334,7 +333,7 @@ export class BlogAiController {
           restart_required: true,
         },
       });
-    } catch (error: any) {
+    } catch (error) {
       logger.error("❌ Error configuring Gemini API Key:", error);
       return sendError(res, error, "Error al configurar API Key", 500, "CONFIG_ERROR");
     }

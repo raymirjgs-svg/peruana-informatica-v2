@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { Coupon } from '../models/Coupon';
+import { Coupon, CouponAttributes } from '../models/Coupon';
 import { buildPaginationMeta, getSafetyLimit, resolvePagination } from '../utils/pagination';
 import { sendError } from '../middleware/errorHandler';
 
@@ -17,8 +17,12 @@ const COUPON_EDITABLE_FIELDS = [
     'is_active'
 ];
 
-function pickCouponFields(body: any): Record<string, any> {
-    const data: Record<string, any> = {};
+interface CouponUpdateData extends Partial<CouponAttributes> {
+    [key: string]: unknown;
+}
+
+function pickCouponFields(body: CouponUpdateData): CouponUpdateData {
+    const data: CouponUpdateData = {};
 
     for (const field of COUPON_EDITABLE_FIELDS) {
         if (body && Object.prototype.hasOwnProperty.call(body, field)) {
@@ -29,8 +33,8 @@ function pickCouponFields(body: any): Record<string, any> {
     return data;
 }
 
-function validateCouponTypeAndValue(type: any, value: any): string | null {
-    if (!COUPON_TYPES.includes(type)) {
+function validateCouponTypeAndValue(type: unknown, value: unknown): string | null {
+    if (typeof type !== 'string' || !COUPON_TYPES.includes(type)) {
         return 'El tipo de cupón debe ser "percentage" o "fixed"';
     }
 
@@ -245,8 +249,8 @@ export class CouponController {
                 message: 'Cupón creado exitosamente',
                 data: coupon
             });
-        } catch (error: any) {
-            if (error.name === 'SequelizeUniqueConstraintError') {
+        } catch (error) {
+            if (error instanceof Error && error.name === 'SequelizeUniqueConstraintError') {
                 return res.status(400).json({
                     success: false,
                     message: 'El código del cupón ya existe'

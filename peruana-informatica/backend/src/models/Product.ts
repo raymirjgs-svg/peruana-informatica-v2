@@ -88,6 +88,10 @@ export class Product extends Model<ProductAttributes, ProductCreationAttributes>
   // Association with images
   public readonly images?: Image[];
 
+  // Association with subcategories
+  public readonly subCategories?: SubCategory[];
+  public setSubCategories?: (subCategoryIds: number[]) => Promise<unknown>;
+
   // Helper method to generate slug
   public static generateSlug(name: string): string {
     if (!name) return '';

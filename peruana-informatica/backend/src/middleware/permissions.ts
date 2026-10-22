@@ -11,7 +11,7 @@ import { sendError } from './errorHandler';
 export const checkPermission = (requiredPermission: string) => {
     return async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const userId = (req as any).user?.id;
+            const userId = req.user?.id;
 
             if (!userId) {
                 return res.status(401).json({
@@ -44,9 +44,9 @@ export const checkPermission = (requiredPermission: string) => {
                 return next();
             }
 
-            const permissions = (role as any)?.permissions || [];
+            const permissions = role?.permissions || [];
             const hasPermission = permissions.some(
-                (p: any) => p.slug === requiredPermission
+                (p) => p.slug === requiredPermission
             );
 
             if (!hasPermission) {
@@ -71,7 +71,7 @@ export const checkPermission = (requiredPermission: string) => {
 export const checkAnyPermission = (requiredPermissions: string[]) => {
     return async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const userId = (req as any).user?.id;
+            const userId = req.user?.id;
 
             if (!userId) {
                 return res.status(401).json({
@@ -104,9 +104,9 @@ export const checkAnyPermission = (requiredPermissions: string[]) => {
                 return next();
             }
 
-            const permissions = (role as any)?.permissions || [];
+            const permissions = role?.permissions || [];
             const hasAnyPermission = requiredPermissions.some(reqPerm =>
-                permissions.some((p: any) => p.slug === reqPerm)
+                permissions.some((p) => p.slug === reqPerm)
             );
 
             if (!hasAnyPermission) {
@@ -130,7 +130,7 @@ export const checkAnyPermission = (requiredPermissions: string[]) => {
 export const checkRole = (requiredRole: string) => {
     return async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const userId = (req as any).user?.id;
+            const userId = req.user?.id;
 
             if (!userId) {
                 return res.status(401).json({

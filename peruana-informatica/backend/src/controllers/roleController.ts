@@ -63,7 +63,7 @@ export class RoleController {
     async createRole(req: Request, res: Response) {
         try {
             const { name, slug, description, permissions } = req.body;
-            const userId = (req as any).user?.id;
+            const userId = req.user?.id;
 
             const role = await Role.create({
                 name,
@@ -81,15 +81,15 @@ export class RoleController {
                 );
             }
 
-            logAudit('CREATE_ROLE', userId, { roleId: role.id, name: role.name });
+            logAudit('CREATE_ROLE', String(userId), { roleId: role.id, name: role.name });
 
             return res.status(201).json({
                 success: true,
                 data: role,
                 message: 'Rol creado exitosamente'
             });
-        } catch (error: any) {
-            if (error.name === 'SequelizeUniqueConstraintError') {
+        } catch (error) {
+            if (error instanceof Error && error.name === 'SequelizeUniqueConstraintError') {
                 return res.status(400).json({ error: 'Ya existe un rol con ese nombre o slug' });
             }
             return sendError(res, error, 'Error al crear rol');
@@ -103,7 +103,7 @@ export class RoleController {
         try {
             const { id } = req.params;
             const { name, slug, description, permissions } = req.body;
-            const userId = (req as any).user?.id;
+            const userId = req.user?.id;
 
             const role = await Role.findByPk(id);
             if (!role) {
@@ -132,15 +132,15 @@ export class RoleController {
                 }
             }
 
-            logAudit('UPDATE_ROLE', userId, { roleId: role.id, name: role.name });
+            logAudit('UPDATE_ROLE', String(userId), { roleId: role.id, name: role.name });
 
             return res.json({
                 success: true,
                 data: role,
                 message: 'Rol actualizado exitosamente'
             });
-        } catch (error: any) {
-            if (error.name === 'SequelizeUniqueConstraintError') {
+        } catch (error) {
+            if (error instanceof Error && error.name === 'SequelizeUniqueConstraintError') {
                 return res.status(400).json({ error: 'Ya existe un rol con ese nombre o slug' });
             }
             return sendError(res, error, 'Error al actualizar rol');
@@ -153,7 +153,7 @@ export class RoleController {
     async deleteRole(req: Request, res: Response) {
         try {
             const { id } = req.params;
-            const userId = (req as any).user?.id;
+            const userId = req.user?.id;
 
             const role = await Role.findByPk(id);
             if (!role) {
@@ -173,7 +173,7 @@ export class RoleController {
             }
 
             await role.destroy();
-            logAudit('DELETE_ROLE', userId, { roleId: id });
+            logAudit('DELETE_ROLE', String(userId), { roleId: id });
 
             return res.json({
                 success: true,
@@ -194,11 +194,10 @@ export class RoleController {
             });
 
             // Group by module
-            const grouped = permissions.reduce((acc: any, perm: any) => {
-                if (!acc[perm.module]) {
-                    acc[perm.module] = [];
-                }
-                acc[perm.module].push(perm);
+            const grouped = permissions.reduce<Record<string, Permission[]>>((acc, perm) => {
+                const modulePermissions = acc[perm.module] ?? [];
+                modulePermissions.push(perm);
+                acc[perm.module] = modulePermissions;
                 return acc;
             }, {});
 
@@ -220,7 +219,7 @@ export class RoleController {
     async assignRoleToUser(req: Request, res: Response) {
         try {
             const { userId, roleId } = req.body;
-            const adminId = (req as any).user?.id;
+            const adminId = req.user?.id;
 
             if (!adminId) {
                 return res.status(401).json({ error: 'Usuario no autenticado' });
@@ -260,17 +259,17 @@ export class RoleController {
                 : null;
 
             if (callerRole?.slug !== 'super-admin') {
-                const callerPermissions = ((callerRole as any)?.permissions || []).map((p: any) => p.slug);
+                const callerPermissions = (callerRole?.permissions || []).map(p => p.slug);
 
                 if (!callerPermissions.includes('manage-users')) {
                     return res.status(403).json({ error: 'No tienes permiso para asignar roles' });
                 }
 
-                if (role.slug === 'super-admin' || (role as any).is_default) {
+                if (role.slug === 'super-admin' || role.is_default) {
                     return res.status(403).json({ error: 'No puedes asignar un rol protegido del sistema' });
                 }
 
-                const targetPermissions = ((role as any).permissions || []).map((p: any) => p.slug);
+                const targetPermissions = (role.permissions || []).map(p => p.slug);
                 const isEscalation = targetPermissions.some((p: string) => !callerPermissions.includes(p));
 
                 if (isEscalation) {
@@ -279,7 +278,7 @@ export class RoleController {
             }
 
             await user.update({ role_id: roleId });
-            logAudit('ASSIGN_ROLE', adminId, { userId, roleId, roleName: role.name });
+            logAudit('ASSIGN_ROLE', String(adminId), { userId, roleId, roleName: role.name });
 
             return res.json({
                 success: true,

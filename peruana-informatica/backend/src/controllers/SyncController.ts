@@ -34,7 +34,7 @@ export class SyncController {
                     message: result.message || 'No se pudo obtener el token'
                 });
             }
-        } catch (error: any) {
+        } catch (error) {
             logger.error('Error en SyncController.solicitarToken:', error);
             return sendError(res, error, 'Error al solicitar token');
         }
@@ -136,7 +136,7 @@ export class SyncController {
 
             // Buscar el producto en la base de datos local usando codigo_interno
             const producto = await Product.findOne({
-                where: { codigo_interno: id } as any
+                where: { codigo_interno: id }
             });
 
             if (producto) {
@@ -156,13 +156,11 @@ export class SyncController {
                     brand_id: brand_id ?? producto.brand_id,
                     category_id: category_id ?? producto.category_id,
                     category: datos.categoria || producto.category // String legacy support
-                } as any);
+                });
 
                 // Actualizar Subcategorías si existen
                 if (sub_category_ids.length > 0) {
-                    // @ts-ignore - setSubCategories es un método mágico de Sequelize
                     if (producto.setSubCategories) {
-                        // @ts-ignore
                         await producto.setSubCategories(sub_category_ids);
                     }
                 }
@@ -188,7 +186,7 @@ export class SyncController {
                     warning: 'El producto no existe en la base de datos local'
                 });
             }
-        } catch (error: any) {
+        } catch (error) {
             logger.error('Error en SyncController.sincronizarProducto:', error);
             return sendError(res, error, 'Error al sincronizar producto');
         }
@@ -219,7 +217,7 @@ export class SyncController {
                 if (resultado.success && 'datos' in resultado && resultado.datos) {
                     try {
                         const producto = await Product.findOne({
-                            where: { codigo_interno: resultado.id } as any
+                            where: { codigo_interno: resultado.id }
                         });
 
                         if (producto) {
@@ -238,13 +236,11 @@ export class SyncController {
                                 brand_id: brand_id ?? producto.brand_id,
                                 category_id: category_id ?? producto.category_id,
                                 category: resultado.datos.categoria || producto.category
-                            } as any);
+                            });
 
                             // Sync SubCategories
                             if (sub_category_ids.length > 0) {
-                                // @ts-ignore
                                 if (producto.setSubCategories) {
-                                    // @ts-ignore
                                     await producto.setSubCategories(sub_category_ids);
                                 }
                             }
@@ -256,7 +252,7 @@ export class SyncController {
                                 actualizado: true
                             });
                         }
-                    } catch (error: any) {
+                    } catch {
                         errores.push({
                             id: resultado.id,
                             error: 'Error en la sincronización'
@@ -283,7 +279,7 @@ export class SyncController {
                     }
                 }
             });
-        } catch (error: any) {
+        } catch (error) {
             logger.error('Error en SyncController.sincronizarProductos:', error);
             return sendError(res, error, 'Error al sincronizar productos');
         }
@@ -304,7 +300,7 @@ export class SyncController {
                         [Op.ne]: null,
                         [Op.ne]: ''
                     }
-                } as any,
+                },
                 attributes: ['cod_producto', 'codigo_interno', 'name']
             });
 
@@ -331,7 +327,7 @@ export class SyncController {
                 if (resultado.success && 'datos' in resultado && resultado.datos) {
                     try {
                         const producto = await Product.findOne({
-                            where: { codigo_interno: resultado.id } as any
+                            where: { codigo_interno: resultado.id }
                         });
 
                         if (producto) {
@@ -350,13 +346,11 @@ export class SyncController {
                                 brand_id: brand_id ?? producto.brand_id,
                                 category_id: category_id ?? producto.category_id,
                                 category: resultado.datos.categoria || producto.category
-                            } as any);
+                            });
 
                             // Sync SubCategories
                             if (sub_category_ids.length > 0) {
-                                // @ts-ignore
                                 if (producto.setSubCategories) {
-                                    // @ts-ignore
                                     await producto.setSubCategories(sub_category_ids);
                                 }
                             }
@@ -367,7 +361,7 @@ export class SyncController {
                                 nombre: producto.name
                             });
                         }
-                    } catch (error: any) {
+                    } catch {
                         errores.push({
                             id: resultado.id,
                             error: 'Error en la sincronización'
@@ -394,7 +388,7 @@ export class SyncController {
                     }
                 }
             });
-        } catch (error: any) {
+        } catch (error) {
             logger.error('Error en SyncController.sincronizarTodosLosProductos:', error);
             return sendError(res, error, 'Error al sincronizar todos los productos');
         }
@@ -413,7 +407,7 @@ export class SyncController {
                 tokenValido,
                 message: tokenValido ? 'Token válido' : 'Token inválido o expirado'
             });
-        } catch (error: any) {
+        } catch (error) {
             logger.error('Error en SyncController.verificarToken:', error);
             return sendError(res, error, 'Error al verificar token');
         }

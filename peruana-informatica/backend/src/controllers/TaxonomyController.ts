@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import { Category } from '../models/Category';
 import { SubCategory } from '../models/SubCategory';
-import { Op } from 'sequelize';
 import { ProductTaxonomyService } from '../services/ProductTaxonomyService';
 import { buildPaginationMeta, getSafetyLimit, resolvePagination } from '../utils/pagination';
 import { sendError } from '../middleware/errorHandler';
@@ -9,6 +8,14 @@ import { sendError } from '../middleware/errorHandler';
 /**
  * Controlador para gestionar marcas, categorías y subcategorías de productos
  */
+interface BulkTaxonomyItem {
+    productId?: number;
+    codigoInterno?: string;
+    brandName?: string;
+    categoryName?: string;
+    subCategoryNames?: string[];
+}
+
 export class TaxonomyController {
     /**
      * POST /api/taxonomy/assign
@@ -48,7 +55,7 @@ export class TaxonomyController {
                 message: 'Taxonomía asignada exitosamente',
                 data: producto
             });
-        } catch (error: any) {
+        } catch (error) {
             return sendError(res, error, 'Error al asignar taxonomía');
         }
     }
@@ -61,7 +68,7 @@ export class TaxonomyController {
         try {
             const { products, productIds, brandName, categoryName, subCategoryNames } = req.body;
 
-            let items: any[] = [];
+            let items: BulkTaxonomyItem[] = [];
 
             if (Array.isArray(products) && products.length > 0) {
                 items = products;
@@ -110,7 +117,7 @@ export class TaxonomyController {
                         productId: productId || codigoInterno,
                         data: producto
                     });
-                } catch (error: any) {
+                } catch {
                     errores.push({
                         success: false,
                         productId: item.productId || item.codigoInterno,
@@ -133,7 +140,7 @@ export class TaxonomyController {
                     }
                 }
             });
-        } catch (error: any) {
+        } catch (error) {
             return sendError(res, error, 'Error en asignación masiva');
         }
     }
@@ -151,7 +158,7 @@ export class TaxonomyController {
                 data: brands,
                 total: brands.length
             });
-        } catch (error: any) {
+        } catch (error) {
             return sendError(res, error, 'Error al obtener marcas');
         }
     }
@@ -169,7 +176,7 @@ export class TaxonomyController {
                 data: categories,
                 total: categories.length
             });
-        } catch (error: any) {
+        } catch (error) {
             return sendError(res, error, 'Error al obtener categorías');
         }
     }
@@ -188,7 +195,7 @@ export class TaxonomyController {
                 data: subCategories,
                 total: subCategories.length
             });
-        } catch (error: any) {
+        } catch (error) {
             return sendError(res, error, 'Error al obtener subcategorías');
         }
     }
@@ -216,7 +223,7 @@ export class TaxonomyController {
                 message: 'Taxonomía sincronizada desde API externa',
                 data: producto
             });
-        } catch (error: any) {
+        } catch (error) {
             return sendError(res, error, 'Error al sincronizar taxonomía desde API');
         }
     }
@@ -259,7 +266,7 @@ export class TaxonomyController {
             });
 
             res.json(categories);
-        } catch (error: any) {
+        } catch (error) {
             return sendError(res, error, 'Error al obtener categorías', 500, 'CATEGORIES_FETCH_ERROR');
         }
     }
@@ -391,7 +398,7 @@ export class TaxonomyController {
         try {
             const { category_id } = req.query;
 
-            const where: any = { is_active: true };
+            const where: { is_active: boolean; category_id?: number } = { is_active: true };
             if (category_id) {
                 where.category_id = parseInt(category_id as string);
             }

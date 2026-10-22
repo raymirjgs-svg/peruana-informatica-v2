@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
-import { Op } from "sequelize";
+import { Op, ValidationError } from "sequelize";
+import type { WhereOptions } from "sequelize";
 import { BlogPost } from "../../models/BlogPost";
+import type { BlogPostAttributes, BlogPostCreationAttributes } from "../../models/BlogPost";
 import { BlogTitleSuggestion } from "../../models/BlogTitleSuggestion";
 import { geminiService } from "../../services/GeminiService";
 import { logger } from "../../config/logger";
@@ -15,19 +17,18 @@ export class BlogAdminController {
       const search = req.query.search as string;
 
       const offset = (page - 1) * limit;
-      const whereClause: any = {};
-
-      if (status) {
-        whereClause.status = status;
-      }
-
-      if (search) {
-        whereClause[Op.or] = [
-          { title: { [Op.like]: `%${search}%` } },
-          { excerpt: { [Op.like]: `%${search}%` } },
-          { author_name: { [Op.like]: `%${search}%` } },
-        ];
-      }
+      const whereClause: WhereOptions<BlogPostAttributes> = {
+        ...(status ? { status: status as BlogPostAttributes["status"] } : {}),
+        ...(search
+          ? {
+              [Op.or]: [
+                { title: { [Op.like]: `%${search}%` } },
+                { excerpt: { [Op.like]: `%${search}%` } },
+                { author_name: { [Op.like]: `%${search}%` } },
+              ],
+            }
+          : {}),
+      };
 
       const { count, rows } = await BlogPost.findAndCountAll({
         where: whereClause,
@@ -98,7 +99,7 @@ export class BlogAdminController {
           logger.info("🖼️ Auto-generating image for post:", title);
           generatedImage = await geminiService.generateBlogImage(title, content);
           logger.info("✅ Image generated:", generatedImage);
-        } catch (error) {
+        } catch {
           logger.error("❌ Failed to generate image, using fallback");
           generatedImage = `https://source.unsplash.com/1200x600/?technology`;
         }
@@ -132,11 +133,11 @@ export class BlogAdminController {
         message: "Post creado exitosamente",
         data: newPost,
       });
-    } catch (error: any) {
+    } catch (error) {
       logger.error("❌ Error creating blog post:", error);
 
-      if (error.name === "SequelizeValidationError") {
-        const validationErrors = error.errors.map((err: any) => ({
+      if (error instanceof Error && error.name === "SequelizeValidationError") {
+        const validationErrors = (error as ValidationError).errors.map(err => ({
           field: err.path,
           message: 'Error interno',
         }));
@@ -149,7 +150,7 @@ export class BlogAdminController {
         });
       }
 
-      if (error.name === "SequelizeUniqueConstraintError") {
+      if (error instanceof Error && error.name === "SequelizeUniqueConstraintError") {
         return res.status(409).json({
           error: "Slug duplicado",
           message: "Ya existe un post con este slug",
@@ -220,17 +221,17 @@ export class BlogAdminController {
         "ai_prompt",
         "ai_model",
       ];
-      const updates: any = {};
+      const updates: Record<string, unknown> = {};
       allowedFields.forEach(field => {
         if (req.body[field] !== undefined) {
           updates[field] = req.body[field];
         }
       });
       if (updates.scheduled_at) {
-        updates.scheduled_at = new Date(updates.scheduled_at);
+        updates.scheduled_at = new Date(updates.scheduled_at as string | number | Date);
       }
 
-      await post.update(updates);
+      await post.update(updates as Partial<BlogPostCreationAttributes>);
 
       logger.info("✅ Blog post updated successfully");
 
@@ -239,11 +240,11 @@ export class BlogAdminController {
         message: "Post actualizado exitosamente",
         data: post,
       });
-    } catch (error: any) {
+    } catch (error) {
       logger.error("❌ Error updating blog post:", error);
 
-      if (error.name === "SequelizeValidationError") {
-        const validationErrors = error.errors.map((err: any) => ({
+      if (error instanceof Error && error.name === "SequelizeValidationError") {
+        const validationErrors = (error as ValidationError).errors.map(err => ({
           field: err.path,
           message: 'Error interno',
         }));

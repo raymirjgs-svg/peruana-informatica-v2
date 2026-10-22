@@ -1,4 +1,5 @@
 import { Model, DataTypes } from 'sequelize';
+import type { Permission } from './Permission';
 import { sequelize } from '../database/connection';
 
 export class Role extends Model {
@@ -7,6 +8,7 @@ export class Role extends Model {
     public slug!: string;
     public description?: string;
     public is_default!: boolean;
+    public readonly permissions?: Permission[];
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 }

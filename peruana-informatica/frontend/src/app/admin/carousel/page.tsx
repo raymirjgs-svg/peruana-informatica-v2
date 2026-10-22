@@ -2,23 +2,13 @@
 
 import React, { useEffect, useState } from "react";
 import { AdminLayout } from '@/components/admin/AdminLayout';
-import { Modal } from '@/components/admin/Modal';
 import { Button } from '@/components/admin/Button';
-import { Pagination } from '@/components/admin/Pagination';
 import { getAdminAuthHeaders } from '@/lib/adminAuth';
 import apiClient from '@/utils/api';
-
-type Slide = {
-  id: number;
-  title: string;
-  description: string;
-  buttonText: string;
-  buttonUrl: string;
-  backgroundColor?: string;
-  imageUrl?: string;
-  isActive: boolean;
-  order: number;
-};
+import { AdminToast } from './components/AdminToast';
+import { SlideList } from './components/SlideList';
+import { SlideFormModal } from './components/SlideFormModal';
+import type { Slide, SlideForm } from './components/types';
 
 export default function AdminCarouselPage() {
   const [slides, setSlides] = useState<Slide[]>([]);
@@ -28,7 +18,7 @@ export default function AdminCarouselPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [total, setTotal] = useState(0);
   const limit = 20;
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<SlideForm>({
     title: '',
     description: '',
     buttonText: 'Ver más',
@@ -92,7 +82,7 @@ export default function AdminCarouselPage() {
     }
   };
   const [editingId, setEditingId] = useState<number | null>(null);
-  const [editForm, setEditForm] = useState({
+  const [editForm, setEditForm] = useState<SlideForm>({
     title: '',
     description: '',
     buttonText: 'Ver más',
@@ -244,12 +234,7 @@ export default function AdminCarouselPage() {
   return (
     <AdminLayout>
       <div className="px-6 py-6">
-        {toast && (
-          <div className={`fixed top-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg text-white ${toast.type==='success'?'bg-emerald-600':'bg-red-600'} flex items-center gap-2`}>
-            <span>{toast.type === 'success' ? '✓' : '⚠'}</span>
-            <span>{toast.message}</span>
-          </div>
-        )}
+        <AdminToast toast={toast} />
         <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-800">Carrusel</h1>
@@ -264,158 +249,47 @@ export default function AdminCarouselPage() {
       {loading && <p className="text-center py-8 text-gray-500">Cargando slides...</p>}
       {error && <p className="text-red-600" role="alert">{error}</p>}
 
-      <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
-        {slides.length === 0 && !loading && (
-          <div className="p-8 text-center text-gray-500">No hay slides para mostrar</div>
-        )}
-        {slides.map((s) => (
-          <div key={s.id} className="p-4 border-b border-gray-100 hover:bg-gray-50 transition-colors grid grid-cols-1 md:grid-cols-5 gap-4 items-center">
-            <div className="md:col-span-2">
-              <div className="font-semibold text-gray-800">{s.title}</div>
-              <div className="text-xs text-gray-500 mt-1">{s.description}</div>
-            </div>
-            <div className="text-sm">
-              <span className={`px-2 py-1 rounded-full text-xs font-medium ${s.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
-                {s.isActive ? '✓ Activo' : 'Inactivo'}
-              </span>
-            </div>
-            <div className="text-sm text-gray-600">
-              Orden: {s.order}
-            </div>
-            <div className="flex gap-2 justify-end">
-              <Button size="sm" variant="secondary" onClick={() => startEdit(s)}>
-                ✏️ Editar
-              </Button>
-              <Button size="sm" variant="danger" onClick={() => onDelete(s.id)} isLoading={deletingId === s.id}>
-                🗑️ Eliminar
-              </Button>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <Pagination
+      <SlideList
+        slides={slides}
+        loading={loading}
+        deletingId={deletingId}
+        onEdit={startEdit}
+        onDelete={onDelete}
         page={page}
         totalPages={totalPages}
         total={total}
-        onPageChange={(nextPage) => loadSlides(nextPage)}
-        disabled={loading}
-        itemLabel="slides"
+        onPageChange={loadSlides}
       />
 
-      {/* Modal Crear Slide */}
-      <Modal isOpen={showCreateModal} onClose={() => setShowCreateModal(false)} title="Crear Nuevo Slide" size="lg">
-        <form onSubmit={onCreate} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Título *</label>
-              <input className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent" value={form.title} onChange={(e)=>setForm({...form, title: e.target.value})} required />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Descripción *</label>
-              <input className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent" value={form.description} onChange={(e)=>setForm({...form, description: e.target.value})} required />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Texto del botón *</label>
-              <input className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent" value={form.buttonText} onChange={(e)=>setForm({...form, buttonText: e.target.value})} required />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">URL del botón *</label>
-              <input className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent" value={form.buttonUrl} onChange={(e)=>setForm({...form, buttonUrl: e.target.value})} required />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Fondo (gradiente Tailwind)</label>
-              <input className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="from-blue-500 to-blue-700" value={form.backgroundColor} onChange={(e)=>setForm({...form, backgroundColor: e.target.value})} />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Imagen</label>
-              <div className="space-y-2">
-                <input 
-                  type="file" 
-                  accept="image/*"
-                  onChange={(e) => handleImageUpload(e, false)}
-                  disabled={uploadingImage}
-                  className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 disabled:opacity-50"
-                />
-                <input className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm" placeholder="O ingresa una URL: https://..." value={form.imageUrl} onChange={(e)=>setForm({...form, imageUrl: e.target.value})} />
-                {uploadingImage && <p className="text-xs text-gray-500">Subiendo imagen...</p>}
-              </div>
-            </div>
-            <div className="flex items-center gap-4">
-              <label className="inline-flex items-center gap-2 text-sm font-medium text-gray-700">
-                <input type="checkbox" className="rounded" checked={form.isActive} onChange={(e)=>setForm({...form, isActive: e.target.checked})} />
-                Activo
-              </label>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Orden</label>
-                <input type="number" className="w-24 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent" value={form.order} onChange={(e)=>setForm({...form, order: Number(e.target.value)})} />
-              </div>
-            </div>
-          </div>
-          {error && <div className="text-red-600 text-sm">{error}</div>}
-          <div className="flex gap-3 justify-end pt-4 border-t">
-            <Button type="button" variant="secondary" onClick={() => setShowCreateModal(false)}>Cancelar</Button>
-            <Button type="submit" isLoading={creating}>Crear Slide</Button>
-          </div>
-        </form>
-      </Modal>
+      <SlideFormModal
+        isOpen={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        title="Crear Nuevo Slide"
+        form={form}
+        onChange={setForm}
+        onSubmit={onCreate}
+        onImageUpload={handleImageUpload}
+        uploadingImage={uploadingImage}
+        submitting={creating}
+        submitLabel="Crear Slide"
+        error={error}
+        isEdit={false}
+      />
 
-      {/* Modal Editar Slide */}
-      <Modal isOpen={showEditModal} onClose={cancelEdit} title="Editar Slide" size="lg">
-        <form onSubmit={(e) => { e.preventDefault(); if (editingId) onUpdate(editingId); }} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Título *</label>
-              <input className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent" value={editForm.title} onChange={(e)=>setEditForm({...editForm, title: e.target.value})} required />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Descripción *</label>
-              <input className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent" value={editForm.description} onChange={(e)=>setEditForm({...editForm, description: e.target.value})} required />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Texto del botón *</label>
-              <input className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent" value={editForm.buttonText} onChange={(e)=>setEditForm({...editForm, buttonText: e.target.value})} required />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">URL del botón *</label>
-              <input className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent" value={editForm.buttonUrl} onChange={(e)=>setEditForm({...editForm, buttonUrl: e.target.value})} required />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Fondo (gradiente Tailwind)</label>
-              <input className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="from-blue-500 to-blue-700" value={editForm.backgroundColor} onChange={(e)=>setEditForm({...editForm, backgroundColor: e.target.value})} />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Imagen</label>
-              <div className="space-y-2">
-                <input 
-                  type="file" 
-                  accept="image/*"
-                  onChange={(e) => handleImageUpload(e, true)}
-                  disabled={uploadingImage}
-                  className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 disabled:opacity-50"
-                />
-                <input className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm" placeholder="O ingresa una URL: https://..." value={editForm.imageUrl} onChange={(e)=>setEditForm({...editForm, imageUrl: e.target.value})} />
-                {uploadingImage && <p className="text-xs text-gray-500">Subiendo imagen...</p>}
-              </div>
-            </div>
-            <div className="flex items-center gap-4">
-              <label className="inline-flex items-center gap-2 text-sm font-medium text-gray-700">
-                <input type="checkbox" className="rounded" checked={editForm.isActive} onChange={(e)=>setEditForm({...editForm, isActive: e.target.checked})} />
-                Activo
-              </label>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Orden</label>
-                <input type="number" className="w-24 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent" value={editForm.order} onChange={(e)=>setEditForm({...editForm, order: Number(e.target.value)})} />
-              </div>
-            </div>
-          </div>
-          {error && <div className="text-red-600 text-sm">{error}</div>}
-          <div className="flex gap-3 justify-end pt-4 border-t">
-            <Button type="button" variant="secondary" onClick={cancelEdit}>Cancelar</Button>
-            <Button type="submit" isLoading={updatingId !== null}>Guardar Cambios</Button>
-          </div>
-        </form>
-      </Modal>
+      <SlideFormModal
+        isOpen={showEditModal}
+        onClose={cancelEdit}
+        title="Editar Slide"
+        form={editForm}
+        onChange={setEditForm}
+        onSubmit={(e) => { e.preventDefault(); if (editingId) onUpdate(editingId); }}
+        onImageUpload={handleImageUpload}
+        uploadingImage={uploadingImage}
+        submitting={updatingId !== null}
+        submitLabel="Guardar Cambios"
+        error={error}
+        isEdit
+      />
       </div>
     </AdminLayout>
   );

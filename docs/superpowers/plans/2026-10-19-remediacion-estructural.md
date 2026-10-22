@@ -137,6 +137,7 @@
   - Hecho: `lib/authTokens.ts` es la única fuente de lectura/escritura de tokens (`admin`, `customer`); `lib/adminAuth.ts`, `CartService`, `PaymentService`, `CustomerSessionSync`, `AdminSessionSync` y `utils/api.ts` lo usan.
   - Hecho: `utils/api.ts` es el cliente único (genéricos tipados, `QueryParams`, manejo de error JSON de la API) y `config/api.ts` dejó de tener la lógica de base duplicada.
   - Verificado: `tsc` 0, lint 0 errores, `next build` OK; `3e22921`.
+  - Refuerzo: `utils/api.ts` ahora expone `apiClient.request` con soporte para `FormData`/`Blob`/texto (`responseType`), `auth: 'admin' | 'customer'`, `baseUrl`, `next/cache`, `signal` y `ApiError` con `status`. Se migraron 40 archivos (servicios, hooks de admin, carrito, perfil, registro, contacto, sitemap, metadata de producto, NextAuth y tracking) y no quedan `fetch` crudos fuera de `QuotationService` y las páginas de cotizaciones (WIP del usuario). `f287489`; `tsc` 0, lint 0 errores, `next build` OK.
 
 ### P2.5 — Purga de código muerto
 - **Evidencia:** `common/Navbar.tsx` (739 ln, 0 imports), `QuotationForm` duplicado, stubs vacíos (`cart/Cart.tsx`, `cart/Checkout.tsx`, `product/ProductDetail.tsx`, `seo/SEOHead.tsx`, `hooks/useProducts.ts`, `hooks/useSEO.ts`, `services/OrderService.ts`, `services/piClient.ts`, `models/Order.ts`, `models/User.ts`), `AuthProvider`/`NextAuthProvider` idénticos, `robots.ts` + `api/robots/route.ts` duplicados, backend `OpenAIService.ts`, `UnsplashService.ts`, `models/Banner.js`, `routes/banners.js`, `controllers/index.ts`, scripts de debug sueltos, doble mount `/api/payments`+`/api/payment`.
@@ -162,6 +163,9 @@
   - Hecho: `cotizador/laptop/page.tsx` (749 ln) partido en `types.ts` y 5 componentes (filtros, lista, card, éxito y panel de cotización); page 317 ln; se eliminaron helpers de estandarización sin uso. `tsc` 0 y `next build` OK.
   - Hecho: `admin/blog/page.tsx` (1242 ln) partido en `blog/types.ts`, `blog/utils.ts`, `blog/useBlogAdmin.ts` (hook con estado/handlers, 408 ln) y 7 componentes locales (stats, panel IA, aviso IA, listado, modales de API key, sugerencias y post); page 157 ln; `tsc` 0 y `next build` OK.
   - Hecho: `admin/products/page.tsx` (1498 ln) partido en `products/types.ts`, `products/utils.ts`, `hooks/useProductsData.ts` (datos, filtros y selección) y `hooks/useProductsForms.ts` (alta/edición/bulk); 11 componentes locales (toast, header, filtros, barra y modal bulk, vistas lista y grilla, preview, crear, editar y paginación); page 80 ln; `tsc` 0 y `next build` OK.
+  - Hecho: `services/BlogService.ts` (544 ln) → 381 ln, con tipos en `services/blog/types.ts` y helpers puros en `services/blog/utils.ts`; los métodos estáticos delegan y se mantienen las firmas públicas. `tsc` 0 y `next build` OK.
+  - Hecho: `products/[slug]/ProductDetailClient.tsx` (582 ln) → 197 ln, con `components/product/detail/{ProductGallery,ProductPurchasePanel,ProductTabs}.tsx`. `tsc` 0 y `next build` OK.
+  - Pendiente (>400 ln): `lista-distribucion` 670, `admin/settings` 596, `admin/categories` 594, `cotizador/pc` 524, `admin/company-settings` 518, `useProductsForms` 515, `cotizador/resumen` 502, `blog/[slug]` 495, `admin/carousel` 422, `admin/taxonomy` 420, `blog` 408, `admin/contacts` 407 (más las 2 páginas de cotizaciones, WIP del usuario).
 
 ### P2.7 — Tipos unificados
 - **Evidencia:** triple `Product` (`models/Product.ts`, `types/index.ts` con `id:string` en conflicto, `models/ApiTypes.ts`); `CartItem` duplicado; ~148 `any` + 31 `as any` + 170 backend `any` + 17 `@ts-ignore`.

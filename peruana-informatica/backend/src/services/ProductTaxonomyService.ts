@@ -1,9 +1,27 @@
+import { Op, WhereOptions } from 'sequelize';
 import { Brand } from '../models/Brand';
-import { Category } from '../models/Category';
-import { SubCategory } from '../models/SubCategory';
+import { Category, CategoryCreationAttributes } from '../models/Category';
+import { SubCategory, SubCategoryAttributes } from '../models/SubCategory';
 import Product from '../models/Product';
 import { ProductSubCategory } from '../models/ProductSubCategory';
 import { logger } from '../config/logger';
+
+export interface ExternalTaxonomyPayload {
+    marca?: string;
+    brand?: string;
+    fabricante?: string;
+    categoria?: string;
+    category?: string;
+    linea?: string;
+    subcategoria?: string;
+    sub_category?: string;
+    familia?: string;
+}
+
+interface CategoryCreationPayload extends CategoryCreationAttributes {
+    description: string;
+    is_active: boolean;
+}
 
 /**
  * Servicio para gestionar la asignación de marcas, categorías y subcategorías a productos
@@ -26,7 +44,7 @@ export class ProductTaxonomyService {
         let brand = await Brand.findOne({
             where: {
                 name: {
-                    [require('sequelize').Op.like]: normalizedName
+                    [Op.like]: normalizedName
                 }
             }
         });
@@ -60,19 +78,20 @@ export class ProductTaxonomyService {
         let category = await Category.findOne({
             where: {
                 name: {
-                    [require('sequelize').Op.like]: normalizedName
+                    [Op.like]: normalizedName
                 }
             }
         });
 
         // Si no existe, crearla
         if (!category) {
-            category = await Category.create({
+            const payload: CategoryCreationPayload = {
                 name: normalizedName,
                 slug,
                 description: `Productos de la categoría ${normalizedName}`,
                 is_active: true
-            } as any);
+            };
+            category = await Category.create(payload);
             logger.info(`✓ Categoría creada: ${normalizedName}`);
         }
 
@@ -97,15 +116,12 @@ export class ProductTaxonomyService {
         const slug = this.generateSlug(normalizedName);
 
         // Buscar subcategoría existente
-        const where: any = {
+        const where: WhereOptions<SubCategoryAttributes> = {
             name: {
-                [require('sequelize').Op.like]: normalizedName
-            }
+                [Op.like]: normalizedName
+            },
+            ...(categoryId ? { category_id: categoryId } : {})
         };
-
-        if (categoryId) {
-            where.category_id = categoryId;
-        }
 
         let subCategory = await SubCategory.findOne({ where });
 
@@ -117,7 +133,7 @@ export class ProductTaxonomyService {
                 description: `Productos de ${normalizedName}`,
                 category_id: categoryId || null,
                 is_active: true
-            } as any);
+            });
             logger.info(`✓ Subcategoría creada: ${normalizedName}`);
         }
 
@@ -144,7 +160,7 @@ export class ProductTaxonomyService {
             throw new Error(`Producto ${productId} no encontrado`);
         }
 
-        const updates: any = {};
+        const updates: { brand_id?: number; category_id?: number } = {};
 
         // Asignar marca
         if (brandName) {
@@ -185,7 +201,7 @@ export class ProductTaxonomyService {
                     await ProductSubCategory.create({
                         product_codigo_interno: producto.codigo_interno,
                         sub_category_id: subCategory.id
-                    } as any);
+                    });
                 }
             }
         }
@@ -254,10 +270,7 @@ export class ProductTaxonomyService {
      * @param categoryId ID de categoría para filtrar (opcional)
      */
     static async getAllSubCategories(categoryId?: number) {
-        const where: any = {};
-        if (categoryId) {
-            where.category_id = categoryId;
-        }
+        const where: WhereOptions<SubCategoryAttributes> = categoryId ? { category_id: categoryId } : {};
 
         return await SubCategory.findAll({
             where,
@@ -285,7 +298,7 @@ export class ProductTaxonomyService {
      * @param apiData Datos del artículo de la API
      * @param codigoInterno Código interno del producto
      */
-    static async syncTaxonomyFromAPI(apiData: any, codigoInterno: string) {
+    static async syncTaxonomyFromAPI(apiData: ExternalTaxonomyPayload, codigoInterno: string) {
         const brandName = apiData.marca || apiData.brand || apiData.fabricante;
         const categoryName = apiData.categoria || apiData.category || apiData.linea;
         const subCategoryName = apiData.subcategoria || apiData.sub_category || apiData.familia;

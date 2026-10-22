@@ -2,7 +2,7 @@
 import { Quotation } from '../models/Quotation';
 import { QuotationItem } from '../models/QuotationItem';
 import { Product } from '../models/Product';
-import { Op, Transaction } from 'sequelize';
+import { Transaction, WhereOptions } from 'sequelize';
 import { logger } from '../config/logger';
 
 export interface QuotationItemData {
@@ -24,14 +24,55 @@ export interface QuotationData {
   valid_until: Date;
 }
 
+export interface QuotationProductSummary {
+  id: number;
+  name: string;
+  slug: string;
+  price: number | string;
+  codigo_interno: string;
+}
+
+export interface QuotationItemSummary {
+  id: number;
+  product_id: number;
+  product_name: string;
+  product_price: number;
+  quantity: number;
+  subtotal: number;
+  product?: QuotationProductSummary;
+}
+
+export interface QuotationResponse {
+  id: number;
+  code: string;
+  subtotal: number;
+  igv: number;
+  total: number;
+  client_name: string;
+  client_email: string;
+  client_phone: string;
+  client_company: string;
+  client_ruc: string;
+  client_address: string;
+  status: 'pending' | 'sent' | 'accepted' | 'rejected' | 'expired';
+  valid_until: Date;
+  created_at: Date;
+  updated_at: Date;
+  items: QuotationItemSummary[];
+}
+
 // Definir el tipo extendido para incluir los items
+interface QuotationItemWithProduct extends QuotationItem {
+  product?: QuotationProductSummary;
+}
+
 interface QuotationWithItems extends Quotation {
-  items?: any[];
+  items: QuotationItemWithProduct[];
 }
 
 export class QuotationService {
-  async createQuotation(data: QuotationData): Promise<any> {
-    const transaction: Transaction = await (Quotation.sequelize as any).transaction();
+  async createQuotation(data: QuotationData): Promise<QuotationResponse> {
+    const transaction: Transaction = await Quotation.sequelize!.transaction();
 
     try {
       // Calcular totales
@@ -109,7 +150,7 @@ export class QuotationService {
         valid_until: savedQuotation.valid_until,
         created_at: savedQuotation.created_at,
         updated_at: savedQuotation.updated_at,
-        items: savedQuotation.items?.map((item: any) => ({
+        items: savedQuotation.items?.map((item) => ({
           id: item.id,
           product_id: item.product_id,
           product_name: item.product_name,
@@ -127,7 +168,8 @@ export class QuotationService {
       };
     } catch (error) {
       // Solo intentar rollback si la transacción aún está activa
-      if (transaction && (transaction as any).finished !== 'commit' && (transaction as any).finished !== 'rollback') {
+      const transactionState = transaction as Transaction & { finished?: 'commit' | 'rollback' };
+      if (transaction && transactionState.finished !== 'commit' && transactionState.finished !== 'rollback') {
         try {
           await transaction.rollback();
         } catch (rollbackError) {
@@ -138,7 +180,7 @@ export class QuotationService {
     }
   }
 
-  async getQuotationByCode(code: string): Promise<any | null> {
+  async getQuotationByCode(code: string): Promise<QuotationWithItems | null> {
     return await Quotation.findOne({
       where: { code },
       include: [{
@@ -150,10 +192,10 @@ export class QuotationService {
           attributes: ['id', 'name', 'slug', 'price', 'codigo_interno']
         }]
       }]
-    });
+    }) as QuotationWithItems | null;
   }
 
-  async getQuotationById(id: number): Promise<any | null> {
+  async getQuotationById(id: number): Promise<QuotationWithItems | null> {
     return await Quotation.findByPk(id, {
       include: [{
         model: QuotationItem,
@@ -164,14 +206,11 @@ export class QuotationService {
           attributes: ['id', 'name', 'slug', 'price', 'codigo_interno']
         }]
       }]
-    });
+    }) as QuotationWithItems | null;
   }
 
   async getAllQuotations(status?: string, page: number = 1, limit: number = 10) {
-    const whereClause: any = {};
-    if (status) {
-      whereClause.status = status;
-    }
+    const whereClause: WhereOptions = status ? { status } : {};
 
     const { count, rows } = await Quotation.findAndCountAll({
       where: whereClause,
@@ -193,7 +232,7 @@ export class QuotationService {
     };
   }
 
-  async updateQuotationStatus(id: number, status: 'pending' | 'sent' | 'accepted' | 'rejected' | 'expired'): Promise<any | null> {
+  async updateQuotationStatus(id: number, status: 'pending' | 'sent' | 'accepted' | 'rejected' | 'expired'): Promise<Quotation | null> {
     const quotation = await Quotation.findByPk(id);
     if (!quotation) {
       return null;

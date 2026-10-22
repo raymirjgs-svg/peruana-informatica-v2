@@ -3,6 +3,20 @@ import { Order } from '../models/Order';
 import { OrderItem } from '../models/OrderItem';
 import { emailTemplates } from '../utils/emailTemplates';
 
+export interface EmailOrderItem {
+    product_name: string;
+    quantity: number;
+    price: string | number;
+}
+
+export interface EmailOrder {
+    id: number;
+    customer_email: string;
+    customer_name?: string;
+    invoice_type?: string;
+    invoice_number?: string;
+}
+
 export class EmailService {
     private transporter;
 
@@ -18,7 +32,7 @@ export class EmailService {
         });
     }
 
-    async sendOrderConfirmationToClient(order: any, items: any[]) {
+    async sendOrderConfirmationToClient(order: EmailOrder, items: EmailOrderItem[]) {
         const html = emailTemplates.orderConfirmation(order, items);
 
         await this.transporter.sendMail({
@@ -29,9 +43,9 @@ export class EmailService {
         });
     }
 
-    async sendNewOrderNotificationToAdmin(order: any, items: any[]) {
+    async sendNewOrderNotificationToAdmin(order: EmailOrder, items: EmailOrderItem[]) {
         const itemsList = items.map(item =>
-            `- ${item.product_name} (x${item.quantity}) - S/ ${(parseFloat(item.price) * item.quantity).toFixed(2)}`
+            `- ${item.product_name} (x${item.quantity}) - S/ ${(parseFloat(String(item.price)) * item.quantity).toFixed(2)}`
         ).join('\n');
 
         const html = emailTemplates.adminNotification(order, itemsList);
@@ -46,7 +60,7 @@ export class EmailService {
         });
     }
 
-    async sendPaymentVerifiedToClient(order: any) {
+    async sendPaymentVerifiedToClient(order: EmailOrder) {
         const html = emailTemplates.paymentVerified(order);
 
         await this.transporter.sendMail({
@@ -57,7 +71,7 @@ export class EmailService {
         });
     }
 
-    async sendInvoiceToClient(order: any, invoiceFilename: string) {
+    async sendInvoiceToClient(order: EmailOrder, invoiceFilename: string) {
         const fs = require('fs');
         const path = require('path');
         const invoicePath = path.join(__dirname, '../../uploads/invoices', invoiceFilename);

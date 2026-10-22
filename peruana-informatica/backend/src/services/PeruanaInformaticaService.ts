@@ -14,11 +14,48 @@ interface TokenResponse {
     expiresAt?: string;
 }
 
+export interface ArticuloData {
+    id: string;
+    stock: string;
+    precio_unitario_soles: string;
+    precio_lista_preferencial_soles: string;
+    precio_lista_premium_soles: string;
+    precio: string;
+    pre_cli: string;
+    pre_cot: string;
+    pre_web: string;
+    pre_dis: string;
+    nombre: string;
+    descripcion: string;
+    cod_articulo: string;
+    codigo: string;
+    marca: string | null;
+    categoria: string | null;
+    [key: string]: unknown;
+}
+
 interface ArticuloResponse {
     success: boolean;
-    data?: any;
+    data?: ArticuloData;
     message?: string;
 }
+
+export interface StockPriceResult {
+    stock: number;
+    disponible: boolean;
+    pre_cli: number;
+    pre_cot: number;
+    pre_web: number;
+    pre_dis: number;
+    nombre: string;
+    codigo: string;
+    marca: string | null;
+    categoria: string | null;
+}
+
+type SyncResult =
+    | { id: string; success: true; datos: StockPriceResult }
+    | { id: string; success: false; error: string };
 
 export class PeruanaInformaticaService {
     private static baseUrl = 'http://54.144.139.115/peruanadeinformatica/api';
@@ -98,11 +135,12 @@ export class PeruanaInformaticaService {
                 message: 'Respuesta inválida del servidor'
             };
 
-        } catch (error: any) {
-            logger.error('Error en PeruanaInformaticaService.solicitarToken:', error.message);
+        } catch (error) {
+            const message = this.errorMessage(error);
+            logger.error('Error en PeruanaInformaticaService.solicitarToken:', message);
             return {
                 success: false,
-                message: error.message
+                message
             };
         }
     }
@@ -119,9 +157,9 @@ export class PeruanaInformaticaService {
 
             const latency = Date.now() - start;
             return { status: 'ok', latency };
-        } catch (error: any) {
+        } catch (error) {
             const latency = Date.now() - start;
-            return { status: 'error', latency, message: error.message };
+            return { status: 'error', latency, message: this.errorMessage(error) };
         }
     }
     private static async updateEnvToken(newToken: string): Promise<void> {
@@ -146,9 +184,13 @@ export class PeruanaInformaticaService {
             process.env.API_PERUANA_TOKEN = newToken;
 
             logger.info('✓ Token actualizado en .env');
-        } catch (error: any) {
-            logger.error('Error al actualizar .env:', error.message);
+        } catch (error) {
+            logger.error('Error al actualizar .env:', this.errorMessage(error));
         }
+    }
+
+    private static errorMessage(error: unknown): string {
+        return error instanceof Error ? error.message : String(error);
     }
 
     /**
@@ -258,11 +300,12 @@ export class PeruanaInformaticaService {
                 };
             }
 
-        } catch (error: any) {
-            logger.error('Error en PeruanaInformaticaService.consultarArticulo:', error.message);
+        } catch (error) {
+            const message = this.errorMessage(error);
+            logger.error('Error en PeruanaInformaticaService.consultarArticulo:', message);
             return {
                 success: false,
-                message: error.message
+                message
             };
         }
     }
@@ -272,7 +315,7 @@ export class PeruanaInformaticaService {
      * @param idArticulo ID del artículo
      * @returns Objeto con stock y los tres tipos de precios
      */
-    static async obtenerStockYPrecio(idArticulo: string) {
+    static async obtenerStockYPrecio(idArticulo: string): Promise<StockPriceResult | null> {
         const response = await this.consultarArticulo(idArticulo);
 
         if (response.success && response.data) {
@@ -290,10 +333,10 @@ export class PeruanaInformaticaService {
             // precio_lista_preferencial_soles -> pre_web (y pre_cot)
             // precio_lista_premium_soles -> pre_dis
 
-            const precioUnitario = parseFloat(articulo.precio_unitario_soles) || 0;
-            const precioPreferencial = parseFloat(articulo.precio_lista_preferencial_soles) || 0;
-            const precioPremium = parseFloat(articulo.precio_lista_premium_soles) || 0;
-            const precioBase = parseFloat(articulo.precio) || 0; // Fallback antiguo
+            const precioUnitario = parseFloat(String(articulo.precio_unitario_soles)) || 0;
+            const precioPreferencial = parseFloat(String(articulo.precio_lista_preferencial_soles)) || 0;
+            const precioPremium = parseFloat(String(articulo.precio_lista_premium_soles)) || 0;
+            const precioBase = parseFloat(String(articulo.precio)) || 0; // Fallback antiguo
 
             return {
                 // Stock
@@ -325,7 +368,7 @@ export class PeruanaInformaticaService {
     static async sincronizarProductos(idsArticulos: string[]) {
         logger.info(`Iniciando sincronización de ${idsArticulos.length} productos...`);
 
-        const resultados = [];
+        const resultados: SyncResult[] = [];
 
         for (const id of idsArticulos) {
             try {
@@ -350,13 +393,14 @@ export class PeruanaInformaticaService {
                 // Pequeña pausa para no saturar la API
                 await new Promise(resolve => setTimeout(resolve, 500));
 
-            } catch (error: any) {
+            } catch (error) {
+                const message = this.errorMessage(error);
                 resultados.push({
                     id,
                     success: false,
-                    error: error.message
+                    error: message
                 });
-                logger.error(`✗ Error sincronizando producto ${id}:`, error.message);
+                logger.error(`✗ Error sincronizando producto ${id}:`, message);
             }
         }
 

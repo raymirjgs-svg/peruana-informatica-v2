@@ -1,4 +1,5 @@
-import { Product } from '../models/Product';
+import { Op, WhereOptions } from 'sequelize';
+import { Product, ProductAttributes } from '../models/Product';
 import { ProductAttribute } from '../models/ProductAttribute';
 import { CompatibilityRule } from '../models/CompatibilityRule';
 import { Attribute } from '../models/Attribute';
@@ -15,6 +16,11 @@ interface CompatibilityResult {
   incompatibleRules?: string[];
 }
 
+interface ProductWithAttributes extends Product {
+  productAttributes?: ProductAttribute[];
+  nombre?: string;
+}
+
 class CompatibilityService {
   /**
    * Get compatible products for a given component type based on selected products
@@ -27,7 +33,6 @@ class CompatibilityService {
     try {
       // 1. Determine active price column strictly
       const { Setting } = require('../models/Setting'); // Lazy load to avoid circular deps if any
-      const { Op } = require('sequelize');
 
       const setting = await Setting.findByPk('cotizador_price_type');
       let activePriceCol = setting ? setting.value : 'pre_web';
@@ -35,13 +40,13 @@ class CompatibilityService {
       // Fallback
       if (activePriceCol === 'pre_cot') activePriceCol = 'pre_web';
 
-      let priceField = 'price'; // Default pre_cli
+      let priceField: 'price' | 'price_web' | 'price_dis' = 'price'; // Default pre_cli
       if (activePriceCol === 'pre_web') priceField = 'price_web';
       if (activePriceCol === 'pre_dis') priceField = 'price_dis';
       if (activePriceCol === 'pre_cli') priceField = 'price';
 
       // 2. Base Condition: Active, Correct Type, and STRICTLY Price > 0
-      const baseWhere: any = {
+      const baseWhere: WhereOptions<ProductAttributes> = {
         component_type: targetComponentType,
         is_active: true,
         [priceField]: {
@@ -182,7 +187,7 @@ class CompatibilityService {
             ]
           }
         ]
-      });
+      }) as ProductWithAttributes[];
 
       // Group products by component type
       const productsByType = new Map<string, typeof products>();
@@ -211,25 +216,25 @@ class CompatibilityService {
         const targetProducts = productsByType.get(rule.target_component_type) || [];
 
         for (const sourceProduct of sourceProducts) {
-          const sourceAttrs = (sourceProduct as any).productAttributes || [];
+          const sourceAttrs = sourceProduct.productAttributes || [];
           const hasSourceMatch = sourceAttrs.some(
-            (attr: any) => attr.attribute_id === rule.source_attribute_id &&
+            (attr) => attr.attribute_id === rule.source_attribute_id &&
               attr.value_id === rule.source_value_id
           );
 
           if (hasSourceMatch && targetProducts.length > 0) {
             // Check if target product has required attribute
             const targetHasMatch = targetProducts.some(targetProduct => {
-              const targetAttrs = (targetProduct as any).productAttributes || [];
+              const targetAttrs = targetProduct.productAttributes || [];
               return targetAttrs.some(
-                (attr: any) => attr.attribute_id === rule.target_attribute_id &&
+                (attr) => attr.attribute_id === rule.target_attribute_id &&
                   attr.value_id === rule.target_value_id
               );
             });
 
             if (!targetHasMatch) {
               errors.push(
-                `Incompatibilidad: ${rule.rule_name} - ${(sourceProduct as any).nombre} requiere un ${rule.target_component_type} compatible`
+                `Incompatibilidad: ${rule.rule_name} - ${sourceProduct.nombre} requiere un ${rule.target_component_type} compatible`
               );
             }
           }

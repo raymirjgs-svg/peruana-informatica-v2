@@ -5,11 +5,34 @@ import { Op } from 'sequelize';
 import { emailService } from './EmailService';
 import { logger } from '../config/logger';
 
+interface CartProduct {
+    name: string;
+    price: number | string;
+    image?: string | null;
+}
+
+interface CartItemWithProduct extends CartItem {
+    product: CartProduct;
+}
+
+interface CartWithItems extends Cart {
+    items: CartItemWithProduct[];
+    session_email?: string;
+    getUser?: () => Promise<{ email?: string } | null>;
+}
+
+interface AbandonedCartEmailItem {
+    name: string;
+    quantity: number;
+    price: number;
+    image?: string | null;
+}
+
 export class AbandonedCartService {
     /**
      * Find abandoned carts (>1 hour inactive, not converted)
      */
-    async findAbandonedCarts() {
+    async findAbandonedCarts(): Promise<CartWithItems[]> {
         try {
             const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
 
@@ -32,7 +55,7 @@ export class AbandonedCartService {
                 }]
             });
 
-            return (abandonedCarts as any[]).filter(cart =>
+            return (abandonedCarts as CartWithItems[]).filter(cart =>
                 cart.items && cart.items.length > 0
             );
         } catch (error) {
@@ -49,7 +72,7 @@ export class AbandonedCartService {
             const carts = await this.findAbandonedCarts();
             let sentCount = 0;
 
-            for (const cart of (carts as any[])) {
+            for (const cart of carts) {
                 // Only send if we have customer email (from user or session)
                 const customerEmail = cart.user_id ?
                     (await cart.getUser?.())?.email :
@@ -72,16 +95,16 @@ export class AbandonedCartService {
     /**
      * Send abandoned cart email to specific customer
      */
-    private async sendAbandonedCartEmail(email: string, cart: any) {
+    private async sendAbandonedCartEmail(email: string, cart: CartWithItems) {
         try {
-            const items = cart.items.map((item: any) => ({
+            const items: AbandonedCartEmailItem[] = cart.items.map(item => ({
                 name: item.product.name,
                 quantity: item.quantity,
-                price: item.product.price,
+                price: Number(item.product.price),
                 image: item.product.image
             }));
 
-            const total = items.reduce((sum: number, item: any) =>
+            const total = items.reduce((sum: number, item: AbandonedCartEmailItem) =>
                 sum + (item.price * item.quantity), 0
             );
 
@@ -102,7 +125,7 @@ export class AbandonedCartService {
     /**
      * Generate HTML template for abandoned cart email
      */
-    private generateAbandonedCartTemplate(items: any[], total: number): string {
+    private generateAbandonedCartTemplate(items: AbandonedCartEmailItem[], total: number): string {
         const itemsHtml = items.map(item => `
             <tr>
                 <td style="padding: 10px;">

@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenerativeAI, GenerativeModel } from "@google/generative-ai";
 import { logger } from '../config/logger';
 
 interface TitleSuggestion {
@@ -22,7 +22,7 @@ interface BlogContent {
 class GeminiService {
   private genAI: GoogleGenerativeAI | null = null;
   private isConfigured: boolean = false;
-  private model: any = null;
+  private model: GenerativeModel | null = null;
 
   constructor() {
     const apiKey = process.env.GEMINI_API_KEY;
@@ -73,7 +73,7 @@ class GeminiService {
 
     try {
       const prompt = "Responde con 'OK' si estás funcionando correctamente.";
-      const result = await this.model.generateContent(prompt);
+      const result = await this.model!.generateContent(prompt);
       const response = await result.response;
       const text = response.text();
 
@@ -122,7 +122,7 @@ Devuelve SOLO un JSON válido con este formato (sin texto adicional):
   }
 ]`;
 
-      const result = await this.model.generateContent(prompt);
+      const result = await this.model!.generateContent(prompt);
       const response = await result.response;
       const text = response.text();
 
@@ -138,10 +138,11 @@ Devuelve SOLO un JSON válido con este formato (sin texto adicional):
 
       logger.info(`✅ Generated ${suggestions.length} title suggestions`);
       return suggestions;
-    } catch (error: any) {
+    } catch (error) {
       logger.error("❌ Error generating titles with Gemini:", error);
+      const message = error instanceof Error && error.message ? error.message : "Unknown error";
       throw new Error(
-        `Failed to generate titles: ${error.message || "Unknown error"}`,
+        `Failed to generate titles: ${message}`,
       );
     }
   }
@@ -184,7 +185,7 @@ ESTRUCTURA:
 
 Escribe SOLO el artículo en Markdown, sin explicaciones adicionales.`;
 
-      const contentResult = await this.model.generateContent(contentPrompt);
+      const contentResult = await this.model!.generateContent(contentPrompt);
       const contentResponse = await contentResult.response;
       let articleContent = contentResponse.text().trim();
 
@@ -206,7 +207,7 @@ TAGS: tag1, tag2, tag3, tag4, tag5
 META_TITLE: [título SEO de 60 caracteres]
 META_DESC: [descripción SEO de 150 caracteres]`;
 
-      const metaResult = await this.model.generateContent(metaPrompt);
+      const metaResult = await this.model!.generateContent(metaPrompt);
       const metaResponse = await metaResult.response;
       const metaText = metaResponse.text();
 
@@ -216,10 +217,10 @@ META_DESC: [descripción SEO de 150 caracteres]`;
       const metaTitleMatch = metaText.match(/META_TITLE:\s*(.+)/i);
       const metaDescMatch = metaText.match(/META_DESC:\s*(.+)/i);
 
-      const excerpt = excerptMatch ? excerptMatch[1].trim() : articleContent.substring(0, 150);
-      const tags = tagsMatch ? tagsMatch[1].split(',').map((t: string) => t.trim()) : [topic];
-      const metaTitle = metaTitleMatch ? metaTitleMatch[1].trim() : title;
-      const metaDesc = metaDescMatch ? metaDescMatch[1].trim() : excerpt;
+      const excerpt = excerptMatch?.[1]?.trim() ?? articleContent.substring(0, 150);
+      const tags = tagsMatch?.[1]?.split(',').map(t => t.trim()) ?? [topic];
+      const metaTitle = metaTitleMatch?.[1]?.trim() ?? title;
+      const metaDesc = metaDescMatch?.[1]?.trim() ?? excerpt;
 
       // Calcular estadísticas
       const wordCount = articleContent.split(/\s+/).length;
@@ -238,10 +239,11 @@ META_DESC: [descripción SEO de 150 caracteres]`;
         reading_time: readingTime,
         word_count: wordCount,
       };
-    } catch (error: any) {
+    } catch (error) {
       logger.error("❌ Error generating blog content with Gemini:", error);
+      const message = error instanceof Error && error.message ? error.message : "Unknown error";
       throw new Error(
-        `Failed to generate content: ${error.message || "Unknown error"}`,
+        `Failed to generate content: ${message}`,
       );
     }
   }
@@ -265,10 +267,10 @@ META_DESC: [descripción SEO de 150 caracteres]`;
       
       Return ONLY the prompt in English.`;
 
-      const result = await this.model.generateContent(prompt);
+      const result = await this.model!.generateContent(prompt);
       const response = await result.response;
       return response.text().trim();
-    } catch (error: any) {
+    } catch (error) {
       logger.error("❌ Error generating image prompt:", error);
       return `Modern technology concept related to ${title}, high quality, 4k, cinematic lighting`;
     }
@@ -348,7 +350,7 @@ ${content.substring(0, 1000)}...
 Devuelve SOLO un array JSON (sin texto adicional):
 ["tag1", "tag2", "tag3", "tag4", "tag5"]`;
 
-      const result = await this.model.generateContent(prompt);
+      const result = await this.model!.generateContent(prompt);
       const response = await result.response;
       const text = response.text();
 
@@ -360,7 +362,7 @@ Devuelve SOLO un array JSON (sin texto adicional):
 
       const tags: string[] = JSON.parse(jsonText);
       return tags.slice(0, count);
-    } catch (error: any) {
+    } catch (error) {
       logger.error("❌ Error generating tags with Gemini:", error);
       // Retornar tags por defecto en caso de error
       return ["tecnología", "informática", "productos", "guía", "review"];
@@ -390,13 +392,14 @@ ${content}
 
 Devuelve el contenido mejorado en formato Markdown, manteniendo la estructura pero mejorando: ${improvementsList}`;
 
-      const result = await this.model.generateContent(prompt);
+      const result = await this.model!.generateContent(prompt);
       const response = await result.response;
       return response.text();
-    } catch (error: any) {
+    } catch (error) {
       logger.error("❌ Error improving content with Gemini:", error);
+      const message = error instanceof Error && error.message ? error.message : "Unknown error";
       throw new Error(
-        `Failed to improve content: ${error.message || "Unknown error"}`,
+        `Failed to improve content: ${message}`,
       );
     }
   }
@@ -404,13 +407,13 @@ Devuelve el contenido mejorado en formato Markdown, manteniendo la estructura pe
   /**
    * Generar una respuesta JSON genérica basada en un prompt
    */
-  async generateJson(prompt: string): Promise<any> {
+  async generateJson(prompt: string): Promise<unknown> {
     if (!this.isReady()) {
       throw new Error("Gemini service not configured");
     }
 
     try {
-      const result = await this.model.generateContent(prompt);
+      const result = await this.model!.generateContent(prompt);
       const response = await result.response;
       let text = response.text().trim();
 
@@ -420,7 +423,7 @@ Devuelve el contenido mejorado en formato Markdown, manteniendo la estructura pe
       }
 
       return JSON.parse(text);
-    } catch (error: any) {
+    } catch (error) {
       logger.error("❌ Error generating JSON with Gemini:", error);
       throw error;
     }

@@ -6,6 +6,7 @@ import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
 import { requireJwtSecret } from '../config/env';
 import { logger } from '../config/logger';
+import { sendError } from '../middleware/errorHandler';
 
 export class AuthController {
     static async socialLogin(req: Request, res: Response): Promise<void> {
@@ -91,7 +92,7 @@ export class AuthController {
         } catch (error) {
             logger.error('❌ Social Login Error:', error);
             logger.error('❌ Social Login Error Stack:', error instanceof Error ? error.stack : 'No stack trace');
-            res.status(500).json({ message: 'Error processing social login', error: 'Error interno' });
+            return void sendError(res, error, 'Error processing social login');
         }
     }
 
@@ -140,10 +141,7 @@ export class AuthController {
             });
         } catch (error) {
             logger.error('Error in register:', error);
-            res.status(500).json({
-                success: false,
-                message: 'Error al crear la cuenta'
-            });
+            return void sendError(res, error, 'Error al crear la cuenta');
         }
     }
 
@@ -211,10 +209,7 @@ res.json({
         });
     } catch (error) {
         logger.error('Error in login:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Error al procesar el login'
-        });
+        return void sendError(res, error, 'Error al procesar el login');
     }
 }
 
@@ -291,10 +286,7 @@ static async adminLogin(req: Request, res: Response): Promise<void> {
         });
     } catch (error) {
         logger.error('Error in admin login:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Error al procesar el login'
-        });
+        return void sendError(res, error, 'Error al procesar el login');
     }
 }
 }

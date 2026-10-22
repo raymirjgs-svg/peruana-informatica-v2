@@ -6,7 +6,7 @@ import { Category } from '../models/Category';
 import { SubCategory } from '../models/SubCategory';
 import { Image } from '../models/Image';
 import { sequelize } from '../database/connection';
-import { logger } from '../config/logger';
+import { sendError } from '../middleware/errorHandler';
 
 export class ProductPublicController {
     async getSuggestions(req: Request, res: Response) {
@@ -44,8 +44,7 @@ export class ProductPublicController {
 
             res.json(products);
         } catch (error) {
-            logger.error('Error getting suggestions:', error);
-            res.status(500).json({ error: 'Suggestion error' });
+            return sendError(res, error, 'Suggestion error');
         }
     }
 
@@ -145,8 +144,7 @@ export class ProductPublicController {
                 }
             });
         } catch (error) {
-            logger.error('Error getting public products:', error);
-            res.status(500).json({ error: 'Error al obtener productos' });
+            return sendError(res, error, 'Error al obtener productos');
         }
     }
 
@@ -185,8 +183,7 @@ export class ProductPublicController {
 
             res.json(product);
         } catch (error) {
-            logger.error('Error getting product by slug:', error);
-            res.status(500).json({ error: 'Error al obtener producto' });
+            return sendError(res, error, 'Error al obtener producto');
         }
     }
 
@@ -224,8 +221,7 @@ export class ProductPublicController {
 
             res.json(product);
         } catch (error) {
-            logger.error('Error getting product by id:', error);
-            res.status(500).json({ error: 'Error al obtener producto' });
+            return sendError(res, error, 'Error al obtener producto');
         }
     }
 }

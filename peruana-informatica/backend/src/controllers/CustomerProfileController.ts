@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { User } from '../models/User';
 import bcrypt from 'bcryptjs';
 import { logger } from '../config/logger';
+import { sendError } from '../middleware/errorHandler';
 
 export class CustomerProfileController {
     /**
@@ -32,10 +33,7 @@ export class CustomerProfileController {
 
         } catch (error) {
             logger.error('❌ Error fetching profile:', error);
-            res.status(500).json({
-                message: 'Error fetching profile',
-                error: 'Error interno'
-            });
+            return void sendError(res, error, 'Error fetching profile');
         }
     }
 
@@ -90,10 +88,7 @@ export class CustomerProfileController {
 
         } catch (error) {
             logger.error('❌ Error updating profile:', error);
-            res.status(500).json({
-                message: 'Error updating profile',
-                error: 'Error interno'
-            });
+            return void sendError(res, error, 'Error updating profile');
         }
     }
 
@@ -156,10 +151,7 @@ export class CustomerProfileController {
 
         } catch (error) {
             logger.error('❌ Error changing password:', error);
-            res.status(500).json({
-                message: 'Error changing password',
-                error: 'Error interno'
-            });
+            return void sendError(res, error, 'Error changing password');
         }
     }
 
@@ -185,10 +177,7 @@ export class CustomerProfileController {
 
         } catch (error) {
             logger.error('❌ Error fetching orders:', error);
-            res.status(500).json({
-                message: 'Error fetching orders',
-                error: 'Error interno'
-            });
+            return void sendError(res, error, 'Error fetching orders');
         }
     }
 }

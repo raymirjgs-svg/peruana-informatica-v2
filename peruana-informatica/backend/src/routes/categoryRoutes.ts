@@ -2,6 +2,7 @@ import express from 'express';
 import { Category } from '../models/Category';
 import { cacheMiddleware } from '../middleware/cache';
 import { logger } from '../config/logger';
+import { sendError } from '../middleware/errorHandler';
 
 logger.info('🔍 Category routes module loaded');
 
@@ -37,7 +38,7 @@ router.get('/', categoryCache, async (req, res) => {
     res.json(categories);
   } catch (error) {
     logger.error('Error:', error);
-    res.status(500).json({ error: 'Error al obtener categorías' });
+    return sendError(res, error, 'Error al obtener categorías');
   }
 });
 
@@ -52,7 +53,7 @@ router.get('/menu', categoryCache, async (req, res) => {
     res.json(categories);
   } catch (error) {
     logger.error('Error:', error);
-    res.status(500).json({ error: 'Error al obtener categorías del menú' });
+    return sendError(res, error, 'Error al obtener categorías del menú');
   }
 });
 
@@ -114,7 +115,7 @@ router.get('/:slug', categoryCache, async (req, res) => {
     res.json(result);
   } catch (error) {
     logger.error('Error:', error);
-    res.status(500).json({ error: 'Error al obtener categoría' });
+    return sendError(res, error, 'Error al obtener categoría');
   }
 });
 

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { Op } from "sequelize";
 import { BlogPost } from "../../models/BlogPost";
-import { logger } from "../../config/logger";
+import { sendError } from "../../middleware/errorHandler";
 
 export class BlogPublicController {
   static async getPublishedPosts(req: Request, res: Response) {
@@ -68,12 +68,7 @@ export class BlogPublicController {
         },
       });
     } catch (error) {
-      logger.error("Error fetching published posts:", error);
-      res.status(500).json({
-        error: "Error interno del servidor",
-        message: "Error al obtener los posts del blog",
-        code: "INTERNAL_SERVER_ERROR",
-      });
+      return sendError(res, error, "Error al obtener los posts del blog", 500, "INTERNAL_SERVER_ERROR");
     }
   }
 
@@ -109,12 +104,7 @@ export class BlogPublicController {
         data: post,
       });
     } catch (error) {
-      logger.error("Error fetching post by slug:", error);
-      res.status(500).json({
-        error: "Error interno del servidor",
-        message: "Error al obtener el post",
-        code: "INTERNAL_SERVER_ERROR",
-      });
+      return sendError(res, error, "Error al obtener el post", 500, "INTERNAL_SERVER_ERROR");
     }
   }
 
@@ -141,12 +131,7 @@ export class BlogPublicController {
         data: { likes: post.likes + 1 },
       });
     } catch (error) {
-      logger.error("Error liking post:", error);
-      res.status(500).json({
-        error: "Error interno del servidor",
-        message: "Error al procesar el like",
-        code: "INTERNAL_SERVER_ERROR",
-      });
+      return sendError(res, error, "Error al procesar el like", 500, "INTERNAL_SERVER_ERROR");
     }
   }
 }

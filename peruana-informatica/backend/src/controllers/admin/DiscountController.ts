@@ -3,7 +3,7 @@ import Discount from '../../models/Discount';
 import { Product } from '../../models/Product';
 import { Category } from '../../models/Category';
 import { buildPaginationMeta, getSafetyLimit, resolvePagination } from '../../utils/pagination';
-import { logger } from '../../config/logger';
+import { sendError } from '../../middleware/errorHandler';
 
 const DISCOUNT_EDITABLE_FIELDS = [
     'name',
@@ -63,8 +63,7 @@ class DiscountController {
             });
             return res.status(200).json({ success: true, data: discounts });
         } catch (error) {
-            logger.error('Error fetching discounts:', error);
-            return res.status(500).json({ success: false, message: 'Error al obtener descuentos' });
+            return sendError(res, error, 'Error al obtener descuentos');
         }
     }
 
@@ -101,8 +100,7 @@ class DiscountController {
 
             return res.status(201).json({ success: true, message: 'Descuento creado', data: discount });
         } catch (error) {
-            logger.error('Error creating discount:', error);
-            return res.status(500).json({ success: false, message: 'Error al crear descuento' });
+            return sendError(res, error, 'Error al crear descuento');
         }
     }
 
@@ -121,8 +119,7 @@ class DiscountController {
             await discount.update(pickDiscountFields(req.body));
             return res.status(200).json({ success: true, message: 'Descuento actualizado', data: discount });
         } catch (error) {
-            logger.error('Error updating discount:', error);
-            return res.status(500).json({ success: false, message: 'Error al actualizar descuento' });
+            return sendError(res, error, 'Error al actualizar descuento');
         }
     }
 
@@ -141,8 +138,7 @@ class DiscountController {
             await discount.destroy();
             return res.status(200).json({ success: true, message: 'Descuento eliminado' });
         } catch (error) {
-            logger.error('Error deleting discount:', error);
-            return res.status(500).json({ success: false, message: 'Error al eliminar descuento' });
+            return sendError(res, error, 'Error al eliminar descuento');
         }
     }
 }

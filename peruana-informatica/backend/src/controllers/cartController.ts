@@ -3,7 +3,7 @@ import { Cart } from '../models/Cart';
 import { CartItem } from '../models/CartItem';
 import { Product } from '../models/Product';
 import { sequelize } from '../database/connection';
-import { logger } from '../config/logger';
+import { sendError } from '../middleware/errorHandler';
 
 export const cartController = {
     // Get Cart (Create if not exists)
@@ -25,8 +25,7 @@ export const cartController = {
 
             res.json({ cart, items });
         } catch (error) {
-            logger.error('Get cart error:', error);
-            res.status(500).json({ error: 'Error getting cart' });
+            return sendError(res, error, 'Error getting cart');
         }
     },
 
@@ -82,8 +81,7 @@ export const cartController = {
 
         } catch (error) {
             await t.rollback();
-            logger.error('Sync cart error:', error);
-            res.status(500).json({ error: 'Error syncing cart' });
+            return sendError(res, error, 'Error syncing cart');
         }
     },
 
@@ -114,8 +112,7 @@ export const cartController = {
 
             res.json({ success: true, item });
         } catch (error) {
-            logger.error('Update item error:', error);
-            res.status(500).json({ error: 'Error updating item' });
+            return sendError(res, error, 'Error updating item');
         }
     },
 
@@ -133,8 +130,7 @@ export const cartController = {
 
             res.json({ success: true });
         } catch (error) {
-            logger.error('Remove item error:', error);
-            res.status(500).json({ error: 'Error removing item' });
+            return sendError(res, error, 'Error removing item');
         }
     }
 };

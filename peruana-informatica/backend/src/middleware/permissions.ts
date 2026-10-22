@@ -3,6 +3,7 @@ import { User } from '../models/User';
 import { Role } from '../models/Role';
 import { Permission } from '../models/Permission';
 import { logger } from '../config/logger';
+import { sendError } from './errorHandler';
 
 /**
  * Check if user has specific permission
@@ -59,10 +60,7 @@ export const checkPermission = (requiredPermission: string) => {
             next();
         } catch (error) {
             logger.error('Error checking permission:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al verificar permisos'
-            });
+            return sendError(res, error, 'Error al verificar permisos');
         }
     };
 };
@@ -121,10 +119,7 @@ export const checkAnyPermission = (requiredPermissions: string[]) => {
             next();
         } catch (error) {
             logger.error('Error checking permissions:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al verificar permisos'
-            });
+            return sendError(res, error, 'Error al verificar permisos');
         }
     };
 };
@@ -156,10 +151,7 @@ export const checkRole = (requiredRole: string) => {
             next();
         } catch (error) {
             logger.error('Error checking role:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al verificar rol'
-            });
+            return sendError(res, error, 'Error al verificar rol');
         }
     };
 };

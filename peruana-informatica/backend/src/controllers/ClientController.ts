@@ -4,6 +4,7 @@ import { OrderItem } from '../models/OrderItem';
 import path from 'path';
 import fs from 'fs';
 import { logger } from '../config/logger';
+import { sendError } from '../middleware/errorHandler';
 
 function maskEmail(email?: string): string {
     if (!email || !email.includes('@')) return '';
@@ -32,7 +33,7 @@ function sendInvoiceFile(order: Order, res: Response) {
         if (err) {
             logger.error('Error downloading invoice:', err);
             if (!res.headersSent) {
-                res.status(500).json({ error: 'Error al descargar comprobante' });
+                return sendError(res, err, 'Error al descargar comprobante');
             }
         }
     });
@@ -73,7 +74,7 @@ export const getOrderByTrackingCode = async (req: Request, res: Response) => {
         });
     } catch (error) {
         logger.error('Error getting order by tracking code:', error);
-        res.status(500).json({ error: 'Error al obtener pedido' });
+        return sendError(res, error, 'Error al obtener pedido');
     }
 };
 
@@ -90,7 +91,7 @@ export const downloadInvoiceByTrackingCode = async (req: Request, res: Response)
         return sendInvoiceFile(order, res);
     } catch (error) {
         logger.error('Error downloading invoice by tracking code:', error);
-        res.status(500).json({ error: 'Error al descargar comprobante' });
+        return sendError(res, error, 'Error al descargar comprobante');
     }
 };
 

@@ -9,6 +9,7 @@ import { Product } from '../models/Product';
 import { sequelize } from '../database/connection';
 import { User } from '../models/User';
 import { logger } from '../config/logger';
+import { sendError } from '../middleware/errorHandler';
 
 // Initialize MP
 const client = new MercadoPagoConfig({
@@ -79,7 +80,7 @@ export const paymentController = {
 
         } catch (error) {
             logger.error('Error uploading proof:', error);
-            res.status(500).json({ error: 'Error al subir comprobante' });
+            return sendError(res, error, 'Error al subir comprobante');
         }
     },
 
@@ -198,7 +199,7 @@ export const paymentController = {
         } catch (error) {
             await t.rollback();
             logger.error('Create preference error:', error);
-            res.status(500).json({ error: 'Error al procesar el pago' });
+            return sendError(res, error, 'Error al procesar el pago');
         }
     },
 
@@ -258,7 +259,7 @@ export const paymentController = {
 
         } catch (error) {
             logger.error('Create preference from order error:', error);
-            res.status(500).json({ error: 'Error al crear preferencia' });
+            return sendError(res, error, 'Error al crear preferencia');
         }
     },
 

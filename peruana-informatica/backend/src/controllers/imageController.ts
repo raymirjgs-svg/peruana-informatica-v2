@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { Image } from '../models/Image';
 import { Product } from '../models/Product';
-import { logger } from '../config/logger';
+import { sendError } from '../middleware/errorHandler';
 
 // GET all images for a product
 export const getImagesByProduct = async (req: Request, res: Response) => {
@@ -32,11 +32,7 @@ export const getImagesByProduct = async (req: Request, res: Response) => {
 
     res.json(images);
   } catch (error) {
-    logger.error('Error getting product images:', error);
-    res.status(500).json({ 
-      error: 'Error al obtener imágenes del producto',
-      code: 'IMAGES_FETCH_ERROR'
-    });
+    return sendError(res, error, 'Error al obtener imágenes del producto', 500, 'IMAGES_FETCH_ERROR');
   }
 };
 
@@ -73,11 +69,7 @@ export const createImage = async (req: Request, res: Response) => {
 
     res.status(201).json(image);
   } catch (error) {
-    logger.error('Error creating image:', error);
-    res.status(500).json({ 
-      error: 'Error al crear imagen',
-      code: 'IMAGE_CREATE_ERROR'
-    });
+    return sendError(res, error, 'Error al crear imagen', 500, 'IMAGE_CREATE_ERROR');
   }
 };
 
@@ -109,10 +101,6 @@ export const deleteImage = async (req: Request, res: Response) => {
       id: imageId
     });
   } catch (error) {
-    logger.error('Error deleting image:', error);
-    res.status(500).json({ 
-      error: 'Error al eliminar imagen',
-      code: 'IMAGE_DELETE_ERROR'
-    });
+    return sendError(res, error, 'Error al eliminar imagen', 500, 'IMAGE_DELETE_ERROR');
   }
 };

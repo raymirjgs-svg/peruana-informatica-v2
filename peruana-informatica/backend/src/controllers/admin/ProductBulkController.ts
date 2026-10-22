@@ -6,6 +6,7 @@ import { sequelize } from '../../database/connection';
 import { PeruanaInformaticaService } from '../../services/PeruanaInformaticaService';
 import { createProductRecord } from '../../services/productRecordService';
 import { logger } from '../../config/logger';
+import { sendError } from '../../middleware/errorHandler';
 
 export class ProductBulkController {
     async importJson(req: Request, res: Response) {
@@ -86,11 +87,7 @@ export class ProductBulkController {
             });
         } catch (error) {
             logger.error('Error importing products:', error);
-            res.status(500).json({
-                error: 'Error al importar productos',
-                code: 'PRODUCT_IMPORT_ERROR',
-                timestamp: new Date().toISOString()
-            });
+            return sendError(res, error, 'Error al importar productos', 500, 'PRODUCT_IMPORT_ERROR');
         }
     }
 
@@ -172,7 +169,7 @@ export class ProductBulkController {
             });
         } catch (error) {
             logger.error('Error in bulk update:', error);
-            res.status(500).json({ error: 'Error al actualizar productos en bloque' });
+            return sendError(res, error, 'Error al actualizar productos en bloque');
         }
     }
 
@@ -219,7 +216,7 @@ export class ProductBulkController {
             });
         } catch (error) {
             logger.error('Error in sync-all:', error);
-            res.status(500).json({ error: 'Error al sincronizar productos' });
+            return sendError(res, error, 'Error al sincronizar productos');
         }
     }
 }

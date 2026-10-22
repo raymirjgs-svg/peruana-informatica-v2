@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { geminiService } from "../services/GeminiService";
-import { logger } from '../config/logger';
+import { sendError } from '../middleware/errorHandler';
 
 export class SeoSuggestController {
   static async suggestMetadata(req: Request, res: Response) {
@@ -51,12 +51,7 @@ export class SeoSuggestController {
         data: suggestions
       });
     } catch (error) {
-      logger.error("Error suggesting metadata via AI:", error);
-      res.status(500).json({
-        success: false,
-        error: "Error al generar sugerencias con IA",
-        message: "Ocurrió un error al procesar la solicitud con Gemini"
-      });
+      return sendError(res, error, "Ocurrió un error al procesar la solicitud con Gemini");
     }
   }
 }

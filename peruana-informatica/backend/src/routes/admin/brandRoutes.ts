@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import { Brand } from '../../models/Brand';
 import { authenticateToken, requireAdmin } from '../../middleware/authMiddleware';
 import { buildPaginationMeta, getSafetyLimit, resolvePagination } from '../../utils/pagination';
-import { logger } from '../../config/logger';
+import { sendError } from '../../middleware/errorHandler';
 
 const router = express.Router();
 
@@ -33,11 +33,7 @@ router.get('/', async (req: Request, res: Response) => {
         });
         res.json(brands);
     } catch (error) {
-        logger.error('Error fetching brands:', error);
-        res.status(500).json({
-            error: 'Error al obtener marcas',
-            code: 'BRANDS_FETCH_ERROR'
-        });
+        return sendError(res, error, 'Error al obtener marcas', 500, 'BRANDS_FETCH_ERROR');
     }
 });
 

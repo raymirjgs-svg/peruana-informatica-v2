@@ -5,6 +5,7 @@ import { Category } from '../../models/Category';
 import { Image } from '../../models/Image';
 import { PeruanaInformaticaService } from '../../services/PeruanaInformaticaService';
 import { logger } from '../../config/logger';
+import { sendError } from '../../middleware/errorHandler';
 
 export class ProductErpController {
     async erpLookup(req: Request, res: Response) {
@@ -94,7 +95,7 @@ export class ProductErpController {
 
         } catch (error) {
             logger.error('Error in ERP lookup:', error);
-            res.status(500).json({ error: 'Error interno del servidor' });
+            return sendError(res, error, 'Error interno del servidor');
         }
     }
 }

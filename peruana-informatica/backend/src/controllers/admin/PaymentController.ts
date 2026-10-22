@@ -6,6 +6,7 @@ import fs from 'fs';
 import path from 'path';
 import { EmailService } from '../../services/EmailService';
 import { logger } from '../../config/logger';
+import { sendError } from '../../middleware/errorHandler';
 
 const VERIFIABLE_ORDER_STATUSES = [
     'pending',
@@ -62,7 +63,7 @@ export const verifyPayment = async (req: Request, res: Response) => {
         });
     } catch (error) {
         logger.error('Error verifying payment:', error);
-        res.status(500).json({ error: 'Error al verificar pago' });
+        return sendError(res, error, 'Error al verificar pago');
     }
 };
 
@@ -192,7 +193,7 @@ export const generateInvoice = async (req: Request, res: Response) => {
 
     } catch (error) {
         logger.error('Error generating invoice:', error);
-        res.status(500).json({ error: 'Error al generar comprobante' });
+        return sendError(res, error, 'Error al generar comprobante');
     }
 };
 
@@ -223,6 +224,6 @@ export const downloadInvoice = async (req: Request, res: Response) => {
         res.download(filepath);
     } catch (error) {
         logger.error('Error downloading invoice:', error);
-        res.status(500).json({ error: 'Error al descargar comprobante' });
+        return sendError(res, error, 'Error al descargar comprobante');
     }
 };

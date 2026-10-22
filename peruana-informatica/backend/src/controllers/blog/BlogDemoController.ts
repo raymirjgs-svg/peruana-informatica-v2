@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { BlogPost } from "../../models/BlogPost";
 import { getBlogDemoPosts } from "../../data/blogDemoPosts";
 import { logger } from "../../config/logger";
+import { sendError } from "../../middleware/errorHandler";
 
 export class BlogDemoController {
   static async loadDemoData(req: Request, res: Response) {
@@ -37,11 +38,7 @@ export class BlogDemoController {
       });
     } catch (error: any) {
       logger.error("❌ Error loading demo data:", error);
-      res.status(500).json({
-        error: "Error cargando datos demo",
-        message: "Error al crear posts de demostración",
-        code: "DEMO_DATA_ERROR",
-      });
+      return sendError(res, error, "Error al crear posts de demostración", 500, "DEMO_DATA_ERROR");
     }
   }
 }

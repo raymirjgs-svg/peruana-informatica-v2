@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { Setting } from '../../models/Setting';
+import { sendError } from '../../middleware/errorHandler';
 
 export const getSettings = async (req: Request, res: Response) => {
     try {
@@ -10,7 +11,7 @@ export const getSettings = async (req: Request, res: Response) => {
         });
         res.json(settingsMap);
     } catch (error) {
-        res.status(500).json({ error: 'Error fetching settings' });
+        return sendError(res, error, 'Error fetching settings');
     }
 };
 
@@ -29,7 +30,7 @@ export const updateSetting = async (req: Request, res: Response) => {
 
         res.json({ success: true });
     } catch (error) {
-        res.status(500).json({ error: 'Error updating setting' });
+        return sendError(res, error, 'Error updating setting');
     }
 };
 
@@ -38,6 +39,6 @@ export const getCheckoutMode = async (req: Request, res: Response) => {
         const setting = await Setting.findByPk('checkout_mode');
         res.json({ mode: setting?.value || 'direct' });
     } catch (error) {
-        res.status(500).json({ error: 'Error fetching checkout mode' });
+        return sendError(res, error, 'Error fetching checkout mode');
     }
 };

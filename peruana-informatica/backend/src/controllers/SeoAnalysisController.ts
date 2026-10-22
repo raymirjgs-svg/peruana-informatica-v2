@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { SeoSettings } from "../models/SeoSettings";
-import { logger } from '../config/logger';
+import { sendError } from '../middleware/errorHandler';
 
 export class SeoAnalysisController {
   static async getSeoAnalysis(req: Request, res: Response) {
@@ -138,12 +138,7 @@ export class SeoAnalysisController {
         },
       });
     } catch (error) {
-      logger.error("Error generating SEO analysis:", error);
-      res.status(500).json({
-        error: "Error interno del servidor",
-        message: "Error al generar el análisis SEO",
-        code: "INTERNAL_SERVER_ERROR",
-      });
+      return sendError(res, error, "Error al generar el análisis SEO", 500, "INTERNAL_SERVER_ERROR");
     }
   }
 }

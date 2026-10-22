@@ -5,6 +5,7 @@ import path from 'path';
 import fs from 'fs';
 import { EmailService } from '../../services/EmailService';
 import { logger } from '../../config/logger';
+import { sendError } from '../../middleware/errorHandler';
 
 // Configurar multer para subir comprobantes (facturas/boletas)
 const storage = multer.diskStorage({
@@ -82,6 +83,6 @@ export const uploadInvoiceFile = async (req: Request, res: Response) => {
         });
     } catch (error) {
         logger.error('Error uploading invoice:', error);
-        res.status(500).json({ error: 'Error al cargar comprobante' });
+        return sendError(res, error, 'Error al cargar comprobante');
     }
 };

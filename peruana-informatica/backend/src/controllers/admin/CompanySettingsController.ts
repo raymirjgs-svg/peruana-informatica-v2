@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { CompanySettings } from '../../models/CompanySettings';
 import { sequelize } from '../../database/connection';
-import { logger } from '../../config/logger';
+import { sendError } from '../../middleware/errorHandler';
 
 const DEFAULT_SETTINGS = {
     id: 1,
@@ -30,8 +30,7 @@ export const getCompanySettings = async (req: Request, res: Response) => {
         res.json(settings);
     } catch (error) {
         await transaction.rollback();
-        logger.error('Error getting company settings:', error);
-        res.status(500).json({ error: 'Error al obtener configuración de empresa' });
+        return sendError(res, error, 'Error al obtener configuración de empresa');
     }
 };
 
@@ -108,8 +107,7 @@ export const updateCompanySettings = async (req: Request, res: Response) => {
         });
     } catch (error) {
         await transaction.rollback();
-        logger.error('Error updating company settings:', error);
-        res.status(500).json({ error: 'Error al actualizar configuración de empresa' });
+        return sendError(res, error, 'Error al actualizar configuración de empresa');
     }
 };
 
@@ -144,7 +142,6 @@ export const getPublicCompanySettings = async (req: Request, res: Response) => {
         });
     } catch (error) {
         await transaction.rollback();
-        logger.error('Error getting public company settings:', error);
-        res.status(500).json({ error: 'Error al obtener configuración de empresa' });
+        return sendError(res, error, 'Error al obtener configuración de empresa');
     }
 };

@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { SeoSettings } from "../models/SeoSettings";
 import { Op } from "sequelize";
 import { pickSeoSettingsFields } from "../utils/seoFields";
-import { logger } from '../config/logger';
+import { sendError } from '../middleware/errorHandler';
 
 export class SeoPageController {
   static async getByPageType(req: Request, res: Response) {
@@ -35,12 +35,7 @@ export class SeoPageController {
         data: seoSettings,
       });
     } catch (error) {
-      logger.error("Error fetching SEO settings by page type:", error);
-      res.status(500).json({
-        error: "Error interno del servidor",
-        message: "Error al obtener la configuración SEO",
-        code: "INTERNAL_SERVER_ERROR",
-      });
+      return sendError(res, error, "Error al obtener la configuración SEO", 500, "INTERNAL_SERVER_ERROR");
     }
   }
 
@@ -79,8 +74,6 @@ export class SeoPageController {
         data: seoSettings,
       });
     } catch (error: any) {
-      logger.error("Error updating SEO settings by page type:", error);
-
       if (error.name === "SequelizeValidationError") {
         const validationErrors = error.errors.map((err: any) => ({
           field: err.path,
@@ -95,11 +88,7 @@ export class SeoPageController {
         });
       }
 
-      res.status(500).json({
-        error: "Error interno del servidor",
-        message: "Error al actualizar la configuración SEO",
-        code: "INTERNAL_SERVER_ERROR",
-      });
+      return sendError(res, error, "Error al actualizar la configuración SEO", 500, "INTERNAL_SERVER_ERROR");
     }
   }
 }

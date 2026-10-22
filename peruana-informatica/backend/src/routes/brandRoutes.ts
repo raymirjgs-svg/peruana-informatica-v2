@@ -1,6 +1,6 @@
 import express from 'express';
 import { Brand } from '../models/Brand';
-import { logger } from '../config/logger';
+import { sendError } from '../middleware/errorHandler';
 
 const router = express.Router();
 
@@ -13,8 +13,7 @@ router.get('/', async (req, res) => {
     });
     res.json(brands);
   } catch (error) {
-    logger.error('Error:', error);
-    res.status(500).json({ error: 'Error al obtener marcas' });
+    return sendError(res, error, 'Error al obtener marcas');
   }
 });
 
@@ -30,8 +29,7 @@ router.get('/:slug', async (req, res) => {
     }
     res.json(brand);
   } catch (error) {
-    logger.error('Error:', error);
-    res.status(500).json({ error: 'Error al obtener marca' });
+    return sendError(res, error, 'Error al obtener marca');
   }
 });
 

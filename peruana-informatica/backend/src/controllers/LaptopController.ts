@@ -4,6 +4,7 @@ import { SubCategory } from '../models/SubCategory';
 import { ProductSubCategory } from '../models/ProductSubCategory';
 import { Op, Sequelize } from 'sequelize';
 import { logger } from '../config/logger';
+import { sendError } from '../middleware/errorHandler';
 
 const extractComponentSpecs = (product: any) => {
   const description = product.description || '';
@@ -159,10 +160,7 @@ export const getLaptopsWithSubcategories = async (req: Request, res: Response) =
     res.json(laptopsWithSpecs);
   } catch (error) {
     logger.error('Error fetching laptops with subcategories:', error);
-    res.status(500).json({
-      error: 'Error interno del servidor',
-      message: 'Error interno'
-    });
+    return sendError(res, error, 'Error interno');
   }
 };
 

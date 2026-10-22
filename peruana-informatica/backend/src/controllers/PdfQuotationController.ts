@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { PdfQuotationService } from '../services/PdfQuotationService';
-import { logger } from '../config/logger';
+import { sendError } from '../middleware/errorHandler';
 
 const pdfQuotationService = new PdfQuotationService();
 
@@ -21,10 +21,6 @@ export const generateQuotationPdf = async (req: Request, res: Response) => {
     res.setHeader('Content-Type', 'application/pdf');
     res.send(pdfBuffer);
   } catch (error) {
-    logger.error('Error generating PDF:', error);
-    res.status(500).json({
-      error: 'Error al generar el PDF de la cotización',
-      message: 'Error interno'
-    });
+    return sendError(res, error, 'Error interno');
   }
 };

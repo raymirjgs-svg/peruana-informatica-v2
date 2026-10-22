@@ -3,7 +3,7 @@ import { Product } from '../../models/Product';
 import { Brand } from '../../models/Brand';
 import { Category } from '../../models/Category';
 import { Op } from 'sequelize';
-import { logger } from '../../config/logger';
+import { sendError } from '../../middleware/errorHandler';
 
 export class DashboardController {
     /**
@@ -63,12 +63,7 @@ export class DashboardController {
                 lowStockProducts
             });
         } catch (error) {
-            logger.error('Error getting dashboard data:', error);
-            res.status(500).json({
-                error: 'Error al obtener datos del dashboard',
-                code: 'DASHBOARD_ERROR',
-                timestamp: new Date().toISOString()
-            });
+            return sendError(res, error, 'Error al obtener datos del dashboard', 500, 'DASHBOARD_ERROR');
         }
     }
 }

@@ -9,6 +9,7 @@ import { Setting } from '../models/Setting';
 import { Coupon } from '../models/Coupon';
 import { generateTrackingCode } from '../utils/trackingCode';
 import { logger } from '../config/logger';
+import { sendError } from '../middleware/errorHandler';
 
 async function createOrderWithTrackingCode(values: any, transaction: any) {
     for (let attempt = 0; attempt < 8; attempt++) {
@@ -168,6 +169,6 @@ export const createOrder = async (req: Request, res: Response) => {
     } catch (error) {
         await t.rollback();
         logger.error('Error creating order:', error);
-        return res.status(500).json({ error: 'Error al procesar el pedido' });
+        return sendError(res, error, 'Error al procesar el pedido');
     }
 };

@@ -4,6 +4,7 @@ import { SubCategory } from '../models/SubCategory';
 import { Setting } from '../models/Setting';
 import { Op, Sequelize } from 'sequelize';
 import { logger } from '../config/logger';
+import { sendError } from '../middleware/errorHandler';
 
 // Helper to determine active price column
 const getActivePriceColumn = async () => {
@@ -173,6 +174,6 @@ export const getCotizadorLaptops = async (req: Request, res: Response) => {
 
     } catch (error: any) {
         logger.error('Error fetching cotizador laptops:', error);
-        res.status(500).json({ error: 'Error interno' });
+        return sendError(res, error, 'Error interno');
     }
 };

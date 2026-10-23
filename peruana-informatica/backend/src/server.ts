@@ -232,7 +232,7 @@ const startServer = async () => {
     // ✅ CRÍTICO: Validar que la BD tenga tablas ANTES de continuar
     logger.info(chalk.cyan('\n🔍 Validando estructura de base de datos...'));
     try {
-      const [tables]: any = await sequelize.query("SHOW TABLES");
+      const [tables] = await sequelize.query("SHOW TABLES") as [Array<Record<string, unknown>>, unknown];
       const tableCount = tables.length;
 
       logger.info(chalk.green(`📊 Tablas encontradas en BD: ${tableCount}`));
@@ -244,7 +244,7 @@ const startServer = async () => {
       }
 
       // Listar primeras 5 tablas para confirmar
-      const tableNames = tables.slice(0, 5).map((t: any) => Object.values(t)[0]);
+      const tableNames = tables.slice(0, 5).map((t) => Object.values(t)[0]);
       logger.info(chalk.gray(`   Primeras tablas: ${tableNames.join(', ')}...`));
       logger.info(chalk.green('✅ Estructura de BD validada correctamente\n'));
 

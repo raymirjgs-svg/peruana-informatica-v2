@@ -16,6 +16,15 @@ const client = new MercadoPagoConfig({
     accessToken: process.env.MP_ACCESS_TOKEN || ''
 });
 
+interface PaymentCartProduct {
+    id: number;
+    name: string;
+    price: number | string;
+    priceWeb?: number | string;
+}
+
+type PaymentCartItem = CartItem & { product: PaymentCartProduct };
+
 export const paymentController = {
     // Upload Payment Proof
     async uploadProof(req: Request, res: Response) {
@@ -28,7 +37,7 @@ export const paymentController = {
                 return res.status(404).json({ error: 'Pedido no encontrado' });
             }
 
-            const userId = (req as any).user?.id;
+            const userId = req.user?.id;
             const isOwner = order.user_id != null && userId != null && String(order.user_id) === String(userId);
             const providedTrackingCode = req.body?.tracking_code;
             const hasValidTrackingCode = !!order.tracking_code && !!providedTrackingCode &&
@@ -88,7 +97,6 @@ export const paymentController = {
     async createPreference(req: Request, res: Response) {
         const t = await sequelize.transaction();
         try {
-            // @ts-ignore
             const userId = req.user?.id;
             if (!userId) {
                 await t.rollback();
@@ -118,8 +126,7 @@ export const paymentController = {
             let totalAmount = 0;
 
             for (const item of cartItems) {
-                // @ts-ignore
-                const product = item.product;
+                const product = (item as PaymentCartItem).product;
                 const price = Number(product.priceWeb) > 0 ? Number(product.priceWeb) : Number(product.price);
 
                 totalAmount += price * item.quantity;
@@ -139,8 +146,7 @@ export const paymentController = {
 
             // Save Order Items
             for (const item of cartItems) {
-                // @ts-ignore
-                const product = item.product;
+                const product = (item as PaymentCartItem).product;
                 const price = Number(product.priceWeb) > 0 ? Number(product.priceWeb) : Number(product.price);
 
                 await OrderItem.create({
@@ -213,13 +219,10 @@ export const paymentController = {
                 return res.status(404).json({ error: 'Pedido no encontrado' });
             }
 
-            // @ts-ignore
             const user = req.user;
 
             const preferenceItems = [];
-            // @ts-ignore
             if (order.items) {
-                // @ts-ignore
                 for (const item of order.items) {
                     preferenceItems.push({
                         id: String(item.product_id),

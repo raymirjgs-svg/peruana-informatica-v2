@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { Op } from 'sequelize';
+import { Op, WhereOptions, Order as SequelizeOrder } from 'sequelize';
 import { Product } from '../models/Product';
 import { Brand } from '../models/Brand';
 import { Category } from '../models/Category';
@@ -54,7 +54,7 @@ export class ProductPublicController {
             const limit = parseInt(req.query.limit as string) || 12;
             const offset = (page - 1) * limit;
 
-            const where: any = {
+            const where: WhereOptions<Product> = {
                 is_active: 1,
                 stock: { [Op.gt]: 0 }
             };
@@ -65,31 +65,33 @@ export class ProductPublicController {
 
             if (categorySlug) {
                 const category = await Category.findOne({ where: { slug: categorySlug } });
-                if (category) where.category_id = category.id;
+                if (category) Object.assign(where, { category_id: category.id });
             }
 
             if (brandSlug) {
                 const brand = await Brand.findOne({ where: { slug: brandSlug } });
-                if (brand) where.brand_id = brand.id;
+                if (brand) Object.assign(where, { brand_id: brand.id });
             }
 
             if (search) {
                 const searchTerms = search.trim().split(/\s+/);
                 if (searchTerms.length > 0) {
-                    where[Op.and] = searchTerms.map(term => ({
-                        [Op.or]: [
-                            { name: { [Op.like]: `%${term}%` } },
-                            { description: { [Op.like]: `%${term}%` } },
-                            { codigo_interno: { [Op.like]: `%${term}%` } },
-                            { keywords: { [Op.like]: `%${term}%` } }
-                        ]
-                    }));
+                    Object.assign(where, {
+                        [Op.and]: searchTerms.map(term => ({
+                            [Op.or]: [
+                                { name: { [Op.like]: `%${term}%` } },
+                                { description: { [Op.like]: `%${term}%` } },
+                                { codigo_interno: { [Op.like]: `%${term}%` } },
+                                { keywords: { [Op.like]: `%${term}%` } }
+                            ]
+                        }))
+                    });
                 }
             }
 
-            if (req.query.featured === 'true') where.is_featured = true;
-            if (req.query.new === 'true') where.is_new = true;
-            if (req.query.clearance === 'true') where.is_clearance = true;
+            if (req.query.featured === 'true') Object.assign(where, { is_featured: true });
+            if (req.query.new === 'true') Object.assign(where, { is_new: true });
+            if (req.query.clearance === 'true') Object.assign(where, { is_clearance: true });
 
             const sortField = req.query.sort as string || 'cod_producto';
             const sortOrder = (req.query.order as string || 'desc').toUpperCase();
@@ -101,7 +103,7 @@ export class ProductPublicController {
                 'codigo_interno': 'codigo_interno'
             };
             const orderField = validSortFields[sortField] || 'cod_producto';
-            const order: any = [[orderField, sortOrder === 'ASC' ? 'ASC' : 'DESC']];
+            const order: SequelizeOrder = [[orderField, sortOrder === 'ASC' ? 'ASC' : 'DESC']];
 
             const { rows: products, count: total } = await Product.findAndCountAll({
                 where,

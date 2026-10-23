@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import { body, validationResult } from 'express-validator';
 import { User } from '../../models/User';
 import { AuthController } from '../../controllers/authController';
@@ -7,7 +7,7 @@ import { authenticateToken, requireAdmin } from '../../middleware/authMiddleware
 
 const router = express.Router();
 
-const validateRequest = (req: Request, res: Response, next: any) => {
+const validateRequest = (req: Request, res: Response, next: NextFunction) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({

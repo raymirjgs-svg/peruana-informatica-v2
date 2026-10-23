@@ -77,7 +77,7 @@ export function isRedisReady(): boolean {
 /**
  * Set cache with TTL
  */
-export async function setCache(key: string, value: any, ttlSeconds: number = 300): Promise<void> {
+export async function setCache(key: string, value: unknown, ttlSeconds: number = 300): Promise<void> {
     if (!isRedisReady()) return;
 
     try {

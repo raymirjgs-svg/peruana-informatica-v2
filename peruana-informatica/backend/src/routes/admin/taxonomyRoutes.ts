@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import { body, param, validationResult } from 'express-validator';
 import { authenticateToken, requireAdmin } from '../../middleware/authMiddleware';
 import { TaxonomyController } from '../../controllers/TaxonomyController';
@@ -9,7 +9,7 @@ const router = express.Router();
 router.use(authenticateToken, requireAdmin);
 
 // Middleware de validación
-const validateRequest = (req: Request, res: Response, next: any) => {
+const validateRequest = (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({

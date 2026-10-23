@@ -96,7 +96,7 @@ export const logRequest = (method: string, url: string, statusCode: number, dura
     });
 };
 
-export const logAudit = (action: string, user: string, details?: any) => {
+export const logAudit = (action: string, user: string, details?: unknown) => {
     logger.info({
         type: 'AUDIT',
         action,

@@ -77,10 +77,11 @@ export class ProductErpController {
                         message: 'Producto no encontrado en el sistema de ventas'
                     });
                 }
-            } catch (apiError: any) {
-                logger.error('Error consultando API de ventas:', apiError.message);
+            } catch (error) {
+                const apiMessage = error instanceof Error ? error.message : String(error);
+                logger.error('Error consultando API de ventas:', apiMessage);
 
-                if (apiError.message?.includes('401') || apiError.message?.includes('Unauthorized') || apiError.message?.includes('autorizado')) {
+                if (apiMessage.includes('401') || apiMessage.includes('Unauthorized') || apiMessage.includes('autorizado')) {
                     return res.json({
                         found: false,
                         message: 'Token de API expirado. Contacte al administrador para renovar el token.'
@@ -89,7 +90,7 @@ export class ProductErpController {
 
                 return res.json({
                     found: false,
-                    message: 'Error al consultar sistema de ventas: ' + (apiError.message || 'Error desconocido')
+                    message: 'Error al consultar sistema de ventas: ' + (apiMessage || 'Error desconocido')
                 });
             }
 

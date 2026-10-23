@@ -32,7 +32,7 @@ export function cacheMiddleware(keyPrefix: string, ttl: number = 300) {
             const originalJson = res.json.bind(res);
 
             // Override json method to cache the response
-            res.json = function (data: any) {
+            res.json = function (data: unknown) {
                 // Cache the response
                 setCache(cacheKey, data, ttl).catch((error) => {
                     logger.warn('Failed to cache response:', error);
@@ -89,7 +89,7 @@ export function cacheSuccessMiddleware(keyPrefix: string, ttl: number = 300) {
         };
 
         // Override json to cache only on success
-        res.json = function (data: any) {
+        res.json = function (data: unknown) {
             if (statusCode >= 200 && statusCode < 300) {
                 setCache(cacheKey, data, ttl).catch(() => { });
             }

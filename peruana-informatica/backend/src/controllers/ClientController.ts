@@ -65,7 +65,7 @@ export const getOrderByTrackingCode = async (req: Request, res: Response) => {
             invoice_type: order.invoice_type,
             invoice_number: order.invoice_number,
             has_invoice: !!order.invoice_file,
-            items: (order as any).items.map((item: any) => ({
+            items: order.items.map((item) => ({
                 product_name: item.product_name,
                 quantity: item.quantity,
                 price: item.price

@@ -1,5 +1,5 @@
 import express from 'express';
-import { Category } from '../models/Category';
+import { Category, type CategoryAttributes } from '../models/Category';
 import { cacheMiddleware } from '../middleware/cache';
 import { logger } from '../config/logger';
 import { sendError } from '../middleware/errorHandler';
@@ -106,7 +106,7 @@ router.get('/:slug', categoryCache, async (req, res) => {
     }
 
     // Map subcategories to camelCase for consistency with frontend
-    const result = category.toJSON() as any;
+    const result: CategoryAttributes & { subcategories?: unknown; subCategories?: unknown } = category.toJSON();
     if (result.subcategories) {
       result.subCategories = result.subcategories;
       // delete result.subcategories; // Optional: keep both for backward compat

@@ -5,6 +5,8 @@ import { sendError } from '../middleware/errorHandler';
 
 const quotationService = new QuotationService();
 
+type QuotationStatus = 'pending' | 'sent' | 'accepted' | 'rejected' | 'expired';
+
 export const createQuotation = async (req: Request, res: Response) => {
   try {
     const quotationData = {
@@ -113,7 +115,7 @@ export const updateQuotationStatus = async (req: Request, res: Response) => {
       });
     }
 
-    const quotation = await quotationService.updateQuotationStatus(parseInt(id), status as any);
+    const quotation = await quotationService.updateQuotationStatus(parseInt(id), status as QuotationStatus);
 
     res.json({
       message: 'Estado de cotización actualizado exitosamente',

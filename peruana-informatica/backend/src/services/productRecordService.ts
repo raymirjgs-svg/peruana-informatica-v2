@@ -3,7 +3,24 @@ import { Product } from '../models/Product';
 import { Image } from '../models/Image';
 import { ProductSubCategory } from '../models/ProductSubCategory';
 
-export async function createProductRecord(data: any, transaction: Transaction) {
+interface ProductRecordInput {
+    name: string;
+    description: string;
+    price: number | string;
+    stock?: number;
+    category_id?: number | null;
+    brand_id?: number | null;
+    image?: string;
+    keywords?: string;
+    component_type?: string;
+    additional_images?: string[];
+    subcategory_ids?: number[];
+    codigo_interno?: string | number;
+    seo_title?: string | null;
+    seo_description?: string | null;
+}
+
+export async function createProductRecord(data: ProductRecordInput, transaction: Transaction) {
         const {
             name,
             description,
@@ -47,7 +64,7 @@ export async function createProductRecord(data: any, transaction: Transaction) {
 
             const duplicate = await Product.findOne({ where: { codigo_interno }, transaction });
             if (duplicate) {
-                const duplicateError: any = new Error(`El código interno '${codigo_interno}' ya está registrado`);
+                const duplicateError: Error & { code?: string } = new Error(`El código interno '${codigo_interno}' ya está registrado`);
                 duplicateError.code = 'DUPLICATE_CODIGO_INTERNO';
                 throw duplicateError;
             }
@@ -69,7 +86,7 @@ export async function createProductRecord(data: any, transaction: Transaction) {
             codigo_interno,
             seo_title: data.seo_title ?? null,
             seo_description: data.seo_description ?? null,
-            component_type: component_type || null
+            component_type: component_type || undefined
         }, { transaction });
 
         if (additional_images && additional_images.length > 0) {

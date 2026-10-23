@@ -1,5 +1,6 @@
 import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../database/connection';
+import type { OrderItem } from './OrderItem';
 
 export class Order extends Model {
     public id!: number;
@@ -36,6 +37,8 @@ export class Order extends Model {
 
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
+
+    public items!: OrderItem[];
 }
 
 Order.init(

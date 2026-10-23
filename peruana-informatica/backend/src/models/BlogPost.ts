@@ -25,7 +25,7 @@ interface BlogPostAttributes {
   ai_model?: string;
   tags?: string;
   categories?: string;
-  external_links?: any;
+  external_links?: Record<string, unknown> | null;
   word_count: number;
   createdAt: Date;
   updatedAt: Date;
@@ -85,7 +85,7 @@ class BlogPost
   public ai_model?: string;
   public tags?: string;
   public categories?: string;
-  public external_links?: any;
+  public external_links?: Record<string, unknown> | null;
   public word_count!: number;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;

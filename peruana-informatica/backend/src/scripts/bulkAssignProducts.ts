@@ -1,5 +1,5 @@
 import { sequelize } from '../database/connection';
-import { Product } from '../models/Product';
+import { Product, type ProductAttributes } from '../models/Product';
 import { Category } from '../models/Category';
 import { SubCategory } from '../models/SubCategory';
 import { Brand } from '../models/Brand';
@@ -22,6 +22,8 @@ interface AssignmentRule {
         [key: string]: string | number | boolean;
     };
 }
+
+type ProductWithLegacyName = Product & { nombre?: string };
 
 // Reglas de asignación basadas en palabras clave
 const assignmentRules: AssignmentRule[] = [
@@ -178,8 +180,8 @@ async function bulkAssignProducts() {
         let skipped = 0;
 
         for (const product of productsWithoutCategory) {
-            const productName = (product as any).name?.toLowerCase() || '';
-            const productDesc = (product as any).description?.toLowerCase() || '';
+            const productName = product.name?.toLowerCase() || '';
+            const productDesc = product.description?.toLowerCase() || '';
             const searchText = `${productName} ${productDesc}`;
 
             // Buscar regla que coincida
@@ -189,7 +191,7 @@ async function bulkAssignProducts() {
 
             if (!matchedRule) {
                 skipped++;
-                logger.info(`⏭️  SKIP: ${(product as any).name}`);
+                logger.info(`⏭️  SKIP: ${product.name}`);
                 continue;
             }
 
@@ -217,16 +219,17 @@ async function bulkAssignProducts() {
                         name: matchedRule.subCategory,
                         category_id: category.id,
                         slug: SubCategory.generateSlug(matchedRule.subCategory)
-                    } as any
+                    }
                 });
             }
 
             // Actualizar producto
-            await product.update({
+            const updates: Partial<ProductAttributes> & { subcategory_id?: number | null } = {
                 category_id: category?.id || null,
                 subcategory_id: subCategory?.id || null,
                 component_type: matchedRule.componentType || null
-            } as any);
+            };
+            await product.update(updates);
 
             // Asignar atributos dinámicos si aplica
             if (matchedRule.componentType && matchedRule.attributes) {
@@ -234,7 +237,7 @@ async function bulkAssignProducts() {
             }
 
             assigned++;
-            logger.info(`✅ ASIGNADO: ${(product as any).name} → ${matchedRule.category} > ${matchedRule.subCategory}`);
+            logger.info(`✅ ASIGNADO: ${product.name} → ${matchedRule.category} > ${matchedRule.subCategory}`);
         }
 
         logger.info(`\n📊 Resumen:`);
@@ -248,7 +251,7 @@ async function bulkAssignProducts() {
     }
 }
 
-async function assignAttributes(product: any, rule: AssignmentRule) {
+async function assignAttributes(product: ProductWithLegacyName, rule: AssignmentRule) {
     if (!rule.attributes || !rule.componentType) return;
 
     const productName = product.nombre || '';
@@ -304,7 +307,7 @@ async function assignAttributes(product: any, rule: AssignmentRule) {
                         product_id: product.cod_producto,
                         attribute_id: attribute.id,
                         value_id: attributeValue.id
-                    } as any
+                    }
                 });
             }
         } else if (attribute.input_type === 'number' && typeof detectedValue === 'number') {
@@ -317,7 +320,7 @@ async function assignAttributes(product: any, rule: AssignmentRule) {
                     product_id: product.cod_producto,
                     attribute_id: attribute.id,
                     value_number: detectedValue
-                } as any
+                }
             });
         }
     }

@@ -11,7 +11,7 @@ const mockRes = () => {
 const mockReq = (overrides: Partial<Request> = {}) =>
   ({ url: '/api/test', method: 'GET', originalUrl: '/api/test', ...overrides } as Request);
 
-const mockNext = () => jest.fn() as unknown as NextFunction;
+const mockNext = () => jest.fn();
 
 describe('errorHandler', () => {
   it('hides internal messages on 500 errors', () => {

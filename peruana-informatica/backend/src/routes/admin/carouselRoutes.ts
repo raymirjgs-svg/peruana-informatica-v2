@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import { body, param, validationResult } from 'express-validator';
 import multer from 'multer';
 import path from 'path';
@@ -51,7 +51,7 @@ const upload = multer({
 });
 
 // Middleware de validación
-const validateRequest = (req: Request, res: Response, next: any) => {
+const validateRequest = (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({

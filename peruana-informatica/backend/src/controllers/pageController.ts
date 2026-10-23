@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { Page } from '../models/Page';
-import { Op } from 'sequelize';
+import { Op, WhereOptions } from 'sequelize';
 import { logger } from '../config/logger';
 import { sendError } from '../middleware/errorHandler';
 
@@ -14,9 +14,9 @@ export class PageController {
             const offset = (page - 1) * limit;
             const search = req.query.search as string;
 
-            const whereClause: any = {};
+            const whereClause: WhereOptions<Page> = {};
             if (search) {
-                whereClause.title = { [Op.like]: `%${search}%` };
+                Object.assign(whereClause, { title: { [Op.like]: `%${search}%` } });
             }
 
             const { count, rows } = await Page.findAndCountAll({

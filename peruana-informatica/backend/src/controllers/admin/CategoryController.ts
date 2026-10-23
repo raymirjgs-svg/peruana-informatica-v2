@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { Category } from '../../models/Category';
+import { Category, type CategoryAttributes } from '../../models/Category';
 import { Product } from '../../models/Product';
 import { Op } from 'sequelize';
 import { logger } from '../../config/logger';
@@ -23,7 +23,7 @@ export class CategoryController {
                 ]
             });
 
-            const categoriesWithCount = categories.map((category: any) => ({
+            const categoriesWithCount = categories.map((category) => ({
                 ...category.toJSON(),
                 productCount: category.products?.length || 0
             }));
@@ -134,13 +134,13 @@ export class CategoryController {
                 });
             }
 
-            const allowedFields = ['name', 'appears_in_menu', 'seo_title', 'seo_description'];
-            const updateData: any = {};
-            allowedFields.forEach(field => {
+            const allowedFields = ['name', 'appears_in_menu', 'seo_title', 'seo_description'] as const;
+            const updateData: Partial<Pick<CategoryAttributes, typeof allowedFields[number] | 'slug'>> = {};
+            for (const field of allowedFields) {
                 if (req.body[field] !== undefined) {
                     updateData[field] = req.body[field];
                 }
-            });
+            }
 
             // Si se actualiza el nombre, generar nuevo slug
             if (req.body.name && req.body.name !== category.name) {

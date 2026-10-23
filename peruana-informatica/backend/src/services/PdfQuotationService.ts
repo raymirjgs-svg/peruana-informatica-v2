@@ -168,15 +168,16 @@ export class PdfQuotationService {
     autoTable(doc, {
       startY: tableY,
       head: [['CANTIDAD', 'UND', 'CODIGO', 'DESCRIPCIÓN', 'P. UNITARIO', 'TOTAL']],
-      body: quotation.items.map((item: any) => {
+      body: quotation.items.map((item) => {
         // Format description possibly with specs
         const description = item.product_name || item.product?.name || 'Producto desconocido';
+        const product = item.product as { codigo_interno?: string; cod_producto?: number } | undefined;
         // Clean description needed?
 
         return [
           item.quantity.toFixed(3), // 1.000
           'UND', // Hardcoded unit
-          item.product?.codigo_interno || item.product?.cod_producto || '-',
+          product?.codigo_interno || product?.cod_producto || '-',
           description,
           (Number(item.product_price) || 0).toFixed(2),
           (Number(item.subtotal) || 0).toFixed(2)
@@ -206,7 +207,8 @@ export class PdfQuotationService {
       theme: 'plain' // Removes default striping, we want simple borders
     });
 
-    const finalY = (doc as any).lastAutoTable.finalY + 5;
+    const lastAutoTable = (doc as jsPDF & { lastAutoTable: { finalY: number } }).lastAutoTable;
+    const finalY = lastAutoTable.finalY + 5;
 
 
     // --- FOOTER & TOTALS ---

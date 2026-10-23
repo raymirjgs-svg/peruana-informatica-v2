@@ -36,7 +36,7 @@ export class BlogDemoController {
           count: createdPosts.length,
         },
       });
-    } catch (error: any) {
+    } catch (error) {
       logger.error("❌ Error loading demo data:", error);
       return sendError(res, error, "Error al crear posts de demostración", 500, "DEMO_DATA_ERROR");
     }

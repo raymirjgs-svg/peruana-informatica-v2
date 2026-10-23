@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { User } from '../../models/User';
-import { Op } from 'sequelize';
+import { Op, WhereOptions } from 'sequelize';
 import { logger } from '../../config/logger';
 import { sendError } from '../../middleware/errorHandler';
 
@@ -21,30 +21,32 @@ export class CustomerController {
             const offset = (page - 1) * limit;
 
             // Build where clause
-            const where: any = {};
+            const where: WhereOptions = {};
 
             // Search filter
             if (search) {
-                where[Op.or] = [
-                    { email: { [Op.like]: `%${search}%` } },
-                    { first_name: { [Op.like]: `%${search}%` } },
-                    { last_name: { [Op.like]: `%${search}%` } }
-                ];
+                Object.assign(where, {
+                    [Op.or]: [
+                        { email: { [Op.like]: `%${search}%` } },
+                        { first_name: { [Op.like]: `%${search}%` } },
+                        { last_name: { [Op.like]: `%${search}%` } }
+                    ]
+                });
             }
 
             // Role filter
             if (role) {
-                where.role = role;
+                Object.assign(where, { role });
             }
 
             // Auth provider filter
             if (authProvider) {
-                where.auth_provider = { [Op.like]: `%${authProvider}%` };
+                Object.assign(where, { auth_provider: { [Op.like]: `%${authProvider}%` } });
             }
 
             // Blocked status filter
             if (isBlocked !== undefined && isBlocked !== '') {
-                where.is_blocked = isBlocked === 'true';
+                Object.assign(where, { is_blocked: isBlocked === 'true' });
             }
 
             // Get customers with pagination

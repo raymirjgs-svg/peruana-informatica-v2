@@ -16,7 +16,7 @@ export const consultArticle = async (req: Request, res: Response) => {
         }
 
         res.json(data);
-    } catch (error: any) {
+    } catch (error) {
         return sendError(res, error, 'Error interno al consultar la API externa');
     }
 };

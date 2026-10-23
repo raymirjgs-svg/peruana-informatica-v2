@@ -63,7 +63,7 @@ router.post('/', uploadLimiter, upload.single('image'), (req: Request, res: Resp
             url: imageUrl,
             filename: req.file.filename
         });
-    } catch (error: any) {
+    } catch (error) {
         return sendError(res, error, 'Error al subir archivo');
     }
 });

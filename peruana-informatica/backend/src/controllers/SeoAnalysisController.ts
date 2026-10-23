@@ -2,6 +2,13 @@ import { Request, Response } from "express";
 import { SeoSettings } from "../models/SeoSettings";
 import { sendError } from '../middleware/errorHandler';
 
+interface PageSeoIssue {
+  id: number;
+  page_type: string;
+  page_identifier?: string;
+  issues: string[];
+}
+
 export class SeoAnalysisController {
   static async getSeoAnalysis(req: Request, res: Response) {
     try {
@@ -18,14 +25,14 @@ export class SeoAnalysisController {
         missingKeywords: 0,
         incompleteOpenGraph: 0,
         incompleteTwitter: 0,
-        pagesByType: {} as any,
+        pagesByType: {} as Record<string, number>,
         recommendations: [] as string[],
       };
 
       analysis.recommendations = [];
 
       // Detalles de páginas con problemas
-      const pagesWithIssues: any[] = [];
+      const pagesWithIssues: PageSeoIssue[] = [];
 
       // Analizar cada configuración
       allSettings.forEach((setting) => {
@@ -33,10 +40,8 @@ export class SeoAnalysisController {
         const issues: string[] = [];
 
         // Contar por tipo de página
-        if (!analysis.pagesByType[setting.page_type]) {
-          analysis.pagesByType[setting.page_type] = 0;
-        }
-        analysis.pagesByType[setting.page_type]++;
+        analysis.pagesByType[setting.page_type] =
+          (analysis.pagesByType[setting.page_type] ?? 0) + 1;
 
         // Verificar meta título
         if (!setting.meta_title) {

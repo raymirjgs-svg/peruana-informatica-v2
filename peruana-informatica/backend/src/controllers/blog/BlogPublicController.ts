@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Op } from "sequelize";
+import { Op, WhereOptions } from "sequelize";
 import { BlogPost } from "../../models/BlogPost";
 import { sendError } from "../../middleware/errorHandler";
 
@@ -13,31 +13,37 @@ export class BlogPublicController {
       const search = req.query.search as string;
 
       const offset = (page - 1) * limit;
-      const whereClause: any = {
+      const whereClause: WhereOptions = {
         status: "published",
         // Todos los posts publicados se muestran (sin filtro de fecha/hora)
       };
 
       // Filtros
       if (category) {
-        whereClause.categories = {
-          [Op.like]: `%${category}%`,
-        };
+        Object.assign(whereClause, {
+          categories: {
+            [Op.like]: `%${category}%`,
+          },
+        });
       }
 
       if (tag) {
-        whereClause.tags = {
-          [Op.like]: `%${tag}%`,
-        };
+        Object.assign(whereClause, {
+          tags: {
+            [Op.like]: `%${tag}%`,
+          },
+        });
       }
 
       if (search) {
-        whereClause[Op.or] = [
-          { title: { [Op.like]: `%${search}%` } },
-          { excerpt: { [Op.like]: `%${search}%` } },
-          { content: { [Op.like]: `%${search}%` } },
-          { tags: { [Op.like]: `%${search}%` } },
-        ];
+        Object.assign(whereClause, {
+          [Op.or]: [
+            { title: { [Op.like]: `%${search}%` } },
+            { excerpt: { [Op.like]: `%${search}%` } },
+            { content: { [Op.like]: `%${search}%` } },
+            { tags: { [Op.like]: `%${search}%` } },
+          ],
+        });
       }
 
       const { count, rows } = await BlogPost.findAndCountAll({

@@ -38,7 +38,7 @@ export interface ProductAttributes {
   form_factor?: string;
   tdp_watts?: number;
   has_integrated_graphics?: boolean;
-  component_specs?: any;
+  component_specs?: Record<string, unknown> | null;
   is_featured?: boolean;
   is_new?: boolean;
   is_clearance?: boolean;
@@ -80,7 +80,7 @@ export class Product extends Model<ProductAttributes, ProductCreationAttributes>
   public form_factor!: string;
   public tdp_watts!: number;
   public has_integrated_graphics!: boolean;
-  public component_specs!: any;
+  public component_specs!: Record<string, unknown> | null;
   public is_featured!: boolean;
   public is_new!: boolean;
   public is_clearance!: boolean;

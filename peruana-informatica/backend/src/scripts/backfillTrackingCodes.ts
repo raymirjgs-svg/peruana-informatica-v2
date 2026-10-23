@@ -26,8 +26,8 @@ async function assignCode(order: Order) {
       order.tracking_code = generateTrackingCode();
       await order.save();
       return true;
-    } catch (error: any) {
-      if (error?.name === 'SequelizeUniqueConstraintError') continue;
+    } catch (error) {
+      if (error instanceof Error && error.name === 'SequelizeUniqueConstraintError') continue;
       throw error;
     }
   }

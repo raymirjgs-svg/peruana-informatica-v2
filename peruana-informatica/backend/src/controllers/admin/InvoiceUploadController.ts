@@ -22,7 +22,7 @@ const storage = multer.diskStorage({
     }
 });
 
-const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
+const fileFilter = (_req: Request, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
     // Solo aceptar archivos PDF
     if (file.mimetype === 'application/pdf') {
         cb(null, true);

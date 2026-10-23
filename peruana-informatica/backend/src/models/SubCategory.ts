@@ -1,5 +1,6 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import { sequelize } from '../database/connection';
+import type { Category } from './Category';
 
 export interface SubCategoryAttributes {
   id: number;
@@ -31,7 +32,7 @@ export class SubCategory extends Model<SubCategoryAttributes, SubCategoryCreatio
 
   // Relación con Category (se define en server.ts para evitar dependencias circulares)
   // Relación con Category (se define en server.ts para evitar dependencias circulares)
-  public category?: any;
+  public category?: Category;
 
   public static generateSlug(name: string): string {
     if (!name) return '';

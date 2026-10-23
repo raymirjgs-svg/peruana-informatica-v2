@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { PromoBanner } from '../models/PromoBanner';
+import { PromoBanner, type PromoBannerAttributes } from '../models/PromoBanner';
 import { buildPaginationMeta, getSafetyLimit, resolvePagination } from '../utils/pagination';
 import { logger } from '../config/logger';
 import { sendError } from '../middleware/errorHandler';
@@ -140,13 +140,13 @@ export class PromoBannerController {
                 'popup_delay',
                 'is_active',
                 'priority'
-            ];
-            const updateData: any = {};
-            allowedFields.forEach(field => {
+            ] as const;
+            const updateData: Partial<Pick<PromoBannerAttributes, typeof allowedFields[number]>> = {};
+            for (const field of allowedFields) {
                 if (req.body[field] !== undefined) {
                     updateData[field] = req.body[field];
                 }
-            });
+            }
 
             if (updateData.coupon_code) {
                 updateData.coupon_code = updateData.coupon_code.toUpperCase();

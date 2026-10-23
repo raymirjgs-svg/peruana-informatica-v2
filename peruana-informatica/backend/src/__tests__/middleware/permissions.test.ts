@@ -10,8 +10,8 @@ jest.mock('../../config/logger', () => ({
   logger: { info: jest.fn(), warn: jest.fn(), error: jest.fn() },
 }));
 
-const findByPk = User.findByPk as unknown as jest.Mock;
-const findOne = Role.findOne as unknown as jest.Mock;
+const findByPk = User.findByPk as jest.Mock;
+const findOne = Role.findOne as jest.Mock;
 
 const buildRes = () => {
   const res: Partial<Response> = {};
@@ -20,14 +20,14 @@ const buildRes = () => {
   return res as Response;
 };
 
-const buildReq = (user?: { id: number }) => ({ user } as unknown as Request);
+const buildReq = (user?: { id: number }) => ({ user } as Request);
 
 describe('checkPermission', () => {
   afterEach(() => jest.clearAllMocks());
 
   it('rejects unauthenticated requests with 401', async () => {
     const res = buildRes();
-    const next = jest.fn() as unknown as NextFunction;
+    const next = jest.fn();
 
     await checkPermission('products:read')(buildReq(), res, next);
 
@@ -38,7 +38,7 @@ describe('checkPermission', () => {
   it('rejects unknown users with 404', async () => {
     findByPk.mockResolvedValue(null);
     const res = buildRes();
-    const next = jest.fn() as unknown as NextFunction;
+    const next = jest.fn();
 
     await checkPermission('products:read')(buildReq({ id: 1 }), res, next);
 
@@ -49,7 +49,7 @@ describe('checkPermission', () => {
   it('allows super-admins without checking permissions', async () => {
     findByPk.mockResolvedValue({ id: 1, role: 'super-admin' });
     findOne.mockResolvedValue({ slug: 'super-admin', permissions: [] });
-    const next = jest.fn() as unknown as NextFunction;
+    const next = jest.fn();
 
     await checkPermission('anything')(buildReq({ id: 1 }), buildRes(), next);
 
@@ -59,7 +59,7 @@ describe('checkPermission', () => {
   it('allows users whose role has the permission', async () => {
     findByPk.mockResolvedValue({ id: 2, role: 'editor' });
     findOne.mockResolvedValue({ slug: 'editor', permissions: [{ slug: 'products:read' }] });
-    const next = jest.fn() as unknown as NextFunction;
+    const next = jest.fn();
 
     await checkPermission('products:read')(buildReq({ id: 2 }), buildRes(), next);
 
@@ -70,7 +70,7 @@ describe('checkPermission', () => {
     findByPk.mockResolvedValue({ id: 3, role: 'viewer' });
     findOne.mockResolvedValue({ slug: 'viewer', permissions: [{ slug: 'products:read' }] });
     const res = buildRes();
-    const next = jest.fn() as unknown as NextFunction;
+    const next = jest.fn();
 
     await checkPermission('products:delete')(buildReq({ id: 3 }), res, next);
 
@@ -81,7 +81,7 @@ describe('checkPermission', () => {
   it('rejects users without a role', async () => {
     findByPk.mockResolvedValue({ id: 4, role: null });
     const res = buildRes();
-    const next = jest.fn() as unknown as NextFunction;
+    const next = jest.fn();
 
     await checkPermission('products:read')(buildReq({ id: 4 }), res, next);
 
@@ -92,7 +92,7 @@ describe('checkPermission', () => {
   it('returns 500 when the permission lookup fails', async () => {
     findByPk.mockRejectedValue(new Error('connection lost'));
     const res = buildRes();
-    const next = jest.fn() as unknown as NextFunction;
+    const next = jest.fn();
 
     await checkPermission('products:read')(buildReq({ id: 5 }), res, next);
 
@@ -107,7 +107,7 @@ describe('checkAnyPermission', () => {
   it('allows when the role has at least one required permission', async () => {
     findByPk.mockResolvedValue({ id: 6, role: 'editor' });
     findOne.mockResolvedValue({ slug: 'editor', permissions: [{ slug: 'orders:update' }] });
-    const next = jest.fn() as unknown as NextFunction;
+    const next = jest.fn();
 
     await checkAnyPermission(['products:read', 'orders:update'])(buildReq({ id: 6 }), buildRes(), next);
 
@@ -118,7 +118,7 @@ describe('checkAnyPermission', () => {
     findByPk.mockResolvedValue({ id: 7, role: 'viewer' });
     findOne.mockResolvedValue({ slug: 'viewer', permissions: [{ slug: 'products:read' }] });
     const res = buildRes();
-    const next = jest.fn() as unknown as NextFunction;
+    const next = jest.fn();
 
     await checkAnyPermission(['orders:update'])(buildReq({ id: 7 }), res, next);
 
@@ -131,7 +131,7 @@ describe('checkRole', () => {
 
   it('allows users with the required role', async () => {
     findByPk.mockResolvedValue({ id: 8, role: 'admin' });
-    const next = jest.fn() as unknown as NextFunction;
+    const next = jest.fn();
 
     await checkRole('admin')(buildReq({ id: 8 }), buildRes(), next);
 
@@ -141,7 +141,7 @@ describe('checkRole', () => {
   it('rejects users with a different role', async () => {
     findByPk.mockResolvedValue({ id: 9, role: 'customer' });
     const res = buildRes();
-    const next = jest.fn() as unknown as NextFunction;
+    const next = jest.fn();
 
     await checkRole('admin')(buildReq({ id: 9 }), res, next);
 

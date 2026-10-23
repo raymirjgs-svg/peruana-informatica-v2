@@ -1,6 +1,6 @@
 import fs from 'fs';
-import { Op } from 'sequelize';
-import { Product } from '../models/Product';
+import { Op, WhereOptions } from 'sequelize';
+import { Product, type ProductAttributes } from '../models/Product';
 import { PeruanaInformaticaService } from './PeruanaInformaticaService';
 import { logger } from '../config/logger';
 
@@ -26,12 +26,9 @@ export class SyncService {
             logger.info('SyncService: Starting synchronization with External API...');
 
             // Get all active products with an internal code
-            const products = await Product.findAll({
-                where: {
-                    codigo_interno: { [Op.ne]: null as any },
-                    is_active: 1
-                }
-            });
+            const where: WhereOptions<ProductAttributes> = { is_active: 1 };
+            Object.assign(where, { codigo_interno: { [Op.ne]: null } });
+            const products = await Product.findAll({ where });
 
             logger.info(`SyncService: Found ${products.length} products to sync.`);
 
@@ -87,8 +84,9 @@ export class SyncService {
                         // logger.warn(`SyncService: Data not found for ${product.codigo_interno}`);
                         errorCount++;
                     }
-                } catch (err: any) {
-                    logger.error(`SyncService: Error syncing product ${product.codigo_interno}`, err.message);
+                } catch (err) {
+                    const message = err instanceof Error ? err.message : String(err);
+                    logger.error(`SyncService: Error syncing product ${product.codigo_interno}`, message);
                     errorCount++;
                 }
             }

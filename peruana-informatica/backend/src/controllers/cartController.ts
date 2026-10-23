@@ -9,7 +9,6 @@ export const cartController = {
     // Get Cart (Create if not exists)
     async getCart(req: Request, res: Response) {
         try {
-            // @ts-ignore
             const userId = req.user?.id;
             if (!userId) return res.status(401).json({ error: 'Unauthorized' });
 
@@ -33,7 +32,6 @@ export const cartController = {
     async syncCart(req: Request, res: Response) {
         const t = await sequelize.transaction();
         try {
-            // @ts-ignore
             const userId = req.user?.id;
             const localItems = req.body.items || []; // Expected: [{ productId, quantity }]
 
@@ -88,7 +86,6 @@ export const cartController = {
     // Update Item (Add/Modify)
     async updateItem(req: Request, res: Response) {
         try {
-            // @ts-ignore
             const userId = req.user?.id;
             const { productId, quantity } = req.body;
 
@@ -119,7 +116,6 @@ export const cartController = {
     // Remove Item
     async removeItem(req: Request, res: Response) {
         try {
-            // @ts-ignore
             const userId = req.user?.id;
             const { productId } = req.params;
 

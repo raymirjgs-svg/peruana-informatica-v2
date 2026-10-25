@@ -13,7 +13,7 @@ export default function LaptopQuotation() {
   const [showForm, setShowForm] = useState(false);
   const [selectedLaptop, setSelectedLaptop] = useState<Product | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [quotationResult, setQuotationResult] = useState<any>(null);
+  const [quotationResult, setQuotationResult] = useState<Record<string, unknown> | null>(null);
   const [filters, setFilters] = useState<Filters>({
     minPrice: '',
     maxPrice: '',
@@ -122,7 +122,7 @@ export default function LaptopQuotation() {
     setShowForm(true);
   };
 
-  const handleFormSubmit = async (formData: any) => {
+  const handleFormSubmit = async (formData: unknown) => {
     if (!selectedLaptop) {
       alert('No hay laptop seleccionada para cotizar');
       return;
@@ -141,19 +141,20 @@ export default function LaptopQuotation() {
       }
 
       // Validar campos requeridos
-      if (!formData.client_name || formData.client_name.trim() === '') {
+      const fd = formData as Record<string, unknown>;
+      if (!fd.client_name || typeof fd.client_name === 'string' && fd.client_name.trim() === '') {
         alert('El nombre del cliente es requerido');
         return;
       }
 
-      if (!formData.client_email || formData.client_email.trim() === '') {
+      if (!fd.client_email || typeof fd.client_email === 'string' && fd.client_email.trim() === '') {
         alert('El email del cliente es requerido');
         return;
       }
 
       // Validar formato de email
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(formData.client_email)) {
+      if (typeof fd.client_email !== 'string' || !emailRegex.test(fd.client_email)) {
         alert('Email no válido');
         return;
       }
@@ -170,12 +171,12 @@ export default function LaptopQuotation() {
       }
 
       const quotationData = {
-        client_name: formData.client_name.trim(),
-        client_email: formData.client_email.trim(),
-        client_phone: formData.client_phone?.trim() || '',
-        client_company: formData.client_company?.trim() || '',
-        client_ruc: formData.client_ruc?.trim() || '',
-        client_address: formData.client_address?.trim() || '',
+        client_name: typeof fd.client_name === 'string' ? fd.client_name.trim() : '',
+        client_email: typeof fd.client_email === 'string' ? fd.client_email.trim() : '',
+        client_phone: typeof fd.client_phone === 'string' ? fd.client_phone.trim() : '',
+        client_company: typeof fd.client_company === 'string' ? fd.client_company.trim() : '',
+        client_ruc: typeof fd.client_ruc === 'string' ? fd.client_ruc.trim() : '',
+        client_address: typeof fd.client_address === 'string' ? fd.client_address.trim() : '',
         items: [{
           product_id: productId, // Convertir a entero
           product_name: selectedLaptop.name,
@@ -184,24 +185,24 @@ export default function LaptopQuotation() {
           subtotal: laptopPrice,
         }],
         valid_until: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 días desde ahora
-        delivery_method: formData.delivery_method,
-        delivery_address: formData.delivery_method === 'delivery' ? (formData.delivery_address?.trim() || '') : undefined,
-        special_requirements: formData.special_requirements?.trim() || ''
+        delivery_method: fd.delivery_method,
+        delivery_address: fd.delivery_method === 'delivery' && typeof fd.delivery_address === 'string' ? fd.delivery_address.trim() : undefined,
+        special_requirements: typeof fd.special_requirements === 'string' ? fd.special_requirements.trim() : ''
       };
 
       console.log('Enviando datos de cotización:', quotationData); // Para depuración
 
       // Crear cotización a través de la API
-      const response: QuotationResponse = await apiClient.createQuotation(quotationData) as QuotationResponse;
+      const response = await apiClient.createQuotation(quotationData) as Record<string, unknown>;
 
       console.log('Respuesta de la API:', response); // Para depuración
 
       // Actualizar estado con la respuesta
       const quotation = {
-        code: response.code,
-        client_name: formData.client_name,
-        client_email: formData.client_email,
-        total: response.total,
+        code: typeof response.code === 'string' ? response.code : '',
+        client_name: typeof fd.client_name === 'string' ? fd.client_name : '',
+        client_email: typeof fd.client_email === 'string' ? fd.client_email : '',
+        total: typeof response.total === 'number' || typeof response.total === 'string' ? response.total : 0,
         date: new Date().toISOString(),
       };
 
@@ -247,7 +248,7 @@ export default function LaptopQuotation() {
       <QuotationSuccess
         result={quotationResult}
         productName={selectedLaptop?.name}
-        onDownload={() => apiClient.downloadQuotationPdf(quotationResult.code)}
+        onDownload={() => apiClient.downloadQuotationPdf((quotationResult as Record<string, unknown>).code as string)}
         onReset={() => {
           setShowSuccess(false);
           setQuotationResult(null);

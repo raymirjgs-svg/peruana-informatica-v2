@@ -1,10 +1,21 @@
 import QuotationForm from './QuotationForm';
 import { Product } from '../types';
 
+interface QuotationFormData {
+  client_name: string;
+  client_email: string;
+  client_phone?: string;
+  client_company?: string;
+  client_ruc?: string;
+  client_address?: string;
+  delivery_method: 'pickup';
+  special_requirements?: string;
+}
+
 interface QuotationPanelProps {
   laptop: Product;
   loading: boolean;
-  onSubmit: (formData: any) => void;
+  onSubmit: (formData: unknown) => void;
   onClose: () => void;
 }
 

@@ -1,16 +1,14 @@
 version: 2
 updates:
-  - package-ecosystem: npm
-    directory: /peruana-informatica/backend
+  - package-ecosystem: "npm"
+    directory: "/peruana-informatica/backend"
     schedule:
-      interval: weekly
-    open-pull-requests-limit: 5
-  - package-ecosystem: npm
-    directory: /peruana-informatica/frontend
+      interval: "weekly"
+  - package-ecosystem: "npm"
+    directory: "/peruana-informatica/frontend"
     schedule:
-      interval: weekly
-    open-pull-requests-limit: 5
-  - package-ecosystem: github-actions
-    directory: /
+      interval: "weekly"
+  - package-ecosystem: "github-actions"
+    directory: "/"
     schedule:
-      interval: weekly
+      interval: "weekly"

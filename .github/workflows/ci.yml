@@ -2,9 +2,9 @@ name: CI
 
 on:
   pull_request:
-    branches: [main]
+    branches: [main, develop]
   push:
-    branches: [main]
+    branches: [main, develop]
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   backend:
-    name: Backend (types + tests)
+    name: Backend (typecheck + lint + tests)
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -26,16 +26,16 @@ jobs:
           cache-dependency-path: peruana-informatica/backend/package-lock.json
       - run: npm ci
       - name: Type check
-        run: npx tsc --noEmit
+        run: npm run typecheck
       - name: Lint
         run: npm run lint
       - name: Tests
-        run: npm run test:coverage
+        run: npm run test:ci
         env:
           NODE_ENV: test
 
   frontend:
-    name: Frontend (types + lint + build)
+    name: Frontend (typecheck + lint + build)
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -55,7 +55,7 @@ jobs:
           cache-dependency-path: peruana-informatica/frontend/package-lock.json
       - run: npm ci
       - name: Type check
-        run: npx tsc --noEmit
+        run: npm run typecheck
       - name: Lint
         run: npm run lint
       - name: Build

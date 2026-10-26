@@ -60,6 +60,7 @@ import adminWishlistRoutes from "./routes/admin/wishlistRoutes"; // Rutas admin 
 import adminAnalyticsRoutes from "./routes/admin/analyticsRoutes"; // Rutas admin de analytics
 import adminRoleRoutes from "./routes/admin/roleRoutes"; // Rutas admin de roles y permisos
 import adminDiscountRoutes from "./routes/admin/discountRoutes"; // Rutas admin de descuentos
+import feedRoutes from "./routes/feedRoutes";
 import { initAssociations } from "./models/associations"; // Inicialización de asociaciones
 
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler";
@@ -210,6 +211,8 @@ app.use("/api/pages", pageRoutes); // Rutas públicas de páginas
 app.use("/api/sync", syncRoutes); // Rutas de sincronización con API Externa
 app.use("/api/cart", cartRoutes); // Rutas de carrito
 app.use("/api/payment", paymentRoutes); // Rutas de pago
+app.use("/feed", feedRoutes);
+app.use("/api/feed", feedRoutes);
 
 // Manejo de errores (debe ir al final)
 app.use(notFoundHandler);

@@ -127,3 +127,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return uniqueRoutes.sort((a, b) => (b.priority || 0) - (a.priority || 0));
 }
+
+// include product feeds hint not needed

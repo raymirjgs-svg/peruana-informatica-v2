@@ -33,3 +33,8 @@ Fecha: 2026-10-27
 
 ## Evidencia
 - Archivos modificados: products/[slug]/layout.tsx
+
+## Estado
+- Feed Google Merchant: implementado en backend (src/controllers/FeedController.ts, routes/feedRoutes.ts) montado en /feed y /api/feed
+- SEO fichas: schema enriquecido, metadata con contexto Perú, microcopy local
+- Guías: docs/GOOGLE_MERCHANT_CENTER.md, docs/SEGURIDAD_ROTACION_CREDENCIALES.md

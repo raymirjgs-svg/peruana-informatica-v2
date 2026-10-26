@@ -28,8 +28,8 @@ export async function generateMetadata({
     });
     const rawTitle: string = p.seo_title || p.name || "";
     const rawDesc: string = p.seo_description || p.description || "";
-    const title = `${rawTitle} | Peruana Informática`;
-    const description = rawDesc.toString().substring(0, 160);
+    const title = rawTitle ? `${rawTitle} | Peruana Informática | Venta en Perú` : "Producto | Peruana Informática | Venta en Perú";
+    const description = (rawDesc.toString().substring(0, 160) || "Compra online en Peruana Informática. Venta y despacho en Lima. Envíos a todo el Perú.").replace(/<[^>]+>/g, '');
     const image = p.image || `https://placehold.co/1200x630?text=Imagen+no+disponible`;
     const urlBase = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
     const url = `${urlBase}/products/${slug}`;
@@ -69,7 +69,7 @@ export default async function ProductSlugLayout({
 }) {
   const resolvedParams = await params;
   const slug = resolvedParams.slug;
-  let jsonLd: any = null;
+  let jsonLd: unknown[] | null = null;
   try {
     const p = await apiClient.request<ProductSeo>(`/api/products/slug/${slug}`, {
       next: { revalidate: 300 },
@@ -78,6 +78,7 @@ export default async function ProductSlugLayout({
       process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
     const url = `${siteUrl}/products/${slug}`;
     const image = p.image || `https://placehold.co/1200x630?text=Imagen+no+disponible`;
+    const priceValidUntil = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
     jsonLd = [
       {
         "@context": "https://schema.org",
@@ -96,14 +97,21 @@ export default async function ProductSlugLayout({
       {
         "@context": "https://schema.org",
         "@type": "Product",
+        "@id": url,
         name: p.name,
         description: p.description,
         image: [image],
         sku: String(p.id),
         url,
+        itemCondition: "https://schema.org/NewCondition",
         brand: p.productBrand?.name
-          ? { "@type": "Brand", name: p.productBrand.name }
+          ? { "@type": "Brand", name: p.productBrand.name, url: siteUrl }
           : undefined,
+        seller: {
+          "@type": "Organization",
+          name: "Peruana Informática",
+          url: siteUrl,
+        },
         offers: {
           "@type": "Offer",
           priceCurrency: "PEN",
@@ -113,6 +121,12 @@ export default async function ProductSlugLayout({
               ? "https://schema.org/InStock"
               : "https://schema.org/OutOfStock",
           url,
+          priceValidUntil,
+          itemCondition: "https://schema.org/NewCondition",
+          areaServed: {
+            "@type": "Country",
+            name: "PE",
+          },
         },
       },
     ];

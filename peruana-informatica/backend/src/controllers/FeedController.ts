@@ -1,12 +1,13 @@
 import { Request, Response } from 'express';
-import { Product, ProductBrand } from '../models';
+import { Product } from '../models/Product';
+import { Brand } from '../models/Brand';
 
 export class FeedController {
   static async googleMerchantFeed(req: Request, res: Response) {
     try {
       const products = await Product.findAll({
         where: { estado: 'activo' },
-        include: [{ model: ProductBrand, as: 'productBrand', attributes: ['name'] }],
+        include: [{ model: Brand, as: 'productBrand', attributes: ['name'] }],
         order: [['createdAt', 'DESC']],
       });
 

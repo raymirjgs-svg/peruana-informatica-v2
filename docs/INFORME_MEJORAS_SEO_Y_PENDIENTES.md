@@ -10,7 +10,7 @@ Fecha: 2026-10-27
 
 ## 2) SEO técnico
 - [x] 2.1 JSON-LD Product enriquecido (seller, areaServed, priceValidUntil, itemCondition)
-- [x] 2.2 LocalBusiness/Organization añadido (pendiente revisar en layout global si aplica)
+- [x] 2.2 LocalBusiness/Organization añadido
 - [x] 2.3 generateMetadata mejorado con contexto local
 - [ ] 2.4 Fallback SSR con logging detallado
 - [ ] 2.5 Microcopy local visible
@@ -18,9 +18,9 @@ Fecha: 2026-10-27
 - [ ] 2.7 Robots.txt revisión
 
 ## 3) Google Merchant Center
-- [ ] 3.1 Endpoint /api/feed/google-merchant.xml
-- [ ] 3.2 Filtro por stock/activo
-- [ ] 3.3 Documentación GMC
+- [x] 3.1 Endpoint /api/feed/google-merchant.xml
+- [x] 3.2 Filtro por stock/activo
+- [x] 3.3 Documentación GMC
 - [ ] 3.4 Validación feed
 
 ## 4) Pendientes checklist

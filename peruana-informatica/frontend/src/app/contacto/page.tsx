@@ -3,7 +3,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { contactSchema, type ContactFormData } from '@/lib/validations/schemas';
-import { useState } from 'react';
+import Link from 'next/link';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 import apiClient from '@/utils/api';
 
@@ -253,13 +253,13 @@ export default function ContactPage() {
                 />
                 <label htmlFor="acceptTerms" className="text-sm text-gray-600">
                   Acepto los{' '}
-                  <a href="/terminos" className="text-blue-600 hover:underline">
+                  <Link href="/terminos" className="text-blue-600 hover:underline">
                     términos y condiciones
-                  </a>{' '}
+                  </Link>{' '}
                   y{' '}
-                  <a href="/privacidad" className="text-blue-600 hover:underline">
-                    política de privacidad
-                  </a>
+                  <Link href="/privacidad" className="text-blue-600 hover:underline">
+                    Política de Privacidad
+                  </Link>
                 </label>
               </div>
               {errors.acceptTerms && (

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function TrackOrderPage() {
     const [code, setCode] = useState('');
@@ -73,9 +74,9 @@ export default function TrackOrderPage() {
                         </div>
 
                         <div className="mt-6 text-center">
-                            <a href="/contacto" className="text-blue-600 hover:text-blue-500 font-medium text-sm">
+                            <Link href="/contacto" className="text-blue-600 hover:text-blue-500 font-medium text-sm">
                                 Contactar soporte
-                            </a>
+                            </Link>
                         </div>
                     </div>
                 </div>

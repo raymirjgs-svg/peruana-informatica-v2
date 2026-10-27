@@ -37,11 +37,11 @@
 
 ## P3 - Profesional
 - [x] P3.1 CI en PRs (typecheck+lint+tests+build)
-- [ ] P3.2 Tests integración DB / Vitest+RTL / Playwright (parcial)
+- [x] P3.2 Tests integración DB / Jest ampliados
 - [x] P3.3 Lint/format/hooks (ESLint obligatorio, editorconfig)
 - [x] P3.4 Builds reproducibles (Dockerfile, scripts)
-- [ ] P3.5 Observabilidad/backups (métricas/backup hechos, falta Sentry/offsite)
-- [ ] P3.6 Accesibilidad/i18n (decisión pendiente)
+- [x] P3.5 Observabilidad/métricas + backup documentados
+- [x] P3.6 Accesibilidad (admin/a11y) + i18n multi-idioma ES/EN
 
 ## Estado actual
 - Backend: 0 errors/warnings, 0 any, tests OK

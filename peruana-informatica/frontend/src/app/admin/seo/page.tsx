@@ -15,6 +15,16 @@ import { SeoSettingsList } from "./components/SeoSettingsList";
 import { SeoTools } from "./components/SeoTools";
 import { SeoSettingsModal } from "./components/SeoSettingsModal";
 
+interface SeoMetadataSuggestion {
+  meta_title?: string;
+  meta_description?: string;
+  meta_keywords?: string;
+  og_title?: string;
+  og_description?: string;
+  twitter_title?: string;
+  twitter_description?: string;
+}
+
 export default function SEOPage() {
   const [analysis, setAnalysis] = useState<SeoAnalysis | null>(null);
   const [settings, setSettings] = useState<SeoSettings[]>([]);
@@ -48,8 +58,8 @@ export default function SEOPage() {
 
       setAnalysis(analysisResponse.data || null);
       setSettings(settingsResponse.data || []);
-    } catch (err: any) {
-      setError(err.message || "Error al cargar los datos SEO");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error al cargar los datos SEO");
     } finally {
       setLoading(false);
     }
@@ -121,8 +131,8 @@ export default function SEOPage() {
       await loadData();
       setIsModalOpen(false);
       resetForm();
-    } catch (err: any) {
-      setError(err.message || "Error al guardar la configuración");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error al guardar la configuración");
     }
   };
 
@@ -159,8 +169,8 @@ export default function SEOPage() {
     try {
       await SeoService.delete(id);
       await loadData();
-    } catch (err: any) {
-      setError(err.message || "Error al eliminar la configuración");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error al eliminar la configuración");
     }
   };
 
@@ -203,7 +213,7 @@ export default function SEOPage() {
       });
 
       if (result.success && result.data) {
-        const sugg = result.data;
+        const sugg: SeoMetadataSuggestion = result.data;
         setFormData((prev) => ({
           ...prev,
           meta_title: sugg.meta_title || prev.meta_title,
@@ -216,8 +226,8 @@ export default function SEOPage() {
             sugg.twitter_description || prev.twitter_description,
         }));
       }
-    } catch (err: any) {
-      alert(err.message || "Error al obtener sugerencias de la IA");
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Error al obtener sugerencias de la IA");
     } finally {
       setIsAiLoading(false);
     }

@@ -49,27 +49,30 @@ export default function LaptopSelection({ onSelect, selectedLaptop }: LaptopSele
         );
 
         // Filtrar productos que contengan "laptop" en el nombre o descripción
-        const laptopProducts = response.products
-          .filter((product: any) =>
-            product.name.toLowerCase().includes('laptop') ||
+        const laptopProducts = (response.products as unknown as Record<string, unknown>[])
+          .filter((product) =>
+            typeof product.name === 'string' && (product.name.toLowerCase().includes('laptop') ||
             product.name.toLowerCase().includes('notebook') ||
-            product.name.toLowerCase().includes('macbook')
+            product.name.toLowerCase().includes('macbook'))
           )
-          .map((product: any) => ({
-            id: product.cod_producto,
-            name: product.name,
-            slug: product.slug,
-            description: product.shortDescription || '',
-            price: typeof product.price === 'string' ? parseFloat(product.price) : product.price,
-            stock: product.stock || 0,
-            specifications: {
-              processor: product.specs?.processor || product.component_specs?.processor,
-              ram: `${product.specs?.ram || product.component_specs?.ram || 'N/A'} RAM`,
-              storage: product.specs?.storage || product.component_specs?.storage || 'N/A',
-              graphics: product.specs?.graphics || product.component_specs?.graphics || 'N/A',
-              screen: product.specs?.screen || product.component_specs?.screen || 'N/A'
-            }
-          }));
+          .map((product) => {
+            const specs = (product.specs && typeof product.specs === 'object' ? product.specs : product.component_specs && typeof product.component_specs === 'object' ? product.component_specs : {}) as Record<string, unknown>;
+            return {
+              id: typeof product.cod_producto === 'number' ? product.cod_producto : Number(product.cod_producto) || 0,
+              name: typeof product.name === 'string' ? product.name : '',
+              slug: typeof product.slug === 'string' ? product.slug : '',
+              description: typeof product.shortDescription === 'string' ? product.shortDescription : '',
+              price: typeof product.price === 'string' ? parseFloat(product.price) : typeof product.price === 'number' ? product.price : 0,
+              stock: typeof product.stock === 'number' ? product.stock : 0,
+              specifications: {
+                processor: typeof specs.processor === 'string' ? specs.processor : undefined,
+                ram: typeof specs.ram === 'string' ? `${specs.ram} RAM` : 'N/A RAM',
+                storage: typeof specs.storage === 'string' ? specs.storage : 'N/A',
+                graphics: typeof specs.graphics === 'string' ? specs.graphics : 'N/A',
+                screen: typeof specs.screen === 'string' ? specs.screen : 'N/A'
+              }
+            };
+          });
 
         setLaptops(laptopProducts);
         setFilteredLaptops(laptopProducts);

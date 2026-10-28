@@ -70,8 +70,8 @@ export function useBlogAdmin() {
       setPosts(postsData.data || []);
       setStats(statsData.data ?? null);
       setTitleSuggestions(suggestionsData.data || []);
-    } catch (err: any) {
-      setError(err.message || "Error al cargar los datos del blog");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error al cargar los datos del blog");
     } finally {
       setLoading(false);
     }
@@ -93,8 +93,8 @@ export function useBlogAdmin() {
       await loadBlogData();
       setModalType("suggestions");
       setIsModalOpen(true);
-    } catch (err: any) {
-      setError(err.message || "Error generando títulos con IA");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error generando títulos con IA");
     } finally {
       setGeneratingTitles(false);
     }
@@ -123,8 +123,8 @@ export function useBlogAdmin() {
       loadFormData(result.data.post);
       setModalType("post");
       setIsModalOpen(true);
-    } catch (err: any) {
-      setError(err.message || "Error generando contenido con IA");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error generando contenido con IA");
     } finally {
       setGeneratingContent(false);
     }
@@ -143,8 +143,8 @@ export function useBlogAdmin() {
       });
 
       await loadBlogData();
-    } catch (err: any) {
-      setError(err.message || "Error gestionando sugerencia");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error gestionando sugerencia");
     }
   };
 
@@ -158,8 +158,8 @@ export function useBlogAdmin() {
       });
 
       await loadBlogData();
-    } catch (err: any) {
-      setError(err.message || "Error actualizando post");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error actualizando post");
     }
   };
 
@@ -174,8 +174,8 @@ export function useBlogAdmin() {
       });
 
       await loadBlogData();
-    } catch (err: any) {
-      setError(err.message || "Error eliminando post");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error eliminando post");
     }
   };
 
@@ -197,8 +197,8 @@ export function useBlogAdmin() {
 
       await loadBlogData();
       alert("✅ Posts de demostración cargados exitosamente");
-    } catch (err: any) {
-      setError(err.message || "Error cargando datos demo");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error cargando datos demo");
     } finally {
       setLoadingDemo(false);
     }
@@ -225,8 +225,8 @@ export function useBlogAdmin() {
       alert(
         "✅ API Key configurada exitosamente. Las funciones de IA están ahora disponibles.",
       );
-    } catch (err: any) {
-      setError(err.message || "Error guardando API Key");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error guardando API Key");
     } finally {
       setSavingApiKey(false);
     }
@@ -301,8 +301,8 @@ export function useBlogAdmin() {
           ? "✅ Post actualizado exitosamente"
           : "✅ Post creado exitosamente",
       );
-    } catch (err: any) {
-      setError(err.message || "Error guardando post");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error guardando post");
     } finally {
       setSavingPost(false);
     }

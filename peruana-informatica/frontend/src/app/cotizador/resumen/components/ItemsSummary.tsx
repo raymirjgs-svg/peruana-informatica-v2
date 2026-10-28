@@ -22,8 +22,8 @@ export default function ItemsSummary({ items, subtotal, igv, total }: ItemsSumma
                             <div className="flex-1 pr-2">
                                 <p className="text-sm font-medium text-gray-800">{item.product_name}</p>
                                 <p className="text-xs text-gray-500">
-                                    {item.product?.component_type ? item.product.component_type.toUpperCase() : 'Componente'}
-                                </p>
+                                {item.product && typeof item.product.component_type === 'string' ? item.product.component_type.toUpperCase() : 'Componente'}
+                            </p>
                             </div>
                             <div className="text-right">
                                 <p className="text-sm font-bold text-gray-800">S/. {item.subtotal.toFixed(2)}</p>

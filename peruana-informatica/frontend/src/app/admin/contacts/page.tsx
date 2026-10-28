@@ -46,8 +46,8 @@ export default function ContactsPage() {
       setContacts(contactsResponse.data);
       setPagination(contactsResponse.pagination);
       setStats(statsResponse.data || null);
-    } catch (err: any) {
-      setError(err.message || "Error al cargar los contactos");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error al cargar los contactos");
     } finally {
       setLoading(false);
     }
@@ -61,8 +61,8 @@ export default function ContactsPage() {
     try {
       await ContactService.updateContactStatus(id, status);
       await loadContacts(); // Recargar datos
-    } catch (err: any) {
-      setError(err.message || "Error al actualizar el estado");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error al actualizar el estado");
     }
   };
 
@@ -73,8 +73,8 @@ export default function ContactsPage() {
     try {
       await ContactService.deleteContact(id);
       await loadContacts(); // Recargar datos
-    } catch (err: any) {
-      setError(err.message || "Error al eliminar el contacto");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error al eliminar el contacto");
     }
   };
 

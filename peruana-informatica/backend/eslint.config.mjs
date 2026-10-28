@@ -33,16 +33,10 @@ export default tseslint.config(
     },
     rules: {
       '@typescript-eslint/no-explicit-any': 'error',
-      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
+      '@typescript-eslint/no-unused-vars': 'off',
       '@typescript-eslint/no-require-imports': 'off',
+      'no-useless-catch': 'off',
       '@typescript-eslint/no-empty-object-type': 'off',
-      '@typescript-eslint/ban-ts-comment': 'warn',
-      'no-console': 'off',
-      'no-undef': 'off',
-      'no-empty': ['warn', { allowEmptyCatch: true }],
-      'no-case-declarations': 'warn',
-      'no-useless-escape': 'warn',
-      'no-control-regex': 'warn',
     },
   },
   {

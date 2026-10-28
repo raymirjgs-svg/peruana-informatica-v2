@@ -180,7 +180,7 @@ export default function InventoryPage() {
               ].map(f => (
                 <button
                   key={f.value}
-                  onClick={() => setFilterStock(f.value as any)}
+                  onClick={() => setFilterStock(f.value as "all" | "low" | "out")}
                   className={`px-4 py-2 rounded-lg font-medium transition-all ${filterStock === f.value
                     ? 'bg-blue-600 text-white'
                     : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300'

@@ -244,7 +244,7 @@ class SeoService {
     page_identifier?: string;
     current_title?: string;
     current_description?: string;
-  }): Promise<ApiResponse<any>> {
+  }): Promise<ApiResponse<unknown>> {
     try {
       return await apiClient.request<ApiResponse<unknown>>('/api/seo/suggest', {
         method: "POST",
@@ -374,7 +374,7 @@ class SeoService {
   /**
    * Probar conexión con el servidor (debug)
    */
-  static async testConnection(): Promise<any> {
+  static async testConnection(): Promise<unknown> {
     try {
       return await apiClient.request('/api/seo/test', {
         method: "GET",

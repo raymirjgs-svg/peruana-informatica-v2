@@ -36,11 +36,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
       if (isAuth) {
         // 2. If Auth, fetch server cart (merging local temp cart if needed)
         try {
-          const localCart = JSON.parse(localStorage.getItem('cart') || '[]');
+          const localCartRaw = localStorage.getItem('cart');
+          const localCart = localCartRaw ? JSON.parse(localCartRaw) : [];
 
           if (localCart.length > 0) {
             // Sync local items to server
-            const { items: serverItems } = await cartService.syncCart(localCart.map((i: any) => ({
+            const { items: serverItems } = await cartService.syncCart(localCart.map((i: { product: { id: number }; quantity: number }) => ({
               id: i.product.id,
               quantity: i.quantity
             })));

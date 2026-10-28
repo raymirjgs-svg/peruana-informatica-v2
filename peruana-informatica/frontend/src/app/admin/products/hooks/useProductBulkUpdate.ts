@@ -66,7 +66,7 @@ export function useProductBulkUpdate({
 
     setApplyingBulk(true);
     try {
-      const payload: any = { product_ids: selectedProducts };
+      const payload = { product_ids: selectedProducts } as Record<string, unknown>;
       if (bulkCategory) payload.category_id = bulkCategory;
       if (bulkSubcategories.length > 0) payload.subcategory_ids = bulkSubcategories;
       if (bulkBrand) payload.brand_id = bulkBrand;
@@ -93,8 +93,8 @@ export function useProductBulkUpdate({
       setBulkRamType(undefined);
       setBulkFormFactor(undefined);
       await reloadProducts();
-    } catch (err: any) {
-      showToast(err?.message || 'Error al actualizar en bloque', 'error');
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : 'Error al actualizar en bloque', 'error');
     } finally {
       setApplyingBulk(false);
     }

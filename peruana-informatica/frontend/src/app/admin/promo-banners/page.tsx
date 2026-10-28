@@ -51,8 +51,8 @@ export default function PromoBannersPage() {
             await promoBannerService.createBanner(data, session.accessToken);
             toast.success('Banner creado exitosamente');
             fetchBanners();
-        } catch (error: any) {
-            toast.error(error.message || 'Error al crear banner');
+        } catch (error) {
+            toast.error(error instanceof Error ? error.message : 'Error al crear banner');
         }
     };
 
@@ -63,8 +63,8 @@ export default function PromoBannersPage() {
             await promoBannerService.updateBanner(selectedBanner.id, data, session.accessToken);
             toast.success('Banner actualizado exitosamente');
             fetchBanners();
-        } catch (error: any) {
-            toast.error(error.message || 'Error al actualizar banner');
+        } catch (error) {
+            toast.error(error instanceof Error ? error.message : 'Error al actualizar banner');
         }
     };
 
@@ -75,7 +75,7 @@ export default function PromoBannersPage() {
             await promoBannerService.deleteBanner(id, session.accessToken);
             toast.success('Banner eliminado');
             fetchBanners();
-        } catch (error: any) {
+        } catch {
             toast.error('Error al eliminar banner');
         }
     };

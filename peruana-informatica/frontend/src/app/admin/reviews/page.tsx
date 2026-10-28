@@ -4,6 +4,16 @@ import { useState, useEffect } from 'react';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { MotionWrapper } from '@/components/ui/MotionWrapper';
 import { useSession } from 'next-auth/react';
+interface Review {
+    id: number;
+    title: string;
+    comment: string;
+    rating: number;
+    status: string;
+    created_at: string;
+    customer_name: string;
+    Product?: { name?: string; images?: { imagen?: string }[] };
+}
 import { reviewService } from '@/services/ReviewService';
 import {
     Star,
@@ -20,7 +30,7 @@ import { toast } from 'sonner';
 
 export default function ReviewsPage() {
     const { data: session } = useSession();
-    const [reviews, setReviews] = useState<any[]>([]);
+    const [reviews, setReviews] = useState<Review[]>([]);
     const [loading, setLoading] = useState(true);
     const [filterStatus, setFilterStatus] = useState<string>('all');
     const [page, setPage] = useState(1);

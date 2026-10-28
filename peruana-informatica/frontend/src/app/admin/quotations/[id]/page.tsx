@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { AdminLayout } from '@/components/admin/AdminLayout';
@@ -40,7 +40,8 @@ interface QuotationDetails {
   items: QuotationItem[];
 }
 
-export default function QuotationDetail({ params }: { params: { id: string } }) {
+export default function QuotationDetail({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
   const [quotation, setQuotation] = useState<QuotationDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -50,7 +51,7 @@ export default function QuotationDetail({ params }: { params: { id: string } }) 
   useEffect(() => {
     const fetchQuotation = async () => {
       try {
-        const response = await fetch(`${API_CONFIG.API_BASE_URL}/api/quotations/${params.id}`);
+        const response = await fetch(`${API_CONFIG.API_BASE_URL}/api/quotations/${id}`);
         if (!response.ok) throw new Error('Error al cargar la cotización');
         const data = await response.json();
         setQuotation(data);
@@ -63,7 +64,7 @@ export default function QuotationDetail({ params }: { params: { id: string } }) 
     };
 
     fetchQuotation();
-  }, [params.id]);
+  }, [id]);
 
   const handlePriceTypeChange = (itemId: string, newPriceType: PriceType) => {
     if (!quotation) return;
@@ -162,7 +163,7 @@ export default function QuotationDetail({ params }: { params: { id: string } }) 
 
     setSaving(true);
     try {
-      const response = await fetch(`${API_CONFIG.API_BASE_URL}/api/quotations/${params.id}`, {
+      const response = await fetch(`${API_CONFIG.API_BASE_URL}/api/quotations/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -196,7 +197,7 @@ export default function QuotationDetail({ params }: { params: { id: string } }) 
 
     if (confirm('¿Está seguro de enviar esta cotización por correo electrónico?')) {
       try {
-        const response = await fetch(`${API_CONFIG.API_BASE_URL}/api/quotations/${params.id}/send-email`, {
+        const response = await fetch(`${API_CONFIG.API_BASE_URL}/api/quotations/${id}/send-email`, {
           method: 'POST',
         });
 
@@ -316,7 +317,7 @@ export default function QuotationDetail({ params }: { params: { id: string } }) 
                 <dd className="mt-1 text-sm sm:mt-0 sm:col-span-2">
                   <select
                     value={status}
-                    onChange={(e) => handleStatusChange(e.target.value)}
+                    onChange={(e) => handleStatusChange(e.target.value as "pending" | "sent" | "accepted" | "rejected" | "expired")}
                     className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                   >
                     <option value="pending">Pendiente</option>

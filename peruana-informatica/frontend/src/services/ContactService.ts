@@ -79,19 +79,19 @@ class ContactService {
         },
         body: data,
       });
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error submitting contact:", error);
 
       // Provide more specific error messages
-      if (error.name === "TypeError" && error.message.includes("fetch")) {
+      if (error instanceof TypeError && error.message.includes("fetch")) {
         throw new Error(
           "No se puede conectar con el servidor. Verifique que el backend esté funcionando.",
         );
       }
 
       if (
-        error.message.includes("NetworkError") ||
-        error.message.includes("Failed to fetch")
+        (error instanceof Error && error.message.includes("NetworkError")) ||
+        (error instanceof Error && error.message.includes("Failed to fetch"))
       ) {
         throw new Error(
           "Error de red. Verifique su conexión a internet y que el servidor esté disponible.",
@@ -296,7 +296,7 @@ class ContactService {
   /**
    * Probar conexión con el servidor (debug)
    */
-  static async testConnection(): Promise<any> {
+  static async testConnection(): Promise<unknown> {
     try {
       console.log("Testing connection to:", "/api/contacts/test");
 

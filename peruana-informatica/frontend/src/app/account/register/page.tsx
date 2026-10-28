@@ -40,8 +40,8 @@ export default function RegisterPage() {
             });
 
             router.push('/cart');
-        } catch (error: any) {
-            toast.error(error.message || 'Error al registrarse');
+        } catch (error) {
+            toast.error(error instanceof Error ? error.message : 'Error al registrarse');
         } finally {
             setLoading(false);
         }

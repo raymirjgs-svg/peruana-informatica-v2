@@ -5,6 +5,11 @@ import { Button } from '../Button';
 import { getAdminAuthHeaders } from '@/lib/adminAuth';
 import apiClient from '@/utils/api';
 
+interface ImportDetailItem {
+    codigo?: string;
+    error?: string;
+}
+
 interface ImportResult {
     success: boolean;
     message: string;
@@ -15,9 +20,9 @@ interface ImportResult {
         errores: number;
     };
     details?: {
-        success: any[];
-        updated: any[];
-        errors: any[];
+        success: ImportDetailItem[];
+        updated: ImportDetailItem[];
+        errors: ImportDetailItem[];
     };
 }
 
@@ -36,7 +41,7 @@ export function ProductImporter() {
     };
 
     const handleImport = async () => {
-        let jsonData: any;
+        let jsonData: unknown;
 
         try {
             if (mode === 'file') {
@@ -82,10 +87,10 @@ export function ProductImporter() {
             });
             setFile(null);
             setJsonText('');
-        } catch (error: any) {
+        } catch (error) {
             setResult({
                 success: false,
-                message: error.message || 'Error al procesar el archivo'
+                message: error instanceof Error ? error.message : 'Error al procesar el archivo'
             });
         } finally {
             setImporting(false);
@@ -197,7 +202,7 @@ export function ProductImporter() {
                                     <div className="mt-4 bg-white rounded-lg p-4 shadow-sm">
                                         <h4 className="font-semibold text-red-800 mb-2">Errores detectados:</h4>
                                         <div className="space-y-2 max-h-64 overflow-y-auto">
-                                            {result.details.errors.map((err: any, idx: number) => (
+                                            {result.details.errors.map((err, idx: number) => (
                                                 <div key={idx} className="text-sm text-gray-700 border-l-4 border-red-400 pl-3 py-1">
                                                     <strong>{err.codigo}</strong>: {err.error}
                                                 </div>

@@ -45,7 +45,7 @@ export function ProductListView({ controller, forms }: { controller: Data; forms
                       </div>
                       <div className="md:col-span-3">
                         <div className="font-semibold text-gray-800 text-sm line-clamp-1">{p.name}</div>
-                        <div className="text-xs text-gray-500">{(p as any).codigo_interno || p.slug}</div>
+                        <div className="text-xs text-gray-500">{p.codigo_interno || p.slug}</div>
                       </div>
                       <div className="text-sm font-medium">S/. {Number(p.price).toLocaleString()}</div>
                       <div>

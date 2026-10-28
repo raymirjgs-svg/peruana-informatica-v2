@@ -38,9 +38,9 @@ export default function BlogPage() {
       setTotalPages(response.pagination.totalPages);
 
       console.log("✅ Blog posts loaded successfully");
-    } catch (err: any) {
+    } catch (err) {
       console.error("❌ Error loading blog posts:", err);
-      const errorMessage = err.message || "Error al cargar los posts. Por favor, verifica que el servidor backend esté ejecutándose.";
+      const errorMessage = err instanceof Error ? err.message : "Error al cargar los posts. Por favor, verifica que el servidor backend esté ejecutándose.";
       setError(errorMessage);
     } finally {
       setLoading(false);

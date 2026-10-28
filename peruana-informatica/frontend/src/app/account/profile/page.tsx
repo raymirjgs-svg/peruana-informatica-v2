@@ -52,7 +52,7 @@ export default function ProfilePage() {
         try {
             const data = await apiClient.request<{ user: ProfileData }>('/api/customers/profile', {
                 headers: {
-                    'Authorization': `Bearer ${(session as any)?.accessToken}`
+                    'Authorization': `Bearer ${session?.accessToken}`
                 }
             });
             setProfile(data.user);
@@ -65,7 +65,7 @@ export default function ProfilePage() {
         try {
             const data = await apiClient.request<{ orders?: CustomerOrder[] }>('/api/customers/orders', {
                 headers: {
-                    'Authorization': `Bearer ${(session as any)?.accessToken}`
+                    'Authorization': `Bearer ${session?.accessToken}`
                 }
             });
             setOrders(data.orders || []);
@@ -78,7 +78,7 @@ export default function ProfilePage() {
         try {
             const data = await apiClient.request<{ items?: WishlistItem[] }>('/api/wishlist', {
                 headers: {
-                    'Authorization': `Bearer ${(session as any)?.accessToken}`
+                    'Authorization': `Bearer ${session?.accessToken}`
                 }
             });
             setWishlist(data.items || []);
@@ -96,7 +96,7 @@ export default function ProfilePage() {
             await apiClient.request('/api/customers/profile', {
                 method: 'PATCH',
                 headers: {
-                    'Authorization': `Bearer ${(session as any)?.accessToken}`
+                    'Authorization': `Bearer ${session?.accessToken}`
                 },
                 body: {
                     first_name: profile.first_name,
@@ -135,7 +135,7 @@ export default function ProfilePage() {
             await apiClient.request('/api/customers/password', {
                 method: 'PATCH',
                 headers: {
-                    'Authorization': `Bearer ${(session as any)?.accessToken}`
+                    'Authorization': `Bearer ${session?.accessToken}`
                 },
                 body: {
                     currentPassword: passwords.currentPassword,

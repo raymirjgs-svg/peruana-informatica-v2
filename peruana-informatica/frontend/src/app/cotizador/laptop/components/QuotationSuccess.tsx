@@ -1,5 +1,5 @@
 interface QuotationSuccessProps {
-  result: any;
+  result: Record<string, unknown>;
   productName?: string;
   onDownload: () => void;
   onReset: () => void;
@@ -25,11 +25,11 @@ export function QuotationSuccess({ result, productName, onDownload, onReset }: Q
             <div className="space-y-3">
               <div className="flex justify-between">
                 <span className="text-gray-600">Código:</span>
-                <span className="font-medium">{result.code}</span>
+                <span className="font-medium">{(result.code as string)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Cliente:</span>
-                <span className="font-medium">{result.client_name}</span>
+                <span className="font-medium">{(result.client_name as string)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Producto:</span>
@@ -38,16 +38,16 @@ export function QuotationSuccess({ result, productName, onDownload, onReset }: Q
               <div className="flex justify-between">
                 <span className="text-gray-600">Total:</span>
                 <span className="font-medium text-green-600">S/. {
-                  typeof result.total === 'number'
-                    ? result.total.toFixed(2)
-                    : typeof result.total === 'string'
-                      ? parseFloat(result.total).toFixed(2)
+                  typeof (result.total) === 'number'
+                    ? (result.total).toFixed(2)
+                    : typeof (result.total) === 'string'
+                      ? parseFloat((result.total)).toFixed(2)
                       : '0.00'
                 }</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Fecha:</span>
-                <span className="font-medium">{new Date(result.date).toLocaleDateString()}</span>
+                <span className="font-medium">{new Date((result.date as string)).toLocaleDateString()}</span>
               </div>
             </div>
           </div>

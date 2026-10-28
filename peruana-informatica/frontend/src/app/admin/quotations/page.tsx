@@ -69,7 +69,7 @@ export default function AdminQuotations() {
 
   const fetchQuotations = async () => {
     try {
-      const response = await fetch(`${API_CONFIG.API_BASE_URL}/quotations`);
+      const response = await fetch(`${API_CONFIG.API_BASE_URL}/api/quotations`);
       if (!response.ok) throw new Error('Error');
       const data = await response.json();
       const items = Array.isArray(data) ? data : (data.quotations || data.data || []);
@@ -278,8 +278,8 @@ export default function AdminQuotations() {
                 <button
                   onClick={() => setDateFilter('all')}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${dateFilter === 'all'
-                      ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow'
-                      : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+                    ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow'
+                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
                     }`}
                 >
                   Todas
@@ -287,8 +287,8 @@ export default function AdminQuotations() {
                 <button
                   onClick={() => setDateFilter('today')}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${dateFilter === 'today'
-                      ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow'
-                      : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+                    ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow'
+                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
                     }`}
                 >
                   Hoy
@@ -296,8 +296,8 @@ export default function AdminQuotations() {
                 <button
                   onClick={() => setDateFilter('week')}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${dateFilter === 'week'
-                      ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow'
-                      : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+                    ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow'
+                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
                     }`}
                 >
                   Semana
@@ -305,8 +305,8 @@ export default function AdminQuotations() {
                 <button
                   onClick={() => setDateFilter('month')}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${dateFilter === 'month'
-                      ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow'
-                      : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+                    ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow'
+                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
                     }`}
                 >
                   Mes
@@ -375,7 +375,7 @@ export default function AdminQuotations() {
                     </div>
                     <div className="flex items-center gap-2">
                       <a
-                        href={`${API_CONFIG.API_BASE_URL}/quotations/${quotation.code}/pdf`}
+                        href={`${API_CONFIG.API_BASE_URL}/api/quotations/${quotation.code}/pdf`}
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={(e) => e.stopPropagation()}
@@ -455,8 +455,8 @@ export default function AdminQuotations() {
                           <p className="flex items-center gap-2">
                             <span className="text-gray-500 dark:text-gray-400 w-24">Válida hasta:</span>
                             <span className={`font-medium ${new Date(quotation.valid_until) < new Date()
-                                ? 'text-red-600 dark:text-red-400'
-                                : 'text-emerald-600 dark:text-emerald-400'
+                              ? 'text-red-600 dark:text-red-400'
+                              : 'text-emerald-600 dark:text-emerald-400'
                               }`}>
                               {new Date(quotation.valid_until).toLocaleDateString('es-PE')}
                             </span>

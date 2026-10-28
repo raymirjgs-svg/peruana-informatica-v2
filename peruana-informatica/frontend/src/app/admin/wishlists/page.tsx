@@ -6,7 +6,7 @@ import { MotionWrapper } from '@/components/ui/MotionWrapper';
 import { PageHeader } from '@/components/admin/PageHeader';
 import { StatsCard } from '@/components/admin/StatsCard';
 import { useSession } from 'next-auth/react';
-import { wishlistService, WishlistAnalytics } from '@/services/WishlistService';
+import { wishlistService, type WishlistAnalytics } from '@/services/WishlistService';
 import { Heart, TrendingUp, Package, Clock, ShoppingBag } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from 'sonner';
@@ -93,7 +93,7 @@ export default function WishlistsPage() {
                         </div>
                     ) : (
                         <div className="space-y-3">
-                            {analytics.topProducts.map((item: any, index: number) => (
+                            {analytics.topProducts.map((item: WishlistAnalytics["topProducts"][number], index: number) => (
                                 <div
                                     key={item.product_id}
                                     className="flex items-center gap-4 p-4 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl hover:shadow-md transition-all group"

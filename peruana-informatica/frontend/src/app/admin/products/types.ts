@@ -1,7 +1,7 @@
 export type Brand = { id: number; name: string; slug: string } | null;
 export type Category = { id: number; name: string; slug: string } | null;
 
-export type Product = {
+export type Product = { codigo_interno?: string;
   id: number;
   name: string;
   slug: string;

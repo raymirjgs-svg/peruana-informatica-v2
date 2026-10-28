@@ -11,8 +11,23 @@ interface CouponModalProps {
     token: string;
 }
 
+interface CouponFormData {
+    code: string;
+    type: Coupon['type'];
+    value: number;
+    min_purchase: number;
+    max_uses: number;
+    valid_until: string;
+    description: string;
+}
+
+interface CouponPayload extends Omit<Partial<Coupon>, 'max_uses' | 'valid_until'> {
+    max_uses: number | null;
+    valid_until: string | null;
+}
+
 export function CouponModal({ isOpen, onClose, onSuccess, couponToEdit, token }: CouponModalProps) {
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<CouponFormData>({
         code: '',
         type: 'percentage',
         value: 0,
@@ -52,7 +67,7 @@ export function CouponModal({ isOpen, onClose, onSuccess, couponToEdit, token }:
         setLoading(true);
 
         try {
-            const payload: any = {
+            const payload: CouponPayload = {
                 ...formData,
                 max_uses: formData.max_uses > 0 ? formData.max_uses : null, // Convert 0 to null for unlimited if backend supports it or handle logic
                 min_purchase: formData.min_purchase > 0 ? formData.min_purchase : 0,
@@ -60,16 +75,16 @@ export function CouponModal({ isOpen, onClose, onSuccess, couponToEdit, token }:
             };
 
             if (couponToEdit) {
-                await couponService.updateCoupon(couponToEdit.id, payload, token);
+                await couponService.updateCoupon(couponToEdit.id, payload as Partial<Coupon>, token);
                 toast.success('Cupón actualizado correctamente');
             } else {
-                await couponService.createCoupon(payload, token);
+                await couponService.createCoupon(payload as Partial<Coupon>, token);
                 toast.success('Cupón creado correctamente');
             }
             onSuccess();
             onClose();
-        } catch (error: any) {
-            toast.error(error.message || 'Error al guardar cupón');
+        } catch (error) {
+            toast.error(error instanceof Error ? error.message : 'Error al guardar cupón');
         } finally {
             setLoading(false);
         }
@@ -107,7 +122,7 @@ export function CouponModal({ isOpen, onClose, onSuccess, couponToEdit, token }:
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tipo Descuento</label>
                             <select
                                 value={formData.type}
-                                onChange={e => setFormData({ ...formData, type: e.target.value as any })}
+                                onChange={e => setFormData({ ...formData, type: e.target.value as Coupon['type'] })}
                                 className="w-full px-3 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600"
                             >
                                 <option value="percentage">Porcentaje (%)</option>

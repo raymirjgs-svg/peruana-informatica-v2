@@ -24,8 +24,8 @@ export default function NewPagePage() {
             await pageService.createPage(data, session.accessToken);
             toast.success('Página creada exitosamente');
             router.push('/admin/pages');
-        } catch (error: any) {
-            toast.error(error.message || 'Error al crear página');
+        } catch (error) {
+            toast.error(error instanceof Error ? error.message : 'Error al crear página');
         } finally {
             setIsSubmitting(false);
         }

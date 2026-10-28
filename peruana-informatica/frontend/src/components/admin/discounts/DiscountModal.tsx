@@ -11,8 +11,19 @@ interface DiscountModalProps {
     token: string;
 }
 
+interface DiscountFormData {
+    name: string;
+    description: string;
+    discount_type: Discount['discount_type'];
+    discount_value: number;
+    applies_to: Discount['applies_to'];
+    valid_from: string;
+    valid_until: string;
+    is_active: boolean;
+}
+
 export function DiscountModal({ isOpen, onClose, onSuccess, discountToEdit, token }: DiscountModalProps) {
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<DiscountFormData>({
         name: '',
         description: '',
         discount_type: 'percentage',
@@ -56,10 +67,10 @@ export function DiscountModal({ isOpen, onClose, onSuccess, discountToEdit, toke
 
         try {
             if (discountToEdit) {
-                await discountService.updateDiscount(discountToEdit.id, formData as any, token);
+                await discountService.updateDiscount(discountToEdit.id, formData, token);
                 toast.success('Descuento actualizado');
             } else {
-                await discountService.createDiscount(formData as any, token);
+                await discountService.createDiscount(formData, token);
                 toast.success('Descuento creado');
             }
             onSuccess();
@@ -101,7 +112,7 @@ export function DiscountModal({ isOpen, onClose, onSuccess, discountToEdit, toke
                             <label className="block text-sm font-medium mb-1">Tipo</label>
                             <select
                                 value={formData.discount_type}
-                                onChange={e => setFormData({ ...formData, discount_type: e.target.value as any })}
+                                onChange={e => setFormData({ ...formData, discount_type: e.target.value as Discount['discount_type'] })}
                                 className="w-full px-3 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600"
                             >
                                 <option value="percentage">Porcentaje (%)</option>
@@ -125,7 +136,7 @@ export function DiscountModal({ isOpen, onClose, onSuccess, discountToEdit, toke
                         <label className="block text-sm font-medium mb-1">Aplica A</label>
                         <select
                             value={formData.applies_to}
-                            onChange={e => setFormData({ ...formData, applies_to: e.target.value as any })}
+                            onChange={e => setFormData({ ...formData, applies_to: e.target.value as Discount['applies_to'] })}
                             className="w-full px-3 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600"
                         >
                             <option value="all">Todo el Catálogo</option>

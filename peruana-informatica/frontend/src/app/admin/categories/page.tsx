@@ -92,9 +92,9 @@ export default function TaxonomyManagePage() {
       }
       loadCategories();
       closeCategoryModal();
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error saving category:", error);
-      toast.error(error.message || "Error al guardar categoría");
+      toast.error(error instanceof Error ? error.message : "Error al guardar categoría");
     }
   };
 
@@ -104,9 +104,9 @@ export default function TaxonomyManagePage() {
       await apiClient.delete(`/api/admin/taxonomy/categories/${id}`);
       toast.success("Categoría eliminada");
       loadCategories();
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error deleting category:", error);
-      toast.error(error.message || "Error al eliminar categoría");
+      toast.error(error instanceof Error ? error.message : "Error al eliminar categoría");
     }
   };
 
@@ -178,9 +178,9 @@ export default function TaxonomyManagePage() {
       }
       loadCategories();
       closeSubcategoryModal();
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error saving subcategory:", error);
-      toast.error(error.message || "Error al guardar subcategoría");
+      toast.error(error instanceof Error ? error.message : "Error al guardar subcategoría");
     }
   };
 

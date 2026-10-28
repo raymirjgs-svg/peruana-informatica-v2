@@ -15,7 +15,7 @@ export default function QuotationSummaryPage() {
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
-    const [quotationResult, setQuotationResult] = useState<any>(null);
+    const [quotationResult, setQuotationResult] = useState<import('./components/types').QuotationResult | null>(null);
 
     const [formData, setFormData] = useState<QuotationFormData>({
         client_name: '',
@@ -39,16 +39,17 @@ export default function QuotationSummaryPage() {
                 const build = JSON.parse(savedBuild);
                 const newItems: QuotationItem[] = [];
 
-                Object.values(build).forEach((product: any) => {
-                    if (product) {
-                        const price = typeof product.price === 'string' ? parseFloat(product.price) : product.price;
+                Object.values(build as Record<string, unknown>).forEach((product) => {
+                    if (product && typeof product === 'object') {
+                        const p = product as Record<string, unknown>;
+                        const price = typeof p.price === 'string' ? parseFloat(p.price) : typeof p.price === 'number' ? p.price : 0;
                         newItems.push({
-                            product_id: product.id,
-                            product_name: product.name,
+                            product_id: typeof p.id === 'number' ? p.id : Number(p.id) || 0,
+                            product_name: typeof p.name === 'string' ? p.name : '',
                             product_price: price,
                             quantity: 1,
                             subtotal: price,
-                            product: product
+                            product: p as Record<string, unknown>
                         });
                     }
                 });
@@ -123,12 +124,12 @@ export default function QuotationSummaryPage() {
                 valid_until: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
             };
 
-            const response: any = await apiClient.createQuotation(quotationData);
+            const response = await apiClient.createQuotation(quotationData) as Record<string, unknown>;
 
             setQuotationResult({
-                code: response.code,
+                code: typeof response.code === 'string' ? response.code : '',
                 client_name: formData.client_name,
-                total: response.total,
+                total: typeof response.total === 'number' || typeof response.total === 'string' ? response.total : 0,
                 date: new Date().toISOString()
             });
 

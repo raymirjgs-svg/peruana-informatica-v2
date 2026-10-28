@@ -47,8 +47,8 @@ export default function RolesPage() {
             await roleService.deleteRole(id, session.accessToken);
             setRoles(roles.filter(r => r.id !== id));
             toast.success('Rol eliminado');
-        } catch (error: any) {
-            toast.error(error.message || 'Error al eliminar');
+        } catch (error) {
+            toast.error(error instanceof Error ? error.message : 'Error al eliminar');
         }
     };
 

@@ -52,9 +52,9 @@ export default function BlogPostPage() {
             });
           setTableOfContents(headings);
         }
-      } catch (err: any) {
+      } catch (err) {
         console.error('❌ Error loading post:', err);
-        setError(err.message || "Error al cargar el post");
+        setError(err instanceof Error ? err.message : "Error al cargar el post");
       } finally {
         setLoading(false);
       }

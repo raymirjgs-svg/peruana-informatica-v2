@@ -88,13 +88,13 @@ export class CategoryService {
         });
 
         return Array.isArray(data) ? data : [];
-      } catch (networkError: any) {
+      } catch {
         // Silenciar errores de red completamente
         return [];
       } finally {
         clearTimeout(timeoutId);
       }
-    } catch (error: any) {
+    } catch {
       // Silenciar todos los errores completamente
       return [];
     }
@@ -136,7 +136,7 @@ export class CategoryService {
   /**
    * Probar conexión con el servidor (debug)
    */
-  async testConnection(): Promise<any> {
+  async testConnection(): Promise<unknown> {
     try {
       // Usar el endpoint de health check general en lugar de uno específico de categorías
       const url = `${this.baseUrl}/api/health`;
@@ -164,11 +164,15 @@ export class CategoryService {
       });
       console.log('✅ Test connection successful:', result);
       return result;
-    } catch (error: any) {
+    } catch (error) {
       console.error('❌ Category connection test failed:', error);
 
       // More detailed error logging
-      if (error.name === 'AbortError') {
+      const errorName =
+        typeof error === 'object' && error !== null && 'name' in error
+          ? String(error.name)
+          : '';
+      if (errorName === 'AbortError') {
         console.error('⏰ Request timeout - server might be unreachable');
       } else if (error instanceof TypeError) {
         console.error('🌐 Network error - check if backend server is running');

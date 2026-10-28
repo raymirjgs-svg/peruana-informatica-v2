@@ -148,8 +148,8 @@ export default function CartPage() {
         const { init_point } = await import('@/services/PaymentService').then(m => m.paymentService.createPreferenceForOrder(orderId!));
         window.location.href = init_point;
         return;
-      } catch (e: any) {
-        setError(e.message || 'Error al conectar con MercadoPago');
+      } catch (e) {
+        setError(e instanceof Error ? e.message : 'Error al conectar con MercadoPago');
         setIsLoading(false);
         return;
       }

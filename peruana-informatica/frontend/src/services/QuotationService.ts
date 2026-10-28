@@ -1,5 +1,6 @@
 // src/services/QuotationService.ts
 import { Product } from '@/models/Product';
+import { API_CONFIG } from '@/config/api';
 
 export interface QuotationItem {
   product_id: number;
@@ -50,10 +51,10 @@ export interface QuotationDetail {
 }
 
 export class QuotationService {
-  private API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+  private API_BASE = API_CONFIG.API_BASE_URL;
 
   async createQuotation(quotationData: QuotationRequest): Promise<QuotationResponse> {
-    const response = await fetch(`${this.API_BASE}/quotations`, {
+    const response = await fetch(`${this.API_BASE}/api/quotations`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -69,7 +70,7 @@ export class QuotationService {
   }
 
   async getQuotationByCode(code: string): Promise<QuotationDetail> {
-    const response = await fetch(`${this.API_BASE}/quotations/${code}`);
+    const response = await fetch(`${this.API_BASE}/api/quotations/${code}`);
 
     if (!response.ok) {
       throw new Error(`Error fetching quotation: ${response.statusText}`);
@@ -79,7 +80,7 @@ export class QuotationService {
   }
 
   async validateQuotation(code: string): Promise<{ isValid: boolean; message: string }> {
-    const response = await fetch(`${this.API_BASE}/quotations/validate`, {
+    const response = await fetch(`${this.API_BASE}/api/quotations/validate`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

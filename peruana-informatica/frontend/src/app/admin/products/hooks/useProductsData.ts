@@ -5,6 +5,8 @@ import { getAdminAuthHeaders } from "@/lib/adminAuth";
 import type { Product, ProductsResponse } from "../types";
 import apiClient from "@/utils/api";
 
+type ProductWithCode = Product & { codigo_interno?: string };
+
 export function useProductsData() {
   const [data, setData] = useState<ProductsResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -49,8 +51,8 @@ export function useProductsData() {
       const endpoint = `/api/admin/products?${params.toString()}`;
       const json = await apiClient.request<ProductsResponse>(endpoint, { headers: { ...getAdminAuthHeaders() } });
       setData(json);
-    } catch (err: any) {
-      setError(err?.message || "Error al cargar productos");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error al cargar productos");
     } finally {
       setLoading(false);
     }
@@ -61,7 +63,7 @@ export function useProductsData() {
     const headers = ['ID', 'Código', 'Nombre', 'Precio', 'Stock', 'Categoría', 'Marca', 'Estado'];
     const rows = data.products.map(p => [
       p.id,
-      (p as any).codigo_interno || '',
+      (p as ProductWithCode).codigo_interno || '',
       p.name,
       Number(p.price).toFixed(2),
       p.stock,
@@ -87,8 +89,8 @@ export function useProductsData() {
       );
       showToast(`Sincronización completada: ${json.updated || 0} productos actualizados`, 'success');
       await reloadProducts();
-    } catch (err: any) {
-      showToast(err.message || 'Error al sincronizar', 'error');
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : 'Error al sincronizar', 'error');
     } finally {
       setSyncingAll(false);
     }
@@ -106,7 +108,7 @@ export function useProductsData() {
         ]);
         setCategories(cats.map(c => ({ id: c.id, name: c.name })));
         setBrands(brs.map(b => ({ id: b.id, name: b.name })));
-      } catch (err: any) {
+      } catch {
         // ya se maneja en loaders individuales
       }
     };
@@ -148,8 +150,8 @@ export function useProductsData() {
       await apiClient.request(`/api/admin/products/${id}`, { method: 'DELETE', headers: { ...getAdminAuthHeaders() } });
       await reloadProducts();
       showToast('Producto eliminado');
-    } catch (err: any) {
-      setError(err?.message || 'Error al eliminar producto');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error al eliminar producto');
     } finally {
       setDeletingId(null);
     }
@@ -163,8 +165,8 @@ export function useProductsData() {
       });
       await reloadProducts();
       showToast(json.message || 'Estado actualizado');
-    } catch (err: any) {
-      showToast(err?.message || 'Error al cambiar estado', 'error');
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : 'Error al cambiar estado', 'error');
     }
   };
 

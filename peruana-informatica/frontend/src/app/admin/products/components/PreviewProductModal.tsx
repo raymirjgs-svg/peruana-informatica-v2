@@ -30,7 +30,7 @@ export function PreviewProductModal({ controller, forms }: { controller: Data; f
               <div className="space-y-4">
                 <h3 className="text-xl font-bold text-gray-800">{previewProduct.name}</h3>
                 <div className="grid grid-cols-2 gap-3 text-sm">
-                  <div><span className="text-gray-500">Código:</span> <span className="font-medium">{(previewProduct as any).codigo_interno || '-'}</span></div>
+                  <div><span className="text-gray-500">Código:</span> <span className="font-medium">{previewProduct.codigo_interno || '-'}</span></div>
                   <div><span className="text-gray-500">Precio:</span> <span className="font-bold text-blue-600">S/. {Number(previewProduct.price).toLocaleString()}</span></div>
                   <div><span className="text-gray-500">Stock:</span> <span className={`font-medium ${previewProduct.stock > 0 ? 'text-green-600' : 'text-red-600'}`}>{previewProduct.stock}</span></div>
                   <div><span className="text-gray-500">Estado:</span> <span className={previewProduct.is_active ? 'text-green-600' : 'text-gray-500'}>{previewProduct.is_active ? 'Activo' : 'Inactivo'}</span></div>

@@ -250,7 +250,7 @@ export class ProductService {
     }
   }
 
-  async getProductsWithFilters(queryParams: string): Promise<PaginatedResponse<Product> & { filters?: any }> {
+  async getProductsWithFilters(queryParams: string): Promise<PaginatedResponse<Product> & { filters?: Record<string, unknown> }> {
     try {
       const timestamp = new Date().getTime();
       const endpoint = `/api/products?${queryParams}&t=${timestamp}`;
@@ -277,7 +277,7 @@ export class ProductService {
         products,
         total,
         totalPages: !Array.isArray(data) && data.totalPages ? data.totalPages : Math.ceil(total / 12),
-        filters: !Array.isArray(data) ? data.filters || {} : {},
+        filters: !Array.isArray(data) && !Array.isArray(data.filters) ? (data.filters as Record<string, unknown>) : {},
       };
     } catch (error) {
       console.error('Error fetching filtered products:', error);

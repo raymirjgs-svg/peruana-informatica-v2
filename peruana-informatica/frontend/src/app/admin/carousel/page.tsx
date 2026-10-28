@@ -75,8 +75,8 @@ export default function AdminCarouselPage() {
         setForm({ ...form, imageUrl: json.imageUrl });
       }
       showToast('Imagen subida correctamente');
-    } catch (err: any) {
-      showToast(err?.message || 'Error al subir imagen', 'error');
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : 'Error al subir imagen', 'error');
     } finally {
       setUploadingImage(false);
     }
@@ -106,8 +106,8 @@ export default function AdminCarouselPage() {
         setTotalPages(json.pagination.totalPages);
         setTotal(json.pagination.total);
       }
-    } catch (err: any) {
-      setError(err?.message || "Error al cargar carrusel");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error al cargar carrusel");
     } finally {
       setLoading(false);
     }
@@ -152,8 +152,8 @@ export default function AdminCarouselPage() {
       setShowCreateModal(false);
       await reload();
       showToast('Slide creado');
-    } catch (err: any) {
-      setError(err?.message || 'Error al crear slide');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error al crear slide');
     } finally {
       setCreating(false);
     }
@@ -209,8 +209,8 @@ export default function AdminCarouselPage() {
       setShowEditModal(false);
       await reload();
       showToast('Slide actualizado');
-    } catch (err: any) {
-      setError(err?.message || 'Error al actualizar slide');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error al actualizar slide');
     } finally {
       setUpdatingId(null);
     }
@@ -224,8 +224,8 @@ export default function AdminCarouselPage() {
       await apiClient.request(`/api/admin/carousel/${id}`, { method: 'DELETE', headers: { ...getAdminAuthHeaders() } });
       await reload();
       showToast('Slide eliminado');
-    } catch (err: any) {
-      setError(err?.message || 'Error al eliminar slide');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error al eliminar slide');
     } finally {
       setDeletingId(null);
     }

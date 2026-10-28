@@ -9,6 +9,24 @@ import type { UseProductsFormsParams } from "./types";
 
 type CreateFormDeps = Pick<UseProductsFormsParams, "reloadProducts" | "showToast" | "setError">;
 
+type ProductWithDescription = Product & { description?: string };
+
+interface ProductCreatePayload {
+  codigo_interno: string;
+  name: string;
+  description: string;
+  price: number;
+  stock: number;
+  image?: string;
+  keywords?: string;
+  seo_title?: string;
+  seo_description?: string;
+  subcategory_ids: number[];
+  additional_images: string[];
+  category_id?: number;
+  brand_id?: number;
+}
+
 export function useProductCreateForm({
   reloadProducts,
   showToast,
@@ -46,7 +64,7 @@ export function useProductCreateForm({
       codigo_interno: '',
       erp_name: '',
       name: product.name + ' (Copia)',
-      description: (product as any).description || '',
+      description: (product as ProductWithDescription).description || '',
       price: Number(product.price),
       stock: 0,
       category_id: product.productCategory?.id,
@@ -102,8 +120,8 @@ export function useProductCreateForm({
       } else {
         setSearchError('Producto no encontrado en el ERP. Verifique el código.');
       }
-    } catch (err: any) {
-      setSearchError(err.message || 'Error de conexión');
+    } catch (err) {
+      setSearchError(err instanceof Error ? err.message : 'Error de conexión');
     } finally {
       setSearchingCode(false);
     }
@@ -174,9 +192,9 @@ export function useProductCreateForm({
       } else {
         throw new Error(data.error || 'Error al subir imagen');
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error('Upload error:', err);
-      showToast(err.message || 'Error al subir imagen', 'error');
+      showToast(err instanceof Error ? err.message : 'Error al subir imagen', 'error');
       return null;
     }
   };
@@ -211,7 +229,7 @@ export function useProductCreateForm({
     }
     try {
       setCreating(true);
-      const payload: any = {
+      const payload: ProductCreatePayload = {
         codigo_interno: form.codigo_interno,
         name: form.name,
         description: form.description,
@@ -251,8 +269,8 @@ export function useProductCreateForm({
       resetCreateModal();
       await reloadProducts();
       showToast('Producto creado');
-    } catch (err: any) {
-      setError(err?.message || 'Error al crear producto');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error al crear producto');
     } finally {
       setCreating(false);
     }

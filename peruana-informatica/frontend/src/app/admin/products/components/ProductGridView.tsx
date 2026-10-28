@@ -46,7 +46,7 @@ export function ProductGridView({ controller, forms }: { controller: Data; forms
                       </div>
                       <div className="p-3">
                         <div className="font-medium text-sm text-gray-800 line-clamp-2 h-10">{p.name}</div>
-                        <div className="text-xs text-gray-500 mt-1">{(p as any).codigo_interno || '-'}</div>
+                        <div className="text-xs text-gray-500 mt-1">{p.codigo_interno || '-'}</div>
                         <div className="text-lg font-bold text-blue-600 mt-2">S/. {Number(p.price).toLocaleString()}</div>
                         <div className="flex gap-1 mt-3">
                           <Button size="sm" variant="secondary" onClick={() => setPreviewProduct(p)} className="flex-1">👁</Button>

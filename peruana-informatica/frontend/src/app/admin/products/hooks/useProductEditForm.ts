@@ -9,6 +9,27 @@ import type { UseProductsFormsParams } from "./types";
 
 type EditFormDeps = Pick<UseProductsFormsParams, "reloadProducts" | "showToast" | "setError">;
 
+type ProductWithSeo = Product & {
+  seo_title?: string;
+  seo_description?: string;
+};
+
+interface ProductUpdatePayload {
+  name: string;
+  price: number;
+  stock: number;
+  is_featured: boolean;
+  is_new: boolean;
+  is_clearance: boolean;
+  description?: string;
+  category_id?: number;
+  brand_id?: number;
+  image?: string;
+  keywords?: string;
+  seo_title?: string;
+  seo_description?: string;
+}
+
 export function useProductEditForm({
   reloadProducts,
   showToast,
@@ -41,12 +62,12 @@ export function useProductEditForm({
       // descripción completa no viene en lista; permitimos llenar manual si se desea cambiar
       price: Number(p.price),
       stock: p.stock,
-      category_id: (p.productCategory as any)?.id,
-      brand_id: (p.productBrand as any)?.id,
+      category_id: p.productCategory?.id,
+      brand_id: p.productBrand?.id,
       image: "",
       keywords: "",
-      seo_title: (p as any).seo_title || "",
-      seo_description: (p as any).seo_description || "",
+      seo_title: (p as ProductWithSeo).seo_title || "",
+      seo_description: (p as ProductWithSeo).seo_description || "",
       is_featured: p.is_featured || false,
       is_new: p.is_new || false,
       is_clearance: p.is_clearance || false,
@@ -84,7 +105,7 @@ export function useProductEditForm({
     }
     try {
       setUpdatingId(id);
-      const payload: any = {
+      const payload: ProductUpdatePayload = {
         name: editForm.name,
         price: Number(editForm.price),
         stock: Number(editForm.stock),
@@ -116,8 +137,8 @@ export function useProductEditForm({
       setShowEditModal(false);
       await reloadProducts();
       showToast('Producto actualizado');
-    } catch (err: any) {
-      setError(err?.message || 'Error al actualizar producto');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error al actualizar producto');
     } finally {
       setUpdatingId(null);
     }

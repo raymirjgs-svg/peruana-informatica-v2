@@ -80,11 +80,11 @@ class BlogService {
       } finally {
         clearTimeout(timeoutId);
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('❌ Error fetching published posts:', error);
 
       // More detailed error logging
-      if (error.name === 'AbortError') {
+      if (error instanceof Error && error.name === 'AbortError') {
         console.error('⏰ Request timeout - server might be unreachable');
       } else if (error instanceof TypeError) {
         console.error('🌐 Network error - check if backend server is running');
@@ -366,7 +366,7 @@ class BlogService {
   /**
    * Probar conexión con el servidor (debug)
    */
-  static async testConnection(): Promise<any> {
+  static async testConnection(): Promise<unknown> {
     try {
       return await apiClient.request('/api/blog/test', {
         method: 'GET',

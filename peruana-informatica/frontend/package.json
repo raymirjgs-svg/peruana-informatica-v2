@@ -15,7 +15,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@hookform/resolvers": "^5.2.2",
+    "@hookform/resolvers": "^6.0.0",
     "chart.js": "^4.5.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.27.5",

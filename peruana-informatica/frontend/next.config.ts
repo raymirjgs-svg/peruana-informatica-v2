@@ -83,6 +83,14 @@ const nextConfig: NextConfig = {
     // Nginx hace el routing, Next.js no debe interferir
     return [];
   },
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: 'http://localhost:3001/api/:path*',
+      },
+    ];
+  },
 };
 
 export default withNextIntl(nextConfig);

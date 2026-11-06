@@ -1,0 +1,129 @@
+# ============================================
+# PRODUCCIÓN — peruana-informatica
+# Dominio: peruanadeinformatica.com.pe
+# El SSL y el nginx corren en el HOST, no en Docker.
+# ============================================
+
+services:
+
+  # ============================================
+  # Frontend (Next.js)
+  # ============================================
+  frontend:
+    build:
+      context: ./peruana-informatica/frontend
+      dockerfile: Dockerfile.prod
+      args:
+        - NEXT_PUBLIC_API_URL=https://peruanadeinformatica.com.pe
+        - NEXT_PUBLIC_SITE_URL=https://peruanadeinformatica.com.pe
+        - NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION=${NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION:-}
+    container_name: peruana_frontend
+    env_file:
+      - ./envs/.env.production
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - NEXT_PUBLIC_API_URL=https://peruanadeinformatica.com.pe
+      - INTERNAL_API_URL=http://backend:3001
+    ports:
+      - "127.0.0.1:3000:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - peruana_net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # ============================================
+  # Backend API (Node.js/Express)
+  # ============================================
+  backend:
+    build:
+      context: ./peruana-informatica/backend
+      dockerfile: Dockerfile.prod
+    container_name: peruana_backend
+    env_file:
+      - ./envs/.env.production
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+    ports:
+      - "127.0.0.1:3001:3001"
+    volumes:
+      - /var/www/images/products:/app/public/images/products
+      - uploads_data:/app/public/uploads
+      - payment_proofs_data:/app/public/payment-proofs
+      - carousel_data:/app/public/images/carousel
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - peruana_net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:3001/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # ============================================
+  # MySQL Database
+  # ============================================
+  mysql:
+    image: mysql:8.0
+    container_name: peruana_mysql
+    command: --default-authentication-plugin=mysql_native_password
+    env_file:
+      - ./envs/.env.production
+    expose:
+      - "3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - peruana_net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  # ============================================
+  # Redis Cache
+  # ============================================
+  redis:
+    image: redis:7-alpine
+    container_name: peruana_redis
+    expose:
+      - "6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - peruana_net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  mysql_data:
+  uploads_data:
+  payment_proofs_data:
+  carousel_data:
+  redis_data:
+
+networks:
+  peruana_net:
+    driver: bridge

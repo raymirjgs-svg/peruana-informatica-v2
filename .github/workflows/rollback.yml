@@ -1,0 +1,41 @@
+name: Manual Rollback / Deploy Specific Version
+
+on:
+  workflow_dispatch:
+    inputs:
+      git_ref:
+        description: 'Git Reference to Deploy (Tag, Branch, or SHA)'
+        required: true
+        default: 'main'
+
+jobs:
+  rollback:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy Specific Version
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            echo "::warning:: Iniciando Rollback/Despliegue manual a versión: ${{ inputs.git_ref }}"
+            
+            cd ~/peruana-informatica_v2 || exit
+            
+            # 1. Fetch de todo el historial para asegurar que tenemos la ref
+            git fetch --all
+            
+            # 2. Checkout de la versión específica
+            # Forzamos checkout y limpiamos cambios locales si existieran
+            git checkout -f ${{ inputs.git_ref }}
+            git pull origin ${{ inputs.git_ref }} || echo "No pull needed for detached HEAD"
+            
+            # 3. Inyectar variables (Siempre necesarias)
+            echo "${{ secrets.ENV_PRODUCTION }}" > envs/.env.production
+            
+            # 4. Desplegar
+            docker compose -f docker-compose.yml -f docker-compose.prod.yml down
+            docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+            
+            echo "::notice:: Despliegue completado exitosamente en versión: ${{ inputs.git_ref }}"

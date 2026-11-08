@@ -213,7 +213,7 @@ export function Footer() {
 
         {/* Copyright */}
         <div className="border-t border-gray-800 pt-6 text-center text-sm text-gray-400">
-          <p>&copy; {currentYear} <span className="text-white font-semibold">{settings?.company_name || 'Peruana de Informática'}</span>. Todos los derechos reservados.</p>
+          <p>&copy; {currentYear} <span className="text-white font-semibold">{settings?.company_name || 'Peruana de Informática'}</span>. Todos los derechos reservados. Hecho en Perú.</p>
         </div>
       </div>
     </footer>

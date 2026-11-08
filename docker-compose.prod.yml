@@ -15,6 +15,8 @@ services:
       dockerfile: Dockerfile.prod
       args:
         - NEXT_PUBLIC_API_URL=https://peruanadeinformatica.com.pe
+        - NEXT_PUBLIC_SITE_URL=https://peruanadeinformatica.com.pe
+        - NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION=${NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION:-}
     container_name: peruana_frontend
     env_file:
       - ./envs/.env.production

@@ -1,10 +1,36 @@
 import type { Metadata } from "next";
-import Script from "next/script";
+
+const siteUrl = (
+  process.env.NEXT_PUBLIC_SITE_URL || "https://peruanadeinformatica.com.pe"
+).replace(/\/+$/, "");
 
 function getApiBase() {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+  const baseUrl =
+    process.env.INTERNAL_API_URL ||
+    process.env.NEXT_PUBLIC_API_URL ||
+    "http://backend:3001";
   const trimmed = baseUrl.replace(/\/+$/, "");
   return trimmed.endsWith("/api") ? trimmed : `${trimmed}/api`;
+}
+
+function stripHtml(value: unknown): string {
+  if (typeof value !== "string") return "";
+  return value
+    .replace(/<[^>]*>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">")
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;/gi, "'")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function toAbsoluteImage(image: unknown): string {
+  if (typeof image !== "string" || !image) return `${siteUrl}/no-image.svg`;
+  if (image.startsWith("http")) return image;
+  return `${siteUrl}${image.startsWith("/") ? "" : "/"}${image}`;
 }
 
 export async function generateMetadata({
@@ -20,23 +46,23 @@ export async function generateMetadata({
     });
     if (!res.ok)
       return {
-        title: `Producto | Peruana Informática`,
+        title: "Producto",
         description: "Detalle de producto",
       };
     const p = await res.json();
     const rawTitle: string = p.seo_title || p.name;
-    const rawDesc: string = p.seo_description || p.description || "";
-    const title = `${rawTitle} | Peruana Informática`;
-    const description = rawDesc.toString().substring(0, 160);
-    const image = p.image || `/no-image.svg`;
-    const urlBase = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-    const url = `${urlBase}/products/${slug}`;
+    const rawDesc: string = stripHtml(
+      p.seo_description || p.short_description || p.description || "",
+    );
+    const description = rawDesc.substring(0, 160);
+    const image = toAbsoluteImage(p.image);
+    const url = `${siteUrl}/products/${slug}`;
 
     return {
-      title,
+      title: rawTitle,
       description,
       openGraph: {
-        title,
+        title: rawTitle,
         description,
         url,
         type: "website",
@@ -45,14 +71,14 @@ export async function generateMetadata({
       alternates: { canonical: url },
       twitter: {
         card: "summary_large_image",
-        title,
+        title: rawTitle,
         description,
         images: [image],
       },
     };
   } catch {
     return {
-      title: `Producto | Peruana Informática`,
+      title: "Producto",
       description: "Detalle de producto",
     };
   }
@@ -74,10 +100,11 @@ export default async function ProductSlugLayout({
     });
     if (res.ok) {
       const p = await res.json();
-      const siteUrl =
-        process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
       const url = `${siteUrl}/products/${slug}`;
-      const image = p.image || `/no-image.svg`;
+      const image = toAbsoluteImage(p.image);
+      const sku = p.cod_producto ?? p.codigo_interno ?? "";
+      const price = p.price_web ?? p.price;
+
       jsonLd = [
         {
           "@context": "https://schema.org",
@@ -97,22 +124,30 @@ export default async function ProductSlugLayout({
           "@context": "https://schema.org",
           "@type": "Product",
           name: p.name,
-          description: p.description,
+          description: stripHtml(p.description),
           image: [image],
-          sku: String(p.id),
+          ...(sku !== "" ? { sku: String(sku) } : {}),
+          ...(p.codigo_interno ? { mpn: String(p.codigo_interno) } : {}),
           url,
-          brand: p.productBrand?.name
-            ? { "@type": "Brand", name: p.productBrand.name }
-            : undefined,
+          ...(p.productBrand?.name
+            ? { brand: { "@type": "Brand", name: p.productBrand.name } }
+            : {}),
           offers: {
             "@type": "Offer",
             priceCurrency: "PEN",
-            price: String(p.price),
+            ...(price !== undefined && price !== null && price !== ""
+              ? { price: String(price) }
+              : {}),
+            itemCondition: "https://schema.org/NewCondition",
             availability:
               (p.stock ?? 0) > 0
                 ? "https://schema.org/InStock"
                 : "https://schema.org/OutOfStock",
             url,
+            seller: {
+              "@type": "Organization",
+              name: "Peruana Informática",
+            },
           },
         },
       ];
@@ -122,7 +157,7 @@ export default async function ProductSlugLayout({
   return (
     <>
       {jsonLd && (
-        <Script
+        <script
           id="product-jsonld"
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

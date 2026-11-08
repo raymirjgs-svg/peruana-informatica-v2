@@ -24,7 +24,7 @@ const barlowCondensed = Barlow_Condensed({
   weight: ['400', '500', '600', '700'],
 });
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://peruanainformatica.com';
+const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'https://peruanadeinformatica.com.pe').replace(/\/+$/, '');
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -80,9 +80,13 @@ export const metadata: Metadata = {
     images: [`${SITE_URL}/og-image.jpg`],
     creator: '@peruanainformatica',
   },
-  verification: {
-    google: 'google-site-verification-code',
-  },
+  ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+    ? {
+        verification: {
+          google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+        },
+      }
+    : {}),
   alternates: {
     canonical: SITE_URL,
     languages: {

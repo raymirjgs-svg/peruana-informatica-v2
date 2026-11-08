@@ -1,185 +1,79 @@
 import type { MetadataRoute } from "next";
 
+export const dynamic = "force-dynamic";
+
 function getApiBase() {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+  const baseUrl =
+    process.env.INTERNAL_API_URL ||
+    process.env.NEXT_PUBLIC_API_URL ||
+    "http://backend:3001";
   const trimmed = baseUrl.replace(/\/+$/, "");
   return trimmed.endsWith("/api") ? trimmed : `${trimmed}/api`;
 }
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+const siteUrl = (
+  process.env.NEXT_PUBLIC_SITE_URL || "https://peruanadeinformatica.com.pe"
+).replace(/\/+$/, "");
+
+const STATIC_ROUTES: MetadataRoute.Sitemap = [
+  { url: `${siteUrl}/`, changeFrequency: "daily", priority: 1 },
+  { url: `${siteUrl}/products`, changeFrequency: "daily", priority: 0.9 },
+  { url: `${siteUrl}/categories`, changeFrequency: "weekly", priority: 0.8 },
+  { url: `${siteUrl}/contacto`, changeFrequency: "monthly", priority: 0.7 },
+];
+
+const PAGE_SIZE = 100;
+const MAX_PRODUCTS = 5000;
+
+async function fetchAllProducts() {
+  const products: any[] = [];
+  let page = 1;
+  let totalPages = 1;
+
+  while (page <= totalPages && products.length < MAX_PRODUCTS) {
+    const res = await fetch(
+      `${getApiBase()}/products?page=${page}&limit=${PAGE_SIZE}`,
+      { cache: "no-store" },
+    );
+    if (!res.ok) break;
+
+    const data = await res.json();
+    const batch = Array.isArray(data) ? data : data.products || [];
+    if (batch.length === 0) break;
+
+    products.push(...batch);
+    totalPages = Number(data.totalPages) || page;
+    page += 1;
+  }
+
+  return products.slice(0, MAX_PRODUCTS);
+}
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const routes: MetadataRoute.Sitemap = [];
+  const routes: MetadataRoute.Sitemap = [...STATIC_ROUTES];
+  const now = new Date();
 
   try {
-    // Obtener configuraciones SEO para determinar las páginas y sus configuraciones
-    const seoRes = await fetch(`${getApiBase()}/seo?is_active=true`, {
-      next: { revalidate: 3600 },
-      headers: {
-        Authorization: `Basic ${Buffer.from(`${process.env.NEXT_PUBLIC_ADMIN_USERNAME || "admin"}:${process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "admin123"}`).toString("base64")}`,
-      },
-    });
+    const products = await fetchAllProducts();
 
-    if (seoRes.ok) {
-      const seoData = await seoRes.json();
-      const seoSettings = seoData.data || [];
+    for (const product of products) {
+      if (!product?.slug) continue;
 
-      // Agregar rutas basadas en configuraciones SEO
-      for (const setting of seoSettings) {
-        let url = siteUrl;
-
-        // Mapear tipos de página a URLs
-        switch (setting.page_type) {
-          case "home":
-          case "global":
-            url = `${siteUrl}/`;
-            break;
-          case "products":
-            url = `${siteUrl}/products`;
-            break;
-          case "categories":
-            url = `${siteUrl}/categories`;
-            break;
-          case "brands":
-            url = `${siteUrl}/brands`;
-            break;
-          case "contact":
-            url = `${siteUrl}/contacto`;
-            break;
-          case "blog":
-            url = `${siteUrl}/blog`;
-            break;
-          case "product":
-            if (setting.page_identifier) {
-              url = `${siteUrl}/products/${setting.page_identifier}`;
-            }
-            break;
-          case "category":
-            if (setting.page_identifier) {
-              url = `${siteUrl}/categories/${setting.page_identifier}`;
-            }
-            break;
-          case "brand":
-            if (setting.page_identifier) {
-              url = `${siteUrl}/brands/${setting.page_identifier}`;
-            }
-            break;
-          default:
-            continue; // Skip unknown page types
-        }
-
-        routes.push({
-          url,
-          lastModified: new Date(setting.updatedAt || setting.createdAt),
-          changeFrequency: setting.change_frequency as
-            | "always"
-            | "hourly"
-            | "daily"
-            | "weekly"
-            | "monthly"
-            | "yearly"
-            | "never",
-          priority: parseFloat(setting.priority.toString()) || 0.5,
-        });
-      }
-    }
-
-    // Si no hay configuraciones SEO, usar rutas por defecto
-    if (routes.length === 0) {
-      routes.push(
-        {
-          url: `${siteUrl}/`,
-          lastModified: new Date(),
-          changeFrequency: "daily",
-          priority: 1,
-        },
-        {
-          url: `${siteUrl}/products`,
-          lastModified: new Date(),
-          changeFrequency: "daily",
-          priority: 0.9,
-        },
-        {
-          url: `${siteUrl}/categories`,
-          lastModified: new Date(),
-          changeFrequency: "weekly",
-          priority: 0.8,
-        },
-        {
-          url: `${siteUrl}/contacto`,
-          lastModified: new Date(),
-          changeFrequency: "monthly",
-          priority: 0.7,
-        },
-      );
-    }
-
-    // Agregar productos dinámicamente (primeras 500 URLs para evitar sitemap muy grande)
-    const productsRes = await fetch(
-      `${getApiBase()}/products?page=1&limit=500`,
-      {
-        next: { revalidate: 600 },
-      },
-    );
-
-    if (productsRes.ok) {
-      const productsData = await productsRes.json();
-      const products = Array.isArray(productsData)
-        ? productsData
-        : productsData.products || [];
-
-      for (const product of products) {
-        if (!product?.slug) continue;
-
-        // Evitar duplicados si ya existe en configuraciones SEO
-        const existingRoute = routes.find(
-          (r) => r.url === `${siteUrl}/products/${product.slug}`,
-        );
-        if (!existingRoute) {
-          routes.push({
-            url: `${siteUrl}/products/${product.slug}`,
-            lastModified: new Date(
-              product.updated_at || product.createdAt || new Date(),
-            ),
-            changeFrequency: "weekly",
-            priority: 0.6,
-          });
-        }
-      }
+      routes.push({
+        url: `${siteUrl}/products/${product.slug}`,
+        lastModified: product.updated_at
+          ? new Date(product.updated_at)
+          : product.createdAt
+            ? new Date(product.createdAt)
+            : now,
+        changeFrequency: "weekly",
+        priority: 0.6,
+      });
     }
   } catch (error) {
     console.error("Error generating sitemap:", error);
-
-    // Fallback a rutas básicas en caso de error
-    routes.push(
-      {
-        url: `${siteUrl}/`,
-        lastModified: new Date(),
-        changeFrequency: "daily",
-        priority: 1,
-      },
-      {
-        url: `${siteUrl}/products`,
-        lastModified: new Date(),
-        changeFrequency: "daily",
-        priority: 0.9,
-      },
-      {
-        url: `${siteUrl}/categories`,
-        lastModified: new Date(),
-        changeFrequency: "weekly",
-        priority: 0.8,
-      },
-      {
-        url: `${siteUrl}/contacto`,
-        lastModified: new Date(),
-        changeFrequency: "monthly",
-        priority: 0.7,
-      },
-    );
   }
 
-  // Remover duplicados y ordenar por prioridad
   const uniqueRoutes = routes.filter(
     (route, index, self) =>
       index === self.findIndex((r) => r.url === route.url),

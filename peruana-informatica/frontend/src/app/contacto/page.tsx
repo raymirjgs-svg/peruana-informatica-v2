@@ -3,12 +3,30 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { contactSchema, type ContactFormData } from '@/lib/validations/schemas';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 
 export default function ContactPage() {
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
+  const [storeAddresses, setStoreAddresses] = useState<string[]>([]);
+
+  useEffect(() => {
+    let alive = true;
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/company-settings`)
+      .then((r) => r.json())
+      .then((s: { company_address?: string; store_address?: string }) => {
+        if (!alive) return;
+        const raw = s?.company_address || s?.store_address || '';
+        setStoreAddresses(
+          Array.from(new Set(raw.split('\n').map((line) => line.trim()).filter(Boolean)))
+        );
+      })
+      .catch(() => {/* sin direcciones: no se muestran */ });
+    return () => {
+      alive = false;
+    };
+  }, []);
 
   const {
     register,
@@ -84,7 +102,7 @@ export default function ContactPage() {
                   </svg>
                 </div>
                 <div>
-                  <p className="font-semibold">Teléfono</p>
+                  <p className="font-semibold">Llámanos</p>
                   <p className="text-blue-100">(054) 226796</p>
                   <p className="text-blue-100">988 552 455</p>
                 </div>
@@ -98,9 +116,9 @@ export default function ContactPage() {
                   </svg>
                 </div>
                 <div>
-                  <p className="font-semibold">Email</p>
-                  <p className="text-blue-100">info@peruanainformatica.com</p>
-                  <p className="text-blue-100">ventas@peruanainformatica.com</p>
+                  <p className="font-semibold">Escríbenos</p>
+                  <p className="text-blue-100">info@peruanainformatica.com.pe</p>
+                  <p className="text-blue-100">ventas@peruanainformatica.com.pe</p>
                 </div>
               </div>
 
@@ -113,7 +131,8 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <p className="font-semibold">WhatsApp</p>
-                  <p className="text-blue-100">+51 988-552-455</p>
+                  <p className="text-blue-100">988 552 455</p>
+                  <p className="text-blue-100">Respuesta inmediata</p>
                 </div>
               </div>
 
@@ -126,9 +145,10 @@ export default function ContactPage() {
                   </svg>
                 </div>
                 <div>
-                  <p className="font-semibold">Dirección</p>
-                  <p className="text-blue-100">Av. Tecnología 123</p>
-                  <p className="text-blue-100">Lima, Perú 15001</p>
+                  <p className="font-semibold">Visítanos</p>
+                  {storeAddresses.map((line, i) => (
+                    <p key={i} className="text-blue-100">{line}</p>
+                  ))}
                 </div>
               </div>
             </div>

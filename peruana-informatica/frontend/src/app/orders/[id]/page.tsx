@@ -473,7 +473,7 @@ export default function OrderDetailPage() {
         <h3 className="font-semibold text-blue-900 mb-2">¿Necesitas ayuda?</h3>
         <p className="text-sm text-blue-800">
           Contáctanos a{' '}
-          <a href="mailto:ventas@peruanainformatica.com" className="underline font-medium">ventas@peruanainformatica.com</a>
+          <a href="mailto:ventas@peruanainformatica.com.pe" className="underline font-medium">ventas@peruanainformatica.com.pe</a>
           {' '}o llámanos al (01) 123-4567
         </p>
       </div>

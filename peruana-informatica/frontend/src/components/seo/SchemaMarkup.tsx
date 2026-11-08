@@ -3,7 +3,7 @@
 import { usePathname } from 'next/navigation';
 
 // Use env variable directly to avoid hydration mismatch
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'https://peruanadeinformatica.com.pe').replace(/\/+$/, '');
 
 interface OrganizationSchemaProps {
   name?: string;
@@ -139,42 +139,69 @@ export function ProductSchema({ product }: { product: any }) {
 }
 
 export function LocalBusinessSchema() {
+  const openingHoursSpecification = [
+    {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+      opens: '09:00',
+      closes: '20:00',
+    },
+    {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: ['Saturday'],
+      opens: '09:00',
+      closes: '18:00',
+    },
+  ];
+
   const schema = {
     '@context': 'https://schema.org',
-    '@type': 'Store',
-    name: 'Peruana Informática',
-    description: 'Tienda de tecnología y equipos informáticos',
-    url: SITE_URL,
-    telephone: '+51-54-226796',
-    address: {
-      '@type': 'PostalAddress',
-      streetAddress: 'Av. Principal 123',
-      addressLocality: 'Lima',
-      addressRegion: 'Lima',
-      postalCode: '15001',
-      addressCountry: 'PE',
-    },
-    openingHoursSpecification: [
+    '@graph': [
       {
-        '@type': 'OpeningHoursSpecification',
-        dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
-        opens: '09:00',
-        closes: '20:00',
+        '@type': 'Store',
+        '@id': `${SITE_URL}/#store-arequipa`,
+        name: 'Peruana Informática - Arequipa',
+        description: 'Tienda de tecnología y equipos informáticos en Arequipa',
+        url: SITE_URL,
+        telephone: '+51-54-226796',
+        address: {
+          '@type': 'PostalAddress',
+          streetAddress: 'Calle Octavio Muñoz Najar Nro. 223B, Urb. Cercado',
+          addressLocality: 'Arequipa',
+          addressRegion: 'Arequipa',
+          addressCountry: 'PE',
+        },
+        geo: {
+          '@type': 'GeoCoordinates',
+          latitude: -16.3989,
+          longitude: -71.535,
+        },
+        openingHoursSpecification,
+        priceRange: '$$',
       },
       {
-        '@type': 'OpeningHoursSpecification',
-        dayOfWeek: ['Saturday', 'Sunday'],
-        opens: '10:00',
-        closes: '18:00',
+        '@type': 'Store',
+        '@id': `${SITE_URL}/#store-lima`,
+        name: 'Peruana Informática - Lima',
+        description: 'Tienda de tecnología y equipos informáticos en Lima',
+        url: SITE_URL,
+        telephone: '+51-54-226796',
+        address: {
+          '@type': 'PostalAddress',
+          streetAddress: 'Las Amapolas 274, Piso 2, San Juan de Miraflores',
+          addressLocality: 'Lima',
+          addressRegion: 'Lima',
+          addressCountry: 'PE',
+        },
+        geo: {
+          '@type': 'GeoCoordinates',
+          latitude: -12.1586,
+          longitude: -76.9733,
+        },
+        openingHoursSpecification,
+        priceRange: '$$',
       },
     ],
-    geo: {
-      '@type': 'GeoCoordinates',
-      latitude: -12.0464,
-      longitude: -77.0428,
-    },
-    priceRange: '$$',
-    acceptsReservations: false,
   };
 
   return (

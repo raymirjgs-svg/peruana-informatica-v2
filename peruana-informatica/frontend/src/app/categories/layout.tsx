@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+const siteUrl = (
+  process.env.NEXT_PUBLIC_SITE_URL || "https://peruanadeinformatica.com.pe"
+).replace(/\/+$/, "");
 
 export async function generateMetadata(): Promise<Metadata> {
-  const title = `Categorías | Peruana Informática`;
-  const description = `Explora todas las categorías disponibles y descubre productos por cada sección.`;
+  const title = "Categorías";
+  const description =
+    "Explora todas las categorías disponibles y descubre productos por cada sección.";
   const url = `${siteUrl}/categories`;
   return {
     title,
@@ -18,16 +20,16 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default function CategoriesLayout({ children }: { children: React.ReactNode }) {
   const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Inicio', item: siteUrl },
-      { '@type': 'ListItem', position: 2, name: 'Categorías', item: `${siteUrl}/categories` },
+      { "@type": "ListItem", position: 1, name: "Inicio", item: siteUrl },
+      { "@type": "ListItem", position: 2, name: "Categorías", item: `${siteUrl}/categories` },
     ],
   };
   return (
     <>
-      <Script
+      <script
         id="categories-jsonld"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

@@ -392,7 +392,7 @@ export default function HomePage() {
                     </svg>
                   ),
                   title: 'Escríbenos',
-                  lines: ['info@peruanainformatica.com', 'ventas@peruanainformatica.com'],
+                  lines: ['info@peruanainformatica.com.pe', 'ventas@peruanainformatica.com.pe'],
                 },
                 {
                   color: '#22c55e',

@@ -160,6 +160,13 @@ button {
   animation: fadeIn 0.4s ease-out forwards;
 }
 
+/* Balanced line breaks for headings: avoids single-word last lines (e.g. "Ti") */
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
 /* Keyboard focus: visible ring for links, buttons and form controls */
 :focus-visible {
   outline: 2px solid #dc2626;

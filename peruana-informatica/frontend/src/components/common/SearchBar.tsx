@@ -79,7 +79,7 @@ export function SearchBar() {
                     />
                     <button
                         type="submit"
-                        className="absolute right-1 top-1/2 -translate-y-1/2 bg-blue-600 p-1.5 rounded-full text-white hover:bg-blue-500 transition-colors"
+                        className="absolute right-1 top-1/2 -translate-y-1/2 bg-red-600 p-1.5 rounded-full text-white hover:bg-red-700 transition-colors"
                     >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -140,11 +140,11 @@ export function SearchBar() {
 
                                         {/* Info */}
                                         <div className="flex-1 min-w-0">
-                                            <h4 className="font-semibold text-gray-800 text-sm truncate group-hover:text-blue-600 transition-colors">
+                                            <h4 className="font-semibold text-gray-800 text-sm truncate group-hover:text-red-600 transition-colors">
                                                 {product.name}
                                             </h4>
                                             <div className="flex items-center gap-2 mt-0.5">
-                                                <span className="text-blue-600 font-bold text-sm">
+                                                 <span className="text-red-600 font-bold text-sm">
                                                     S/ {Number(product.priceWeb || product.price || 0).toFixed(2)}
                                                 </span>
                                                 {product.category && (
@@ -160,7 +160,7 @@ export function SearchBar() {
                             <div className="bg-gray-50 p-3 text-center border-t border-gray-100">
                                 <Link
                                     href={`/products?search=${encodeURIComponent(query)}`}
-                                    className="text-sm font-semibold text-blue-600 hover:text-blue-700 hover:underline"
+                                    className="text-sm font-semibold text-red-600 hover:text-red-700 hover:underline"
                                     onClick={() => setShowDropdown(false)}
                                 >
                                     Ver todos los resultados ({results.length}+)

@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { ProductGrid } from '@/components/product/ProductGrid';
 import { Carousel } from '@/components/common/Carousel';
 import { BrandLogoCarousel } from '@/components/common/BrandLogoCarousel';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { ProductService } from '@/services/ProductService';
 import { Product } from '@/models/Product';
 import { ProductCardSkeleton } from '@/components/product/ProductCardSkeleton';
@@ -13,16 +13,70 @@ import { API_CONFIG } from '@/config/api';
 
 const BACKEND_URL = API_CONFIG.API_BASE_URL;
 
-const FALLBACK_QUICK_CATEGORIES = [
-  { id: 1, label: 'Laptops', href: '/products?category=laptops', icon: '💻' },
-  { id: 2, label: 'Monitores', href: '/products?category=monitores', icon: '🖥️' },
-  { id: 3, label: 'Procesadores', href: '/products?category=procesadores', icon: '⚡' },
-  { id: 4, label: 'Memorias RAM', href: '/products?category=memorias', icon: '🧠' },
-  { id: 5, label: 'Almacenamiento', href: '/products?category=almacenamiento', icon: '💾' },
-  { id: 6, label: 'Periféricos', href: '/products?category=perifericos', icon: '🖱️' },
-  { id: 7, label: 'Cases', href: '/products?category=cases', icon: '🔲' },
-  { id: 8, label: 'Impresoras', href: '/products?category=impresoras', icon: '🖨️' },
+type QuickCategory = { id: number; label: string; href: string; icon?: string };
+
+const FALLBACK_QUICK_CATEGORIES: QuickCategory[] = [
+  { id: 1, label: 'Laptops', href: '/products?category=laptops' },
+  { id: 2, label: 'Monitores', href: '/products?category=monitores' },
+  { id: 3, label: 'Procesadores', href: '/products?category=procesadores' },
+  { id: 4, label: 'Memorias RAM', href: '/products?category=memorias' },
+  { id: 5, label: 'Almacenamiento', href: '/products?category=almacenamiento' },
+  { id: 6, label: 'Periféricos', href: '/products?category=perifericos' },
+  { id: 7, label: 'Cases', href: '/products?category=cases' },
+  { id: 8, label: 'Impresoras', href: '/products?category=impresoras' },
 ];
+
+const CATEGORY_ICON_PATHS: Record<string, ReactNode> = {
+  Laptops: (
+    <>
+      <rect x="3" y="4" width="18" height="12" rx="2" />
+      <path d="M2 20h20" />
+    </>
+  ),
+  Monitores: (
+    <>
+      <rect x="2" y="3" width="20" height="14" rx="2" />
+      <path d="M8 21h8M12 17v4" />
+    </>
+  ),
+  Procesadores: (
+    <>
+      <rect x="7" y="7" width="10" height="10" rx="1" />
+      <path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3" />
+    </>
+  ),
+  'Memorias RAM': (
+    <>
+      <rect x="2" y="7" width="20" height="10" rx="1" />
+      <path d="M6 11v2M10 11v2M14 11v2M18 11v2" />
+    </>
+  ),
+  Almacenamiento: (
+    <>
+      <ellipse cx="12" cy="5" rx="9" ry="3" />
+      <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
+    </>
+  ),
+  Periféricos: (
+    <>
+      <rect x="6" y="2" width="12" height="20" rx="6" />
+      <path d="M12 6v4" />
+    </>
+  ),
+  Cases: (
+    <>
+      <rect x="4" y="2" width="16" height="20" rx="2" />
+      <circle cx="12" cy="14" r="3" />
+    </>
+  ),
+  Impresoras: (
+    <>
+      <path d="M6 9V2h12v7" />
+      <rect x="2" y="9" width="20" height="8" rx="2" />
+      <rect x="6" y="14" width="12" height="8" />
+    </>
+  ),
+};
 
 function SectionHeader({
   title,
@@ -85,7 +139,7 @@ export default function HomePage() {
   const [newProducts, setNewProducts] = useState<Product[]>([]);
   const [clearanceProducts, setClearanceProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [quickCategories, setQuickCategories] = useState(FALLBACK_QUICK_CATEGORIES);
+  const [quickCategories, setQuickCategories] = useState<QuickCategory[]>(FALLBACK_QUICK_CATEGORIES);
 
   const [storeAddresses, setStoreAddresses] = useState<string[]>([]);
 
@@ -162,8 +216,23 @@ export default function HomePage() {
               href={cat.href}
               className="flex-none flex flex-col items-center gap-1.5 px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-800 hover:bg-red-50 dark:hover:bg-red-900/20 border border-gray-100 dark:border-gray-700 hover:border-red-200 dark:hover:border-red-800 transition-all duration-200 group min-w-[80px]"
             >
-              <span className="text-xl">{cat.icon}</span>
-              <span className="text-[11px] font-semibold text-gray-600 dark:text-gray-400 group-hover:text-red-600 dark:group-hover:text-red-400 text-center whitespace-nowrap transition-colors">
+              {CATEGORY_ICON_PATHS[cat.label] ? (
+                <svg
+                  className="w-5 h-5 text-gray-700 dark:text-gray-300 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={1.8}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  {CATEGORY_ICON_PATHS[cat.label]}
+                </svg>
+              ) : (
+                cat.icon && <span className="text-xl" aria-hidden="true">{cat.icon}</span>
+              )}
+              <span className="text-xs font-semibold text-gray-600 dark:text-gray-400 group-hover:text-red-600 dark:group-hover:text-red-400 text-center whitespace-nowrap transition-colors">
                 {cat.label}
               </span>
             </Link>
@@ -180,7 +249,7 @@ export default function HomePage() {
               title="Nuevos Ingresos"
               href="/products?new=true"
               badge="NEW"
-              accentColor="#2563eb"
+              accentColor="#1e293b"
             />
             {loading ? <SkeletonGrid /> : <ProductGrid products={newProducts} />}
           </section>
@@ -191,7 +260,7 @@ export default function HomePage() {
           <SectionHeader
             title="Productos Destacados"
             href="/products?featured=true"
-            accentColor="#d97706"
+            accentColor="#dc2626"
           />
           {loading ? (
             <SkeletonGrid />
@@ -224,20 +293,17 @@ export default function HomePage() {
             <div className="relative z-10 p-8">
               <div className="flex justify-between items-center mb-7">
                 <div className="flex items-center gap-4">
-                  <div className="relative">
-                    <div className="w-12 h-12 rounded-xl bg-red-600/20 border border-red-500/40 flex items-center justify-center animate-pulse">
-                      <svg className="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7s1 2 3 3c0-2 .5-5 3-7 2 2 4 3 4 7a7 7 0 11-14 0c0-1.5.4-3 1-4a5 5 0 003 1z" />
-                      </svg>
-                    </div>
-                    <div className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-red-500 animate-ping" />
+                  <div className="w-12 h-12 rounded-xl bg-red-600/20 border border-red-500/40 flex items-center justify-center">
+                    <svg className="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7s1 2 3 3c0-2 .5-5 3-7 2 2 4 3 4 7a7 7 0 11-14 0c0-1.5.4-3 1-4a5 5 0 003 1z" />
+                    </svg>
                   </div>
                   <div>
                     <div className="flex items-center gap-3">
                       <h2 className="text-2xl font-black text-white tracking-tight">
                         Zona de Remates
                       </h2>
-                      <span className="text-[10px] font-black tracking-widest uppercase px-2 py-0.5 rounded-full text-white bg-red-600 animate-pulse">
+                      <span className="text-[10px] font-black tracking-widest uppercase px-2 py-0.5 rounded-full text-white bg-red-600">
                         OFERTA
                       </span>
                     </div>
@@ -264,7 +330,6 @@ export default function HomePage() {
         <section>
           {/* Section header */}
           <div className="text-center mb-12">
-            <p className="text-xs font-bold tracking-widest uppercase text-red-600 mb-2">PERUANA INFORMÁTICA</p>
             <h2 className="text-3xl font-black text-gray-900 dark:text-gray-100 mb-3">¿Por qué elegirnos?</h2>
             <p className="text-gray-500 dark:text-gray-400 max-w-xl mx-auto text-sm">
               Más de 10 años llevando tecnología de calidad a hogares y empresas en todo el Perú.
@@ -275,8 +340,8 @@ export default function HomePage() {
           <div className="grid grid-cols-3 gap-4 mb-10">
             {[
               { value: '10+', label: 'Años de experiencia', color: '#dc2626' },
-              { value: '5k+', label: 'Clientes satisfechos', color: '#2563eb' },
-              { value: '1k+', label: 'Productos en catálogo', color: '#d97706' },
+              { value: '5k+', label: 'Clientes satisfechos', color: '#1e293b' },
+              { value: '1k+', label: 'Productos en catálogo', color: '#475569' },
             ].map((stat) => (
               <div
                 key={stat.label}
@@ -299,9 +364,9 @@ export default function HomePage() {
                 ),
                 title: 'Envío Rápido',
                 description: 'Llegamos a todo el Perú en 2-3 días hábiles con seguimiento en tiempo real.',
-                accent: '#2563eb',
-                bg: 'from-blue-50 to-blue-100/50 dark:from-blue-950/30 dark:to-blue-900/20',
-                border: 'border-blue-100 dark:border-blue-900/40',
+                accent: '#1e293b',
+                bg: 'from-slate-50 to-slate-100/50 dark:from-slate-900/40 dark:to-slate-800/30',
+                border: 'border-slate-200 dark:border-slate-700',
               },
               {
                 icon: (
@@ -311,9 +376,9 @@ export default function HomePage() {
                 ),
                 title: 'Garantía Oficial',
                 description: 'Todos nuestros productos tienen garantía de fábrica y soporte post-venta.',
-                accent: '#10b981',
-                bg: 'from-emerald-50 to-emerald-100/50 dark:from-emerald-950/30 dark:to-emerald-900/20',
-                border: 'border-emerald-100 dark:border-emerald-900/40',
+                accent: '#475569',
+                bg: 'from-gray-50 to-gray-100/50 dark:from-gray-900/40 dark:to-gray-800/30',
+                border: 'border-gray-200 dark:border-gray-700',
               },
               {
                 icon: (
@@ -365,7 +430,6 @@ export default function HomePage() {
 
           <div className="relative z-10 py-14 px-8">
             <div className="text-center mb-10">
-              <p className="text-xs font-bold tracking-widest uppercase text-red-500 mb-2">CONTÁCTANOS</p>
               <h2 className="text-3xl font-black mb-3">¿Necesitas ayuda?</h2>
               <p className="text-gray-400 max-w-lg mx-auto text-sm leading-relaxed">
                 Estamos aquí para ti. Contáctanos por cualquiera de estos medios y te responderemos de inmediato.
@@ -375,7 +439,7 @@ export default function HomePage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
               {[
                 {
-                  color: '#10b981',
+                  color: '#dc2626',
                   icon: (
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
@@ -385,7 +449,7 @@ export default function HomePage() {
                   lines: ['(054) 226796', '988 552 455'],
                 },
                 {
-                  color: '#8b5cf6',
+                  color: '#475569',
                   icon: (
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -405,7 +469,7 @@ export default function HomePage() {
                   lines: ['988 552 455', 'Respuesta inmediata'],
                 },
                 {
-                  color: '#ef4444',
+                  color: '#1e293b',
                   icon: (
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />

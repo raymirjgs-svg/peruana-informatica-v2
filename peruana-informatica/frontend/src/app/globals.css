@@ -160,6 +160,31 @@ button {
   animation: fadeIn 0.4s ease-out forwards;
 }
 
+/* Keyboard focus: visible ring for links, buttons and form controls */
+:focus-visible {
+  outline: 2px solid #dc2626;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Text selection in brand colors */
+::selection {
+  background-color: rgba(220, 38, 38, 0.2);
+  color: inherit;
+}
+
+/* Respect users who prefer less motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /* Hide scrollbar for quick categories */
 .scrollbar-hide {
   -ms-overflow-style: none;

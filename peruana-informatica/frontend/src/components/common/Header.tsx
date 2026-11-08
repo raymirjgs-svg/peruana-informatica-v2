@@ -146,11 +146,11 @@ export function Header() {
               {/* Cart Icon */}
               <Link href="/cart" className="flex items-center gap-2 hover:bg-white/10 p-2 rounded-full transition-colors relative group">
                 <div className="relative">
-                  <svg className="w-6 h-6 text-white group-hover:text-blue-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-6 h-6 text-white group-hover:text-red-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                   </svg>
                   {totalItems > 0 && (
-                    <span className="absolute -top-1.5 -right-1.5 bg-blue-500 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full font-bold shadow-sm">
+                    <span className="absolute -top-1.5 -right-1.5 bg-red-600 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full font-bold shadow-sm">
                       {totalItems}
                     </span>
                   )}
@@ -267,11 +267,11 @@ export function Header() {
                 {mobileCategoriesOpen && (
                   <div className="pl-4 space-y-2 mt-1 mb-3 border-l-2 border-blue-500/30 ml-1 animate-in slide-in-from-top-2 duration-200">
                     {categories.map((cat) => (
-                      <Link key={cat.id} href={`/products?category=${cat.slug}`} className="block text-gray-400 hover:text-blue-400 py-2 text-sm" onClick={() => setMobileMenuOpen(false)}>
+                      <Link key={cat.id} href={`/products?category=${cat.slug}`} className="block text-gray-400 hover:text-red-400 py-2 text-sm" onClick={() => setMobileMenuOpen(false)}>
                         {cat.name}
                       </Link>
                     ))}
-                    <Link href="/categories" className="block text-blue-400 font-medium py-2 text-sm" onClick={() => setMobileMenuOpen(false)}>Ver todas las categorías →</Link>
+                    <Link href="/categories" className="block text-red-400 font-medium py-2 text-sm" onClick={() => setMobileMenuOpen(false)}>Ver todas las categorías →</Link>
                   </div>
                 )}
               </div>
@@ -355,7 +355,7 @@ function AccountLink() {
   return (
     <Link href="/account/login" className="flex items-center gap-2 hover:bg-white/10 p-1.5 pr-3 rounded-full transition-colors group">
       <div className="bg-slate-700 group-hover:bg-slate-600 p-1.5 rounded-full transition-colors">
-        <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
         </svg>
       </div>

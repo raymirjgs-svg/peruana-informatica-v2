@@ -337,21 +337,18 @@ export default function HomePage() {
           </div>
 
           {/* Stats row */}
-          <div className="grid grid-cols-3 gap-4 mb-10">
+          <dl className="grid grid-cols-3 divide-x divide-gray-200 dark:divide-gray-800 mb-14">
             {[
               { value: '10+', label: 'Años de experiencia', color: '#dc2626' },
               { value: '5k+', label: 'Clientes satisfechos', color: '#1e293b' },
               { value: '1k+', label: 'Productos en catálogo', color: '#475569' },
             ].map((stat) => (
-              <div
-                key={stat.label}
-                className="text-center p-5 rounded-xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800"
-              >
-                <div className="text-3xl font-black mb-1" style={{ color: stat.color }}>{stat.value}</div>
-                <div className="text-xs text-gray-500 dark:text-gray-400 font-medium">{stat.label}</div>
+              <div key={stat.label} className="text-center px-4">
+                <dd className="text-4xl font-black tracking-tight tabular-nums" style={{ color: stat.color }}>{stat.value}</dd>
+                <dt className="mt-1 text-xs font-medium text-gray-500 dark:text-gray-400">{stat.label}</dt>
               </div>
             ))}
-          </div>
+          </dl>
 
           {/* Feature cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -365,8 +362,7 @@ export default function HomePage() {
                 title: 'Envío Rápido',
                 description: 'Llegamos a todo el Perú en 2-3 días hábiles con seguimiento en tiempo real.',
                 accent: '#1e293b',
-                bg: 'from-slate-50 to-slate-100/50 dark:from-slate-900/40 dark:to-slate-800/30',
-                border: 'border-slate-200 dark:border-slate-700',
+                border: 'border-gray-200 dark:border-gray-800',
               },
               {
                 icon: (
@@ -377,8 +373,7 @@ export default function HomePage() {
                 title: 'Garantía Oficial',
                 description: 'Todos nuestros productos tienen garantía de fábrica y soporte post-venta.',
                 accent: '#475569',
-                bg: 'from-gray-50 to-gray-100/50 dark:from-gray-900/40 dark:to-gray-800/30',
-                border: 'border-gray-200 dark:border-gray-700',
+                border: 'border-gray-200 dark:border-gray-800',
               },
               {
                 icon: (
@@ -389,24 +384,19 @@ export default function HomePage() {
                 title: 'Soporte 24/7',
                 description: 'Nuestro equipo de expertos está disponible para ayudarte en todo momento.',
                 accent: '#dc2626',
-                bg: 'from-red-50 to-red-100/50 dark:from-red-950/30 dark:to-red-900/20',
-                border: 'border-red-100 dark:border-red-900/40',
+                border: 'border-gray-200 dark:border-gray-800',
               },
             ].map((item) => (
               <div
                 key={item.title}
-                className={`relative p-6 rounded-xl bg-gradient-to-br ${item.bg} border ${item.border} hover:shadow-lg transition-all duration-300 group`}
+                className={`p-6 rounded-xl bg-white dark:bg-gray-900 border ${item.border} transition-colors duration-200 hover:border-gray-300 dark:hover:border-gray-700 group`}
               >
                 <div
-                  className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-110"
-                  style={{ backgroundColor: `${item.accent}18`, color: item.accent }}
+                  className="w-11 h-11 rounded-lg flex items-center justify-center mb-5"
+                  style={{ backgroundColor: `${item.accent}12`, color: item.accent }}
                 >
                   {item.icon}
                 </div>
-                <div
-                  className="h-0.5 w-8 rounded-full mb-3"
-                  style={{ backgroundColor: item.accent }}
-                />
                 <h3 className="font-bold text-gray-900 dark:text-gray-100 text-base mb-2">{item.title}</h3>
                 <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">{item.description}</p>
               </div>

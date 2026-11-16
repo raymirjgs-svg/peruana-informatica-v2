@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { useSettings } from '@/context/SettingsContext';
+import { TrackingUnavailableNotice } from '@/components/common/TrackingUnavailableNotice';
 
 type PaymentMethod = 'transferencia' | 'yape' | 'plin' | 'tarjeta';
 
@@ -50,6 +51,7 @@ export default function OrderDetailPage() {
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [trackingUnavailable, setTrackingUnavailable] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const [paymentDone, setPaymentDone] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -96,7 +98,12 @@ export default function OrderDetailPage() {
       setLoading(true);
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
       const response = await fetch(`${apiUrl}/api/client/orders/${orderId}`);
-      if (!response.ok) throw new Error('Pedido no encontrado');
+      if (response.status === 404) {
+        setTrackingUnavailable(true);
+        setOrder(null);
+        return;
+      }
+      if (!response.ok) throw new Error('No se pudo cargar la información del pedido');
       const data = await response.json();
       setOrder(data);
     } catch (err) {
@@ -228,14 +235,27 @@ export default function OrderDetailPage() {
     );
   }
 
+  if (trackingUnavailable) {
+    return (
+      <div className="container mx-auto max-w-3xl px-4 py-12 sm:py-16">
+        <TrackingUnavailableNotice orderId={orderId} />
+        <div className="mt-6 text-center">
+          <Link href="/" className="inline-block rounded-lg bg-gray-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-gray-700">
+            Volver al inicio
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   if (error || !order) {
     return (
       <div className="container mx-auto px-4 py-16 text-center">
         <div className="text-red-600 text-6xl mb-4">⚠️</div>
-        <h1 className="text-3xl font-bold text-gray-800 mb-4">Pedido no encontrado</h1>
+        <h1 className="text-3xl font-bold text-gray-800 mb-4">No pudimos mostrar el pedido</h1>
         <p className="text-gray-600 mb-8">{error || 'No se pudo cargar la información del pedido'}</p>
-        <Link href="/" className="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition">
-          Volver al inicio
+        <Link href="/contacto" className="inline-block bg-brand-red-600 text-white px-8 py-3 rounded-lg hover:bg-brand-red-700 transition">
+          Contactar soporte
         </Link>
       </div>
     );

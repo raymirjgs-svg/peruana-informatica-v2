@@ -40,6 +40,19 @@ export const createLimiter = rateLimit({
     validate: { xForwardedForHeader: false },
 });
 
+// Limiter for public order tracking lookups
+export const trackingLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 30, // Limit each IP to 30 tracking attempts per window
+    message: {
+        success: false,
+        message: 'Demasiadas consultas de seguimiento. Por favor, inténtalo más tarde.'
+    },
+    standardHeaders: true,
+    legacyHeaders: false,
+    validate: { xForwardedForHeader: false },
+});
+
 // Very strict limiter for payment endpoints
 export const paymentLimiter = rateLimit({
     windowMs: 60 * 60 * 1000, // 1 hour

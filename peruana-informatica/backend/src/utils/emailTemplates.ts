@@ -1,5 +1,15 @@
 export const emailTemplates = {
     orderConfirmation: (order: any, items: any[]) => {
+        const frontendUrl = (process.env.FRONTEND_URL || 'https://peruanadeinformatica.com.pe').replace(/\/$/, '');
+        const trackingCode = order.tracking_code ? String(order.tracking_code) : null;
+        const trackingUrl = trackingCode
+            ? `${frontendUrl}/seguimiento/${encodeURIComponent(trackingCode)}`
+            : null;
+        const bankAccount = process.env.BANK_ACCOUNT?.trim();
+        const bankCci = process.env.BANK_CCI?.trim();
+        const bankHolder = process.env.BANK_HOLDER?.trim();
+        const bankRuc = process.env.BANK_RUC?.trim();
+        const hasBankDetails = Boolean(bankAccount && bankCci && bankHolder && bankRuc);
         const itemsHtml = items.map(item => `
             <tr>
                 <td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">
@@ -36,6 +46,9 @@ export const emailTemplates = {
                     .total-amount { font-size: 24px; font-weight: 800; color: #2563eb; }
                     .cta-box { background: #fffbeb; border: 1px solid #fcd34d; padding: 20px; border-radius: 12px; margin-top: 32px; }
                     .cta-title { color: #92400e; font-weight: 700; margin: 0 0 12px 0; display: flex; align-items: center; gap: 8px; }
+                    .tracking-box { background: #fef2f2; border: 1px solid #fecaca; padding: 20px; border-radius: 12px; margin: 24px 0; }
+                    .tracking-code { font-family: 'Courier New', monospace; font-size: 20px; font-weight: 700; color: #991b1b; letter-spacing: 1px; }
+                    .tracking-link { display: inline-block; margin-top: 12px; color: #b91c1c; font-weight: 700; }
                     .bank-details { background: #f3f4f6; padding: 20px; border-radius: 12px; margin-top: 24px; }
                     .bank-title { font-weight: 700; color: #111827; margin-bottom: 12px; }
                     .bank-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; border-bottom: 1px dashed #d1d5db; padding-bottom: 8px; }
@@ -56,6 +69,13 @@ export const emailTemplates = {
                             <div class="welcome-text">
                                 Hola <strong>${order.customer_name}</strong>, hemos recibido tu pedido correctamente.
                             </div>
+
+                            ${trackingCode ? `<div class="tracking-box">
+                                <div class="cta-title">Código de seguimiento</div>
+                                <p style="margin: 0 0 8px; color: #92400e;">Conserva este código para consultar el estado de tu pedido:</p>
+                                <div class="tracking-code">${trackingCode}</div>
+                                <a class="tracking-link" href="${trackingUrl}">Consultar mi pedido</a>
+                            </div>` : ''}
 
                             <div class="info-grid">
                                 <div class="info-item">
@@ -97,20 +117,44 @@ export const emailTemplates = {
                             </div>
 
                             <div class="bank-details">
-                                <div class="bank-title">Datos Bancarios (BCP)</div>
-                                <div class="bank-row"><span>Cuenta Corriente</span><strong>191-1234567-0-00</strong></div>
-                                <div class="bank-row"><span>CCI</span><strong>00219100123456700012</strong></div>
-                                <div class="bank-row"><span>Titular</span><strong>PERUANA INFORMATICA</strong></div>
-                                <div class="bank-row"><span>RUC</span><strong>20123456789</strong></div>
+                                <div class="bank-title">Datos de pago</div>
+                                ${hasBankDetails ? `
+                                <div class="bank-row"><span>Cuenta Corriente</span><strong>${bankAccount}</strong></div>
+                                <div class="bank-row"><span>CCI</span><strong>${bankCci}</strong></div>
+                                <div class="bank-row"><span>Titular</span><strong>${bankHolder}</strong></div>
+                                <div class="bank-row"><span>RUC</span><strong>${bankRuc}</strong></div>
+                                ` : '<p style="margin: 0; color: #4b5563; font-size: 14px;">Te confirmaremos los datos de pago correspondientes antes de realizar la transferencia.</p>'}
                             </div>
                         </div>
                         
                         <div class="footer">
                             <p><strong>Peruana de Informática</strong></p>
                             <p>Tu tienda de tecnología de confianza</p>
-                            <p style="margin-top: 12px;">ventas@peruanainformatica.com • (01) 123-4567</p>
+                            <p style="margin-top: 12px;">ventas@peruanainformatica.com.pe • (054) 226796</p>
                         </div>
                     </div>
+                </div>
+            </body>
+            </html>
+        `;
+    },
+
+    trackingCode: (order: any) => {
+        const frontendUrl = (process.env.FRONTEND_URL || 'https://peruanadeinformatica.com.pe').replace(/\/$/, '');
+        const trackingCode = String(order.tracking_code || '');
+        const trackingUrl = `${frontendUrl}/seguimiento/${encodeURIComponent(trackingCode)}`;
+
+        return `
+            <!DOCTYPE html>
+            <html>
+            <head><meta charset="utf-8"></head>
+            <body style="font-family: Arial, sans-serif; color: #374151; background: #f3f4f6; padding: 32px;">
+                <div style="max-width: 560px; margin: 0 auto; background: #fff; border-radius: 12px; padding: 32px;">
+                    <h1 style="color: #111827; font-size: 22px;">Código de seguimiento de tu pedido</h1>
+                    <p>Hola <strong>${order.customer_name}</strong>, ya puedes consultar el estado de tu pedido con este código:</p>
+                    <p style="font-family: monospace; font-size: 22px; font-weight: bold; color: #b91c1c; letter-spacing: 1px;">${trackingCode}</p>
+                    <p><a href="${trackingUrl}" style="display: inline-block; background: #dc2626; color: #fff; text-decoration: none; padding: 12px 20px; border-radius: 8px; font-weight: bold;">Consultar mi pedido</a></p>
+                    <p style="color: #6b7280; font-size: 12px; margin-top: 24px;">ventas@peruanainformatica.com.pe • (054) 226796</p>
                 </div>
             </body>
             </html>
@@ -131,6 +175,7 @@ export const emailTemplates = {
                 <h1>🔔 Nuevo Pedido #${order.id}</h1>
                 <p>Cliente: ${order.customer_name}</p>
                 <p>Total: S/ ${parseFloat(order.total_amount).toFixed(2)}</p>
+                ${order.tracking_code ? `<p>Código de seguimiento: <strong>${order.tracking_code}</strong></p>` : ''}
                 <pre>${itemsList}</pre>
                 <a href="${process.env.ADMIN_URL || 'http://localhost:3000'}/admin/orders/${order.id}">Ver Pedido</a>
             </body>
@@ -148,6 +193,7 @@ export const emailTemplates = {
             <body>
                 <h1>✅ Pago Verificado</h1>
                 <p>Hola ${order.customer_name}, tu pago para el pedido #${order.id} ha sido aprobado.</p>
+                ${order.tracking_code ? `<p>Código de seguimiento: <strong>${order.tracking_code}</strong></p>` : ''}
             </body>
             </html>
         `;

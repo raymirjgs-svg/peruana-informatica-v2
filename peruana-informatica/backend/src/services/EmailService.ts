@@ -29,6 +29,21 @@ export class EmailService {
         });
     }
 
+    async sendTrackingCodeToClient(order: any) {
+        if (!order.tracking_code) {
+            throw new Error('El pedido no tiene código de seguimiento');
+        }
+
+        const html = emailTemplates.trackingCode(order);
+
+        await this.transporter.sendMail({
+            from: `"Peruana Informática" <${process.env.SMTP_USER}>`,
+            to: order.customer_email,
+            subject: `Código de seguimiento - Pedido #${order.id}`,
+            html: html
+        });
+    }
+
     async sendNewOrderNotificationToAdmin(order: any, items: any[]) {
         const itemsList = items.map(item =>
             `- ${item.product_name} (x${item.quantity}) - S/ ${(parseFloat(item.price) * item.quantity).toFixed(2)}`

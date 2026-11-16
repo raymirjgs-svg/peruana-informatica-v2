@@ -6,6 +6,7 @@ import { useSettings } from '@/context/SettingsContext';
 interface TrackingUnavailableNoticeProps {
   orderId?: string;
   compact?: boolean;
+  variant?: 'maintenance' | 'legacy';
 }
 
 function buildWhatsAppUrl(phone: string): string {
@@ -13,12 +14,17 @@ function buildWhatsAppUrl(phone: string): string {
   return localNumber ? `https://wa.me/51${localNumber}` : 'https://wa.me/';
 }
 
-export function TrackingUnavailableNotice({ orderId, compact = false }: TrackingUnavailableNoticeProps) {
+export function TrackingUnavailableNotice({
+  orderId,
+  compact = false,
+  variant = 'maintenance',
+}: TrackingUnavailableNoticeProps) {
   const { settings } = useSettings();
 
   const phone = settings?.company_phone || '(054) 226796';
   const whatsapp = settings?.company_whatsapp || '988 552 455';
   const email = settings?.company_email || 'info@peruanainformatica.com.pe';
+  const isLegacyLink = variant === 'legacy';
 
   return (
     <section
@@ -33,10 +39,14 @@ export function TrackingUnavailableNotice({ orderId, compact = false }: Tracking
         </div>
         <div className="min-w-0">
           <h2 id="tracking-unavailable-title" className="text-xl font-bold text-gray-900 sm:text-2xl">
-            Seguimiento público temporalmente no disponible
+            {isLegacyLink
+              ? 'Este enlace por número ya no está disponible'
+              : 'Seguimiento público temporalmente no disponible'}
           </h2>
           <p className="mt-2 text-sm leading-6 text-gray-700 sm:text-base">
-            Por seguridad, los pedidos ya no se consultan únicamente con el número. Estamos habilitando un código de seguimiento único para proteger los datos de cada cliente.
+            {isLegacyLink
+              ? 'Por seguridad, los pedidos ya no se consultan únicamente con el número. Usa el código de seguimiento único recibido por email.'
+              : 'Por seguridad, los pedidos ya no se consultan únicamente con el número. Estamos habilitando un código de seguimiento único para proteger los datos de cada cliente.'}
           </p>
         </div>
       </div>
@@ -45,7 +55,7 @@ export function TrackingUnavailableNotice({ orderId, compact = false }: Tracking
         <p className="text-sm font-semibold text-gray-900">¿Ya realizaste un pedido? Podemos ayudarte ahora.</p>
         <p className="mt-1 text-sm leading-6 text-gray-600">
           {orderId
-            ? `Indica el pedido #${orderId} y el correo electrónico que usaste para comprar.`
+            ? `Indica el pedido #${orderId}, el código de seguimiento y el correo electrónico que usaste para comprar.`
             : 'Indica el número de pedido y el correo electrónico que usaste para comprar.'}
         </p>
         <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap">

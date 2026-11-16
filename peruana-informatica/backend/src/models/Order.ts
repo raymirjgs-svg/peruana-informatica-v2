@@ -8,6 +8,8 @@ export class Order extends Model {
     public customer_phone!: string;
     public customer_document?: string;
     public user_id?: number; // Relación con usuario registrado
+    public tracking_code?: string | null; // Código opaco para seguimiento público
+    public tracking_code_sent_at?: Date | null; // Control de envío del código
     public total_amount!: number;
     public status!: string; // 'pending', 'processed', 'cancelled'
 
@@ -68,6 +70,15 @@ Order.init(
                 model: 'users',
                 key: 'id',
             }
+        },
+        tracking_code: {
+            type: DataTypes.STRING(20),
+            allowNull: true,
+            unique: true,
+        },
+        tracking_code_sent_at: {
+            type: DataTypes.DATE,
+            allowNull: true,
         },
         total_amount: {
             type: DataTypes.DECIMAL(10, 2),

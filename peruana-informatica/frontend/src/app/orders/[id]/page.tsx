@@ -238,7 +238,7 @@ export default function OrderDetailPage() {
   if (trackingUnavailable) {
     return (
       <div className="container mx-auto max-w-3xl px-4 py-12 sm:py-16">
-        <TrackingUnavailableNotice orderId={orderId} />
+        <TrackingUnavailableNotice orderId={orderId} variant="legacy" />
         <div className="mt-6 text-center">
           <Link href="/" className="inline-block rounded-lg bg-gray-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-gray-700">
             Volver al inicio

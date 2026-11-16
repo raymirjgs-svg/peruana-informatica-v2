@@ -14,10 +14,12 @@ import {
   ArrowRightLeft,
   Smartphone,
   Search,
-  Mail,
   FileText,
   Home,
-  ShoppingBag
+  ShoppingBag,
+  Copy,
+  Check,
+  ShieldCheck
 } from 'lucide-react';
 import { CouponInput } from '@/components/checkout/CouponInput';
 import { type Coupon } from '@/services/CouponService';
@@ -35,6 +37,9 @@ export default function CartPage() {
   const [step, setStep] = useState<'cart' | 'customer' | 'payment' | 'success'>('cart');
   const [orderId, setOrderId] = useState<number | null>(null);
   const [orderTotal, setOrderTotal] = useState<number>(0);
+  // Codigo opaco y unico por pedido: es la credencial privada de seguimiento.
+  const [trackingCode, setTrackingCode] = useState<string | null>(null);
+  const [copiedCode, setCopiedCode] = useState(false);
   const [checkoutMode, setCheckoutMode] = useState<'direct' | 'approval'>('direct');
 
   // Coupon State
@@ -230,6 +235,17 @@ export default function CartPage() {
     );
   };
 
+  const handleCopyTrackingCode = async () => {
+    if (!trackingCode) return;
+    try {
+      await navigator.clipboard.writeText(trackingCode);
+      setCopiedCode(true);
+      setTimeout(() => setCopiedCode(false), 2000);
+    } catch {
+      // El usuario puede seleccionar y copiar el codigo manualmente.
+    }
+  };
+
   const handleCustomerSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -265,6 +281,7 @@ export default function CartPage() {
       if (response.ok) {
         setOrderId(data.order_id);
         setOrderTotal(finalTotal);
+        setTrackingCode(data.tracking_code || null);
 
         if (data.status === 'pending_approval' || checkoutMode === 'approval') {
           setStep('success');
@@ -473,19 +490,51 @@ export default function CartPage() {
 
             <div className="px-8 -mt-6 relative z-10">
               <div className={`rounded-2xl p-6 text-center shadow-lg ${checkoutMode === 'approval' ? 'bg-gradient-to-r from-amber-500 to-orange-500' : 'bg-gradient-to-r from-blue-600 to-indigo-600'}`}>
-                <p className="text-white/80 text-sm uppercase tracking-wide mb-1">Número de Pedido</p>
+                <p className="text-white/80 text-sm uppercase tracking-wide mb-1">Referencia interna</p>
                 <p className="text-4xl font-bold text-white">#{orderId}</p>
               </div>
             </div>
 
+            {trackingCode && (
+              <div className="px-8 pt-6">
+                <div className="rounded-2xl border-2 border-indigo-200 bg-indigo-50 p-6 text-center">
+                  <div className="flex items-center justify-center gap-2 mb-2">
+                    <ShieldCheck className="w-5 h-5 text-indigo-600" />
+                    <p className="text-xs uppercase tracking-widest text-indigo-600 font-semibold">Código de seguimiento privado</p>
+                  </div>
+                  <p className="font-mono text-3xl md:text-4xl font-bold tracking-wider text-indigo-900 break-all">{trackingCode}</p>
+                  <p className="text-sm text-indigo-700 mt-2">
+                    Es único para este pedido y permite ver su estado. No lo compartas con terceros.
+                  </p>
+                  <div className="mt-4 flex flex-col sm:flex-row gap-3 justify-center">
+                    <button
+                      type="button"
+                      onClick={handleCopyTrackingCode}
+                      className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-indigo-200 bg-white px-5 py-2.5 font-semibold text-indigo-700 hover:border-indigo-400 transition-colors"
+                    >
+                      {copiedCode ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                      {copiedCode ? 'Código copiado' : 'Copiar código'}
+                    </button>
+                    <Link
+                      href={`/seguimiento/${trackingCode}`}
+                      className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 font-semibold text-white hover:bg-indigo-700 transition-colors"
+                    >
+                      <Search className="w-4 h-4" />
+                      Consultar seguimiento
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div className="p-8">
               <div className="flex items-center gap-4 p-4 bg-blue-50 rounded-xl mb-6">
                 <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                  <Mail className="w-6 h-6 text-blue-600" />
+                  <ShieldCheck className="w-6 h-6 text-blue-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Confirmación enviada a:</p>
-                  <p className="font-semibold text-blue-600">{customerData.email}</p>
+                  <p className="text-sm text-gray-600">Tu pedido quedó registrado.</p>
+                  <p className="font-semibold text-blue-600">Guarda tu código de seguimiento: es la única forma segura de consultar el pedido.</p>
                 </div>
               </div>
 
@@ -517,7 +566,9 @@ export default function CartPage() {
                   <span className="text-2xl">💡</span>
                   <div>
                     <p className="font-semibold text-amber-800">Consejo</p>
-                    <p className="text-amber-700 text-sm">Guarda tu número de pedido <strong>#{orderId}</strong> para consultar su estado</p>
+                    <p className="text-amber-700 text-sm">
+                      Guarda tu código de seguimiento <strong>{trackingCode || '(visible arriba)'}</strong> para consultar el estado de tu pedido
+                    </p>
                   </div>
                 </div>
               </div>
@@ -531,11 +582,11 @@ export default function CartPage() {
                   Volver al inicio
                 </Link>
                 <Link
-                  href={`/orders/${orderId}`}
+                  href={trackingCode ? `/seguimiento/${trackingCode}` : '/track-order'}
                   className="flex-1 bg-white border-2 border-gray-300 text-gray-700 px-8 py-4 rounded-xl hover:border-blue-500 hover:text-blue-600 transition-all duration-300 font-semibold text-center flex items-center justify-center gap-2"
                 >
                   <Search className="w-5 h-5" />
-                  Ver mi pedido
+                  Consultar seguimiento
                 </Link>
               </div>
             </div>
@@ -550,6 +601,21 @@ export default function CartPage() {
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-12">
         <div className="container mx-auto px-4 max-w-5xl">
           <ProgressBar currentStep="payment" />
+          {trackingCode && (
+            <div className="max-w-2xl mx-auto mb-6 rounded-2xl border-2 border-indigo-200 bg-indigo-50 px-5 py-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div className="text-center sm:text-left">
+                <p className="text-xs uppercase tracking-widest text-indigo-600 font-semibold">Código de seguimiento privado</p>
+                <p className="font-mono text-xl font-bold tracking-wider text-indigo-900 break-all">{trackingCode}</p>
+              </div>
+              <Link
+                href={`/seguimiento/${trackingCode}`}
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 font-semibold text-white hover:bg-indigo-700 transition-colors whitespace-nowrap"
+              >
+                <Search className="w-4 h-4" />
+                Ver estado
+              </Link>
+            </div>
+          )}
           <div className="text-center mb-8">
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Método de Pago</h1>
             <p className="text-gray-600">Selecciona cómo deseas realizar tu pago</p>

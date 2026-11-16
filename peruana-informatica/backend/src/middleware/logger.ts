@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { logger, logRequest } from '../config/logger';
+import { redactSensitiveUrl } from '../utils/redactSensitiveUrl';
 
 export const requestLogger = (req: Request, res: Response, next: NextFunction) => {
     const startTime = Date.now();
@@ -7,7 +8,7 @@ export const requestLogger = (req: Request, res: Response, next: NextFunction) =
     // Log when response finishes
     res.on('finish', () => {
         const duration = Date.now() - startTime;
-        logRequest(req.method, req.originalUrl, res.statusCode, duration);
+        logRequest(req.method, redactSensitiveUrl(req.originalUrl), res.statusCode, duration);
     });
 
     next();
@@ -18,7 +19,7 @@ export const errorLogger = (err: Error, req: Request, res: Response, next: NextF
         message: err.message,
         stack: err.stack,
         method: req.method,
-        url: req.originalUrl,
+        url: redactSensitiveUrl(req.originalUrl),
         ip: req.ip
     });
 

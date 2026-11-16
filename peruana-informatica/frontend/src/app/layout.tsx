@@ -115,6 +115,8 @@ export default function RootLayout({
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        {/* Evita que el codigo privado de seguimiento se envíe como referrer a terceros. */}
+        <meta name="referrer" content="no-referrer" />
         <link rel="preconnect" href={SITE_URL} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

@@ -40,7 +40,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     const fetchSettings = async () => {
         try {
             const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-            const res = await fetch(`${apiUrl}/api/settings`);
+            const res = await fetch(`${apiUrl}/api/company-settings`);
 
             if (res.ok) {
                 const data = await res.json();

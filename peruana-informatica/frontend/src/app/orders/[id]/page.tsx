@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
+import { useSettings } from '@/context/SettingsContext';
 
 type PaymentMethod = 'transferencia' | 'yape' | 'plin' | 'tarjeta';
 
@@ -44,6 +45,7 @@ interface Order {
 export default function OrderDetailPage() {
   const params = useParams();
   const orderId = params.id as string;
+  const { settings } = useSettings();
 
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
@@ -472,9 +474,19 @@ export default function OrderDetailPage() {
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
         <h3 className="font-semibold text-blue-900 mb-2">¿Necesitas ayuda?</h3>
         <p className="text-sm text-blue-800">
-          Contáctanos a{' '}
-          <a href="mailto:ventas@peruanainformatica.com.pe" className="underline font-medium">ventas@peruanainformatica.com.pe</a>
-          {' '}o llámanos al (01) 123-4567
+          {settings?.company_email && (
+            <>
+              Contáctanos a{' '}
+              <a href={`mailto:${settings.company_email}`} className="underline font-medium">{settings.company_email}</a>
+              {' '}
+            </>
+          )}
+          {settings?.company_phone && (
+            <>o llámanos al <strong>{settings.company_phone}</strong>{' '}</>
+          )}
+          {settings?.company_whatsapp && (
+            <>y escribe por WhatsApp al <strong>{settings.company_whatsapp}</strong>.</>
+          )}
         </p>
       </div>
     </div>

@@ -6,14 +6,14 @@ import { useSession } from 'next-auth/react';
 import { SearchBar } from './SearchBar';
 import { MegaMenu } from './MegaMenu';
 import { AnnouncementBar } from './AnnouncementBar';
-import { useSettings } from '@/context/SettingsContext'; // Usar Contexto
+import CompanyLogo from './CompanyLogo';
 import { useCart } from '@/hooks/useCart';
 import { useWishlist } from '@/hooks/useWishlist';
 import { useCompare } from '@/hooks/useCompare';
 import { CategoryService, Category } from '@/services/CategoryService';
 
 export function Header() {
-  const { settings, logoUrl } = useSettings(); // Usar hook
+  // Usar hook
   const { totalItems } = useCart();
   const { wishlistCount } = useWishlist();
   const { compareCount } = useCompare();
@@ -88,11 +88,7 @@ export function Header() {
 
               {/* Logo */}
               <Link href="/" className="flex items-center gap-2 transition-opacity hover:opacity-90">
-                <img
-                  src={settings?.logo_url ? logoUrl : '/images/logo.png'}
-                  alt={settings?.company_name || 'Peruana Informática'}
-                  className="h-16 w-auto object-contain max-w-[280px]"
-                />
+                <CompanyLogo className="h-16 w-auto object-contain max-w-[280px]" />
               </Link>
             </div>
 

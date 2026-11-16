@@ -6,11 +6,12 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { useSettings } from '@/context/SettingsContext';
+import CompanyLogo from './CompanyLogo';
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
   const [email, setEmail] = useState('');
-  const { settings, logoUrl } = useSettings();
+  const { settings } = useSettings();
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
@@ -87,11 +88,7 @@ export function Footer() {
           {/* Sobre nosotros */}
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <img
-                src={settings?.logo_url ? logoUrl : '/images/logo.png'}
-                alt={settings?.company_name || 'Peruana Informática'}
-                className="h-12 w-auto object-contain max-w-[200px]"
-              />
+              <CompanyLogo className="h-12 w-auto object-contain max-w-[200px]" />
             </div>
             <p className="text-sm leading-relaxed mb-4 text-gray-400">
               Tu tienda de confianza para equipos tecnológicos de calidad. Garantía oficial y envío rápido.

@@ -13,8 +13,10 @@ RUN npm ci
 FROM node:20-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
-# Install ALL dependencies (including dev) to build typescript
-RUN npm install
+# Install ALL dependencies (including dev) to build typescript.
+# npm ci usa el package-lock.json: build determinista (npm install dejaba
+# flotar versiones de @types y rompia la compilacion en el servidor).
+RUN npm ci
 COPY . .
 RUN npm run build
 

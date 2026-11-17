@@ -25,12 +25,16 @@ export const getSettings = async (req: Request, res: Response) => {
 
 export const updateSetting = async (req: Request, res: Response) => {
     try {
-        const { key } = req.params;
-        const { value } = req.body;
+        const key = String(req.params.key || '');
+        const value = req.body?.value === undefined ? '' : String(req.body.value);
+
+        if (!key) {
+            return res.status(400).json({ error: 'Falta el nombre de la configuracion' });
+        }
 
         // Si el valor llega enmascarado, el admin no lo modifico: se conserva
         // el valor real guardado.
-        if (SECRET_KEYS.includes(key) && String(value).startsWith('••••')) {
+        if (SECRET_KEYS.includes(key) && value.startsWith('••••')) {
             return res.json({ success: true, unchanged: true });
         }
 

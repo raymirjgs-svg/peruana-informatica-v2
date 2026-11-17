@@ -6,6 +6,7 @@ import { Brand } from '../models/Brand';
 import { Category } from '../models/Category';
 import { Image } from '../models/Image';
 import { Op } from 'sequelize';
+import { sendError } from '../middleware/errorHandler';
 
 export class WishlistController {
     /**
@@ -13,7 +14,7 @@ export class WishlistController {
      */
     async getUserWishlist(req: Request, res: Response) {
         try {
-            const userId = (req as any).user?.id; // Assumes auth middleware sets req.user
+            const userId = req.user?.id; // Assumes auth middleware sets req.user
 
             if (!userId) {
                 return res.status(401).json({
@@ -57,11 +58,7 @@ export class WishlistController {
                 data: wishlistItems
             });
         } catch (error) {
-            console.error('Error fetching wishlist:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al obtener la lista de deseos'
-            });
+            return sendError(res, error, 'Error al obtener la lista de deseos');
         }
     }
 
@@ -70,7 +67,7 @@ export class WishlistController {
      */
     async addToWishlist(req: Request, res: Response) {
         try {
-            const userId = (req as any).user?.id;
+            const userId = req.user?.id;
             const { product_id } = req.body;
 
             if (!userId) {
@@ -114,11 +111,7 @@ export class WishlistController {
                 data: wishlistItem
             });
         } catch (error) {
-            console.error('Error adding to wishlist:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al agregar a favoritos'
-            });
+            return sendError(res, error, 'Error al agregar a favoritos');
         }
     }
 
@@ -127,7 +120,7 @@ export class WishlistController {
      */
     async removeFromWishlist(req: Request, res: Response) {
         try {
-            const userId = (req as any).user?.id;
+            const userId = req.user?.id;
             const { productId } = req.params;
 
             if (!userId) {
@@ -156,11 +149,7 @@ export class WishlistController {
                 message: 'Producto eliminado de favoritos'
             });
         } catch (error) {
-            console.error('Error removing from wishlist:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al eliminar de favoritos'
-            });
+            return sendError(res, error, 'Error al eliminar de favoritos');
         }
     }
 
@@ -169,7 +158,7 @@ export class WishlistController {
      */
     async clearWishlist(req: Request, res: Response) {
         try {
-            const userId = (req as any).user?.id;
+            const userId = req.user?.id;
 
             if (!userId) {
                 return res.status(401).json({
@@ -187,11 +176,7 @@ export class WishlistController {
                 message: 'Lista de deseos limpiada'
             });
         } catch (error) {
-            console.error('Error clearing wishlist:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al limpiar la lista de deseos'
-            });
+            return sendError(res, error, 'Error al limpiar la lista de deseos');
         }
     }
 
@@ -200,7 +185,7 @@ export class WishlistController {
      */
     async checkWishlist(req: Request, res: Response) {
         try {
-            const userId = (req as any).user?.id;
+            const userId = req.user?.id;
             const { productId } = req.params;
 
             if (!userId) {
@@ -222,11 +207,7 @@ export class WishlistController {
                 inWishlist: !!exists
             });
         } catch (error) {
-            console.error('Error checking wishlist:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al verificar favoritos'
-            });
+            return sendError(res, error, 'Error al verificar favoritos');
         }
     }
 
@@ -306,11 +287,7 @@ export class WishlistController {
                 }
             });
         } catch (error) {
-            console.error('Error fetching wishlist analytics:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al obtener análisis de favoritos'
-            });
+            return sendError(res, error, 'Error al obtener análisis de favoritos');
         }
     }
 
@@ -354,11 +331,7 @@ export class WishlistController {
                 }
             });
         } catch (error) {
-            console.error('Error fetching all wishlists:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al obtener listas de deseos'
-            });
+            return sendError(res, error, 'Error al obtener listas de deseos');
         }
     }
 
@@ -384,11 +357,7 @@ export class WishlistController {
                 }
             });
         } catch (error) {
-            console.error('Error fetching product wishlists:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al obtener favoritos del producto'
-            });
+            return sendError(res, error, 'Error al obtener favoritos del producto');
         }
     }
 }

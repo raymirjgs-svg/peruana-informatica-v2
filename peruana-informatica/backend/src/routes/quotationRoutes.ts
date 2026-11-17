@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import { body, param, query, validationResult } from 'express-validator';
 import * as QuotationController from '../controllers/QuotationController';
 import * as PdfQuotationController from '../controllers/PdfQuotationController';
+import { authenticateToken, requireAdmin } from '../middleware/authMiddleware';
 
 const router = express.Router();
 
@@ -41,19 +42,19 @@ router.get('/:code/pdf', [
 ], validateRequest, PdfQuotationController.generateQuotationPdf);
 
 // Listar cotizaciones (solo admin)
-router.get('/', [
+router.get('/', authenticateToken, requireAdmin, [
   query('status').optional().isString().withMessage('Estado inválido'),
   query('page').optional().isInt({ min: 1 }).withMessage('Número de página inválido'),
   query('limit').optional().isInt({ min: 1, max: 100 }).withMessage('Límite debe estar entre 1 y 100'),
 ], validateRequest, QuotationController.getAllQuotations);
 
 // Obtener detalle de cotización por ID (solo admin)
-router.get('/id/:id', [
+router.get('/id/:id', authenticateToken, requireAdmin, [
   param('id').isInt({ min: 1 }).withMessage('ID de cotización inválido')
 ], validateRequest, QuotationController.getQuotationById);
 
 // Actualizar estado de cotización (solo admin)
-router.put('/:id/status', [
+router.put('/:id/status', authenticateToken, requireAdmin, [
   param('id').isInt({ min: 1 }).withMessage('ID de cotización inválido'),
   body('status').isIn(['pending', 'sent', 'accepted', 'rejected', 'expired']).withMessage('Estado inválido'),
 ], validateRequest, QuotationController.updateQuotationStatus);

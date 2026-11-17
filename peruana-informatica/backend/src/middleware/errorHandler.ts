@@ -19,6 +19,37 @@ export class CustomError extends Error implements AppError {
   }
 }
 
+/**
+ * Respuesta de error uniforme para los controladores.
+ * El mensaje y el detalle nunca incluyen el codigo privado de seguimiento.
+ */
+export const sendError = (
+  res: Response,
+  error: unknown,
+  message: string,
+  statusCode: number = 500,
+  code: string = 'INTERNAL_ERROR'
+) => {
+  const detail = error instanceof Error ? error.message : String(error);
+  logger.error(redactSensitiveUrl(message), {
+    detail: redactSensitiveUrl(detail),
+    statusCode,
+    code,
+  });
+
+  const safeMessage = statusCode === 500
+    ? 'Error interno del servidor'
+    : redactSensitiveUrl(message);
+
+  return res.status(statusCode).json({
+    success: false,
+    message: safeMessage,
+    error: safeMessage,
+    code,
+    timestamp: new Date().toISOString(),
+  });
+};
+
 export const errorHandler = (
   err: AppError,
   req: Request,

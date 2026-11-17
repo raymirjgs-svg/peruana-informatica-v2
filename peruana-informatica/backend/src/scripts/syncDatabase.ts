@@ -3,18 +3,19 @@ import { Contact } from '../models/Contact';
 import { Product } from '../models/Product';
 import { Brand } from '../models/Brand';
 import { Category } from '../models/Category';
+import { logger } from '../config/logger';
 
 async function syncDatabase() {
   try {
-    console.log('🔌 Connecting to database...');
+    logger.info('🔌 Connecting to database...');
     await sequelize.authenticate();
-    console.log('✅ Database connection established successfully.');
+    logger.info('✅ Database connection established successfully.');
 
-    console.log('📋 Models loaded:');
-    console.log('- Contact:', !!Contact);
-    console.log('- Product:', !!Product);
-    console.log('- Brand:', !!Brand);
-    console.log('- Category:', !!Category);
+    logger.info('📋 Models loaded:');
+    logger.info('- Contact:', !!Contact);
+    logger.info('- Product:', !!Product);
+    logger.info('- Brand:', !!Brand);
+    logger.info('- Category:', !!Category);
 
     // Set up associations - ALREADY DEFINED IN MODELS
     /*
@@ -23,19 +24,19 @@ async function syncDatabase() {
       Product.belongsTo(Category, { foreignKey: 'category_id', as: 'productCategory' });
       Brand.hasMany(Product, { foreignKey: 'brand_id', as: 'products' });
       Category.hasMany(Product, { foreignKey: 'category_id', as: 'products' });
-      console.log('🔗 Model associations configured');
+      logger.info('🔗 Model associations configured');
     }
     */
 
-    console.log('🛠️ Syncing database schema...');
+    logger.info('🛠️ Syncing database schema...');
 
     // Force sync to recreate tables (use with caution in production)
     await sequelize.sync({ force: false, alter: true });
 
-    console.log('✅ Database schema synchronized successfully!');
+    logger.info('✅ Database schema synchronized successfully!');
 
     // Test Contact model
-    console.log('🧪 Testing Contact model...');
+    logger.info('🧪 Testing Contact model...');
     const testContact = await Contact.build({
       nombre: 'Test User',
       email: 'test@example.com',
@@ -43,16 +44,16 @@ async function syncDatabase() {
       mensaje: 'This is a test message',
     });
 
-    console.log('✅ Contact model validation passed');
+    logger.info('✅ Contact model validation passed');
 
     // Check if tables exist
     const tables = await sequelize.getQueryInterface().showAllTables();
-    console.log('📊 Available tables:', tables);
+    logger.info('📊 Available tables:', tables);
 
-    console.log('🎉 Database sync completed successfully!');
+    logger.info('🎉 Database sync completed successfully!');
 
   } catch (error) {
-    console.error('❌ Database sync failed:', error);
+    logger.error('❌ Database sync failed:', error);
     throw error;
   } finally {
     await sequelize.close();
@@ -63,11 +64,11 @@ async function syncDatabase() {
 if (require.main === module) {
   syncDatabase()
     .then(() => {
-      console.log('✅ Sync script completed');
+      logger.info('✅ Sync script completed');
       process.exit(0);
     })
     .catch((error) => {
-      console.error('❌ Sync script failed:', error);
+      logger.error('❌ Sync script failed:', error);
       process.exit(1);
     });
 }

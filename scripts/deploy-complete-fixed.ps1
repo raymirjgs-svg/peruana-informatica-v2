@@ -29,7 +29,7 @@ function Write-Header {
 $ServerIP = "200.58.98.122"
 $ServerPort = "5313"
 $SSHUser = "root"
-$SSHPassword = "9wC8/5lAhlxrXd"
+$SSHPassword = if ($env:SSH_PASSWORD) { $env:SSH_PASSWORD } else { throw "SSH_PASSWORD is required" }
 $RemoteDir = "/root/peruana-informatica"
 
 # ============================================

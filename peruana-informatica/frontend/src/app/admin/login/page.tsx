@@ -2,12 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-
-function getApiBase() {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
-  const trimmed = baseUrl.replace(/\/+$/, "");
-  return trimmed.endsWith("/api") ? trimmed : `${trimmed}/api`;
-}
+import { signIn, getSession, signOut } from "next-auth/react";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -29,29 +24,30 @@ export default function AdminLoginPage() {
     setError(null);
     setLoading(true);
     try {
-      const apiBase = getApiBase();
-      const res = await fetch(`${apiBase}/admin/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+      const res = await signIn("credentials", {
+        redirect: false,
+        email,
+        password,
       });
 
-      const data = await res.json().catch(() => ({}));
-
-      if (!res.ok) {
-        throw new Error(data?.error || data?.message || `Error ${res.status}`);
+      if (res?.error) {
+        setError("Credenciales incorrectas");
+        return;
       }
 
-      // Guardar token en localStorage
-      if (data?.accessToken) {
-        localStorage.setItem("adminToken", data.accessToken);
-        localStorage.setItem("adminUser", JSON.stringify(data.user));
+      const session = await getSession();
+      const role = session?.user?.role;
+
+      if (role !== "admin" && role !== "super-admin") {
+        await signOut({ redirect: false });
+        setError("No tenés permisos de administrador");
+        return;
       }
 
-      // Redirigir al dashboard de admin
       router.push("/admin");
-    } catch (err: any) {
-      setError(err?.message || "Error de autenticación");
+      router.refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error de autenticación");
     } finally {
       setLoading(false);
     }

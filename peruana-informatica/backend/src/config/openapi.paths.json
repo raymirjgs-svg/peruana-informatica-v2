@@ -1,0 +1,6634 @@
+{
+  "/admin/analytics/conversion": {
+    "get": {
+      "tags": [
+        "Admin Analytics"
+      ],
+      "summary": "GET /admin/analytics/conversion",
+      "operationId": "get_admin_analytics_conversion",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/analytics/kpis": {
+    "get": {
+      "tags": [
+        "Admin Analytics"
+      ],
+      "summary": "GET /admin/analytics/kpis",
+      "operationId": "get_admin_analytics_kpis",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/analytics/payment-methods": {
+    "get": {
+      "tags": [
+        "Admin Analytics"
+      ],
+      "summary": "GET /admin/analytics/payment-methods",
+      "operationId": "get_admin_analytics_payment_methods",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/analytics/recent-orders": {
+    "get": {
+      "tags": [
+        "Admin Analytics"
+      ],
+      "summary": "GET /admin/analytics/recent-orders",
+      "operationId": "get_admin_analytics_recent_orders",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/analytics/sales-overview": {
+    "get": {
+      "tags": [
+        "Admin Analytics"
+      ],
+      "summary": "GET /admin/analytics/sales-overview",
+      "operationId": "get_admin_analytics_sales_overview",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/analytics/top-products": {
+    "get": {
+      "tags": [
+        "Admin Analytics"
+      ],
+      "summary": "GET /admin/analytics/top-products",
+      "operationId": "get_admin_analytics_top_products",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/assign-role": {
+    "post": {
+      "tags": [
+        "Admin Roles"
+      ],
+      "summary": "POST /admin/assign-role",
+      "operationId": "post_admin_assign_role",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/brands": {
+    "get": {
+      "tags": [
+        "Admin Brands"
+      ],
+      "summary": "GET /admin/brands",
+      "operationId": "get_admin_brands",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/carousel": {
+    "get": {
+      "tags": [
+        "Admin Carousel"
+      ],
+      "summary": "GET /admin/carousel",
+      "operationId": "get_admin_carousel",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    },
+    "post": {
+      "tags": [
+        "Admin Carousel"
+      ],
+      "summary": "POST /admin/carousel",
+      "operationId": "post_admin_carousel",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/carousel/active": {
+    "get": {
+      "tags": [
+        "Admin Carousel"
+      ],
+      "summary": "GET /admin/carousel/active",
+      "operationId": "get_admin_carousel_active",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/carousel/reorder": {
+    "put": {
+      "tags": [
+        "Admin Carousel"
+      ],
+      "summary": "PUT /admin/carousel/reorder",
+      "operationId": "put_admin_carousel_reorder",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/carousel/upload": {
+    "post": {
+      "tags": [
+        "Admin Carousel"
+      ],
+      "summary": "POST /admin/carousel/upload",
+      "operationId": "post_admin_carousel_upload",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/carousel/{id}": {
+    "get": {
+      "tags": [
+        "Admin Carousel"
+      ],
+      "summary": "GET /admin/carousel/{id}",
+      "operationId": "get_admin_carousel_id_",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    },
+    "put": {
+      "tags": [
+        "Admin Carousel"
+      ],
+      "summary": "PUT /admin/carousel/{id}",
+      "operationId": "put_admin_carousel_id_",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    },
+    "delete": {
+      "tags": [
+        "Admin Carousel"
+      ],
+      "summary": "DELETE /admin/carousel/{id}",
+      "operationId": "delete_admin_carousel_id_",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/categories": {
+    "get": {
+      "tags": [
+        "Admin Categories"
+      ],
+      "summary": "GET /admin/categories",
+      "operationId": "get_admin_categories",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    },
+    "post": {
+      "tags": [
+        "Admin Categories"
+      ],
+      "summary": "POST /admin/categories",
+      "operationId": "post_admin_categories",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/categories/menu": {
+    "get": {
+      "tags": [
+        "Admin Categories"
+      ],
+      "summary": "GET /admin/categories/menu",
+      "operationId": "get_admin_categories_menu",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/categories/{id}": {
+    "get": {
+      "tags": [
+        "Admin Categories"
+      ],
+      "summary": "GET /admin/categories/{id}",
+      "operationId": "get_admin_categories_id_",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    },
+    "put": {
+      "tags": [
+        "Admin Categories"
+      ],
+      "summary": "PUT /admin/categories/{id}",
+      "operationId": "put_admin_categories_id_",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    },
+    "delete": {
+      "tags": [
+        "Admin Categories"
+      ],
+      "summary": "DELETE /admin/categories/{id}",
+      "operationId": "delete_admin_categories_id_",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/company-settings": {
+    "get": {
+      "tags": [
+        "Admin Settings"
+      ],
+      "summary": "GET /admin/company-settings",
+      "operationId": "get_admin_company_settings",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    },
+    "put": {
+      "tags": [
+        "Admin Settings"
+      ],
+      "summary": "PUT /admin/company-settings",
+      "operationId": "put_admin_company_settings",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/coupons": {
+    "get": {
+      "tags": [
+        "Admin Coupons"
+      ],
+      "summary": "GET /admin/coupons",
+      "operationId": "get_admin_coupons",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    },
+    "post": {
+      "tags": [
+        "Admin Coupons"
+      ],
+      "summary": "POST /admin/coupons",
+      "operationId": "post_admin_coupons",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/coupons/{id}": {
+    "put": {
+      "tags": [
+        "Admin Coupons"
+      ],
+      "summary": "PUT /admin/coupons/{id}",
+      "operationId": "put_admin_coupons_id_",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    },
+    "delete": {
+      "tags": [
+        "Admin Coupons"
+      ],
+      "summary": "DELETE /admin/coupons/{id}",
+      "operationId": "delete_admin_coupons_id_",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/coupons/{id}/toggle": {
+    "patch": {
+      "tags": [
+        "Admin Coupons"
+      ],
+      "summary": "PATCH /admin/coupons/{id}/toggle",
+      "operationId": "patch_admin_coupons_id_toggle",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/customers": {
+    "get": {
+      "tags": [
+        "Admin Customers"
+      ],
+      "summary": "GET /admin/customers",
+      "operationId": "get_admin_customers",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/customers/stats": {
+    "get": {
+      "tags": [
+        "Admin Customers"
+      ],
+      "summary": "GET /admin/customers/stats",
+      "operationId": "get_admin_customers_stats",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/customers/{id}": {
+    "get": {
+      "tags": [
+        "Admin Customers"
+      ],
+      "summary": "GET /admin/customers/{id}",
+      "operationId": "get_admin_customers_id_",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/customers/{id}/block": {
+    "patch": {
+      "tags": [
+        "Admin Customers"
+      ],
+      "summary": "PATCH /admin/customers/{id}/block",
+      "operationId": "patch_admin_customers_id_block",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/customers/{id}/orders": {
+    "get": {
+      "tags": [
+        "Admin Customers"
+      ],
+      "summary": "GET /admin/customers/{id}/orders",
+      "operationId": "get_admin_customers_id_orders",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/dashboard": {
+    "get": {
+      "tags": [
+        "Admin Dashboard"
+      ],
+      "summary": "GET /admin/dashboard",
+      "operationId": "get_admin_dashboard",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/discounts": {
+    "get": {
+      "tags": [
+        "Admin Discounts"
+      ],
+      "summary": "GET /admin/discounts",
+      "operationId": "get_admin_discounts",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    },
+    "post": {
+      "tags": [
+        "Admin Discounts"
+      ],
+      "summary": "POST /admin/discounts",
+      "operationId": "post_admin_discounts",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/discounts/{id}": {
+    "put": {
+      "tags": [
+        "Admin Discounts"
+      ],
+      "summary": "PUT /admin/discounts/{id}",
+      "operationId": "put_admin_discounts_id_",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    },
+    "delete": {
+      "tags": [
+        "Admin Discounts"
+      ],
+      "summary": "DELETE /admin/discounts/{id}",
+      "operationId": "delete_admin_discounts_id_",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/images/product/{productId}": {
+    "get": {
+      "tags": [
+        "Admin Images"
+      ],
+      "summary": "GET /admin/images/product/{productId}",
+      "operationId": "get_admin_images_product_productId_",
+      "parameters": [
+        {
+          "name": "productId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    },
+    "post": {
+      "tags": [
+        "Admin Images"
+      ],
+      "summary": "POST /admin/images/product/{productId}",
+      "operationId": "post_admin_images_product_productId_",
+      "parameters": [
+        {
+          "name": "productId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/images/{imageId}": {
+    "delete": {
+      "tags": [
+        "Admin Images"
+      ],
+      "summary": "DELETE /admin/images/{imageId}",
+      "operationId": "delete_admin_images_imageId_",
+      "parameters": [
+        {
+          "name": "imageId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/login": {
+    "post": {
+      "tags": [
+        "Admin Auth"
+      ],
+      "summary": "POST /admin/login",
+      "operationId": "post_admin_login",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/me": {
+    "get": {
+      "tags": [
+        "Admin Auth"
+      ],
+      "summary": "GET /admin/me",
+      "operationId": "get_admin_me",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/orders": {
+    "get": {
+      "tags": [
+        "Admin Orders"
+      ],
+      "summary": "GET /admin/orders",
+      "operationId": "get_admin_orders",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/orders/{id}/payment-proof": {
+    "get": {
+      "tags": [
+        "Admin Orders"
+      ],
+      "summary": "GET /admin/orders/{id}/payment-proof",
+      "operationId": "get_admin_orders_id_payment_proof",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/orders/{id}/status": {
+    "patch": {
+      "tags": [
+        "Admin Orders"
+      ],
+      "summary": "PATCH /admin/orders/{id}/status",
+      "operationId": "patch_admin_orders_id_status",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/pages": {
+    "get": {
+      "tags": [
+        "Admin Pages"
+      ],
+      "summary": "GET /admin/pages",
+      "operationId": "get_admin_pages",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    },
+    "post": {
+      "tags": [
+        "Admin Pages"
+      ],
+      "summary": "POST /admin/pages",
+      "operationId": "post_admin_pages",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/pages/{id}": {
+    "get": {
+      "tags": [
+        "Admin Pages"
+      ],
+      "summary": "GET /admin/pages/{id}",
+      "operationId": "get_admin_pages_id_",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    },
+    "put": {
+      "tags": [
+        "Admin Pages"
+      ],
+      "summary": "PUT /admin/pages/{id}",
+      "operationId": "put_admin_pages_id_",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    },
+    "delete": {
+      "tags": [
+        "Admin Pages"
+      ],
+      "summary": "DELETE /admin/pages/{id}",
+      "operationId": "delete_admin_pages_id_",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/payments/invoices/{filename}": {
+    "get": {
+      "tags": [
+        "Admin Payments"
+      ],
+      "summary": "GET /admin/payments/invoices/{filename}",
+      "operationId": "get_admin_payments_invoices_filename_",
+      "parameters": [
+        {
+          "name": "filename",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/payments/{id}/generate-invoice": {
+    "post": {
+      "tags": [
+        "Admin Payments"
+      ],
+      "summary": "POST /admin/payments/{id}/generate-invoice",
+      "operationId": "post_admin_payments_id_generate_invoice",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/payments/{id}/upload-invoice": {
+    "post": {
+      "tags": [
+        "Admin Payments"
+      ],
+      "summary": "POST /admin/payments/{id}/upload-invoice",
+      "operationId": "post_admin_payments_id_upload_invoice",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/payments/{id}/verify": {
+    "patch": {
+      "tags": [
+        "Admin Payments"
+      ],
+      "summary": "PATCH /admin/payments/{id}/verify",
+      "operationId": "patch_admin_payments_id_verify",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/permissions": {
+    "get": {
+      "tags": [
+        "Admin Roles"
+      ],
+      "summary": "GET /admin/permissions",
+      "operationId": "get_admin_permissions",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/products": {
+    "get": {
+      "tags": [
+        "Admin Products"
+      ],
+      "summary": "GET /admin/products",
+      "operationId": "get_admin_products",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    },
+    "post": {
+      "tags": [
+        "Admin Products"
+      ],
+      "summary": "POST /admin/products",
+      "operationId": "post_admin_products",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/products/bulk-update": {
+    "patch": {
+      "tags": [
+        "Admin Products"
+      ],
+      "summary": "PATCH /admin/products/bulk-update",
+      "operationId": "patch_admin_products_bulk_update",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/products/erp-lookup/{code}": {
+    "get": {
+      "tags": [
+        "Admin Products"
+      ],
+      "summary": "GET /admin/products/erp-lookup/{code}",
+      "operationId": "get_admin_products_erp_lookup_code_",
+      "parameters": [
+        {
+          "name": "code",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/products/import-json": {
+    "post": {
+      "tags": [
+        "Admin Products"
+      ],
+      "summary": "POST /admin/products/import-json",
+      "operationId": "post_admin_products_import_json",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/products/sync-all": {
+    "post": {
+      "tags": [
+        "Admin Products"
+      ],
+      "summary": "POST /admin/products/sync-all",
+      "operationId": "post_admin_products_sync_all",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/products/{id}": {
+    "get": {
+      "tags": [
+        "Admin Products"
+      ],
+      "summary": "GET /admin/products/{id}",
+      "operationId": "get_admin_products_id_",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    },
+    "put": {
+      "tags": [
+        "Admin Products"
+      ],
+      "summary": "PUT /admin/products/{id}",
+      "operationId": "put_admin_products_id_",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    },
+    "delete": {
+      "tags": [
+        "Admin Products"
+      ],
+      "summary": "DELETE /admin/products/{id}",
+      "operationId": "delete_admin_products_id_",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/products/{id}/toggle-active": {
+    "patch": {
+      "tags": [
+        "Admin Products"
+      ],
+      "summary": "PATCH /admin/products/{id}/toggle-active",
+      "operationId": "patch_admin_products_id_toggle_active",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/promo-banners": {
+    "get": {
+      "tags": [
+        "Admin Promotions"
+      ],
+      "summary": "GET /admin/promo-banners",
+      "operationId": "get_admin_promo_banners",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    },
+    "post": {
+      "tags": [
+        "Admin Promotions"
+      ],
+      "summary": "POST /admin/promo-banners",
+      "operationId": "post_admin_promo_banners",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/promo-banners/{id}": {
+    "put": {
+      "tags": [
+        "Admin Promotions"
+      ],
+      "summary": "PUT /admin/promo-banners/{id}",
+      "operationId": "put_admin_promo_banners_id_",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    },
+    "delete": {
+      "tags": [
+        "Admin Promotions"
+      ],
+      "summary": "DELETE /admin/promo-banners/{id}",
+      "operationId": "delete_admin_promo_banners_id_",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/promo-banners/{id}/toggle": {
+    "patch": {
+      "tags": [
+        "Admin Promotions"
+      ],
+      "summary": "PATCH /admin/promo-banners/{id}/toggle",
+      "operationId": "patch_admin_promo_banners_id_toggle",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/reviews": {
+    "get": {
+      "tags": [
+        "Admin Reviews"
+      ],
+      "summary": "GET /admin/reviews",
+      "operationId": "get_admin_reviews",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/reviews/{reviewId}": {
+    "delete": {
+      "tags": [
+        "Admin Reviews"
+      ],
+      "summary": "DELETE /admin/reviews/{reviewId}",
+      "operationId": "delete_admin_reviews_reviewId_",
+      "parameters": [
+        {
+          "name": "reviewId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/reviews/{reviewId}/approve": {
+    "patch": {
+      "tags": [
+        "Admin Reviews"
+      ],
+      "summary": "PATCH /admin/reviews/{reviewId}/approve",
+      "operationId": "patch_admin_reviews_reviewId_approve",
+      "parameters": [
+        {
+          "name": "reviewId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/reviews/{reviewId}/reject": {
+    "patch": {
+      "tags": [
+        "Admin Reviews"
+      ],
+      "summary": "PATCH /admin/reviews/{reviewId}/reject",
+      "operationId": "patch_admin_reviews_reviewId_reject",
+      "parameters": [
+        {
+          "name": "reviewId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/roles": {
+    "get": {
+      "tags": [
+        "Admin Roles"
+      ],
+      "summary": "GET /admin/roles",
+      "operationId": "get_admin_roles",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    },
+    "post": {
+      "tags": [
+        "Admin Roles"
+      ],
+      "summary": "POST /admin/roles",
+      "operationId": "post_admin_roles",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/roles/{id}": {
+    "get": {
+      "tags": [
+        "Admin Roles"
+      ],
+      "summary": "GET /admin/roles/{id}",
+      "operationId": "get_admin_roles_id_",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    },
+    "put": {
+      "tags": [
+        "Admin Roles"
+      ],
+      "summary": "PUT /admin/roles/{id}",
+      "operationId": "put_admin_roles_id_",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    },
+    "delete": {
+      "tags": [
+        "Admin Roles"
+      ],
+      "summary": "DELETE /admin/roles/{id}",
+      "operationId": "delete_admin_roles_id_",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/settings": {
+    "get": {
+      "tags": [
+        "Admin Settings"
+      ],
+      "summary": "GET /admin/settings",
+      "operationId": "get_admin_settings",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/settings/{key}": {
+    "put": {
+      "tags": [
+        "Admin Settings"
+      ],
+      "summary": "PUT /admin/settings/{key}",
+      "operationId": "put_admin_settings_key_",
+      "parameters": [
+        {
+          "name": "key",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/system/health-check": {
+    "get": {
+      "tags": [
+        "Admin System"
+      ],
+      "summary": "GET /admin/system/health-check",
+      "operationId": "get_admin_system_health_check",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/taxonomy/assign": {
+    "post": {
+      "tags": [
+        "Admin Taxonomy"
+      ],
+      "summary": "POST /admin/taxonomy/assign",
+      "operationId": "post_admin_taxonomy_assign",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/taxonomy/bulk-assign": {
+    "post": {
+      "tags": [
+        "Admin Taxonomy"
+      ],
+      "summary": "POST /admin/taxonomy/bulk-assign",
+      "operationId": "post_admin_taxonomy_bulk_assign",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/taxonomy/categories": {
+    "get": {
+      "tags": [
+        "Admin Taxonomy"
+      ],
+      "summary": "GET /admin/taxonomy/categories",
+      "operationId": "get_admin_taxonomy_categories",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    },
+    "post": {
+      "tags": [
+        "Admin Taxonomy"
+      ],
+      "summary": "POST /admin/taxonomy/categories",
+      "operationId": "post_admin_taxonomy_categories",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/taxonomy/categories/{id}": {
+    "put": {
+      "tags": [
+        "Admin Taxonomy"
+      ],
+      "summary": "PUT /admin/taxonomy/categories/{id}",
+      "operationId": "put_admin_taxonomy_categories_id_",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    },
+    "delete": {
+      "tags": [
+        "Admin Taxonomy"
+      ],
+      "summary": "DELETE /admin/taxonomy/categories/{id}",
+      "operationId": "delete_admin_taxonomy_categories_id_",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/taxonomy/subcategories": {
+    "get": {
+      "tags": [
+        "Admin Taxonomy"
+      ],
+      "summary": "GET /admin/taxonomy/subcategories",
+      "operationId": "get_admin_taxonomy_subcategories",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    },
+    "post": {
+      "tags": [
+        "Admin Taxonomy"
+      ],
+      "summary": "POST /admin/taxonomy/subcategories",
+      "operationId": "post_admin_taxonomy_subcategories",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/taxonomy/subcategories/{id}": {
+    "put": {
+      "tags": [
+        "Admin Taxonomy"
+      ],
+      "summary": "PUT /admin/taxonomy/subcategories/{id}",
+      "operationId": "put_admin_taxonomy_subcategories_id_",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    },
+    "delete": {
+      "tags": [
+        "Admin Taxonomy"
+      ],
+      "summary": "DELETE /admin/taxonomy/subcategories/{id}",
+      "operationId": "delete_admin_taxonomy_subcategories_id_",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/upload": {
+    "post": {
+      "tags": [
+        "Admin Upload"
+      ],
+      "summary": "POST /admin/upload",
+      "operationId": "post_admin_upload",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/wishlists": {
+    "get": {
+      "tags": [
+        "Admin Wishlist"
+      ],
+      "summary": "GET /admin/wishlists",
+      "operationId": "get_admin_wishlists",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/wishlists/analytics": {
+    "get": {
+      "tags": [
+        "Admin Wishlist"
+      ],
+      "summary": "GET /admin/wishlists/analytics",
+      "operationId": "get_admin_wishlists_analytics",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/admin/wishlists/product/{productId}": {
+    "get": {
+      "tags": [
+        "Admin Wishlist"
+      ],
+      "summary": "GET /admin/wishlists/product/{productId}",
+      "operationId": "get_admin_wishlists_product_productId_",
+      "parameters": [
+        {
+          "name": "productId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "401": {
+          "description": "Missing or invalid admin token"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  },
+  "/auth/login": {
+    "post": {
+      "tags": [
+        "Auth"
+      ],
+      "summary": "POST /auth/login",
+      "operationId": "post_auth_login",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/auth/register": {
+    "post": {
+      "tags": [
+        "Auth"
+      ],
+      "summary": "POST /auth/register",
+      "operationId": "post_auth_register",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/auth/social-login": {
+    "post": {
+      "tags": [
+        "Auth"
+      ],
+      "summary": "POST /auth/social-login",
+      "operationId": "post_auth_social_login",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/blog": {
+    "get": {
+      "tags": [
+        "Blog"
+      ],
+      "summary": "GET /blog",
+      "operationId": "get_blog",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/blog/admin": {
+    "get": {
+      "tags": [
+        "Blog"
+      ],
+      "summary": "GET /blog/admin",
+      "operationId": "get_blog_admin",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    },
+    "post": {
+      "tags": [
+        "Blog"
+      ],
+      "summary": "POST /blog/admin",
+      "operationId": "post_blog_admin",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/blog/admin/ai/generate-content": {
+    "post": {
+      "tags": [
+        "Blog"
+      ],
+      "summary": "POST /blog/admin/ai/generate-content",
+      "operationId": "post_blog_admin_ai_generate_content",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/blog/admin/ai/generate-titles": {
+    "post": {
+      "tags": [
+        "Blog"
+      ],
+      "summary": "POST /blog/admin/ai/generate-titles",
+      "operationId": "post_blog_admin_ai_generate_titles",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/blog/admin/ai/title-suggestions": {
+    "get": {
+      "tags": [
+        "Blog"
+      ],
+      "summary": "GET /blog/admin/ai/title-suggestions",
+      "operationId": "get_blog_admin_ai_title_suggestions",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/blog/admin/ai/title-suggestions/{id}": {
+    "put": {
+      "tags": [
+        "Blog"
+      ],
+      "summary": "PUT /blog/admin/ai/title-suggestions/{id}",
+      "operationId": "put_blog_admin_ai_title_suggestions_id_",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/blog/admin/config/gemini": {
+    "post": {
+      "tags": [
+        "Blog"
+      ],
+      "summary": "POST /blog/admin/config/gemini",
+      "operationId": "post_blog_admin_config_gemini",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/blog/admin/demo": {
+    "post": {
+      "tags": [
+        "Blog"
+      ],
+      "summary": "POST /blog/admin/demo",
+      "operationId": "post_blog_admin_demo",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/blog/admin/stats": {
+    "get": {
+      "tags": [
+        "Blog"
+      ],
+      "summary": "GET /blog/admin/stats",
+      "operationId": "get_blog_admin_stats",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/blog/admin/{id}": {
+    "get": {
+      "tags": [
+        "Blog"
+      ],
+      "summary": "GET /blog/admin/{id}",
+      "operationId": "get_blog_admin_id_",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    },
+    "put": {
+      "tags": [
+        "Blog"
+      ],
+      "summary": "PUT /blog/admin/{id}",
+      "operationId": "put_blog_admin_id_",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    },
+    "delete": {
+      "tags": [
+        "Blog"
+      ],
+      "summary": "DELETE /blog/admin/{id}",
+      "operationId": "delete_blog_admin_id_",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/blog/post/{id}/like": {
+    "post": {
+      "tags": [
+        "Blog"
+      ],
+      "summary": "POST /blog/post/{id}/like",
+      "operationId": "post_blog_post_id_like",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/blog/post/{slug}": {
+    "get": {
+      "tags": [
+        "Blog"
+      ],
+      "summary": "GET /blog/post/{slug}",
+      "operationId": "get_blog_post_slug_",
+      "parameters": [
+        {
+          "name": "slug",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/blog/test": {
+    "get": {
+      "tags": [
+        "Blog"
+      ],
+      "summary": "GET /blog/test",
+      "operationId": "get_blog_test",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/brands": {
+    "get": {
+      "tags": [
+        "Brands"
+      ],
+      "summary": "GET /brands",
+      "operationId": "get_brands",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/brands/{slug}": {
+    "get": {
+      "tags": [
+        "Brands"
+      ],
+      "summary": "GET /brands/{slug}",
+      "operationId": "get_brands_slug_",
+      "parameters": [
+        {
+          "name": "slug",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/cart": {
+    "get": {
+      "tags": [
+        "Cart"
+      ],
+      "summary": "GET /cart",
+      "operationId": "get_cart",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/cart/item": {
+    "post": {
+      "tags": [
+        "Cart"
+      ],
+      "summary": "POST /cart/item",
+      "operationId": "post_cart_item",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/cart/item/{productId}": {
+    "delete": {
+      "tags": [
+        "Cart"
+      ],
+      "summary": "DELETE /cart/item/{productId}",
+      "operationId": "delete_cart_item_productId_",
+      "parameters": [
+        {
+          "name": "productId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/cart/sync": {
+    "post": {
+      "tags": [
+        "Cart"
+      ],
+      "summary": "POST /cart/sync",
+      "operationId": "post_cart_sync",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/categories": {
+    "get": {
+      "tags": [
+        "Categories"
+      ],
+      "summary": "GET /categories",
+      "operationId": "get_categories",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/categories/health-check": {
+    "get": {
+      "tags": [
+        "Categories"
+      ],
+      "summary": "GET /categories/health-check",
+      "operationId": "get_categories_health_check",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/categories/menu": {
+    "get": {
+      "tags": [
+        "Categories"
+      ],
+      "summary": "GET /categories/menu",
+      "operationId": "get_categories_menu",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/categories/{slug}": {
+    "get": {
+      "tags": [
+        "Categories"
+      ],
+      "summary": "GET /categories/{slug}",
+      "operationId": "get_categories_slug_",
+      "parameters": [
+        {
+          "name": "slug",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/client/orders/track/{code}": {
+    "get": {
+      "tags": [
+        "Clients"
+      ],
+      "summary": "GET /client/orders/track/{code}",
+      "operationId": "get_client_orders_track_code_",
+      "parameters": [
+        {
+          "name": "code",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/client/orders/track/{code}/invoice": {
+    "get": {
+      "tags": [
+        "Clients"
+      ],
+      "summary": "GET /client/orders/track/{code}/invoice",
+      "operationId": "get_client_orders_track_code_invoice",
+      "parameters": [
+        {
+          "name": "code",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/company-settings": {
+    "get": {
+      "tags": [
+        "Settings"
+      ],
+      "summary": "GET /company-settings",
+      "operationId": "get_company_settings",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/compatibility/attributes/{componentType}": {
+    "get": {
+      "tags": [
+        "Compatibility"
+      ],
+      "summary": "GET /compatibility/attributes/{componentType}",
+      "operationId": "get_compatibility_attributes_componentType_",
+      "parameters": [
+        {
+          "name": "componentType",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/compatibility/filter": {
+    "post": {
+      "tags": [
+        "Compatibility"
+      ],
+      "summary": "POST /compatibility/filter",
+      "operationId": "post_compatibility_filter",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/compatibility/validate": {
+    "post": {
+      "tags": [
+        "Compatibility"
+      ],
+      "summary": "POST /compatibility/validate",
+      "operationId": "post_compatibility_validate",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/contacts": {
+    "post": {
+      "tags": [
+        "Contacts"
+      ],
+      "summary": "POST /contacts",
+      "operationId": "post_contacts",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/contacts/admin": {
+    "get": {
+      "tags": [
+        "Contacts"
+      ],
+      "summary": "GET /contacts/admin",
+      "operationId": "get_contacts_admin",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/contacts/admin/bulk/resolve": {
+    "put": {
+      "tags": [
+        "Contacts"
+      ],
+      "summary": "PUT /contacts/admin/bulk/resolve",
+      "operationId": "put_contacts_admin_bulk_resolve",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/contacts/admin/stats": {
+    "get": {
+      "tags": [
+        "Contacts"
+      ],
+      "summary": "GET /contacts/admin/stats",
+      "operationId": "get_contacts_admin_stats",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/contacts/admin/{id}": {
+    "get": {
+      "tags": [
+        "Contacts"
+      ],
+      "summary": "GET /contacts/admin/{id}",
+      "operationId": "get_contacts_admin_id_",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    },
+    "delete": {
+      "tags": [
+        "Contacts"
+      ],
+      "summary": "DELETE /contacts/admin/{id}",
+      "operationId": "delete_contacts_admin_id_",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/contacts/admin/{id}/status": {
+    "put": {
+      "tags": [
+        "Contacts"
+      ],
+      "summary": "PUT /contacts/admin/{id}/status",
+      "operationId": "put_contacts_admin_id_status",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/contacts/test": {
+    "get": {
+      "tags": [
+        "Contacts"
+      ],
+      "summary": "GET /contacts/test",
+      "operationId": "get_contacts_test",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/cotizador/laptops": {
+    "get": {
+      "tags": [
+        "Quoter"
+      ],
+      "summary": "GET /cotizador/laptops",
+      "operationId": "get_cotizador_laptops",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/coupons/apply": {
+    "post": {
+      "tags": [
+        "Coupons"
+      ],
+      "summary": "POST /coupons/apply",
+      "operationId": "post_coupons_apply",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/coupons/validate": {
+    "post": {
+      "tags": [
+        "Coupons"
+      ],
+      "summary": "POST /coupons/validate",
+      "operationId": "post_coupons_validate",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/customers/orders": {
+    "get": {
+      "tags": [
+        "Customers"
+      ],
+      "summary": "GET /customers/orders",
+      "operationId": "get_customers_orders",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/customers/password": {
+    "patch": {
+      "tags": [
+        "Customers"
+      ],
+      "summary": "PATCH /customers/password",
+      "operationId": "patch_customers_password",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/customers/profile": {
+    "get": {
+      "tags": [
+        "Customers"
+      ],
+      "summary": "GET /customers/profile",
+      "operationId": "get_customers_profile",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    },
+    "patch": {
+      "tags": [
+        "Customers"
+      ],
+      "summary": "PATCH /customers/profile",
+      "operationId": "patch_customers_profile",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/external/consultar-articulo/{id}": {
+    "get": {
+      "tags": [
+        "External"
+      ],
+      "summary": "GET /external/consultar-articulo/{id}",
+      "operationId": "get_external_consultar_articulo_id_",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/laptops": {
+    "get": {
+      "tags": [
+        "Laptops"
+      ],
+      "summary": "GET /laptops",
+      "operationId": "get_laptops",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/laptops/processors": {
+    "get": {
+      "tags": [
+        "Laptops"
+      ],
+      "summary": "GET /laptops/processors",
+      "operationId": "get_laptops_processors",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/laptops/ram": {
+    "get": {
+      "tags": [
+        "Laptops"
+      ],
+      "summary": "GET /laptops/ram",
+      "operationId": "get_laptops_ram",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/laptops/storage": {
+    "get": {
+      "tags": [
+        "Laptops"
+      ],
+      "summary": "GET /laptops/storage",
+      "operationId": "get_laptops_storage",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/laptops/subcategories": {
+    "get": {
+      "tags": [
+        "Laptops"
+      ],
+      "summary": "GET /laptops/subcategories",
+      "operationId": "get_laptops_subcategories",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/orders": {
+    "post": {
+      "tags": [
+        "Orders"
+      ],
+      "summary": "POST /orders",
+      "operationId": "post_orders",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/pages/{slug}": {
+    "get": {
+      "tags": [
+        "Pages"
+      ],
+      "summary": "GET /pages/{slug}",
+      "operationId": "get_pages_slug_",
+      "parameters": [
+        {
+          "name": "slug",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/payment/create-preference": {
+    "post": {
+      "tags": [
+        "Payments"
+      ],
+      "summary": "POST /payment/create-preference",
+      "operationId": "post_payment_create_preference",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/payment/create-preference-order": {
+    "post": {
+      "tags": [
+        "Payments"
+      ],
+      "summary": "POST /payment/create-preference-order",
+      "operationId": "post_payment_create_preference_order",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/payment/webhook": {
+    "post": {
+      "tags": [
+        "Payments"
+      ],
+      "summary": "POST /payment/webhook",
+      "operationId": "post_payment_webhook",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/payment/{orderId}/upload-proof": {
+    "post": {
+      "tags": [
+        "Payments"
+      ],
+      "summary": "POST /payment/{orderId}/upload-proof",
+      "operationId": "post_payment_orderId_upload_proof",
+      "parameters": [
+        {
+          "name": "orderId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/payments/create-preference": {
+    "post": {
+      "tags": [
+        "Payments"
+      ],
+      "summary": "POST /payments/create-preference",
+      "operationId": "post_payments_create_preference",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/payments/create-preference-order": {
+    "post": {
+      "tags": [
+        "Payments"
+      ],
+      "summary": "POST /payments/create-preference-order",
+      "operationId": "post_payments_create_preference_order",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/payments/webhook": {
+    "post": {
+      "tags": [
+        "Payments"
+      ],
+      "summary": "POST /payments/webhook",
+      "operationId": "post_payments_webhook",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/payments/{orderId}/upload-proof": {
+    "post": {
+      "tags": [
+        "Payments"
+      ],
+      "summary": "POST /payments/{orderId}/upload-proof",
+      "operationId": "post_payments_orderId_upload_proof",
+      "parameters": [
+        {
+          "name": "orderId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/products": {
+    "get": {
+      "tags": [
+        "Products"
+      ],
+      "summary": "GET /products",
+      "operationId": "get_products",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/products/slug/{slug}": {
+    "get": {
+      "tags": [
+        "Products"
+      ],
+      "summary": "GET /products/slug/{slug}",
+      "operationId": "get_products_slug_slug_",
+      "parameters": [
+        {
+          "name": "slug",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/products/utils/suggestions": {
+    "get": {
+      "tags": [
+        "Products"
+      ],
+      "summary": "GET /products/utils/suggestions",
+      "operationId": "get_products_utils_suggestions",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/products/{id}": {
+    "get": {
+      "tags": [
+        "Products"
+      ],
+      "summary": "GET /products/{id}",
+      "operationId": "get_products_id_",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/promo-banners/active": {
+    "get": {
+      "tags": [
+        "Promotions"
+      ],
+      "summary": "GET /promo-banners/active",
+      "operationId": "get_promo_banners_active",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/quotations": {
+    "post": {
+      "tags": [
+        "Quotations"
+      ],
+      "summary": "POST /quotations",
+      "operationId": "post_quotations",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    },
+    "get": {
+      "tags": [
+        "Quotations"
+      ],
+      "summary": "GET /quotations",
+      "operationId": "get_quotations",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/quotations/compatibility/check/{parentId}/{childId}": {
+    "get": {
+      "tags": [
+        "Quotations"
+      ],
+      "summary": "GET /quotations/compatibility/check/{parentId}/{childId}",
+      "operationId": "get_quotations_compatibility_check_parentId_childId_",
+      "parameters": [
+        {
+          "name": "parentId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "childId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/quotations/id/{id}": {
+    "get": {
+      "tags": [
+        "Quotations"
+      ],
+      "summary": "GET /quotations/id/{id}",
+      "operationId": "get_quotations_id_id_",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/quotations/products/{id}/compatible/{type}": {
+    "get": {
+      "tags": [
+        "Quotations"
+      ],
+      "summary": "GET /quotations/products/{id}/compatible/{type}",
+      "operationId": "get_quotations_products_id_compatible_type_",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "type",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/quotations/validate": {
+    "post": {
+      "tags": [
+        "Quotations"
+      ],
+      "summary": "POST /quotations/validate",
+      "operationId": "post_quotations_validate",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/quotations/{code}": {
+    "get": {
+      "tags": [
+        "Quotations"
+      ],
+      "summary": "GET /quotations/{code}",
+      "operationId": "get_quotations_code_",
+      "parameters": [
+        {
+          "name": "code",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/quotations/{code}/pdf": {
+    "get": {
+      "tags": [
+        "Quotations"
+      ],
+      "summary": "GET /quotations/{code}/pdf",
+      "operationId": "get_quotations_code_pdf",
+      "parameters": [
+        {
+          "name": "code",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/quotations/{id}/status": {
+    "put": {
+      "tags": [
+        "Quotations"
+      ],
+      "summary": "PUT /quotations/{id}/status",
+      "operationId": "put_quotations_id_status",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/reviews": {
+    "post": {
+      "tags": [
+        "Reviews"
+      ],
+      "summary": "POST /reviews",
+      "operationId": "post_reviews",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/reviews/admin/all": {
+    "get": {
+      "tags": [
+        "Reviews"
+      ],
+      "summary": "GET /reviews/admin/all",
+      "operationId": "get_reviews_admin_all",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/reviews/admin/{reviewId}": {
+    "delete": {
+      "tags": [
+        "Reviews"
+      ],
+      "summary": "DELETE /reviews/admin/{reviewId}",
+      "operationId": "delete_reviews_admin_reviewId_",
+      "parameters": [
+        {
+          "name": "reviewId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/reviews/admin/{reviewId}/approve": {
+    "patch": {
+      "tags": [
+        "Reviews"
+      ],
+      "summary": "PATCH /reviews/admin/{reviewId}/approve",
+      "operationId": "patch_reviews_admin_reviewId_approve",
+      "parameters": [
+        {
+          "name": "reviewId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/reviews/admin/{reviewId}/reject": {
+    "patch": {
+      "tags": [
+        "Reviews"
+      ],
+      "summary": "PATCH /reviews/admin/{reviewId}/reject",
+      "operationId": "patch_reviews_admin_reviewId_reject",
+      "parameters": [
+        {
+          "name": "reviewId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/reviews/product/{productId}": {
+    "get": {
+      "tags": [
+        "Reviews"
+      ],
+      "summary": "GET /reviews/product/{productId}",
+      "operationId": "get_reviews_product_productId_",
+      "parameters": [
+        {
+          "name": "productId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/reviews/product/{productId}/summary": {
+    "get": {
+      "tags": [
+        "Reviews"
+      ],
+      "summary": "GET /reviews/product/{productId}/summary",
+      "operationId": "get_reviews_product_productId_summary",
+      "parameters": [
+        {
+          "name": "productId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/reviews/{reviewId}/helpful": {
+    "post": {
+      "tags": [
+        "Reviews"
+      ],
+      "summary": "POST /reviews/{reviewId}/helpful",
+      "operationId": "post_reviews_reviewId_helpful",
+      "parameters": [
+        {
+          "name": "reviewId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/seo": {
+    "get": {
+      "tags": [
+        "SEO"
+      ],
+      "summary": "GET /seo",
+      "operationId": "get_seo",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    },
+    "post": {
+      "tags": [
+        "SEO"
+      ],
+      "summary": "POST /seo",
+      "operationId": "post_seo",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/seo/analysis": {
+    "get": {
+      "tags": [
+        "SEO"
+      ],
+      "summary": "GET /seo/analysis",
+      "operationId": "get_seo_analysis",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/seo/page/{page_type}": {
+    "get": {
+      "tags": [
+        "SEO"
+      ],
+      "summary": "GET /seo/page/{page_type}",
+      "operationId": "get_seo_page_page_type_",
+      "parameters": [
+        {
+          "name": "page_type",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    },
+    "put": {
+      "tags": [
+        "SEO"
+      ],
+      "summary": "PUT /seo/page/{page_type}",
+      "operationId": "put_seo_page_page_type_",
+      "parameters": [
+        {
+          "name": "page_type",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/seo/suggest": {
+    "post": {
+      "tags": [
+        "SEO"
+      ],
+      "summary": "POST /seo/suggest",
+      "operationId": "post_seo_suggest",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/seo/test": {
+    "get": {
+      "tags": [
+        "SEO"
+      ],
+      "summary": "GET /seo/test",
+      "operationId": "get_seo_test",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/seo/{id}": {
+    "get": {
+      "tags": [
+        "SEO"
+      ],
+      "summary": "GET /seo/{id}",
+      "operationId": "get_seo_id_",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    },
+    "put": {
+      "tags": [
+        "SEO"
+      ],
+      "summary": "PUT /seo/{id}",
+      "operationId": "put_seo_id_",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    },
+    "delete": {
+      "tags": [
+        "SEO"
+      ],
+      "summary": "DELETE /seo/{id}",
+      "operationId": "delete_seo_id_",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/settings/checkout-mode": {
+    "get": {
+      "tags": [
+        "Settings"
+      ],
+      "summary": "GET /settings/checkout-mode",
+      "operationId": "get_settings_checkout_mode",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/sync/all-products": {
+    "post": {
+      "tags": [
+        "Sync"
+      ],
+      "summary": "POST /sync/all-products",
+      "operationId": "post_sync_all_products",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/sync/product/{id}": {
+    "post": {
+      "tags": [
+        "Sync"
+      ],
+      "summary": "POST /sync/product/{id}",
+      "operationId": "post_sync_product_id_",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/sync/products": {
+    "post": {
+      "tags": [
+        "Sync"
+      ],
+      "summary": "POST /sync/products",
+      "operationId": "post_sync_products",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/sync/token": {
+    "post": {
+      "tags": [
+        "Sync"
+      ],
+      "summary": "POST /sync/token",
+      "operationId": "post_sync_token",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/sync/verify-token": {
+    "get": {
+      "tags": [
+        "Sync"
+      ],
+      "summary": "GET /sync/verify-token",
+      "operationId": "get_sync_verify_token",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/wishlist": {
+    "get": {
+      "tags": [
+        "Wishlist"
+      ],
+      "summary": "GET /wishlist",
+      "operationId": "get_wishlist",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    },
+    "post": {
+      "tags": [
+        "Wishlist"
+      ],
+      "summary": "POST /wishlist",
+      "operationId": "post_wishlist",
+      "requestBody": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    },
+    "delete": {
+      "tags": [
+        "Wishlist"
+      ],
+      "summary": "DELETE /wishlist",
+      "operationId": "delete_wishlist",
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/wishlist/check/{productId}": {
+    "get": {
+      "tags": [
+        "Wishlist"
+      ],
+      "summary": "GET /wishlist/check/{productId}",
+      "operationId": "get_wishlist_check_productId_",
+      "parameters": [
+        {
+          "name": "productId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  },
+  "/wishlist/{productId}": {
+    "delete": {
+      "tags": [
+        "Wishlist"
+      ],
+      "summary": "DELETE /wishlist/{productId}",
+      "operationId": "delete_wishlist_productId_",
+      "parameters": [
+        {
+          "name": "productId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response"
+        },
+        "400": {
+          "description": "Invalid input"
+        },
+        "500": {
+          "description": "Unexpected server error"
+        }
+      }
+    }
+  }
+}

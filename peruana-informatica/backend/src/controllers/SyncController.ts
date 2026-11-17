@@ -4,6 +4,8 @@ import Product from '../models/Product';
 import { Brand } from '../models/Brand';
 import { Category } from '../models/Category';
 import { SubCategory } from '../models/SubCategory';
+import { logger } from '../config/logger';
+import { sendError } from '../middleware/errorHandler';
 
 /**
  * Controlador para gestionar la sincronización con la API externa de Peruana Informática
@@ -32,13 +34,9 @@ export class SyncController {
                     message: result.message || 'No se pudo obtener el token'
                 });
             }
-        } catch (error: any) {
-            console.error('Error en SyncController.solicitarToken:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al solicitar token',
-                error: error.message
-            });
+        } catch (error) {
+            logger.error('Error en SyncController.solicitarToken:', error);
+            return sendError(res, error, 'Error al solicitar token');
         }
     }
 
@@ -48,7 +46,7 @@ export class SyncController {
     private static async resolveTaxonomy(marcaName: string | null, categoriaName: string | null) {
         let brand_id = null;
         let category_id = null;
-        let sub_category_ids: number[] = [];
+        const sub_category_ids: number[] = [];
 
         // 1. Handle Brand
         if (marcaName) {
@@ -138,7 +136,7 @@ export class SyncController {
 
             // Buscar el producto en la base de datos local usando codigo_interno
             const producto = await Product.findOne({
-                where: { codigo_interno: id } as any
+                where: { codigo_interno: id }
             });
 
             if (producto) {
@@ -158,13 +156,11 @@ export class SyncController {
                     brand_id: brand_id ?? producto.brand_id,
                     category_id: category_id ?? producto.category_id,
                     category: datos.categoria || producto.category // String legacy support
-                } as any);
+                });
 
                 // Actualizar Subcategorías si existen
                 if (sub_category_ids.length > 0) {
-                    // @ts-ignore - setSubCategories es un método mágico de Sequelize
                     if (producto.setSubCategories) {
-                        // @ts-ignore
                         await producto.setSubCategories(sub_category_ids);
                     }
                 }
@@ -190,13 +186,9 @@ export class SyncController {
                     warning: 'El producto no existe en la base de datos local'
                 });
             }
-        } catch (error: any) {
-            console.error('Error en SyncController.sincronizarProducto:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al sincronizar producto',
-                error: error.message
-            });
+        } catch (error) {
+            logger.error('Error en SyncController.sincronizarProducto:', error);
+            return sendError(res, error, 'Error al sincronizar producto');
         }
     }
 
@@ -225,7 +217,7 @@ export class SyncController {
                 if (resultado.success && 'datos' in resultado && resultado.datos) {
                     try {
                         const producto = await Product.findOne({
-                            where: { codigo_interno: resultado.id } as any
+                            where: { codigo_interno: resultado.id }
                         });
 
                         if (producto) {
@@ -244,13 +236,11 @@ export class SyncController {
                                 brand_id: brand_id ?? producto.brand_id,
                                 category_id: category_id ?? producto.category_id,
                                 category: resultado.datos.categoria || producto.category
-                            } as any);
+                            });
 
                             // Sync SubCategories
                             if (sub_category_ids.length > 0) {
-                                // @ts-ignore
                                 if (producto.setSubCategories) {
-                                    // @ts-ignore
                                     await producto.setSubCategories(sub_category_ids);
                                 }
                             }
@@ -262,10 +252,10 @@ export class SyncController {
                                 actualizado: true
                             });
                         }
-                    } catch (error: any) {
+                    } catch {
                         errores.push({
                             id: resultado.id,
-                            error: error.message
+                            error: 'Error en la sincronización'
                         });
                     }
                 } else if (!resultado.success && 'error' in resultado) {
@@ -289,13 +279,9 @@ export class SyncController {
                     }
                 }
             });
-        } catch (error: any) {
-            console.error('Error en SyncController.sincronizarProductos:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al sincronizar productos',
-                error: error.message
-            });
+        } catch (error) {
+            logger.error('Error en SyncController.sincronizarProductos:', error);
+            return sendError(res, error, 'Error al sincronizar productos');
         }
     }
 
@@ -314,7 +300,7 @@ export class SyncController {
                         [Op.ne]: null,
                         [Op.ne]: ''
                     }
-                } as any,
+                },
                 attributes: ['cod_producto', 'codigo_interno', 'name']
             });
 
@@ -341,7 +327,7 @@ export class SyncController {
                 if (resultado.success && 'datos' in resultado && resultado.datos) {
                     try {
                         const producto = await Product.findOne({
-                            where: { codigo_interno: resultado.id } as any
+                            where: { codigo_interno: resultado.id }
                         });
 
                         if (producto) {
@@ -360,13 +346,11 @@ export class SyncController {
                                 brand_id: brand_id ?? producto.brand_id,
                                 category_id: category_id ?? producto.category_id,
                                 category: resultado.datos.categoria || producto.category
-                            } as any);
+                            });
 
                             // Sync SubCategories
                             if (sub_category_ids.length > 0) {
-                                // @ts-ignore
                                 if (producto.setSubCategories) {
-                                    // @ts-ignore
                                     await producto.setSubCategories(sub_category_ids);
                                 }
                             }
@@ -377,10 +361,10 @@ export class SyncController {
                                 nombre: producto.name
                             });
                         }
-                    } catch (error: any) {
+                    } catch {
                         errores.push({
                             id: resultado.id,
-                            error: error.message
+                            error: 'Error en la sincronización'
                         });
                     }
                 } else if (!resultado.success && 'error' in resultado) {
@@ -404,13 +388,9 @@ export class SyncController {
                     }
                 }
             });
-        } catch (error: any) {
-            console.error('Error en SyncController.sincronizarTodosLosProductos:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al sincronizar todos los productos',
-                error: error.message
-            });
+        } catch (error) {
+            logger.error('Error en SyncController.sincronizarTodosLosProductos:', error);
+            return sendError(res, error, 'Error al sincronizar todos los productos');
         }
     }
 
@@ -427,13 +407,9 @@ export class SyncController {
                 tokenValido,
                 message: tokenValido ? 'Token válido' : 'Token inválido o expirado'
             });
-        } catch (error: any) {
-            console.error('Error en SyncController.verificarToken:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al verificar token',
-                error: error.message
-            });
+        } catch (error) {
+            logger.error('Error en SyncController.verificarToken:', error);
+            return sendError(res, error, 'Error al verificar token');
         }
     }
 }

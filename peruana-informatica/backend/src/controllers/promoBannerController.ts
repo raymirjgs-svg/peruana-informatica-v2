@@ -1,5 +1,8 @@
 import { Request, Response } from 'express';
-import { PromoBanner } from '../models/PromoBanner';
+import { PromoBanner, type PromoBannerAttributes } from '../models/PromoBanner';
+import { buildPaginationMeta, getSafetyLimit, resolvePagination } from '../utils/pagination';
+import { logger } from '../config/logger';
+import { sendError } from '../middleware/errorHandler';
 
 export class PromoBannerController {
     /**
@@ -26,11 +29,8 @@ export class PromoBannerController {
                 data: banners
             });
         } catch (error) {
-            console.error('Error fetching banners:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al obtener banners'
-            });
+            logger.error('Error fetching banners:', error);
+            return sendError(res, error, 'Error al obtener banners');
         }
     }
 
@@ -41,8 +41,24 @@ export class PromoBannerController {
      */
     async getAllBanners(req: Request, res: Response) {
         try {
+            const { page, limit, offset, paginated } = resolvePagination(req.query);
+
+            if (paginated) {
+                const { rows, count } = await PromoBanner.findAndCountAll({
+                    order: [['priority', 'DESC'], ['created_at', 'DESC']],
+                    limit,
+                    offset
+                });
+                return res.status(200).json({
+                    success: true,
+                    data: rows,
+                    pagination: buildPaginationMeta(page, limit, count)
+                });
+            }
+
             const banners = await PromoBanner.findAll({
-                order: [['priority', 'DESC'], ['created_at', 'DESC']]
+                order: [['priority', 'DESC'], ['created_at', 'DESC']],
+                limit: getSafetyLimit(limit)
             });
 
             return res.status(200).json({
@@ -50,11 +66,8 @@ export class PromoBannerController {
                 data: banners
             });
         } catch (error) {
-            console.error('Error fetching all banners:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al obtener banners'
-            });
+            logger.error('Error fetching all banners:', error);
+            return sendError(res, error, 'Error al obtener banners');
         }
     }
 
@@ -97,11 +110,8 @@ export class PromoBannerController {
                 data: banner
             });
         } catch (error) {
-            console.error('Error creating banner:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al crear banner'
-            });
+            logger.error('Error creating banner:', error);
+            return sendError(res, error, 'Error al crear banner');
         }
     }
 
@@ -111,7 +121,6 @@ export class PromoBannerController {
     async updateBanner(req: Request, res: Response) {
         try {
             const { id } = req.params;
-            const updateData = req.body;
 
             const banner = await PromoBanner.findByPk(id);
 
@@ -120,6 +129,23 @@ export class PromoBannerController {
                     success: false,
                     message: 'Banner no encontrado'
                 });
+            }
+
+            const allowedFields = [
+                'title',
+                'description',
+                'image_url',
+                'coupon_code',
+                'show_as_popup',
+                'popup_delay',
+                'is_active',
+                'priority'
+            ] as const;
+            const updateData: Partial<Pick<PromoBannerAttributes, typeof allowedFields[number]>> = {};
+            for (const field of allowedFields) {
+                if (req.body[field] !== undefined) {
+                    updateData[field] = req.body[field];
+                }
             }
 
             if (updateData.coupon_code) {
@@ -134,11 +160,8 @@ export class PromoBannerController {
                 data: banner
             });
         } catch (error) {
-            console.error('Error updating banner:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al actualizar banner'
-            });
+            logger.error('Error updating banner:', error);
+            return sendError(res, error, 'Error al actualizar banner');
         }
     }
 
@@ -165,11 +188,8 @@ export class PromoBannerController {
                 message: 'Banner eliminado exitosamente'
             });
         } catch (error) {
-            console.error('Error deleting banner:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al eliminar banner'
-            });
+            logger.error('Error deleting banner:', error);
+            return sendError(res, error, 'Error al eliminar banner');
         }
     }
 
@@ -199,11 +219,8 @@ export class PromoBannerController {
                 data: banner
             });
         } catch (error) {
-            console.error('Error toggling banner status:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al cambiar estado del banner'
-            });
+            logger.error('Error toggling banner status:', error);
+            return sendError(res, error, 'Error al cambiar estado del banner');
         }
     }
 }

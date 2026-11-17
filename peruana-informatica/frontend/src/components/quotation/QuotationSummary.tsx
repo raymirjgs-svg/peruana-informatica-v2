@@ -7,7 +7,7 @@ interface QuotationItem {
     product_price: number;
     quantity: number;
     subtotal: number;
-    product?: any;
+    product?: unknown;
 }
 
 interface QuotationSummaryProps {

@@ -1,8 +1,11 @@
 import { Router } from 'express';
 import * as PaymentController from '../../controllers/admin/PaymentController';
 import { uploadInvoice, uploadInvoiceFile } from '../../controllers/admin/InvoiceUploadController';
+import { authenticateToken, requireAdmin } from '../../middleware/authMiddleware';
 
 const router = Router();
+
+router.use(authenticateToken, requireAdmin);
 
 // Verify payment
 router.patch('/:id/verify', PaymentController.verifyPayment);

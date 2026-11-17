@@ -2,6 +2,13 @@
 
 import React, { useState } from 'react';
 import { Button } from '../Button';
+import { getAdminAuthHeaders } from '@/lib/adminAuth';
+import apiClient from '@/utils/api';
+
+interface ImportDetailItem {
+    codigo?: string;
+    error?: string;
+}
 
 interface ImportResult {
     success: boolean;
@@ -13,9 +20,9 @@ interface ImportResult {
         errores: number;
     };
     details?: {
-        success: any[];
-        updated: any[];
-        errors: any[];
+        success: ImportDetailItem[];
+        updated: ImportDetailItem[];
+        errors: ImportDetailItem[];
     };
 }
 
@@ -26,12 +33,6 @@ export function ProductImporter() {
     const [jsonText, setJsonText] = useState('');
     const [mode, setMode] = useState<'file' | 'text'>('file');
 
-    const getApiBase = () => {
-        const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
-        const trimmed = baseUrl.replace(/\/+$/, "");
-        return trimmed.endsWith("/api") ? trimmed : `${trimmed}/api`;
-    };
-
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
             setFile(e.target.files[0] ?? null);
@@ -40,7 +41,7 @@ export function ProductImporter() {
     };
 
     const handleImport = async () => {
-        let jsonData: any;
+        let jsonData: unknown;
 
         try {
             if (mode === 'file') {
@@ -68,35 +69,28 @@ export function ProductImporter() {
             setImporting(true);
             setResult(null);
 
-            const response = await fetch(`${getApiBase()}/admin/products/import-json`, {
+            const data = await apiClient.request<{
+                message?: string;
+                summary?: ImportResult['summary'];
+                details?: ImportResult['details'];
+            }>('/api/admin/products/import-json', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(jsonData)
+                headers: { ...getAdminAuthHeaders() },
+                body: jsonData
             });
 
-            const data = await response.json();
-
-            if (response.ok) {
-                setResult({
-                    success: true,
-                    message: data.message || 'Importación exitosa',
-                    summary: data.summary,
-                    details: data.details
-                });
-                setFile(null);
-                setJsonText('');
-            } else {
-                setResult({
-                    success: false,
-                    message: data.error || 'Error en la importación'
-                });
-            }
-        } catch (error: any) {
+            setResult({
+                success: true,
+                message: data.message || 'Importación exitosa',
+                summary: data.summary,
+                details: data.details
+            });
+            setFile(null);
+            setJsonText('');
+        } catch (error) {
             setResult({
                 success: false,
-                message: error.message || 'Error al procesar el archivo'
+                message: error instanceof Error ? error.message : 'Error al procesar el archivo'
             });
         } finally {
             setImporting(false);
@@ -208,7 +202,7 @@ export function ProductImporter() {
                                     <div className="mt-4 bg-white rounded-lg p-4 shadow-sm">
                                         <h4 className="font-semibold text-red-800 mb-2">Errores detectados:</h4>
                                         <div className="space-y-2 max-h-64 overflow-y-auto">
-                                            {result.details.errors.map((err: any, idx: number) => (
+                                            {result.details.errors.map((err, idx: number) => (
                                                 <div key={idx} className="text-sm text-gray-700 border-l-4 border-red-400 pl-3 py-1">
                                                     <strong>{err.codigo}</strong>: {err.error}
                                                 </div>

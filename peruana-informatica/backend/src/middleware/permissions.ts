@@ -3,6 +3,7 @@ import { User } from '../models/User';
 import { Role } from '../models/Role';
 import { Permission } from '../models/Permission';
 import { logger } from '../config/logger';
+import { sendError } from './errorHandler';
 
 /**
  * Check if user has specific permission
@@ -10,7 +11,7 @@ import { logger } from '../config/logger';
 export const checkPermission = (requiredPermission: string) => {
     return async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const userId = (req as any).user?.id;
+            const userId = req.user?.id;
 
             if (!userId) {
                 return res.status(401).json({
@@ -19,18 +20,7 @@ export const checkPermission = (requiredPermission: string) => {
                 });
             }
 
-            // Get user with role and permissions
-            const user = await User.findByPk(userId, {
-                include: [{
-                    model: Role,
-                    as: 'role',
-                    include: [{
-                        model: Permission,
-                        as: 'permissions',
-                        attributes: ['slug']
-                    }]
-                }]
-            });
+            const user = await User.findByPk(userId);
 
             if (!user) {
                 return res.status(404).json({
@@ -39,15 +29,24 @@ export const checkPermission = (requiredPermission: string) => {
                 });
             }
 
-            // Super admin bypasses all permission checks
-            if ((user as any).role?.slug === 'super-admin') {
+            const role = user.role
+                ? await Role.findOne({
+                    where: { slug: user.role },
+                    include: [{
+                        model: Permission,
+                        as: 'permissions',
+                        attributes: ['slug']
+                    }]
+                })
+                : null;
+
+            if (role?.slug === 'super-admin') {
                 return next();
             }
 
-            // Check if user has required permission
-            const permissions = (user as any).role?.permissions || [];
+            const permissions = role?.permissions || [];
             const hasPermission = permissions.some(
-                (p: any) => p.slug === requiredPermission
+                (p) => p.slug === requiredPermission
             );
 
             if (!hasPermission) {
@@ -61,10 +60,7 @@ export const checkPermission = (requiredPermission: string) => {
             next();
         } catch (error) {
             logger.error('Error checking permission:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al verificar permisos'
-            });
+            return sendError(res, error, 'Error al verificar permisos');
         }
     };
 };
@@ -75,7 +71,7 @@ export const checkPermission = (requiredPermission: string) => {
 export const checkAnyPermission = (requiredPermissions: string[]) => {
     return async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const userId = (req as any).user?.id;
+            const userId = req.user?.id;
 
             if (!userId) {
                 return res.status(401).json({
@@ -84,17 +80,7 @@ export const checkAnyPermission = (requiredPermissions: string[]) => {
                 });
             }
 
-            const user = await User.findByPk(userId, {
-                include: [{
-                    model: Role,
-                    as: 'role',
-                    include: [{
-                        model: Permission,
-                        as: 'permissions',
-                        attributes: ['slug']
-                    }]
-                }]
-            });
+            const user = await User.findByPk(userId);
 
             if (!user) {
                 return res.status(404).json({
@@ -103,15 +89,24 @@ export const checkAnyPermission = (requiredPermissions: string[]) => {
                 });
             }
 
-            // Super admin bypasses
-            if ((user as any).role?.slug === 'super-admin') {
+            const role = user.role
+                ? await Role.findOne({
+                    where: { slug: user.role },
+                    include: [{
+                        model: Permission,
+                        as: 'permissions',
+                        attributes: ['slug']
+                    }]
+                })
+                : null;
+
+            if (role?.slug === 'super-admin') {
                 return next();
             }
 
-            // Check if user has any of the required permissions
-            const permissions = (user as any).role?.permissions || [];
+            const permissions = role?.permissions || [];
             const hasAnyPermission = requiredPermissions.some(reqPerm =>
-                permissions.some((p: any) => p.slug === reqPerm)
+                permissions.some((p) => p.slug === reqPerm)
             );
 
             if (!hasAnyPermission) {
@@ -124,10 +119,7 @@ export const checkAnyPermission = (requiredPermissions: string[]) => {
             next();
         } catch (error) {
             logger.error('Error checking permissions:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al verificar permisos'
-            });
+            return sendError(res, error, 'Error al verificar permisos');
         }
     };
 };
@@ -138,7 +130,7 @@ export const checkAnyPermission = (requiredPermissions: string[]) => {
 export const checkRole = (requiredRole: string) => {
     return async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const userId = (req as any).user?.id;
+            const userId = req.user?.id;
 
             if (!userId) {
                 return res.status(401).json({
@@ -147,15 +139,9 @@ export const checkRole = (requiredRole: string) => {
                 });
             }
 
-            const user = await User.findByPk(userId, {
-                include: [{
-                    model: Role,
-                    as: 'role',
-                    attributes: ['slug']
-                }]
-            });
+            const user = await User.findByPk(userId);
 
-            if (!user || (user as any).role?.slug !== requiredRole) {
+            if (!user || user.role !== requiredRole) {
                 return res.status(403).json({
                     success: false,
                     message: 'Acceso denegado'
@@ -165,10 +151,7 @@ export const checkRole = (requiredRole: string) => {
             next();
         } catch (error) {
             logger.error('Error checking role:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al verificar rol'
-            });
+            return sendError(res, error, 'Error al verificar rol');
         }
     };
 };

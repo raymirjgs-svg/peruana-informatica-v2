@@ -1,7 +1,11 @@
 import { Router } from 'express';
 import { reviewController } from '../../controllers/reviewController';
+import { authenticateToken, requireAdmin } from '../../middleware/authMiddleware';
 
 const router = Router();
+
+// All routes require admin authentication
+router.use(authenticateToken, requireAdmin);
 
 // Admin review management
 router.get('/', reviewController.getAllReviews.bind(reviewController));

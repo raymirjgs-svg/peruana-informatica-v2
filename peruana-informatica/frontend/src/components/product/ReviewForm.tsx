@@ -52,8 +52,8 @@ export function ReviewForm({ productId, onSuccess }: ReviewFormProps) {
             if (onSuccess) {
                 onSuccess();
             }
-        } catch (error: any) {
-            toast.error(error.message || 'Error al enviar la reseña');
+        } catch (error) {
+            toast.error(error instanceof Error ? error.message : 'Error al enviar la reseña');
         } finally {
             setIsSubmitting(false);
         }

@@ -1,6 +1,7 @@
 'use client';
 
 import { Component, ErrorInfo, ReactNode } from 'react';
+import Link from 'next/link';
 
 interface Props {
   children: ReactNode;
@@ -127,9 +128,9 @@ export class ErrorBoundary extends Component<Props, State> {
             {/* Help Text */}
             <p className="mt-6 text-sm text-gray-500">
               Si el problema persiste, por favor{' '}
-              <a href="/contacto" className="text-blue-600 hover:underline">
+              <Link href="/contacto" className="text-blue-600 hover:underline">
                 contáctanos
-              </a>
+              </Link>
             </p>
           </div>
         </div>

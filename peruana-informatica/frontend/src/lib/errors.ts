@@ -6,7 +6,7 @@ export class ApiError extends Error {
         message: string,
         public statusCode: number = 500,
         public code?: string,
-        public details?: any
+        public details?: unknown
     ) {
         super(message);
         this.name = 'ApiError';
@@ -42,7 +42,7 @@ export class NotFoundError extends ApiError {
  * Error para validación de datos (400)
  */
 export class ValidationError extends ApiError {
-    constructor(message: string, details?: any) {
+    constructor(message: string, details?: unknown) {
         super(message, 400, 'VALIDATION_ERROR', details);
         this.name = 'ValidationError';
     }

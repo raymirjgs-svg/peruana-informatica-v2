@@ -47,15 +47,9 @@ RolePermission.init(
 
 // Update User model to add role relationship
 export function setupRoleAssociations() {
-    const { User } = require('./User');
     const { Role } = require('./Role');
     const { Permission } = require('./Permission');
 
-    // User belongs to Role
-    User.belongsTo(Role, { foreignKey: 'role_id', as: 'role' });
-    Role.hasMany(User, { foreignKey: 'role_id', as: 'users' });
-
-    // Role has many Permissions (many-to-many)
     Role.belongsToMany(Permission, {
         through: RolePermission,
         foreignKey: 'role_id',

@@ -1,9 +1,11 @@
 import { Router } from 'express';
 import { CustomerController } from '../../controllers/admin/CustomerController';
+import { authenticateToken, requireAdmin } from '../../middleware/authMiddleware';
 
 const router = Router();
 
-// All routes require admin authentication (handled by server.ts middleware)
+// All routes require admin authentication
+router.use(authenticateToken, requireAdmin);
 
 // Get customer statistics
 router.get('/stats', CustomerController.getCustomerStats);

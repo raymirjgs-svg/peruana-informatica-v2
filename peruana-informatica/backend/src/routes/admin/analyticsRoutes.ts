@@ -1,11 +1,11 @@
 import { Router } from 'express';
 import { analyticsController } from '../../controllers/analyticsController';
-import { authenticateToken } from '../../middleware/authMiddleware';
+import { authenticateToken, requireAdmin } from '../../middleware/authMiddleware';
 
 const router = Router();
 
 // All analytics routes require authentication
-router.use(authenticateToken);
+router.use(authenticateToken, requireAdmin);
 
 // KPIs and overview
 router.get('/kpis', analyticsController.getKPIs.bind(analyticsController));

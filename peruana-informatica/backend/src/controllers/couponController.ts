@@ -1,5 +1,59 @@
 import { Request, Response } from 'express';
-import { Coupon } from '../models/Coupon';
+import { Coupon, CouponAttributes } from '../models/Coupon';
+import { buildPaginationMeta, getSafetyLimit, resolvePagination } from '../utils/pagination';
+import { sendError } from '../middleware/errorHandler';
+
+const COUPON_TYPES = ['percentage', 'fixed'];
+
+const COUPON_EDITABLE_FIELDS = [
+    'code',
+    'type',
+    'value',
+    'min_purchase',
+    'max_uses',
+    'valid_from',
+    'valid_until',
+    'description',
+    'is_active'
+];
+
+interface CouponUpdateData extends Partial<CouponAttributes> {
+    [key: string]: unknown;
+}
+
+function pickCouponFields(body: CouponUpdateData): CouponUpdateData {
+    const data: CouponUpdateData = {};
+
+    for (const field of COUPON_EDITABLE_FIELDS) {
+        if (body && Object.prototype.hasOwnProperty.call(body, field)) {
+            data[field] = body[field];
+        }
+    }
+
+    return data;
+}
+
+function validateCouponTypeAndValue(type: unknown, value: unknown): string | null {
+    if (typeof type !== 'string' || !COUPON_TYPES.includes(type)) {
+        return 'El tipo de cupón debe ser "percentage" o "fixed"';
+    }
+
+    const numericValue = Number(value);
+
+    if (!Number.isFinite(numericValue)) {
+        return 'El valor del cupón debe ser un número';
+    }
+
+    if (type === 'percentage' && (numericValue <= 0 || numericValue > 100)) {
+        return 'El porcentaje del cupón debe ser mayor a 0 y menor o igual a 100';
+    }
+
+    if (type === 'fixed' && numericValue <= 0) {
+        return 'El valor del cupón debe ser mayor a 0';
+    }
+
+    return null;
+}
 
 export class CouponController {
     /**
@@ -49,23 +103,26 @@ export class CouponController {
                 }
             });
         } catch (error) {
-            console.error('Error validating coupon:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al validar cupón'
-            });
+            return sendError(res, error, 'Error al validar cupón');
         }
     }
 
     /**
-     * Apply coupon (increment usage)
+     * Apply coupon (validate only, never mutate usage)
      */
     async applyCoupon(req: Request, res: Response) {
         try {
-            const { code } = req.body;
+            const { code, purchase_amount } = req.body;
+
+            if (!code) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Código de cupón requerido'
+                });
+            }
 
             const coupon = await Coupon.findOne({
-                where: { code: code.toUpperCase() }
+                where: { code: String(code).toUpperCase() }
             });
 
             if (!coupon) {
@@ -75,20 +132,30 @@ export class CouponController {
                 });
             }
 
-            await coupon.update({
-                current_uses: coupon.current_uses + 1
-            });
+            const validation = coupon.isValid(purchase_amount || 0);
+
+            if (!validation.valid) {
+                return res.status(400).json({
+                    success: false,
+                    message: validation.message
+                });
+            }
+
+            const discountAmount = coupon.calculateDiscount(purchase_amount || 0);
 
             return res.status(200).json({
                 success: true,
-                message: 'Cupón aplicado exitosamente'
+                message: 'Cupón válido',
+                data: {
+                    code: coupon.code,
+                    type: coupon.type,
+                    value: coupon.value,
+                    discount_amount: discountAmount,
+                    description: coupon.description
+                }
             });
         } catch (error) {
-            console.error('Error applying coupon:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al aplicar cupón'
-            });
+            return sendError(res, error, 'Error al aplicar cupón');
         }
     }
 
@@ -99,8 +166,29 @@ export class CouponController {
      */
     async getAllCoupons(req: Request, res: Response) {
         try {
+            const { page, limit, offset, paginated } = resolvePagination(req.query);
+
+            if (paginated) {
+                const [{ rows, count }, active, totalUses] = await Promise.all([
+                    Coupon.findAndCountAll({
+                        order: [['created_at', 'DESC']],
+                        limit,
+                        offset
+                    }),
+                    Coupon.count({ where: { is_active: true } }),
+                    Coupon.sum('current_uses')
+                ]);
+                return res.status(200).json({
+                    success: true,
+                    data: rows,
+                    pagination: buildPaginationMeta(page, limit, count),
+                    summary: { active, totalUses: totalUses || 0, total: count }
+                });
+            }
+
             const coupons = await Coupon.findAll({
-                order: [['created_at', 'DESC']]
+                order: [['created_at', 'DESC']],
+                limit: getSafetyLimit(limit)
             });
 
             return res.status(200).json({
@@ -108,11 +196,7 @@ export class CouponController {
                 data: coupons
             });
         } catch (error) {
-            console.error('Error fetching coupons:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al obtener cupones'
-            });
+            return sendError(res, error, 'Error al obtener cupones');
         }
     }
 
@@ -139,6 +223,15 @@ export class CouponController {
                 });
             }
 
+            const validationError = validateCouponTypeAndValue(type, value);
+
+            if (validationError) {
+                return res.status(400).json({
+                    success: false,
+                    message: validationError
+                });
+            }
+
             const coupon = await Coupon.create({
                 code: code.toUpperCase(),
                 type,
@@ -156,20 +249,15 @@ export class CouponController {
                 message: 'Cupón creado exitosamente',
                 data: coupon
             });
-        } catch (error: any) {
-            console.error('Error creating coupon:', error);
-
-            if (error.name === 'SequelizeUniqueConstraintError') {
+        } catch (error) {
+            if (error instanceof Error && error.name === 'SequelizeUniqueConstraintError') {
                 return res.status(400).json({
                     success: false,
                     message: 'El código del cupón ya existe'
                 });
             }
 
-            return res.status(500).json({
-                success: false,
-                message: 'Error al crear cupón'
-            });
+            return sendError(res, error, 'Error al crear cupón');
         }
     }
 
@@ -179,7 +267,7 @@ export class CouponController {
     async updateCoupon(req: Request, res: Response) {
         try {
             const { id } = req.params;
-            const updateData = req.body;
+            const updateData = pickCouponFields(req.body);
 
             const coupon = await Coupon.findByPk(id);
 
@@ -190,6 +278,22 @@ export class CouponController {
                 });
             }
 
+            const effectiveType = updateData.type !== undefined ? updateData.type : coupon.type;
+            const effectiveValue = updateData.value !== undefined ? updateData.value : coupon.value;
+
+            const validationError = validateCouponTypeAndValue(effectiveType, effectiveValue);
+
+            if (validationError) {
+                return res.status(400).json({
+                    success: false,
+                    message: validationError
+                });
+            }
+
+            if (typeof updateData.code === 'string') {
+                updateData.code = updateData.code.toUpperCase();
+            }
+
             await coupon.update(updateData);
 
             return res.status(200).json({
@@ -198,11 +302,7 @@ export class CouponController {
                 data: coupon
             });
         } catch (error) {
-            console.error('Error updating coupon:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al actualizar cupón'
-            });
+            return sendError(res, error, 'Error al actualizar cupón');
         }
     }
 
@@ -229,11 +329,7 @@ export class CouponController {
                 message: 'Cupón eliminado exitosamente'
             });
         } catch (error) {
-            console.error('Error deleting coupon:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al eliminar cupón'
-            });
+            return sendError(res, error, 'Error al eliminar cupón');
         }
     }
 
@@ -263,11 +359,7 @@ export class CouponController {
                 data: coupon
             });
         } catch (error) {
-            console.error('Error toggling coupon status:', error);
-            return res.status(500).json({
-                success: false,
-                message: 'Error al cambiar estado del cupón'
-            });
+            return sendError(res, error, 'Error al cambiar estado del cupón');
         }
     }
 }

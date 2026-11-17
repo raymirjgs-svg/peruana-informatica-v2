@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { PeruanaInformaticaService } from '../services/PeruanaInformaticaService';
+import { sendError } from '../middleware/errorHandler';
 
 export const consultArticle = async (req: Request, res: Response) => {
     try {
@@ -15,8 +16,7 @@ export const consultArticle = async (req: Request, res: Response) => {
         }
 
         res.json(data);
-    } catch (error: any) {
-        console.error('Error en ExternalApiController.consultArticle:', error.message);
-        res.status(500).json({ error: 'Error interno al consultar la API externa', details: error.message });
+    } catch (error) {
+        return sendError(res, error, 'Error interno al consultar la API externa');
     }
 };

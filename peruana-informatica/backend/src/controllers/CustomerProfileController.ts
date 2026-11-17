@@ -1,6 +1,14 @@
 import { Request, Response } from 'express';
 import { User } from '../models/User';
 import bcrypt from 'bcryptjs';
+import { logger } from '../config/logger';
+import { sendError } from '../middleware/errorHandler';
+
+type RequestWithUserId = Request & {
+    user?: {
+        userId?: number;
+    };
+};
 
 export class CustomerProfileController {
     /**
@@ -9,7 +17,7 @@ export class CustomerProfileController {
      */
     static async getProfile(req: Request, res: Response): Promise<void> {
         try {
-            const userId = (req as any).user?.userId;
+            const userId = (req as RequestWithUserId).user?.userId;
 
             if (!userId) {
                 res.status(401).json({ message: 'Unauthorized' });
@@ -30,11 +38,8 @@ export class CustomerProfileController {
             res.json({ user });
 
         } catch (error) {
-            console.error('❌ Error fetching profile:', error);
-            res.status(500).json({
-                message: 'Error fetching profile',
-                error: error instanceof Error ? error.message : 'Unknown error'
-            });
+            logger.error('❌ Error fetching profile:', error);
+            return void sendError(res, error, 'Error fetching profile');
         }
     }
 
@@ -44,7 +49,7 @@ export class CustomerProfileController {
      */
     static async updateProfile(req: Request, res: Response): Promise<void> {
         try {
-            const userId = (req as any).user?.userId;
+            const userId = (req as RequestWithUserId).user?.userId;
 
             if (!userId) {
                 res.status(401).json({ message: 'Unauthorized' });
@@ -67,7 +72,7 @@ export class CustomerProfileController {
 
             await user.save();
 
-            console.log(`✅ Profile updated for user: ${user.email}`);
+            logger.info(`✅ Profile updated for user: ${user.email}`);
 
             // Return user without sensitive data
             const userResponse = {
@@ -88,11 +93,8 @@ export class CustomerProfileController {
             });
 
         } catch (error) {
-            console.error('❌ Error updating profile:', error);
-            res.status(500).json({
-                message: 'Error updating profile',
-                error: error instanceof Error ? error.message : 'Unknown error'
-            });
+            logger.error('❌ Error updating profile:', error);
+            return void sendError(res, error, 'Error updating profile');
         }
     }
 
@@ -102,7 +104,7 @@ export class CustomerProfileController {
      */
     static async changePassword(req: Request, res: Response): Promise<void> {
         try {
-            const userId = (req as any).user?.userId;
+            const userId = (req as RequestWithUserId).user?.userId;
 
             if (!userId) {
                 res.status(401).json({ message: 'Unauthorized' });
@@ -149,16 +151,13 @@ export class CustomerProfileController {
             user.password_hash = hashedPassword;
             await user.save();
 
-            console.log(`✅ Password changed for user: ${user.email}`);
+            logger.info(`✅ Password changed for user: ${user.email}`);
 
             res.json({ message: 'Password changed successfully' });
 
         } catch (error) {
-            console.error('❌ Error changing password:', error);
-            res.status(500).json({
-                message: 'Error changing password',
-                error: error instanceof Error ? error.message : 'Unknown error'
-            });
+            logger.error('❌ Error changing password:', error);
+            return void sendError(res, error, 'Error changing password');
         }
     }
 
@@ -168,7 +167,7 @@ export class CustomerProfileController {
      */
     static async getMyOrders(req: Request, res: Response): Promise<void> {
         try {
-            const userId = (req as any).user?.userId;
+            const userId = (req as RequestWithUserId).user?.userId;
 
             if (!userId) {
                 res.status(401).json({ message: 'Unauthorized' });
@@ -183,11 +182,8 @@ export class CustomerProfileController {
             });
 
         } catch (error) {
-            console.error('❌ Error fetching orders:', error);
-            res.status(500).json({
-                message: 'Error fetching orders',
-                error: error instanceof Error ? error.message : 'Unknown error'
-            });
+            logger.error('❌ Error fetching orders:', error);
+            return void sendError(res, error, 'Error fetching orders');
         }
     }
 }

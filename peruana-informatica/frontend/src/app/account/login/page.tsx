@@ -37,8 +37,8 @@ export default function LoginPage() {
                 toast.success('Bienvenido nuevamente');
                 router.push('/cart');
             }
-        } catch (error: any) {
-            toast.error(error.message || 'Error al iniciar sesión');
+        } catch (error) {
+            toast.error(error instanceof Error ? error.message : 'Error al iniciar sesión');
         } finally {
             setLoading(false);
         }

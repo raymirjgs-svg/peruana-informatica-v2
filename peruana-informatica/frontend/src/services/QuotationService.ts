@@ -1,5 +1,6 @@
 // src/services/QuotationService.ts
 import { Product } from '@/models/Product';
+import { API_CONFIG } from '@/config/api';
 
 export interface QuotationItem {
   product_id: number;
@@ -50,7 +51,7 @@ export interface QuotationDetail {
 }
 
 export class QuotationService {
-  private API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+  private API_BASE = API_CONFIG.API_BASE_URL;
 
   async createQuotation(quotationData: QuotationRequest): Promise<QuotationResponse> {
     const response = await fetch(`${this.API_BASE}/api/quotations`, {

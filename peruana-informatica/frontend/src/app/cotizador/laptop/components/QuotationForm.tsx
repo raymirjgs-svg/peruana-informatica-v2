@@ -2,22 +2,7 @@
 'use client';
 
 import { useState } from 'react';
-
-interface Product {
-  cod_producto: number;
-  name: string;
-  slug: string;
-  description: string;
-  price: number | string; // Accept both number and string
-  stock: number;
-  component_specs?: {
-    processor?: string;
-    ram?: string;
-    storage?: string;
-    graphics?: string;
-    screen_size?: string;
-  };
-}
+import type { Product } from '../types';
 
 interface QuotationFormData {
   client_name: string;

@@ -3,7 +3,8 @@ import { Role } from '../models/Role';
 import { Permission } from '../models/Permission';
 import { User } from '../models/User';
 import { RolePermission } from '../models/RolePermission';
-import { logger, logAudit } from '../config/logger';
+import { logAudit } from '../config/logger';
+import { sendError } from '../middleware/errorHandler';
 
 export class RoleController {
     /**
@@ -25,8 +26,7 @@ export class RoleController {
                 data: roles
             });
         } catch (error) {
-            logger.error('Error fetching roles:', error);
-            return res.status(500).json({ error: 'Error al obtener roles' });
+            return sendError(res, error, 'Error al obtener roles');
         }
     }
 
@@ -53,8 +53,7 @@ export class RoleController {
                 data: role
             });
         } catch (error) {
-            logger.error('Error fetching role:', error);
-            return res.status(500).json({ error: 'Error al obtener rol' });
+            return sendError(res, error, 'Error al obtener rol');
         }
     }
 
@@ -64,7 +63,7 @@ export class RoleController {
     async createRole(req: Request, res: Response) {
         try {
             const { name, slug, description, permissions } = req.body;
-            const userId = (req as any).user?.id;
+            const userId = req.user?.id;
 
             const role = await Role.create({
                 name,
@@ -82,19 +81,18 @@ export class RoleController {
                 );
             }
 
-            logAudit('CREATE_ROLE', userId, { roleId: role.id, name: role.name });
+            logAudit('CREATE_ROLE', String(userId), { roleId: role.id, name: role.name });
 
             return res.status(201).json({
                 success: true,
                 data: role,
                 message: 'Rol creado exitosamente'
             });
-        } catch (error: any) {
-            logger.error('Error creating role:', error);
-            if (error.name === 'SequelizeUniqueConstraintError') {
+        } catch (error) {
+            if (error instanceof Error && error.name === 'SequelizeUniqueConstraintError') {
                 return res.status(400).json({ error: 'Ya existe un rol con ese nombre o slug' });
             }
-            return res.status(500).json({ error: 'Error al crear rol' });
+            return sendError(res, error, 'Error al crear rol');
         }
     }
 
@@ -105,11 +103,15 @@ export class RoleController {
         try {
             const { id } = req.params;
             const { name, slug, description, permissions } = req.body;
-            const userId = (req as any).user?.id;
+            const userId = req.user?.id;
 
             const role = await Role.findByPk(id);
             if (!role) {
                 return res.status(404).json({ error: 'Rol no encontrado' });
+            }
+
+            if (role.slug === 'super-admin' || role.is_default) {
+                return res.status(403).json({ error: 'No se puede modificar un rol protegido del sistema' });
             }
 
             await role.update({ name, slug, description });
@@ -130,19 +132,18 @@ export class RoleController {
                 }
             }
 
-            logAudit('UPDATE_ROLE', userId, { roleId: role.id, name: role.name });
+            logAudit('UPDATE_ROLE', String(userId), { roleId: role.id, name: role.name });
 
             return res.json({
                 success: true,
                 data: role,
                 message: 'Rol actualizado exitosamente'
             });
-        } catch (error: any) {
-            logger.error('Error updating role:', error);
-            if (error.name === 'SequelizeUniqueConstraintError') {
+        } catch (error) {
+            if (error instanceof Error && error.name === 'SequelizeUniqueConstraintError') {
                 return res.status(400).json({ error: 'Ya existe un rol con ese nombre o slug' });
             }
-            return res.status(500).json({ error: 'Error al actualizar rol' });
+            return sendError(res, error, 'Error al actualizar rol');
         }
     }
 
@@ -152,11 +153,15 @@ export class RoleController {
     async deleteRole(req: Request, res: Response) {
         try {
             const { id } = req.params;
-            const userId = (req as any).user?.id;
+            const userId = req.user?.id;
 
             const role = await Role.findByPk(id);
             if (!role) {
                 return res.status(404).json({ error: 'Rol no encontrado' });
+            }
+
+            if (role.slug === 'super-admin' || role.is_default) {
+                return res.status(403).json({ error: 'No se puede eliminar un rol protegido del sistema' });
             }
 
             // Check if role is in use
@@ -168,15 +173,14 @@ export class RoleController {
             }
 
             await role.destroy();
-            logAudit('DELETE_ROLE', userId, { roleId: id });
+            logAudit('DELETE_ROLE', String(userId), { roleId: id });
 
             return res.json({
                 success: true,
                 message: 'Rol eliminado exitosamente'
             });
         } catch (error) {
-            logger.error('Error deleting role:', error);
-            return res.status(500).json({ error: 'Error al eliminar rol' });
+            return sendError(res, error, 'Error al eliminar rol');
         }
     }
 
@@ -190,11 +194,10 @@ export class RoleController {
             });
 
             // Group by module
-            const grouped = permissions.reduce((acc: any, perm: any) => {
-                if (!acc[perm.module]) {
-                    acc[perm.module] = [];
-                }
-                acc[perm.module].push(perm);
+            const grouped = permissions.reduce<Record<string, Permission[]>>((acc, perm) => {
+                const modulePermissions = acc[perm.module] ?? [];
+                modulePermissions.push(perm);
+                acc[perm.module] = modulePermissions;
                 return acc;
             }, {});
 
@@ -206,8 +209,7 @@ export class RoleController {
                 }
             });
         } catch (error) {
-            logger.error('Error fetching permissions:', error);
-            return res.status(500).json({ error: 'Error al obtener permisos' });
+            return sendError(res, error, 'Error al obtener permisos');
         }
     }
 
@@ -217,28 +219,73 @@ export class RoleController {
     async assignRoleToUser(req: Request, res: Response) {
         try {
             const { userId, roleId } = req.body;
-            const adminId = (req as any).user?.id;
+            const adminId = req.user?.id;
+
+            if (!adminId) {
+                return res.status(401).json({ error: 'Usuario no autenticado' });
+            }
+
+            if (String(userId) === String(adminId)) {
+                return res.status(403).json({ error: 'No puedes asignarte un rol a ti mismo' });
+            }
 
             const user = await User.findByPk(userId);
             if (!user) {
                 return res.status(404).json({ error: 'Usuario no encontrado' });
             }
 
-            const role = await Role.findByPk(roleId);
+            const role = await Role.findByPk(roleId, {
+                include: [{
+                    model: Permission,
+                    as: 'permissions',
+                    attributes: ['slug']
+                }]
+            });
             if (!role) {
                 return res.status(404).json({ error: 'Rol no encontrado' });
             }
 
+            const caller = await User.findByPk(adminId);
+
+            const callerRole = caller?.role
+                ? await Role.findOne({
+                    where: { slug: caller.role },
+                    include: [{
+                        model: Permission,
+                        as: 'permissions',
+                        attributes: ['slug']
+                    }]
+                })
+                : null;
+
+            if (callerRole?.slug !== 'super-admin') {
+                const callerPermissions = (callerRole?.permissions || []).map(p => p.slug);
+
+                if (!callerPermissions.includes('manage-users')) {
+                    return res.status(403).json({ error: 'No tienes permiso para asignar roles' });
+                }
+
+                if (role.slug === 'super-admin' || role.is_default) {
+                    return res.status(403).json({ error: 'No puedes asignar un rol protegido del sistema' });
+                }
+
+                const targetPermissions = (role.permissions || []).map(p => p.slug);
+                const isEscalation = targetPermissions.some((p: string) => !callerPermissions.includes(p));
+
+                if (isEscalation) {
+                    return res.status(403).json({ error: 'No puedes asignar un rol con más privilegios que el tuyo' });
+                }
+            }
+
             await user.update({ role_id: roleId });
-            logAudit('ASSIGN_ROLE', adminId, { userId, roleId, roleName: role.name });
+            logAudit('ASSIGN_ROLE', String(adminId), { userId, roleId, roleName: role.name });
 
             return res.json({
                 success: true,
                 message: 'Rol asignado exitosamente'
             });
         } catch (error) {
-            logger.error('Error assigning role:', error);
-            return res.status(500).json({ error: 'Error al asignar rol' });
+            return sendError(res, error, 'Error al asignar rol');
         }
     }
 }

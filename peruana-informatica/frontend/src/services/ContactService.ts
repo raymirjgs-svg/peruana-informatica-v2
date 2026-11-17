@@ -1,3 +1,6 @@
+import apiClient from "@/utils/api";
+import { getAdminAuthHeaders } from "@/lib/adminAuth";
+
 interface ContactFormData {
   nombre: string;
   email: string;
@@ -55,18 +58,9 @@ interface PaginatedResponse<T> {
 }
 
 class ContactService {
-  private static readonly BASE_URL =
-    process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
-  private static readonly API_BASE = `${ContactService.BASE_URL}/api`;
-
-  // Método para obtener las credenciales de autenticación básica
   private static getAuthHeaders(): Record<string, string> {
-    const username = process.env.NEXT_PUBLIC_ADMIN_USERNAME || "admin";
-    const password = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "admin123";
-    const credentials = btoa(`${username}:${password}`);
-
     return {
-      Authorization: `Basic ${credentials}`,
+      ...getAdminAuthHeaders(),
       "Content-Type": "application/json",
     };
   }
@@ -78,46 +72,26 @@ class ContactService {
     data: ContactFormData,
   ): Promise<ApiResponse<Contact>> {
     try {
-      const response = await fetch(`${this.API_BASE}/contacts`, {
+      return await apiClient.request<ApiResponse<Contact>>("/api/contacts", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: data,
       });
-
-      let result;
-      try {
-        result = await response.json();
-      } catch (jsonError) {
-        throw new Error(
-          `Error de conexión con el servidor (${response.status})`,
-        );
-      }
-
-      if (!response.ok) {
-        const errorMessage =
-          result?.message ||
-          result?.error ||
-          `Error del servidor (${response.status})`;
-
-        throw new Error(errorMessage);
-      }
-
-      return result;
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error submitting contact:", error);
 
       // Provide more specific error messages
-      if (error.name === "TypeError" && error.message.includes("fetch")) {
+      if (error instanceof TypeError && error.message.includes("fetch")) {
         throw new Error(
           "No se puede conectar con el servidor. Verifique que el backend esté funcionando.",
         );
       }
 
       if (
-        error.message.includes("NetworkError") ||
-        error.message.includes("Failed to fetch")
+        (error instanceof Error && error.message.includes("NetworkError")) ||
+        (error instanceof Error && error.message.includes("Failed to fetch"))
       ) {
         throw new Error(
           "Error de red. Verifique su conexión a internet y que el servidor esté disponible.",
@@ -151,20 +125,12 @@ class ContactService {
         });
       }
 
-      const url = `${this.API_BASE}/contacts/admin${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
+      const url = `/api/contacts/admin${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
 
-      const response = await fetch(url, {
+      return await apiClient.request<PaginatedResponse<Contact>>(url, {
         method: "GET",
         headers: this.getAuthHeaders(),
       });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || "Error al obtener los contactos");
-      }
-
-      return result;
     } catch (error) {
       console.error("Error fetching contacts:", error);
       throw error;
@@ -176,18 +142,10 @@ class ContactService {
    */
   static async getContactStats(): Promise<ApiResponse<ContactStats>> {
     try {
-      const response = await fetch(`${this.API_BASE}/contacts/admin/stats`, {
+      return await apiClient.request<ApiResponse<ContactStats>>("/api/contacts/admin/stats", {
         method: "GET",
         headers: this.getAuthHeaders(),
       });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || "Error al obtener las estadísticas");
-      }
-
-      return result;
     } catch (error) {
       console.error("Error fetching contact stats:", error);
       throw error;
@@ -199,18 +157,10 @@ class ContactService {
    */
   static async getContactById(id: number): Promise<ApiResponse<Contact>> {
     try {
-      const response = await fetch(`${this.API_BASE}/contacts/admin/${id}`, {
+      return await apiClient.request<ApiResponse<Contact>>(`/api/contacts/admin/${id}`, {
         method: "GET",
         headers: this.getAuthHeaders(),
       });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || "Error al obtener el contacto");
-      }
-
-      return result;
     } catch (error) {
       console.error("Error fetching contact:", error);
       throw error;
@@ -225,22 +175,14 @@ class ContactService {
     status: "pending" | "resolved" | "spam",
   ): Promise<ApiResponse<Contact>> {
     try {
-      const response = await fetch(
-        `${this.API_BASE}/contacts/admin/${id}/status`,
+      return await apiClient.request<ApiResponse<Contact>>(
+        `/api/contacts/admin/${id}/status`,
         {
           method: "PUT",
           headers: this.getAuthHeaders(),
-          body: JSON.stringify({ status }),
+          body: { status },
         },
       );
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || "Error al actualizar el estado");
-      }
-
-      return result;
     } catch (error) {
       console.error("Error updating contact status:", error);
       throw error;
@@ -252,18 +194,10 @@ class ContactService {
    */
   static async deleteContact(id: number): Promise<ApiResponse<void>> {
     try {
-      const response = await fetch(`${this.API_BASE}/contacts/admin/${id}`, {
+      return await apiClient.request<ApiResponse<void>>(`/api/contacts/admin/${id}`, {
         method: "DELETE",
         headers: this.getAuthHeaders(),
       });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || "Error al eliminar el contacto");
-      }
-
-      return result;
     } catch (error) {
       console.error("Error deleting contact:", error);
       throw error;
@@ -277,22 +211,14 @@ class ContactService {
     ids: number[],
   ): Promise<ApiResponse<{ updatedCount: number }>> {
     try {
-      const response = await fetch(
-        `${this.API_BASE}/contacts/admin/bulk/resolve`,
+      return await apiClient.request<ApiResponse<{ updatedCount: number }>>(
+        "/api/contacts/admin/bulk/resolve",
         {
           method: "PUT",
           headers: this.getAuthHeaders(),
-          body: JSON.stringify({ ids }),
+          body: { ids },
         },
       );
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || "Error al actualizar los contactos");
-      }
-
-      return result;
     } catch (error) {
       console.error("Error bulk resolving contacts:", error);
       throw error;
@@ -370,21 +296,17 @@ class ContactService {
   /**
    * Probar conexión con el servidor (debug)
    */
-  static async testConnection(): Promise<any> {
+  static async testConnection(): Promise<unknown> {
     try {
-      console.log("Testing connection to:", `${this.API_BASE}/contacts/test`);
+      console.log("Testing connection to:", "/api/contacts/test");
 
-      const response = await fetch(`${this.API_BASE}/contacts/test`, {
+      const result = await apiClient.request<unknown>("/api/contacts/test", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
       });
 
-      console.log("Test response status:", response.status);
-      console.log("Test response ok:", response.ok);
-
-      const result = await response.json();
       console.log("Test response data:", result);
 
       return result;

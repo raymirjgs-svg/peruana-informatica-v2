@@ -47,8 +47,8 @@ export default function EditPagePage() {
             await pageService.updatePage(id, data, token);
             toast.success('Página actualizada exitosamente');
             router.push('/admin/pages');
-        } catch (error: any) {
-            toast.error(error.message || 'Error al actualizar página');
+        } catch (error) {
+            toast.error(error instanceof Error ? error.message : 'Error al actualizar página');
         } finally {
             setIsSubmitting(false);
         }

@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import { requireJwtSecret } from '../config/env';
 
 // Extender Request interface localmente
 interface AuthRequest extends Request {
@@ -10,7 +11,7 @@ interface AuthRequest extends Request {
     };
 }
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+const JWT_SECRET = requireJwtSecret();
 
 export const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers['authorization'];
@@ -20,11 +21,11 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
         return res.status(401).json({ error: 'Acceso denegado. Token no proporcionado.' });
     }
 
-    jwt.verify(token, JWT_SECRET, (err: any, user: any) => {
+    jwt.verify(token, JWT_SECRET, (err: jwt.VerifyErrors | null, user: string | jwt.JwtPayload | undefined) => {
         if (err) {
             return res.status(403).json({ error: 'Token inválido o expirado' });
         }
-        (req as AuthRequest).user = user;
+        (req as AuthRequest).user = user as AuthRequest['user'];
         next();
     });
 };

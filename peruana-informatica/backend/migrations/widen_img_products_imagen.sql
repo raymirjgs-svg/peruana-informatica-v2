@@ -1,0 +1,1 @@
+ALTER TABLE img_products MODIFY COLUMN imagen VARCHAR(500) NULL;

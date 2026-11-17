@@ -28,7 +28,7 @@ Este sistema permite sincronizar precios y stock de productos con la API externa
 {
   "success": true,
   "message": "Token obtenido y actualizado exitosamente",
-  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...",
+  "token": "<jwt>",
   "expiresAt": "2026-02-14T16:26:04.000Z"
 }
 ```

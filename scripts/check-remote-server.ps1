@@ -3,7 +3,7 @@
 $Host_IP = "200.58.98.122"
 $Port = "5313"
 $User = "root"
-$Password = "9wC8/5lAhlxrXd"
+$Password = if ($env:SSH_PASSWORD) { $env:SSH_PASSWORD } else { throw "SSH_PASSWORD is required" }
 
 Write-Host "═════════════════════════════════════════" -ForegroundColor Cyan
 Write-Host "   CONECTANDO AL SERVIDOR REMOTO" -ForegroundColor Cyan

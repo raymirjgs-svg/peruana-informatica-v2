@@ -1,4 +1,5 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenerativeAI, GenerativeModel } from "@google/generative-ai";
+import { logger } from '../config/logger';
 
 interface TitleSuggestion {
   title: string;
@@ -21,13 +22,13 @@ interface BlogContent {
 class GeminiService {
   private genAI: GoogleGenerativeAI | null = null;
   private isConfigured: boolean = false;
-  private model: any = null;
+  private model: GenerativeModel | null = null;
 
   constructor() {
     const apiKey = process.env.GEMINI_API_KEY;
 
     if (!apiKey) {
-      console.warn(
+      logger.warn(
         "⚠️ GEMINI_API_KEY not configured. AI features will be disabled.",
       );
       this.isConfigured = false;
@@ -47,10 +48,10 @@ class GeminiService {
         },
       });
       this.isConfigured = true;
-      console.log("🤖 Google Gemini service initialized successfully (FREE!)");
-      console.log("📋 Using model: gemini-2.5-flash");
+      logger.info("🤖 Google Gemini service initialized successfully (FREE!)");
+      logger.info("📋 Using model: gemini-2.5-flash");
     } catch (error) {
-      console.error("❌ Error initializing Gemini:", error);
+      logger.error("❌ Error initializing Gemini:", error);
       this.isConfigured = false;
     }
   }
@@ -72,14 +73,14 @@ class GeminiService {
 
     try {
       const prompt = "Responde con 'OK' si estás funcionando correctamente.";
-      const result = await this.model.generateContent(prompt);
+      const result = await this.model!.generateContent(prompt);
       const response = await result.response;
       const text = response.text();
 
       // Si obtenemos una respuesta, la API Key es válida
       return text !== undefined && text !== null;
     } catch (error) {
-      console.error("❌ Error verifying API Key:", error);
+      logger.error("❌ Error verifying API Key:", error);
       return false;
     }
   }
@@ -98,7 +99,7 @@ class GeminiService {
     }
 
     try {
-      console.log(`🤖 Generating ${count} blog titles for topic: ${topic}`);
+      logger.info(`🤖 Generating ${count} blog titles for topic: ${topic}`);
 
       const prompt = `Como experto en marketing de contenidos y tecnología, genera ${count} títulos atractivos para blog posts sobre ${topic}.
 
@@ -121,7 +122,7 @@ Devuelve SOLO un JSON válido con este formato (sin texto adicional):
   }
 ]`;
 
-      const result = await this.model.generateContent(prompt);
+      const result = await this.model!.generateContent(prompt);
       const response = await result.response;
       const text = response.text();
 
@@ -135,12 +136,13 @@ Devuelve SOLO un JSON válido con este formato (sin texto adicional):
 
       const suggestions: TitleSuggestion[] = JSON.parse(jsonText);
 
-      console.log(`✅ Generated ${suggestions.length} title suggestions`);
+      logger.info(`✅ Generated ${suggestions.length} title suggestions`);
       return suggestions;
-    } catch (error: any) {
-      console.error("❌ Error generating titles with Gemini:", error);
+    } catch (error) {
+      logger.error("❌ Error generating titles with Gemini:", error);
+      const message = error instanceof Error && error.message ? error.message : "Unknown error";
       throw new Error(
-        `Failed to generate titles: ${error.message || "Unknown error"}`,
+        `Failed to generate titles: ${message}`,
       );
     }
   }
@@ -159,7 +161,7 @@ Devuelve SOLO un JSON válido con este formato (sin texto adicional):
     }
 
     try {
-      console.log(`🤖 Generating blog content for: ${title}`);
+      logger.info(`🤖 Generating blog content for: ${title}`);
 
       // Paso 1: Generar el contenido del artículo (sin JSON)
       const contentPrompt = `Como redactor experto en tecnología, escribe un artículo completo y profesional para el blog de "Peruana Informática".
@@ -183,7 +185,7 @@ ESTRUCTURA:
 
 Escribe SOLO el artículo en Markdown, sin explicaciones adicionales.`;
 
-      const contentResult = await this.model.generateContent(contentPrompt);
+      const contentResult = await this.model!.generateContent(contentPrompt);
       const contentResponse = await contentResult.response;
       let articleContent = contentResponse.text().trim();
 
@@ -205,7 +207,7 @@ TAGS: tag1, tag2, tag3, tag4, tag5
 META_TITLE: [título SEO de 60 caracteres]
 META_DESC: [descripción SEO de 150 caracteres]`;
 
-      const metaResult = await this.model.generateContent(metaPrompt);
+      const metaResult = await this.model!.generateContent(metaPrompt);
       const metaResponse = await metaResult.response;
       const metaText = metaResponse.text();
 
@@ -215,16 +217,16 @@ META_DESC: [descripción SEO de 150 caracteres]`;
       const metaTitleMatch = metaText.match(/META_TITLE:\s*(.+)/i);
       const metaDescMatch = metaText.match(/META_DESC:\s*(.+)/i);
 
-      const excerpt = excerptMatch ? excerptMatch[1].trim() : articleContent.substring(0, 150);
-      const tags = tagsMatch ? tagsMatch[1].split(',').map((t: string) => t.trim()) : [topic];
-      const metaTitle = metaTitleMatch ? metaTitleMatch[1].trim() : title;
-      const metaDesc = metaDescMatch ? metaDescMatch[1].trim() : excerpt;
+      const excerpt = excerptMatch?.[1]?.trim() ?? articleContent.substring(0, 150);
+      const tags = tagsMatch?.[1]?.split(',').map(t => t.trim()) ?? [topic];
+      const metaTitle = metaTitleMatch?.[1]?.trim() ?? title;
+      const metaDesc = metaDescMatch?.[1]?.trim() ?? excerpt;
 
       // Calcular estadísticas
       const wordCount = articleContent.split(/\s+/).length;
       const readingTime = Math.ceil(wordCount / 200);
 
-      console.log(`✅ Generated blog content: ${wordCount} words, ~${readingTime} min read`);
+      logger.info(`✅ Generated blog content: ${wordCount} words, ~${readingTime} min read`);
 
       return {
         title: title,
@@ -237,10 +239,11 @@ META_DESC: [descripción SEO de 150 caracteres]`;
         reading_time: readingTime,
         word_count: wordCount,
       };
-    } catch (error: any) {
-      console.error("❌ Error generating blog content with Gemini:", error);
+    } catch (error) {
+      logger.error("❌ Error generating blog content with Gemini:", error);
+      const message = error instanceof Error && error.message ? error.message : "Unknown error";
       throw new Error(
-        `Failed to generate content: ${error.message || "Unknown error"}`,
+        `Failed to generate content: ${message}`,
       );
     }
   }
@@ -264,11 +267,11 @@ META_DESC: [descripción SEO de 150 caracteres]`;
       
       Return ONLY the prompt in English.`;
 
-      const result = await this.model.generateContent(prompt);
+      const result = await this.model!.generateContent(prompt);
       const response = await result.response;
       return response.text().trim();
-    } catch (error: any) {
-      console.error("❌ Error generating image prompt:", error);
+    } catch (error) {
+      logger.error("❌ Error generating image prompt:", error);
       return `Modern technology concept related to ${title}, high quality, 4k, cinematic lighting`;
     }
   }
@@ -278,9 +281,9 @@ META_DESC: [descripción SEO de 150 caracteres]`;
    */
   async generateBlogImage(title: string, content?: string): Promise<string> {
     try {
-      console.log("🎨 Generating AI image prompt...");
+      logger.info("🎨 Generating AI image prompt...");
       const imagePrompt = await this.generateImagePrompt(title, content);
-      console.log("📝 Image Prompt:", imagePrompt);
+      logger.info("📝 Image Prompt:", imagePrompt);
 
       // Encode prompt for URL
       const encodedPrompt = encodeURIComponent(imagePrompt);
@@ -290,11 +293,11 @@ META_DESC: [descripción SEO de 150 caracteres]`;
       const seed = Math.floor(Math.random() * 1000000);
       const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1280&height=720&nologo=true&seed=${seed}&model=flux`;
 
-      console.log("✅ Generated Pollinations Image URL");
+      logger.info("✅ Generated Pollinations Image URL");
       return imageUrl;
 
     } catch (error) {
-      console.error("❌ Error generating blog image:", error);
+      logger.error("❌ Error generating blog image:", error);
       // Fallback
       const kw = title.toLowerCase().replace(/[^a-z0-9 ]/g, ' ').split(/\s+/).filter(w => w.length > 3).slice(0, 5).join(' ');
       return `https://image.pollinations.ai/prompt/${encodeURIComponent('technology blog ' + kw + ' professional 4k no text')}?width=1280&height=720&nologo=true&seed=${Math.floor(Math.random()*999999)}&model=flux`;
@@ -315,10 +318,10 @@ META_DESC: [descripción SEO de 150 caracteres]`;
       // Usar Unsplash para imágenes gratuitas de alta calidad
       const imageUrl = `https://source.unsplash.com/800x400/?${keywords},technology`;
 
-      console.log(`✅ Generated image URL for: ${title}`);
+      logger.info(`✅ Generated image URL for: ${title}`);
       return imageUrl;
     } catch (error) {
-      console.warn("⚠️ Could not generate image, using placeholder");
+      logger.warn("⚠️ Could not generate image, using placeholder");
       return "https://via.placeholder.com/800x400/667eea/ffffff?text=Tech+Blog";
     }
   }
@@ -348,7 +351,7 @@ ${content.substring(0, 1000)}...
 Devuelve SOLO un array JSON (sin texto adicional):
 ["tag1", "tag2", "tag3", "tag4", "tag5"]`;
 
-      const result = await this.model.generateContent(prompt);
+      const result = await this.model!.generateContent(prompt);
       const response = await result.response;
       const text = response.text();
 
@@ -360,8 +363,8 @@ Devuelve SOLO un array JSON (sin texto adicional):
 
       const tags: string[] = JSON.parse(jsonText);
       return tags.slice(0, count);
-    } catch (error: any) {
-      console.error("❌ Error generating tags with Gemini:", error);
+    } catch (error) {
+      logger.error("❌ Error generating tags with Gemini:", error);
       // Retornar tags por defecto en caso de error
       return ["tecnología", "informática", "productos", "guía", "review"];
     }
@@ -390,13 +393,14 @@ ${content}
 
 Devuelve el contenido mejorado en formato Markdown, manteniendo la estructura pero mejorando: ${improvementsList}`;
 
-      const result = await this.model.generateContent(prompt);
+      const result = await this.model!.generateContent(prompt);
       const response = await result.response;
       return response.text();
-    } catch (error: any) {
-      console.error("❌ Error improving content with Gemini:", error);
+    } catch (error) {
+      logger.error("❌ Error improving content with Gemini:", error);
+      const message = error instanceof Error && error.message ? error.message : "Unknown error";
       throw new Error(
-        `Failed to improve content: ${error.message || "Unknown error"}`,
+        `Failed to improve content: ${message}`,
       );
     }
   }
@@ -404,13 +408,13 @@ Devuelve el contenido mejorado en formato Markdown, manteniendo la estructura pe
   /**
    * Generar una respuesta JSON genérica basada en un prompt
    */
-  async generateJson(prompt: string): Promise<any> {
+  async generateJson(prompt: string): Promise<unknown> {
     if (!this.isReady()) {
       throw new Error("Gemini service not configured");
     }
 
     try {
-      const result = await this.model.generateContent(prompt);
+      const result = await this.model!.generateContent(prompt);
       const response = await result.response;
       let text = response.text().trim();
 
@@ -420,8 +424,8 @@ Devuelve el contenido mejorado en formato Markdown, manteniendo la estructura pe
       }
 
       return JSON.parse(text);
-    } catch (error: any) {
-      console.error("❌ Error generating JSON with Gemini:", error);
+    } catch (error) {
+      logger.error("❌ Error generating JSON with Gemini:", error);
       throw error;
     }
   }

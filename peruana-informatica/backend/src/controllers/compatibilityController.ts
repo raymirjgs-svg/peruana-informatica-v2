@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { compatibilityService } from '../services/CompatibilityService';
+import { sendError } from '../middleware/errorHandler';
 
 /**
  * Get compatible products based on current selection
@@ -27,11 +28,7 @@ export const filterCompatibleProducts = async (req: Request, res: Response) => {
         });
 
     } catch (error) {
-        console.error('Error in filterCompatibleProducts:', error);
-        return res.status(500).json({
-            success: false,
-            message: 'Error al filtrar productos compatibles'
-        });
+        return sendError(res, error, 'Error al filtrar productos compatibles');
     }
 };
 
@@ -58,11 +55,7 @@ export const validateBuild = async (req: Request, res: Response) => {
         });
 
     } catch (error) {
-        console.error('Error in validateBuild:', error);
-        return res.status(500).json({
-            success: false,
-            message: 'Error al validar build'
-        });
+        return sendError(res, error, 'Error al validar build');
     }
 };
 
@@ -89,10 +82,6 @@ export const getAttributesByComponentType = async (req: Request, res: Response) 
         });
 
     } catch (error) {
-        console.error('Error in getAttributesByComponentType:', error);
-        return res.status(500).json({
-            success: false,
-            message: 'Error al obtener atributos'
-        });
+        return sendError(res, error, 'Error al obtener atributos');
     }
 };

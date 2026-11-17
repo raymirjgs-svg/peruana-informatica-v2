@@ -17,13 +17,17 @@ export const API_CONFIG = {
 
     // URL base para llamadas API (sin manipulación)
     API_BASE_URL: (() => {
-        const finalUrl = BASE_URL.replace(/\/+$/, ''); // Solo eliminar trailing slash
+        // Guarantee we strip both trailing slash AND '/api' suffix if present
+        // to prevent "double api" (e.g. localhost:3001/api/api/products)
+        let finalUrl = BASE_URL.replace(/\/+$/, '');
+        if (finalUrl.endsWith('/api')) {
+            finalUrl = finalUrl.slice(0, -4);
+        }
 
         if (typeof window !== 'undefined') {
             console.log('🔧 API Configuration:');
             console.log('   - NEXT_PUBLIC_API_URL:', BASE_URL);
-            console.log('   - Final API URL:', finalUrl);
-            console.log('   - Example endpoint: ' + finalUrl + '/api/products');
+            console.log('   - Final API URL (Clean):', finalUrl);
         }
 
         return finalUrl;

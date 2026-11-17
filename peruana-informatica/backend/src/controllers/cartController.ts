@@ -3,12 +3,12 @@ import { Cart } from '../models/Cart';
 import { CartItem } from '../models/CartItem';
 import { Product } from '../models/Product';
 import { sequelize } from '../database/connection';
+import { sendError } from '../middleware/errorHandler';
 
 export const cartController = {
     // Get Cart (Create if not exists)
     async getCart(req: Request, res: Response) {
         try {
-            // @ts-ignore
             const userId = req.user?.id;
             if (!userId) return res.status(401).json({ error: 'Unauthorized' });
 
@@ -28,8 +28,7 @@ export const cartController = {
 
             res.json({ cart, items });
         } catch (error) {
-            console.error('Get cart error:', error);
-            res.status(500).json({ error: 'Error getting cart' });
+            return sendError(res, error, 'Error getting cart');
         }
     },
 
@@ -37,7 +36,6 @@ export const cartController = {
     async syncCart(req: Request, res: Response) {
         const t = await sequelize.transaction();
         try {
-            // @ts-ignore
             const userId = req.user?.id;
             const localItems = req.body.items || []; // Expected: [{ productId, quantity }]
 
@@ -89,15 +87,13 @@ export const cartController = {
 
         } catch (error) {
             await t.rollback();
-            console.error('Sync cart error:', error);
-            res.status(500).json({ error: 'Error syncing cart' });
+            return sendError(res, error, 'Error syncing cart');
         }
     },
 
     // Update Item (Add/Modify)
     async updateItem(req: Request, res: Response) {
         try {
-            // @ts-ignore
             const userId = req.user?.id;
             const { productId, quantity } = req.body;
 
@@ -121,15 +117,13 @@ export const cartController = {
 
             res.json({ success: true, item });
         } catch (error) {
-            console.error('Update item error:', error);
-            res.status(500).json({ error: 'Error updating item' });
+            return sendError(res, error, 'Error updating item');
         }
     },
 
     // Remove Item
     async removeItem(req: Request, res: Response) {
         try {
-            // @ts-ignore
             const userId = req.user?.id;
             const { productId } = req.params;
 
@@ -140,8 +134,7 @@ export const cartController = {
 
             res.json({ success: true });
         } catch (error) {
-            console.error('Remove item error:', error);
-            res.status(500).json({ error: 'Error removing item' });
+            return sendError(res, error, 'Error removing item');
         }
     }
 };

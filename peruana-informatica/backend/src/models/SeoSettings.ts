@@ -1,5 +1,6 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../database/connection";
+import { logger } from '../config/logger';
 
 interface SeoSettingsAttributes {
   id: number;
@@ -104,7 +105,7 @@ class SeoSettings
       try {
         return JSON.parse(this.schema_markup);
       } catch (error) {
-        console.error("Error parsing schema markup:", error);
+        logger.error("Error parsing schema markup:", error);
         return null;
       }
     }

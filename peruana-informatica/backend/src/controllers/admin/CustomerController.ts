@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import { User } from '../../models/User';
-import { Op } from 'sequelize';
+import { Op, WhereOptions } from 'sequelize';
+import { logger } from '../../config/logger';
+import { sendError } from '../../middleware/errorHandler';
 
 export class CustomerController {
     /**
@@ -19,30 +21,32 @@ export class CustomerController {
             const offset = (page - 1) * limit;
 
             // Build where clause
-            const where: any = {};
+            const where: WhereOptions = {};
 
             // Search filter
             if (search) {
-                where[Op.or] = [
-                    { email: { [Op.like]: `%${search}%` } },
-                    { first_name: { [Op.like]: `%${search}%` } },
-                    { last_name: { [Op.like]: `%${search}%` } }
-                ];
+                Object.assign(where, {
+                    [Op.or]: [
+                        { email: { [Op.like]: `%${search}%` } },
+                        { first_name: { [Op.like]: `%${search}%` } },
+                        { last_name: { [Op.like]: `%${search}%` } }
+                    ]
+                });
             }
 
             // Role filter
             if (role) {
-                where.role = role;
+                Object.assign(where, { role });
             }
 
             // Auth provider filter
             if (authProvider) {
-                where.auth_provider = { [Op.like]: `%${authProvider}%` };
+                Object.assign(where, { auth_provider: { [Op.like]: `%${authProvider}%` } });
             }
 
             // Blocked status filter
             if (isBlocked !== undefined && isBlocked !== '') {
-                where.is_blocked = isBlocked === 'true';
+                Object.assign(where, { is_blocked: isBlocked === 'true' });
             }
 
             // Get customers with pagination
@@ -67,11 +71,8 @@ export class CustomerController {
             });
 
         } catch (error) {
-            console.error('❌ Error fetching customers:', error);
-            res.status(500).json({
-                message: 'Error fetching customers',
-                error: error instanceof Error ? error.message : 'Unknown error'
-            });
+            logger.error('❌ Error fetching customers:', error);
+            return void sendError(res, error, 'Error fetching customers');
         }
     }
 
@@ -97,11 +98,8 @@ export class CustomerController {
             res.json({ customer });
 
         } catch (error) {
-            console.error('❌ Error fetching customer:', error);
-            res.status(500).json({
-                message: 'Error fetching customer',
-                error: error instanceof Error ? error.message : 'Unknown error'
-            });
+            logger.error('❌ Error fetching customer:', error);
+            return void sendError(res, error, 'Error fetching customer');
         }
     }
 
@@ -130,7 +128,7 @@ export class CustomerController {
             customer.is_blocked = !customer.is_blocked;
             await customer.save();
 
-            console.log(`✅ Customer ${customer.email} ${customer.is_blocked ? 'blocked' : 'unblocked'}`);
+            logger.info(`✅ Customer ${customer.email} ${customer.is_blocked ? 'blocked' : 'unblocked'}`);
 
             res.json({
                 message: `Customer ${customer.is_blocked ? 'blocked' : 'unblocked'} successfully`,
@@ -142,11 +140,8 @@ export class CustomerController {
             });
 
         } catch (error) {
-            console.error('❌ Error toggling customer block:', error);
-            res.status(500).json({
-                message: 'Error updating customer',
-                error: error instanceof Error ? error.message : 'Unknown error'
-            });
+            logger.error('❌ Error toggling customer block:', error);
+            return void sendError(res, error, 'Error updating customer');
         }
     }
 
@@ -218,11 +213,8 @@ export class CustomerController {
             });
 
         } catch (error) {
-            console.error('❌ Error fetching customer stats:', error);
-            res.status(500).json({
-                message: 'Error fetching statistics',
-                error: error instanceof Error ? error.message : 'Unknown error'
-            });
+            logger.error('❌ Error fetching customer stats:', error);
+            return void sendError(res, error, 'Error fetching statistics');
         }
     }
 
@@ -251,11 +243,8 @@ export class CustomerController {
             });
 
         } catch (error) {
-            console.error('❌ Error fetching customer orders:', error);
-            res.status(500).json({
-                message: 'Error fetching orders',
-                error: error instanceof Error ? error.message : 'Unknown error'
-            });
+            logger.error('❌ Error fetching customer orders:', error);
+            return void sendError(res, error, 'Error fetching orders');
         }
     }
 }

@@ -1,0 +1,41 @@
+{
+  "name": "peruana-informatica_v2",
+  "description": "",
+  "models": {
+    "fast": null,
+    "balanced": null,
+    "smart": null,
+    "default": null
+  },
+  "tools": {
+    "enabled": [
+      "read_file",
+      "list_files",
+      "search_in_files"
+    ],
+    "disabled": [],
+    "require_confirmation": [
+      "write_file",
+      "execute_command"
+    ]
+  },
+  "context": {
+    "include_patterns": [
+      "*.py",
+      "*.js",
+      "*.ts",
+      "*.md",
+      "*.json"
+    ],
+    "exclude_patterns": [
+      "node_modules",
+      ".git",
+      "__pycache__",
+      "venv"
+    ],
+    "max_files": 100,
+    "max_depth": 4
+  },
+  "custom_instructions": "",
+  "metadata": {}
+}

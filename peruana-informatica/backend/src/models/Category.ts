@@ -1,5 +1,6 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import { sequelize } from '../database/connection';
+import type { Product } from './Product';
 
 export interface CategoryAttributes {
   id?: number;
@@ -26,7 +27,7 @@ export class Category extends Model<CategoryAttributes, CategoryCreationAttribut
 
   // Optional relation property used in routes
   // Optional relation property used in routes
-  public products?: any[];
+  public products?: Product[];
 
   public static generateSlug(name: string): string {
     if (!name) return '';

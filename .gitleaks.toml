@@ -1,0 +1,22 @@
+title = "peruana-informatica secret scan"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Templates, fixtures and documentation never hold real credentials"
+paths = [
+  '''\.env\.example$''',
+  '''\.env\.docker\.example$''',
+  '''package-lock\.json$''',
+  '''(^|/)docs/''',
+  '''\.sql$''',
+  '''sample-products\.json$''',
+  '''(^|/)(node_modules|dist|\.next|coverage|uploads|backups|graphify-out)/''',
+]
+
+regexes = [
+  '''(?i)(tu_|your_|cambiar|cambiala|placeholder|example|aqui)''',
+  '''(?i)(docker-local-secret|docker-nextauth-secret)''',
+  '''(?i)(TEST|PROD)-0{10,}''',
+]

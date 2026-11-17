@@ -1,8 +1,10 @@
 import express from 'express';
-import { Category } from '../models/Category';
+import { Category, type CategoryAttributes } from '../models/Category';
 import { cacheMiddleware } from '../middleware/cache';
+import { logger } from '../config/logger';
+import { sendError } from '../middleware/errorHandler';
 
-console.log('🔍 Category routes module loaded');
+logger.info('🔍 Category routes module loaded');
 
 const router = express.Router();
 
@@ -11,13 +13,13 @@ const categoryCache = cacheMiddleware('categories', 600);
 
 // Middleware para loggear todas las solicitudes
 router.use((req, res, next) => {
-  console.log(`🔍 Category route accessed: ${req.method} ${req.url}`);
+  logger.info(`🔍 Category route accessed: ${req.method} ${req.url}`);
   next();
 });
 
 // Ruta de health check específica para verificar que las rutas están funcionando
 router.get('/health-check', (req, res) => {
-  console.log('✅ Health check endpoint called');
+  logger.info('✅ Health check endpoint called');
   res.json({
     success: true,
     message: "Category routes working!",
@@ -35,8 +37,8 @@ router.get('/', categoryCache, async (req, res) => {
     });
     res.json(categories);
   } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ error: 'Error al obtener categorías' });
+    logger.error('Error:', error);
+    return sendError(res, error, 'Error al obtener categorías');
   }
 });
 
@@ -50,8 +52,8 @@ router.get('/menu', categoryCache, async (req, res) => {
     });
     res.json(categories);
   } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ error: 'Error al obtener categorías del menú' });
+    logger.error('Error:', error);
+    return sendError(res, error, 'Error al obtener categorías del menú');
   }
 });
 
@@ -60,7 +62,7 @@ router.get('/:slug', categoryCache, async (req, res) => {
   try {
     // Verificar si es health-check y devolver respuesta específica
     if (req.params.slug === 'health-check') {
-      console.log('✅ Health check via slug endpoint called');
+      logger.info('✅ Health check via slug endpoint called');
       return res.json({
         success: true,
         message: "Category routes working!",
@@ -104,7 +106,7 @@ router.get('/:slug', categoryCache, async (req, res) => {
     }
 
     // Map subcategories to camelCase for consistency with frontend
-    const result = category.toJSON() as any;
+    const result: CategoryAttributes & { subcategories?: unknown; subCategories?: unknown } = category.toJSON();
     if (result.subcategories) {
       result.subCategories = result.subcategories;
       // delete result.subcategories; // Optional: keep both for backward compat
@@ -112,8 +114,8 @@ router.get('/:slug', categoryCache, async (req, res) => {
 
     res.json(result);
   } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ error: 'Error al obtener categoría' });
+    logger.error('Error:', error);
+    return sendError(res, error, 'Error al obtener categoría');
   }
 });
 

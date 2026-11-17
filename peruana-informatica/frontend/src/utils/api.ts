@@ -1,12 +1,79 @@
-// src/utils/api.ts
 import { API_CONFIG } from '@/config/api';
+import { getAuthHeaders, type AuthScope } from '@/lib/authTokens';
 
 const API_BASE_URL = API_CONFIG.API_BASE_URL;
 
-interface ApiError {
-  error: string;
+export type QueryParams = Record<string, string | number | boolean | undefined | null>;
+
+export interface RequestOptions extends Omit<RequestInit, 'body' | 'headers'> {
+  body?: unknown;
+  headers?: HeadersInit;
+  auth?: AuthScope | false;
+  baseUrl?: string;
+  responseType?: 'json' | 'text' | 'blob';
+}
+
+interface ApiErrorDetail {
+  param?: string;
+  path?: string;
+  msg?: string;
+}
+
+interface ApiErrorBody {
+  error?: string;
   message?: string;
-  details?: any;
+  details?: ApiErrorDetail[];
+}
+
+export class ApiError extends Error {
+  public readonly status: number;
+
+  constructor(message: string, status: number) {
+    super(message);
+    this.name = 'ApiError';
+    this.status = status;
+  }
+}
+
+export function buildQueryString(params?: QueryParams): string {
+  if (!params) return '';
+  const search = new URLSearchParams();
+  for (const [key, value] of Object.entries(params)) {
+    if (value !== undefined && value !== null && value !== '') search.set(key, String(value));
+  }
+  const query = search.toString();
+  return query ? `?${query}` : '';
+}
+
+function isRawBody(body: unknown): body is BodyInit {
+  return (
+    (typeof FormData !== 'undefined' && body instanceof FormData) ||
+    (typeof Blob !== 'undefined' && body instanceof Blob) ||
+    body instanceof ArrayBuffer ||
+    (typeof URLSearchParams !== 'undefined' && body instanceof URLSearchParams) ||
+    typeof body === 'string'
+  );
+}
+
+function parseErrorBody(text: string): string {
+  let message = 'Error en la solicitud';
+
+  try {
+    const errorJson = JSON.parse(text) as ApiErrorBody;
+    message = errorJson.message || errorJson.error || message;
+
+    if (Array.isArray(errorJson.details)) {
+      const details = errorJson.details
+        .map((detail) => `${detail.param || detail.path || 'Campo'}: ${detail.msg}`)
+        .join(', ');
+
+      if (details) message += ` (${details})`;
+    }
+  } catch {
+    if (text) message = text;
+  }
+
+  return message;
 }
 
 class ApiClient {
@@ -16,58 +83,48 @@ class ApiClient {
     this.baseUrl = baseUrl;
   }
 
-  private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-    const url = `${this.baseUrl}${endpoint}`;
+  public async request<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
+    const { body, auth, baseUrl, headers, responseType = 'json', ...init } = options;
+    const url = `${baseUrl ?? this.baseUrl}${endpoint}`;
+    const resolvedAuth: AuthScope | false =
+      auth === undefined ? (endpoint.startsWith('/api/admin') ? 'admin' : false) : auth;
+    const rawBody = isRawBody(body);
+    const finalHeaders = new Headers(headers);
 
-    // Inject admin JWT for admin endpoints (client-side only)
-    const adminToken = typeof window !== 'undefined' ? localStorage.getItem('adminToken') : null;
-    const authHeader = adminToken && endpoint.includes('/admin/')
-      ? { Authorization: `Bearer ${adminToken}` }
-      : {};
+    if (!rawBody && body !== undefined && !finalHeaders.has('Content-Type')) {
+      finalHeaders.set('Content-Type', 'application/json');
+    }
 
-    const config: RequestInit = {
-      ...options,
-      headers: {
-        'Content-Type': 'application/json',
-        ...authHeader,
-        ...(options.headers as Record<string, string> | undefined),
-      } as Record<string, string>,
-    };
+    if (resolvedAuth) {
+      const authHeaders = getAuthHeaders(resolvedAuth);
+      for (const [key, value] of Object.entries(authHeaders)) {
+        if (!finalHeaders.has(key)) finalHeaders.set(key, value);
+      }
+    }
 
     try {
-      const response = await fetch(url, config);
+      const response = await fetch(url, {
+        ...init,
+        headers: finalHeaders,
+        body: body === undefined ? undefined : rawBody ? body : JSON.stringify(body),
+      });
 
-      // Verificar si la respuesta es exitosa antes de parsear JSON
       if (!response.ok) {
-        const errorText = await response.text(); // Obtener el texto del error
-        let errorMessage = 'Error en la solicitud';
-
-        try {
-          // Intentar parsear como JSON para obtener el mensaje estructurado
-          const errorJson = JSON.parse(errorText);
-          errorMessage = errorJson.message || errorJson.error || errorMessage;
-
-          // Si hay detalles específicos, incluirlos en el mensaje
-          if (errorJson.details) {
-            const details = Array.isArray(errorJson.details) ? errorJson.details : [errorJson.details];
-            const detailMessages = details.map((detail: any) =>
-              `${detail.param || detail.path || 'Campo'}: ${detail.msg}`
-            ).join(', ');
-
-            if (detailMessages) {
-              errorMessage += ` (${detailMessages})`;
-            }
-          }
-        } catch {
-          // Si no se puede parsear como JSON, usar el texto plano
-          errorMessage = errorText || errorMessage;
-        }
-
-        throw new Error(errorMessage);
+        throw new ApiError(parseErrorBody(await response.text()), response.status);
       }
 
-      const data = await response.json();
-      return data;
+      if (response.status === 204) return undefined as T;
+      if (responseType === 'blob') return (await response.blob()) as T;
+
+      const text = await response.text();
+      if (!text) return undefined as T;
+      if (responseType === 'text') return text as T;
+
+      try {
+        return JSON.parse(text) as T;
+      } catch {
+        return text as T;
+      }
     } catch (error) {
       if (error instanceof Error) {
         console.error(`API Error for endpoint ${endpoint}:`, error.message);
@@ -78,16 +135,22 @@ class ApiClient {
     }
   }
 
-  // Métodos genéricos públicos
-  // Métodos genéricos públicos
-  public get = <T = any>(endpoint: string) => this.request<T>(endpoint, { method: 'GET' });
-  public post = <T = any>(endpoint: string, data: any) => this.request<T>(endpoint, { method: 'POST', body: JSON.stringify(data) });
-  public put = <T = any>(endpoint: string, data: any) => this.request<T>(endpoint, { method: 'PUT', body: JSON.stringify(data) });
-  public delete = <T = any>(endpoint: string) => this.request<T>(endpoint, { method: 'DELETE' });
+  private buildQuery(params?: QueryParams): string {
+    return buildQueryString(params);
+  }
 
+  public get = <T = unknown>(endpoint: string, params?: QueryParams) =>
+    this.request<T>(`${endpoint}${this.buildQuery(params)}`, { method: 'GET' });
+  public post = <T = unknown>(endpoint: string, data?: unknown, options: RequestOptions = {}) =>
+    this.request<T>(endpoint, { ...options, method: 'POST', body: data });
+  public put = <T = unknown>(endpoint: string, data?: unknown, options: RequestOptions = {}) =>
+    this.request<T>(endpoint, { ...options, method: 'PUT', body: data });
+  public patch = <T = unknown>(endpoint: string, data?: unknown, options: RequestOptions = {}) =>
+    this.request<T>(endpoint, { ...options, method: 'PATCH', body: data });
+  public delete = <T = unknown>(endpoint: string, options: RequestOptions = {}) =>
+    this.request<T>(endpoint, { ...options, method: 'DELETE' });
 
-  // Cotizaciones
-  createQuotation = (data: any) =>
+  createQuotation = (data: unknown) =>
     this.request('/api/quotations', {
       method: 'POST',
       body: JSON.stringify(data)
@@ -104,255 +167,59 @@ class ApiClient {
       body: JSON.stringify({ code })
     });
 
-  // Descargar PDF de cotización
   downloadQuotationPdf = (code: string): void => {
     window.open(`${this.baseUrl}/api/quotations/${code}/pdf`, '_blank');
   };
 
-  // Productos
-  getProducts = async (params?: any) => {
-    try {
-      const queryParams = params ? new URLSearchParams(params).toString() : '';
-      const endpoint = queryParams ? `/api/products?${queryParams}` : '/api/products';
+  getProducts = async (params?: QueryParams) =>
+    this.request(`/api/products${this.buildQuery(params)}`, { method: 'GET' });
 
-      return await this.request(endpoint, { method: 'GET' });
-    } catch (error) {
-      console.warn(`API error for /products, using fallback data:`, error);
-      // Devolver datos de ejemplo cuando la API no esté disponible
-      return {
-        products: [
-          {
-            id: 1,
-            cod_producto: 1,
-            name: 'Laptop Dell Inspiron 15',
-            slug: 'laptop-dell-inspiron-15',
-            description: 'Laptop Dell Inspiron 15 con Intel Core i5, 8GB RAM, 256GB SSD',
-            price: 2499.00,
-            stock: 15,
-            codigo_interno: 'LAP-DELL-15-001',
-            component_type: 'laptop',
-            component_specs: {
-              processor: 'Intel Core i5-1135G7',
-              ram: '8GB DDR4',
-              storage: '256GB SSD',
-              graphics: 'Intel Iris Xe',
-              screen_size: '15.6" Full HD'
-            }
-          },
-          {
-            id: 2,
-            cod_producto: 2,
-            name: 'Laptop HP Pavilion Gaming',
-            slug: 'laptop-hp-pavilion-gaming',
-            description: 'Laptop HP Pavilion Gaming con AMD Ryzen 5, 16GB RAM, GTX 1650',
-            price: 3299.00,
-            stock: 8,
-            codigo_interno: 'LAP-HP-PG-002',
-            component_type: 'laptop',
-            component_specs: {
-              processor: 'AMD Ryzen 5 5600H',
-              ram: '16GB DDR4',
-              storage: '512GB SSD',
-              graphics: 'NVIDIA GTX 1650 4GB',
-              screen_size: '15.6" Full HD 144Hz'
-            }
-          },
-          {
-            id: 3,
-            cod_producto: 3,
-            name: 'MacBook Air M2',
-            slug: 'macbook-air-m2',
-            description: 'MacBook Air con chip M2, 8GB RAM, 256GB SSD',
-            price: 5499.00,
-            stock: 5,
-            codigo_interno: 'LAP-MACBOOK-AIR-M2-003',
-            component_type: 'laptop',
-            component_specs: {
-              processor: 'Apple M2 Chip',
-              ram: '8GB unified memory',
-              storage: '256GB SSD',
-              graphics: '8-core GPU',
-              screen_size: '13.6" Retina'
-            }
-          }
-        ],
-        total: 3,
-        page: 1,
-        pages: 1
-      };
-    }
-  };
+  getProductById = async (id: number) =>
+    this.request(`/api/products/${id}`, { method: 'GET' });
 
-  getProductById = async (id: number) => {
-    try {
-      return await this.request(`/api/products/${id}`, { method: 'GET' });
+  getProductsByComponentType = async (type: string) =>
+    this.request(`/api/products/by-component/${type}`, { method: 'GET' });
 
-    } catch (error) {
-      console.warn(`API error for /products/${id}, using fallback data:`, error);
-      // Devolver datos de ejemplo para el producto específico
-      return {
-        id,
-        cod_producto: id,
-        name: `Producto de Ejemplo ${id}`,
-        slug: `producto-ejemplo-${id}`,
-        description: 'Producto de ejemplo para demostración',
-        price: 1999.00,
-        stock: 10,
-        codigo_interno: `PROD-${id}-EJEMPLO`,
-        component_type: 'laptop',
-        component_specs: {
-          processor: 'Intel Core i5',
-          ram: '8GB RAM',
-          storage: '256GB SSD'
-        }
-      };
-    }
-  };
+  filterCompatibleProducts = async (targetComponentType: string, selectedProducts: number[]) =>
+    this.request('/api/compatibility/filter', {
+      method: 'POST',
+      body: JSON.stringify({
+        targetComponentType,
+        selectedProducts
+      })
+    });
 
-  getProductsByComponentType = async (type: string) => {
-    try {
-      return await this.request(`/api/products/by-component/${type}`, { method: 'GET' });
+  validateBuild = async (productIds: number[]) =>
+    this.request('/api/compatibility/validate', {
+      method: 'POST',
+      body: JSON.stringify({ productIds })
+    });
 
-    } catch (error) {
-      console.warn(`API error for /products/by-component/${type}, using fallback data:`, error);
-      // Devolver datos de ejemplo según el tipo
-      if (type === 'laptop' || type === 'laptops') {
-        return {
-          products: [
-            {
-              id: 1,
-              cod_producto: 1,
-              name: 'Laptop Ejemplo',
-              slug: 'laptop-ejemplo',
-              description: 'Laptop de ejemplo para demostración',
-              price: 2999.00,
-              stock: 12,
-              codigo_interno: 'LAP-EJ-001',
-              component_type: 'laptop',
-              component_specs: {
-                processor: 'Intel Core i5',
-                ram: '8GB',
-                storage: '256GB SSD'
-              }
-            }
-          ],
-          total: 1,
-          page: 1,
-          pages: 1
-        };
-      } else {
-        return { products: [], total: 0, page: 1, pages: 1 };
-      }
-    }
-  };
+  getAttributesByComponentType = async (componentType: string) =>
+    this.request(`/api/compatibility/attributes/${componentType}`, { method: 'GET' });
 
-  // Compatibility System
-  filterCompatibleProducts = async (targetComponentType: string, selectedProducts: any[]) => {
-    try {
-      return await this.request('/api/compatibility/filter', {
-        method: 'POST',
-        body: JSON.stringify({
-          targetComponentType,
-          selectedProducts
-        })
-      });
-    } catch (error) {
-      console.warn('API error filtering compatible products:', error);
-      return { success: false, data: [] };
-    }
-  };
-
-  validateBuild = async (productIds: number[]) => {
-    try {
-      return await this.request('/api/compatibility/validate', {
-        method: 'POST',
-        body: JSON.stringify({ productIds })
-      });
-    } catch (error) {
-      console.warn('API error validating build:', error);
-      return { success: false, data: { compatible: true, messages: [] } };
-    }
-  };
-
-  getAttributesByComponentType = async (componentType: string) => {
-    try {
-      return await this.request(`/api/compatibility/attributes/${componentType}`, { method: 'GET' });
-    } catch (error) {
-      console.warn(`API error checking attributes for ${componentType}:`, error);
-      return { success: false, data: [] };
-    }
-  };
-
-  // Deprecated methods kept for backward compatibility if needed, but should be removed
-  checkCompatibility = async (parentId: number, childId: number) => {
+  checkCompatibility = async (_parentId: number, _childId: number) => {
     console.warn('checkCompatibility is deprecated. Use validateBuild instead.');
     return { isCompatible: true };
   };
 
-  // Laptops
-  getLaptops = async (params?: any) => {
-    try {
-      const queryParams = params ? new URLSearchParams(params).toString() : '';
-      const endpoint = queryParams ? `/api/laptops?${queryParams}` : '/api/laptops';
-      return await this.request(endpoint, { method: 'GET' });
-    } catch (error) {
-      console.warn(`API error for /laptops, using fallback data:`, error);
-      // Fallback (omitted for brevity)
-      return [];
-    }
-  };
+  getLaptops = async (params?: QueryParams) =>
+    this.request(`/api/laptops${this.buildQuery(params)}`, { method: 'GET' });
 
-  getCotizadorLaptops = async (params?: any) => {
-    try {
-      const queryParams = params ? new URLSearchParams(params).toString() : '';
-      const endpoint = queryParams ? `/api/cotizador/laptops?${queryParams}` : '/api/cotizador/laptops';
-      return await this.request(endpoint, { method: 'GET' });
-    } catch (error) {
-      console.warn(`API error for /cotizador/laptops:`, error);
-      return [];
-    }
-  };
+  getCotizadorLaptops = async (params?: QueryParams) =>
+    this.request(`/api/cotizador/laptops${this.buildQuery(params)}`, { method: 'GET' });
 
-  getLaptopSubcategories = async () => {
-    try {
-      return await this.request('/api/laptops/subcategories', { method: 'GET' });
-    } catch (error) {
-      console.warn(`API error for /laptops/subcategories, using fallback data:`, error);
-      // Devolver subcategorías de ejemplo
-      return [
-        { id: 1, name: 'Laptop Gamer', slug: 'laptop-gamer', type: 'tipo_laptop' },
-        { id: 2, name: 'Laptop Empresarial', slug: 'laptop-empresarial', type: 'tipo_laptop' },
-        { id: 3, name: 'Laptop Ultrabook', slug: 'laptop-ultrabook', type: 'tipo_laptop' }
-      ];
-    }
-  };
+  getLaptopSubcategories = async () =>
+    this.request('/api/laptops/subcategories', { method: 'GET' });
 
-  getLaptopProcessors = async () => {
-    try {
-      return await this.request('/api/laptops/processors', { method: 'GET' });
-    } catch (error) {
-      console.warn(`API error for /laptops/processors, using fallback data:`, error);
-      return [];
-    }
-  };
+  getLaptopProcessors = async () =>
+    this.request('/api/laptops/processors', { method: 'GET' });
 
-  getLaptopRamOptions = async () => {
-    try {
-      return await this.request('/api/laptops/ram', { method: 'GET' });
-    } catch (error) {
-      console.warn(`API error for /laptops/ram, using fallback data:`, error);
-      return [];
-    }
-  };
+  getLaptopRamOptions = async () =>
+    this.request('/api/laptops/ram', { method: 'GET' });
 
-  getLaptopStorageOptions = async () => {
-    try {
-      return await this.request('/api/laptops/storage', { method: 'GET' });
-    } catch (error) {
-      console.warn(`API error for /laptops/storage, using fallback data:`, error);
-      return [];
-    }
-  };
+  getLaptopStorageOptions = async () =>
+    this.request('/api/laptops/storage', { method: 'GET' });
 }
 
 export const apiClient = new ApiClient(API_BASE_URL);

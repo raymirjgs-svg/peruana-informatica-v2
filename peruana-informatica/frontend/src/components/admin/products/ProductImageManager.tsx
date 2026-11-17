@@ -28,8 +28,8 @@ export function ProductImageManager({ productId, onImagesUpdate }: ProductImageM
       if (onImagesUpdate) {
         onImagesUpdate(productImages);
       }
-    } catch (err: any) {
-      setError(err?.message || "Error al cargar imágenes");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error al cargar imágenes");
     } finally {
       setLoading(false);
     }
@@ -72,8 +72,8 @@ export function ProductImageManager({ productId, onImagesUpdate }: ProductImageM
       } else {
         throw new Error("No se pudo crear la imagen");
       }
-    } catch (err: any) {
-      setError(err?.message || "Error al agregar imagen");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error al agregar imagen");
     } finally {
       setAddingImage(false);
     }
@@ -96,8 +96,8 @@ export function ProductImageManager({ productId, onImagesUpdate }: ProductImageM
       } else {
         throw new Error("No se pudo eliminar la imagen");
       }
-    } catch (err: any) {
-      setError(err?.message || "Error al eliminar imagen");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error al eliminar imagen");
     } finally {
       setDeletingImageId(null);
     }

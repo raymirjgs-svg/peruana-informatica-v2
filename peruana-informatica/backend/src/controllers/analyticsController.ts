@@ -6,6 +6,8 @@ import { Image } from '../models/Image';
 import { Review } from '../models/Review';
 import { User } from '../models/User';
 import { Op } from 'sequelize';
+import { logger } from '../config/logger';
+import { sendError } from '../middleware/errorHandler';
 
 export class AnalyticsController {
 
@@ -18,7 +20,7 @@ export class AnalyticsController {
 
             // Calculate date range
             const now = new Date();
-            let startDate = new Date();
+            const startDate = new Date();
 
             switch (period) {
                 case '7d':
@@ -60,8 +62,8 @@ export class AnalyticsController {
                 data: dailySales
             });
         } catch (error) {
-            console.error('Error fetching sales overview:', error);
-            return res.status(500).json({ error: 'Error al obtener resumen de ventas' });
+            logger.error('Error fetching sales overview:', error);
+            return sendError(res, error, 'Error al obtener resumen de ventas');
         }
     }
 
@@ -145,8 +147,8 @@ export class AnalyticsController {
                 }
             });
         } catch (error) {
-            console.error('Error fetching KPIs:', error);
-            return res.status(500).json({ error: 'Error al obtener KPIs' });
+            logger.error('Error fetching KPIs:', error);
+            return sendError(res, error, 'Error al obtener KPIs');
         }
     }
 
@@ -205,8 +207,8 @@ export class AnalyticsController {
                 data: results
             });
         } catch (error) {
-            console.error('Error fetching top products:', error);
-            return res.status(500).json({ error: 'Error al obtener productos más vendidos' });
+            logger.error('Error fetching top products:', error);
+            return sendError(res, error, 'Error al obtener productos más vendidos');
         }
     }
 
@@ -234,8 +236,8 @@ export class AnalyticsController {
                 data: salesByMethod
             });
         } catch (error) {
-            console.error('Error fetching sales by payment method:', error);
-            return res.status(500).json({ error: 'Error al obtener ventas por método de pago' });
+            logger.error('Error fetching sales by payment method:', error);
+            return sendError(res, error, 'Error al obtener ventas por método de pago');
         }
     }
 
@@ -257,8 +259,8 @@ export class AnalyticsController {
                 data: recentOrders
             });
         } catch (error) {
-            console.error('Error fetching recent orders:', error);
-            return res.status(500).json({ error: 'Error al obtener pedidos recientes' });
+            logger.error('Error fetching recent orders:', error);
+            return sendError(res, error, 'Error al obtener pedidos recientes');
         }
     }
 
@@ -294,8 +296,8 @@ export class AnalyticsController {
                 }
             });
         } catch (error) {
-            console.error('Error fetchingconversion metrics:', error);
-            return res.status(500).json({ error: 'Error al obtener métricas de conversión' });
+            logger.error('Error fetchingconversion metrics:', error);
+            return sendError(res, error, 'Error al obtener métricas de conversión');
         }
     }
 }

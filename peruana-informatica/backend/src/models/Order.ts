@@ -1,5 +1,6 @@
 import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../database/connection';
+import type { OrderItem } from './OrderItem';
 
 export class Order extends Model {
     public id!: number;
@@ -12,6 +13,8 @@ export class Order extends Model {
     public tracking_code_sent_at?: Date | null; // Control de envío del código
     public total_amount!: number;
     public status!: string; // 'pending', 'processed', 'cancelled'
+    public coupon_code?: string; // Cupón aplicado al pedido
+    public discount_amount?: number; // Descuento aplicado
 
     // Payment fields
     public payment_method?: string; // 'efectivo', 'transferencia', 'tarjeta', 'yape', 'plin'
@@ -38,6 +41,8 @@ export class Order extends Model {
 
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
+
+    public items!: OrderItem[];
 }
 
 Order.init(
@@ -83,6 +88,15 @@ Order.init(
         total_amount: {
             type: DataTypes.DECIMAL(10, 2),
             allowNull: false,
+        },
+        coupon_code: {
+            type: DataTypes.STRING(50),
+            allowNull: true,
+        },
+        discount_amount: {
+            type: DataTypes.DECIMAL(10, 2),
+            allowNull: false,
+            defaultValue: 0,
         },
         status: {
             type: DataTypes.STRING(50),

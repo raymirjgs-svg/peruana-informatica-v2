@@ -2,6 +2,7 @@
 // 2. src/services/CategoryService.ts (NUEVO)
 // ============================================
 import { API_CONFIG } from '@/config/api';
+import apiClient from '@/utils/api';
 
 export interface Category {
   id: number;
@@ -28,37 +29,19 @@ export class CategoryService {
         throw new Error(`Invalid URL: ${url}`);
       }
 
-      let response;
-      try {
-        console.log('🚀 Attempting to fetch:', url);
-        response = await fetch(url, {
-          method: 'GET',
-          cache: 'no-store',
-          headers: {
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
-            'Pragma': 'no-cache',
-            'Expires': '0'
-          }
-        });
-        console.log('✅ Fetch successful, response object:', response);
-      } catch (networkError) {
-        console.error('❌ Network error:', networkError);
-        console.error('📍 Attempted URL:', url);
-        console.error('📍 Base URL:', this.baseUrl);
-        console.error('📍 Full error object:', networkError);
-        throw new Error(`Network error: ${networkError instanceof Error ? networkError.message : 'Unknown network error'}. Attempted to fetch: ${url}`);
-      }
+      console.log('🚀 Attempting to fetch:', url);
 
-      console.log('📡 Response status:', response.status);
+      const data = await apiClient.request<Category[]>(`/api/categories?t=${timestamp}`, {
+        method: 'GET',
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
+      });
 
-      if (!response.ok) {
-        const errorText = await response.text().catch(() => 'Unable to read error response');
-        console.error('❌ Categories API error:', response.status, errorText);
-        throw new Error(`Error ${response.status}: ${response.statusText} - ${errorText}`);
-      }
-
-      const data = await response.json();
-      return Array.isArray(data) ? (data as Category[]) : [];
+      return Array.isArray(data) ? data : [];
     } catch (error) {
       console.error('❌ Error fetching categories:', error);
       console.error('🔧 Check if backend is running on', this.baseUrl);
@@ -92,9 +75,8 @@ export class CategoryService {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
 
-      let response;
       try {
-        response = await fetch(url, {
+        const data = await apiClient.request<Category[]>(`/api/categories/menu?t=${timestamp}`, {
           method: 'GET',
           cache: 'no-store',
           headers: {
@@ -104,22 +86,15 @@ export class CategoryService {
           },
           signal: controller.signal
         });
-      } catch (networkError: any) {
-        clearTimeout(timeoutId);
+
+        return Array.isArray(data) ? data : [];
+      } catch {
         // Silenciar errores de red completamente
         return [];
+      } finally {
+        clearTimeout(timeoutId);
       }
-
-      clearTimeout(timeoutId);
-
-      if (!response.ok) {
-        // Silenciar errores HTTP, retornar array vacío
-        return [];
-      }
-
-      const data = await response.json();
-      return Array.isArray(data) ? data : [];
-    } catch (error: any) {
+    } catch {
       // Silenciar todos los errores completamente
       return [];
     }
@@ -139,35 +114,19 @@ export class CategoryService {
         throw new Error(`Invalid URL: ${url}`);
       }
 
-      let response;
-      try {
-        console.log('🚀 Attempting to fetch:', url);
-        response = await fetch(url, {
-          method: 'GET',
-          cache: 'no-store',
-          headers: {
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
-            'Pragma': 'no-cache',
-            'Expires': '0'
-          }
-        });
-        console.log('✅ Fetch successful, response object:', response);
-      } catch (networkError) {
-        console.error('❌ Network error:', networkError);
-        console.error('📍 Attempted URL:', url);
-        console.error('📍 Base URL:', this.baseUrl);
-        console.error('📍 Full error object:', networkError);
-        throw new Error(`Network error: ${networkError instanceof Error ? networkError.message : 'Unknown network error'}. Attempted to fetch: ${url}`);
-      }
+      console.log('🚀 Attempting to fetch:', url);
 
-      if (!response.ok) {
-        const errorText = await response.text().catch(() => 'Unable to read error response');
-        console.error('❌ Category by slug API error:', response.status, errorText);
-        throw new Error(`Error ${response.status}: ${response.statusText} - ${errorText}`);
-      }
+      const data = await apiClient.request<Category>(`/api/categories/${slug}?t=${timestamp}`, {
+        method: 'GET',
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
+      });
 
-      const data = await response.json();
-      return data as Category;
+      return data;
     } catch (error) {
       console.error('Error:', error);
       return null;
@@ -177,7 +136,7 @@ export class CategoryService {
   /**
    * Probar conexión con el servidor (debug)
    */
-  async testConnection(): Promise<any> {
+  async testConnection(): Promise<unknown> {
     try {
       // Usar el endpoint de health check general en lugar de uno específico de categorías
       const url = `${this.baseUrl}/api/health`;
@@ -192,43 +151,28 @@ export class CategoryService {
         throw new Error(`Invalid URL: ${url}`);
       }
 
-      let response;
-      try {
-        console.log('🚀 Attempting to fetch:', url);
-        response = await fetch(url, {
-          method: 'GET',
-          cache: 'no-store',
-          headers: {
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
-            'Pragma': 'no-cache',
-            'Expires': '0'
-          }
-        });
-        console.log('✅ Fetch successful, response object:', response);
-      } catch (networkError) {
-        console.error('❌ Network error:', networkError);
-        console.error('📍 Attempted URL:', url);
-        console.error('📍 Base URL:', this.baseUrl);
-        console.error('📍 Full error object:', networkError);
-        throw new Error(`Network error: ${networkError instanceof Error ? networkError.message : 'Unknown network error'}. Attempted to fetch: ${url}`);
-      }
+      console.log('🚀 Attempting to fetch:', url);
 
-      console.log('📡 Test connection response status:', response.status);
-
-      if (!response.ok) {
-        const errorText = await response.text().catch(() => 'Unable to read error response');
-        console.error('❌ Test connection API error:', response.status, errorText);
-        throw new Error(`Error ${response.status}: ${response.statusText} - ${errorText}`);
-      }
-
-      const result = await response.json();
+      const result = await apiClient.request<unknown>('/api/health', {
+        method: 'GET',
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
+      });
       console.log('✅ Test connection successful:', result);
       return result;
-    } catch (error: any) {
+    } catch (error) {
       console.error('❌ Category connection test failed:', error);
 
       // More detailed error logging
-      if (error.name === 'AbortError') {
+      const errorName =
+        typeof error === 'object' && error !== null && 'name' in error
+          ? String(error.name)
+          : '';
+      if (errorName === 'AbortError') {
         console.error('⏰ Request timeout - server might be unreachable');
       } else if (error instanceof TypeError) {
         console.error('🌐 Network error - check if backend server is running');

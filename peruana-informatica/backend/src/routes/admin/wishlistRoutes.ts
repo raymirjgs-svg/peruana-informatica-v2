@@ -1,11 +1,11 @@
 import { Router } from 'express';
 import { wishlistController } from '../../controllers/wishlistController';
-import { authenticateToken } from '../../middleware/authMiddleware';
+import { authenticateToken, requireAdmin } from '../../middleware/authMiddleware';
 
 const router = Router();
 
 // All admin routes require authentication
-router.use(authenticateToken);
+router.use(authenticateToken, requireAdmin);
 
 // Analytics
 router.get('/analytics', wishlistController.getWishlistAnalytics.bind(wishlistController));

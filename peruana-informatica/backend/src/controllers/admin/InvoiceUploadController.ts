@@ -4,6 +4,8 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 import { EmailService } from '../../services/EmailService';
+import { logger } from '../../config/logger';
+import { sendError } from '../../middleware/errorHandler';
 
 // Configurar multer para subir comprobantes (facturas/boletas)
 const storage = multer.diskStorage({
@@ -20,7 +22,7 @@ const storage = multer.diskStorage({
     }
 });
 
-const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
+const fileFilter = (_req: Request, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
     // Solo aceptar archivos PDF
     if (file.mimetype === 'application/pdf') {
         cb(null, true);
@@ -67,9 +69,9 @@ export const uploadInvoiceFile = async (req: Request, res: Response) => {
         try {
             const emailService = new EmailService();
             await emailService.sendInvoiceToClient(order, req.file.filename);
-            console.log(`✅ Comprobante enviado por email al cliente para pedido #${order.id}`);
+            logger.info(`✅ Comprobante enviado por email al cliente para pedido #${order.id}`);
         } catch (emailError) {
-            console.error('⚠️ Error enviando comprobante por email:', emailError);
+            logger.error('⚠️ Error enviando comprobante por email:', emailError);
             // No fallar la operación si el email falla
         }
 
@@ -80,7 +82,7 @@ export const uploadInvoiceFile = async (req: Request, res: Response) => {
             invoice_number
         });
     } catch (error) {
-        console.error('Error uploading invoice:', error);
-        res.status(500).json({ error: 'Error al cargar comprobante' });
+        logger.error('Error uploading invoice:', error);
+        return sendError(res, error, 'Error al cargar comprobante');
     }
 };

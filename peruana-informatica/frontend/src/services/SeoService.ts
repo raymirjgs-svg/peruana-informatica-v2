@@ -1,3 +1,5 @@
+import apiClient from '../utils/api';
+
 interface SeoSettings {
   id: number;
   page_type: string;
@@ -75,22 +77,6 @@ interface SeoFormData {
 }
 
 class SeoService {
-  private static readonly BASE_URL =
-    process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
-  private static readonly API_BASE = `${SeoService.BASE_URL}/api`;
-
-  // Método para obtener las credenciales de autenticación básica
-  private static getAuthHeaders(): Record<string, string> {
-    const username = process.env.NEXT_PUBLIC_ADMIN_USERNAME || "admin";
-    const password = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "admin123";
-    const credentials = btoa(`${username}:${password}`);
-
-    return {
-      Authorization: `Basic ${credentials}`,
-      "Content-Type": "application/json",
-    };
-  }
-
   /**
    * Obtener todas las configuraciones SEO
    */
@@ -109,20 +95,12 @@ class SeoService {
         });
       }
 
-      const url = `${this.API_BASE}/seo${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
+      const endpoint = `/api/seo${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
 
-      const response = await fetch(url, {
+      return await apiClient.request<ApiResponse<SeoSettings[]>>(endpoint, {
         method: "GET",
-        headers: this.getAuthHeaders(),
+        auth: "admin",
       });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || "Error al obtener las configuraciones SEO");
-      }
-
-      return result;
     } catch (error) {
       console.error("Error fetching SEO settings:", error);
       throw error;
@@ -142,20 +120,12 @@ class SeoService {
         queryParams.append("page_identifier", pageIdentifier);
       }
 
-      const url = `${this.API_BASE}/seo/page/${pageType}${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
+      const endpoint = `/api/seo/page/${pageType}${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
 
-      const response = await fetch(url, {
+      return await apiClient.request<ApiResponse<SeoSettings>>(endpoint, {
         method: "GET",
-        headers: this.getAuthHeaders(),
+        auth: "admin",
       });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || "Error al obtener la configuración SEO");
-      }
-
-      return result;
     } catch (error) {
       console.error("Error fetching SEO settings by page type:", error);
       throw error;
@@ -167,18 +137,10 @@ class SeoService {
    */
   static async getById(id: number): Promise<ApiResponse<SeoSettings>> {
     try {
-      const response = await fetch(`${this.API_BASE}/seo/${id}`, {
+      return await apiClient.request<ApiResponse<SeoSettings>>(`/api/seo/${id}`, {
         method: "GET",
-        headers: this.getAuthHeaders(),
+        auth: "admin",
       });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || "Error al obtener la configuración SEO");
-      }
-
-      return result;
     } catch (error) {
       console.error("Error fetching SEO settings:", error);
       throw error;
@@ -190,19 +152,11 @@ class SeoService {
    */
   static async create(data: SeoFormData): Promise<ApiResponse<SeoSettings>> {
     try {
-      const response = await fetch(`${this.API_BASE}/seo`, {
+      return await apiClient.request<ApiResponse<SeoSettings>>('/api/seo', {
         method: "POST",
-        headers: this.getAuthHeaders(),
-        body: JSON.stringify(data),
+        auth: "admin",
+        body: data,
       });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || "Error al crear la configuración SEO");
-      }
-
-      return result;
     } catch (error) {
       console.error("Error creating SEO settings:", error);
       throw error;
@@ -214,19 +168,11 @@ class SeoService {
    */
   static async updateById(id: number, data: Partial<SeoFormData>): Promise<ApiResponse<SeoSettings>> {
     try {
-      const response = await fetch(`${this.API_BASE}/seo/${id}`, {
+      return await apiClient.request<ApiResponse<SeoSettings>>(`/api/seo/${id}`, {
         method: "PUT",
-        headers: this.getAuthHeaders(),
-        body: JSON.stringify(data),
+        auth: "admin",
+        body: data,
       });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || "Error al actualizar la configuración SEO");
-      }
-
-      return result;
     } catch (error) {
       console.error("Error updating SEO settings:", error);
       throw error;
@@ -247,21 +193,13 @@ class SeoService {
         queryParams.append("page_identifier", pageIdentifier);
       }
 
-      const url = `${this.API_BASE}/seo/page/${pageType}${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
+      const endpoint = `/api/seo/page/${pageType}${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
 
-      const response = await fetch(url, {
+      return await apiClient.request<ApiResponse<SeoSettings>>(endpoint, {
         method: "PUT",
-        headers: this.getAuthHeaders(),
-        body: JSON.stringify(data),
+        auth: "admin",
+        body: data,
       });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || "Error al actualizar la configuración SEO");
-      }
-
-      return result;
     } catch (error) {
       console.error("Error updating SEO settings by page type:", error);
       throw error;
@@ -273,18 +211,10 @@ class SeoService {
    */
   static async delete(id: number): Promise<ApiResponse<void>> {
     try {
-      const response = await fetch(`${this.API_BASE}/seo/${id}`, {
+      return await apiClient.request<ApiResponse<void>>(`/api/seo/${id}`, {
         method: "DELETE",
-        headers: this.getAuthHeaders(),
+        auth: "admin",
       });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || "Error al eliminar la configuración SEO");
-      }
-
-      return result;
     } catch (error) {
       console.error("Error deleting SEO settings:", error);
       throw error;
@@ -296,18 +226,10 @@ class SeoService {
    */
   static async getAnalysis(): Promise<ApiResponse<SeoAnalysis>> {
     try {
-      const response = await fetch(`${this.API_BASE}/seo/analysis`, {
+      return await apiClient.request<ApiResponse<SeoAnalysis>>('/api/seo/analysis', {
         method: "GET",
-        headers: this.getAuthHeaders(),
+        auth: "admin",
       });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || "Error al obtener el análisis SEO");
-      }
-
-      return result;
     } catch (error) {
       console.error("Error fetching SEO analysis:", error);
       throw error;
@@ -322,21 +244,13 @@ class SeoService {
     page_identifier?: string;
     current_title?: string;
     current_description?: string;
-  }): Promise<ApiResponse<any>> {
+  }): Promise<ApiResponse<unknown>> {
     try {
-      const response = await fetch(`${this.API_BASE}/seo/suggest`, {
+      return await apiClient.request<ApiResponse<unknown>>('/api/seo/suggest', {
         method: "POST",
-        headers: this.getAuthHeaders(),
-        body: JSON.stringify(data),
+        auth: "admin",
+        body: data,
       });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || "Error al obtener sugerencias de la IA");
-      }
-
-      return result;
     } catch (error) {
       console.error("Error getting AI suggestions:", error);
       throw error;
@@ -460,17 +374,11 @@ class SeoService {
   /**
    * Probar conexión con el servidor (debug)
    */
-  static async testConnection(): Promise<any> {
+  static async testConnection(): Promise<unknown> {
     try {
-      const response = await fetch(`${this.API_BASE}/seo/test`, {
+      return await apiClient.request('/api/seo/test', {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
       });
-
-      const result = await response.json();
-      return result;
     } catch (error) {
       console.error("SEO connection test failed:", error);
       throw error;

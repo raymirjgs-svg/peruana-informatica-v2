@@ -6,15 +6,17 @@ import fs from 'fs';
 import { EmailService } from '../../services/EmailService';
 import { logger } from '../../config/logger';
 import { sendError } from '../../middleware/errorHandler';
+import { INVOICE_DIR } from '../../utils/invoicePaths';
 
 // Configurar multer para subir comprobantes (facturas/boletas)
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        const uploadDir = path.join(__dirname, '../../../uploads/invoices');
-        if (!fs.existsSync(uploadDir)) {
-            fs.mkdirSync(uploadDir, { recursive: true });
+        // Dentro del volumen persistente `uploads_data`: antes se guardaba en
+        // /app/uploads/invoices y los comprobantes se perdian en cada deploy.
+        if (!fs.existsSync(INVOICE_DIR)) {
+            fs.mkdirSync(INVOICE_DIR, { recursive: true });
         }
-        cb(null, uploadDir);
+        cb(null, INVOICE_DIR);
     },
     filename: (req, file, cb) => {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);

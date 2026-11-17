@@ -2,6 +2,7 @@ import nodemailer from 'nodemailer';
 import { Order } from '../models/Order';
 import { OrderItem } from '../models/OrderItem';
 import { emailTemplates } from '../utils/emailTemplates';
+import { INVOICE_DIR } from '../utils/invoicePaths';
 
 export class EmailService {
     private transporter;
@@ -75,7 +76,7 @@ export class EmailService {
     async sendInvoiceToClient(order: any, invoiceFilename: string) {
         const fs = require('fs');
         const path = require('path');
-        const invoicePath = path.join(__dirname, '../../uploads/invoices', invoiceFilename);
+        const invoicePath = path.join(INVOICE_DIR, path.basename(invoiceFilename));
 
         const html = `
             <!DOCTYPE html>

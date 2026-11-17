@@ -5,6 +5,7 @@ import PDFDocument from 'pdfkit';
 import fs from 'fs';
 import path from 'path';
 import { EmailService } from '../../services/EmailService';
+import { INVOICE_DIR, resolveInvoicePath } from '../../utils/invoicePaths';
 
 // Verify payment
 export const verifyPayment = async (req: Request, res: Response) => {
@@ -71,7 +72,7 @@ export const generateInvoice = async (req: Request, res: Response) => {
         }
 
         // Create invoices directory
-        const invoiceDir = path.join(__dirname, '../../../uploads/invoices');
+        const invoiceDir = INVOICE_DIR;
         if (!fs.existsSync(invoiceDir)) {
             fs.mkdirSync(invoiceDir, { recursive: true });
         }
@@ -186,10 +187,9 @@ export const downloadInvoice = async (req: Request, res: Response) => {
             return res.status(400).json({ error: 'Nombre de archivo requerido' });
         }
 
-        const invoiceDir = path.join(__dirname, '../../../uploads/invoices');
-        const safeFilename = path.basename(filename);
-        const filepath = path.join(invoiceDir, safeFilename);
-        if (!filepath.startsWith(invoiceDir + path.sep) && filepath !== invoiceDir) {
+        const invoiceDir = INVOICE_DIR;
+        const filepath = resolveInvoicePath(filename);
+        if (!filepath) {
             return res.status(400).json({ error: 'Nombre de archivo inválido' });
         }
 

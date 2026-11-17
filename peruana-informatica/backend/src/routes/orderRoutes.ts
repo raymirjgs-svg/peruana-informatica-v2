@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { createOrder } from '../controllers/OrderController';
 import {
     createPaymentPreferenceByTrackingCode,
+    downloadInvoiceByTrackingCode,
     getOrderByTrackingCode,
     syncPaymentStatusByTrackingCode,
     uploadPaymentProofByTrackingCode,
@@ -15,6 +16,7 @@ const router = Router();
 // ── Seguimiento seguro por codigo ──────────────────────────────────
 // El codigo es la credencial del cliente: nunca se expone el id numerico.
 router.get('/track/:code', trackingLimiter, getOrderByTrackingCode);
+router.get('/track/:code/invoice', trackingLimiter, downloadInvoiceByTrackingCode);
 router.post('/track/:code/payment-preference', trackingLimiter, createPaymentPreferenceByTrackingCode);
 router.post('/track/:code/payment-status', trackingLimiter, syncPaymentStatusByTrackingCode);
 router.post(

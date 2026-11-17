@@ -1,7 +1,10 @@
 import { Request, Response } from 'express';
+import fs from 'fs';
+import path from 'path';
 import { Order } from '../models/Order';
 import { OrderItem } from '../models/OrderItem';
 import { normalizeTrackingCode } from '../utils/trackingCode';
+import { resolveInvoicePath } from '../utils/invoicePaths';
 import {
     createOrderPreference,
     isMercadoPagoEnabled,
@@ -15,6 +18,11 @@ interface TrackingItem {
 }
 
 const APPROVED_STATUSES = ['processed', 'approved'];
+
+/**
+ * Directorio de los comprobantes (boletas/facturas en PDF) cargados por el
+ * administrador. Vive dentro del volumen persistente `uploads_data`.
+ */
 
 /**
  * Un pedido puede pagarse cuando fue aprobado por el administrador y todavia
@@ -40,6 +48,9 @@ const buildTrackingPayload = (order: Order, items: TrackingItem[]) => ({
     created_at: order.createdAt,
     updated_at: order.updatedAt,
     can_pay: canPayForOrder(order),
+    // Solo un booleano: el cliente ve que su comprobante esta listo, pero el
+    // PDF se descarga con el codigo de seguimiento (que es la credencial).
+    invoice_available: Boolean(order.invoice_file && fs.existsSync(resolveInvoicePath(order.invoice_file) || '')),
 });
 
 const findOrderByCode = async (rawCode: string): Promise<Order | null> => {
@@ -86,6 +97,42 @@ export const getOrderByTrackingCode = async (req: Request, res: Response): Promi
         return res.status(500).json({
             success: false,
             message: 'No pudimos consultar el pedido en este momento.',
+        });
+    }
+};
+
+/**
+ * Descarga la boleta/factura del pedido. El codigo de seguimiento es la
+ * credencial, igual que para consultar el pedido.
+ */
+export const downloadInvoiceByTrackingCode = async (req: Request, res: Response): Promise<Response | void> => {
+    try {
+        const order = await findOrderByCode(req.params.code || '');
+
+        if (!order) {
+            return res.status(404).json({
+                success: false,
+                message: 'No encontramos un pedido con ese código de seguimiento.',
+            });
+        }
+
+        const filepath = resolveInvoicePath(order.invoice_file);
+        if (!filepath || !fs.existsSync(filepath)) {
+            return res.status(404).json({
+                success: false,
+                message: 'Tu comprobante todavía no está disponible. Te lo enviaremos por WhatsApp cuando esté listo.',
+            });
+        }
+
+        const tipo = order.invoice_type === 'factura' ? 'Factura' : 'Boleta';
+        const numero = order.invoice_number ? `-${order.invoice_number}` : '';
+        res.download(filepath, `${tipo}${numero}.pdf`);
+        return;
+    } catch (error) {
+        console.error('Error al descargar el comprobante por código de tracking:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'No pudimos descargar tu comprobante en este momento.',
         });
     }
 };

@@ -24,6 +24,7 @@ interface TrackingOrder {
     created_at: string;
     updated_at: string;
     can_pay?: boolean;
+    invoice_available?: boolean;
     payment_methods?: string[];
     payment_details?: TrackingPaymentDetails;
 }
@@ -269,6 +270,21 @@ export default function TrackingOrderPage() {
                     totalAmount={order.total_amount}
                     onUpdated={() => loadTracking(true)}
                 />
+            )}
+
+            {order.invoice_available && (
+                <div className="mt-6 rounded-2xl border border-green-200 bg-green-50 p-6 text-center">
+                    <p className="text-sm font-semibold text-green-800">Tu comprobante está listo</p>
+                    <p className="mt-1 text-sm text-green-700">
+                        Descarga tu boleta o factura en PDF. Es tu sustento de la compra.
+                    </p>
+                    <a
+                        href={`${API_CONFIG.API_BASE_URL}/api/orders/track/${encodeURIComponent(order.tracking_code)}/invoice`}
+                        className="mt-4 inline-flex items-center justify-center rounded-lg bg-green-700 px-5 py-2.5 text-sm font-bold text-white hover:bg-green-800"
+                    >
+                        Descargar comprobante (PDF)
+                    </a>
+                </div>
             )}
 
             {awaitingConfirmation && (

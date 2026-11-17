@@ -8,6 +8,8 @@ import { useCompare } from '@/hooks/useCompare';
 import Image from 'next/image';
 import { memo } from 'react';
 import { motion } from 'framer-motion';
+import { useSettings } from '@/context/SettingsContext';
+import { buildWhatsappLink, hasPublishedPrice, priceInquiryMessage } from '@/utils/whatsapp';
 
 interface ProductCardProps {
   product: Product;
@@ -17,8 +19,14 @@ export const ProductCard = memo(function ProductCard({ product }: ProductCardPro
   const { addItem, isInCart } = useCart();
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const { addToCompare, removeFromCompare, isInCompare } = useCompare();
+  const { settings } = useSettings();
+
+  // Sin precio publicado el producto no se puede comprar online: se deriva
+  // a la consulta por WhatsApp (evita pedidos a S/ 0.00).
+  const purchasable = hasPublishedPrice(product.price);
 
   const handleAddToCart = () => {
+    if (!purchasable) return;
     if (product.isAvailable()) addItem(product);
   };
 
@@ -208,23 +216,34 @@ export const ProductCard = memo(function ProductCard({ product }: ProductCardPro
         </div>
 
         {/* CTA button */}
-        <button
-          onClick={handleAddToCart}
-          disabled={!product.isAvailable()}
-          className={`w-full py-2 text-[13px] font-semibold rounded-lg border transition-all duration-200 active:scale-95 ${
-            product.isAvailable()
-              ? isInCart(product.id)
-                ? 'border-emerald-500 bg-emerald-500 text-white'
-                : 'border-gray-800 dark:border-gray-300 text-gray-900 dark:text-gray-100 hover:bg-brand-red-600 hover:border-brand-red-600 hover:text-white dark:hover:bg-brand-red-600 dark:hover:border-brand-red-600'
-              : 'border-gray-200 dark:border-gray-700 text-gray-400 dark:text-gray-600 cursor-not-allowed'
-          }`}
-        >
-          {!product.isAvailable()
-            ? 'Agotado'
-            : isInCart(product.id)
-              ? 'En el carrito'
-              : 'Agregar al carrito'}
-        </button>
+        {purchasable ? (
+          <button
+            onClick={handleAddToCart}
+            disabled={!product.isAvailable()}
+            className={`w-full py-2 text-[13px] font-semibold rounded-lg border transition-all duration-200 active:scale-95 ${
+              product.isAvailable()
+                ? isInCart(product.id)
+                  ? 'border-emerald-500 bg-emerald-500 text-white'
+                  : 'border-gray-800 dark:border-gray-300 text-gray-900 dark:text-gray-100 hover:bg-brand-red-600 hover:border-brand-red-600 hover:text-white dark:hover:bg-brand-red-600 dark:border-brand-red-600'
+                : 'border-gray-200 dark:border-gray-700 text-gray-400 dark:text-gray-600 cursor-not-allowed'
+            }`}
+          >
+            {!product.isAvailable()
+              ? 'Agotado'
+              : isInCart(product.id)
+                ? 'En el carrito'
+                : 'Agregar al carrito'}
+          </button>
+        ) : (
+          <a
+            href={buildWhatsappLink(priceInquiryMessage(product.name), settings?.company_whatsapp)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full py-2 text-[13px] font-semibold rounded-lg border border-emerald-600 bg-emerald-600 text-white hover:bg-emerald-700 transition-all duration-200 active:scale-95 text-center block"
+          >
+            Consultar por WhatsApp
+          </a>
+        )}
       </div>
     </motion.div>
   );

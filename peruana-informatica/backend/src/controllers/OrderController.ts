@@ -67,8 +67,36 @@ export const createOrder = async (req: Request, res: Response) => {
                 return res.status(404).json({ error: `Producto con ID ${item.product_id} no encontrado` });
             }
 
-            const quantity = item.quantity || 1;
+            const quantity = item.quantity === undefined ? 1 : Number(item.quantity);
             const price = Number(product.price);
+            const stock = Number(product.stock || 0);
+
+            // Validaciones de integridad comercial: el precio y el stock se
+            // toman SIEMPRE del servidor. Un producto sin precio publicado no
+            // se puede comprar en linea (precio a consultar).
+            if (!Number.isInteger(quantity) || quantity < 1) {
+                await t.rollback();
+                return res.status(400).json({
+                    error: `Cantidad invalida para el producto "${product.name}".`,
+                    code: 'INVALID_QUANTITY'
+                });
+            }
+
+            if (!Number.isFinite(price) || price <= 0) {
+                await t.rollback();
+                return res.status(400).json({
+                    error: `El producto "${product.name}" no tiene precio publicado. Contactanos por WhatsApp para coordinarlo.`,
+                    code: 'PRODUCT_WITHOUT_PRICE'
+                });
+            }
+
+            if (quantity > stock) {
+                await t.rollback();
+                return res.status(400).json({
+                    error: `No hay stock suficiente de "${product.name}" (disponible: ${stock}).`,
+                    code: 'INSUFFICIENT_STOCK'
+                });
+            }
 
             totalAmount += price * quantity;
 

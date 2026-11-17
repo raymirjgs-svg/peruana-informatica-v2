@@ -24,6 +24,7 @@ import {
 import { CouponInput } from '@/components/checkout/CouponInput';
 import { type Coupon } from '@/services/CouponService';
 import { getProductImageUrl } from '@/utils/images';
+import { buildWhatsappLink, hasPublishedPrice, priceInquiryMessage } from '@/utils/whatsapp';
 
 type PaymentMethod = 'efectivo' | 'transferencia' | 'tarjeta' | 'yape' | 'plin' | 'mercadopago';
 type InvoiceType = 'boleta' | 'factura';
@@ -55,6 +56,11 @@ const PAYMENT_METHOD_CATALOG: { value: PaymentMethod; label: string; desc: strin
 
 export default function CartPage() {
   const { items, totalItems, totalPrice, updateQuantity, removeItem, clearCart } = useCart();
+
+  // Productos sin precio publicado: no se pueden cobrar en linea. Se avisa y
+  // se bloquea el checkout (el backend tambien lo rechaza).
+  const itemsWithoutPrice = items.filter((item) => !hasPublishedPrice(item.product.price));
+  const hasUnpricedItems = itemsWithoutPrice.length > 0;
   const { data: session, status } = useSession();
   const router = useRouter();
 
@@ -299,6 +305,17 @@ export default function CartPage() {
 
   const handleCustomerSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Barrera de seguridad en el cliente: los productos sin precio publicado
+    // no se pueden cobrar. El backend tambien lo rechaza.
+    if (hasUnpricedItems) {
+      setError(
+        'Hay productos sin precio publicado en el carrito. Quitarlos o consultanos por WhatsApp para coordinarlos.'
+      );
+      setStep('cart');
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
 
@@ -917,7 +934,11 @@ export default function CartPage() {
                   <Image src={getProductImageUrl(item.product.image)} width={100} height={100} alt={item.product.name} className="object-cover rounded" />
                   <div className="flex-1">
                     <h3 className="font-bold">{item.product.name}</h3>
-                    <p className="text-green-600 font-bold">S/ {Number(item.product.price).toFixed(2)}</p>
+                    {hasPublishedPrice(item.product.price) ? (
+                      <p className="text-green-600 font-bold">S/ {Number(item.product.price).toFixed(2)}</p>
+                    ) : (
+                      <p className="text-amber-600 font-bold">Precio a consultar</p>
+                    )}
                     <div className="flex items-center gap-4 mt-2">
                       <div className="flex items-center border rounded">
                         <button onClick={() => updateQuantity(item.product.id, Math.max(1, item.quantity - 1))} className="px-3 py-1">-</button>
@@ -928,7 +949,9 @@ export default function CartPage() {
                     </div>
                   </div>
                   <div className="font-bold">
-                    S/ {(Number(item.product.price) * item.quantity).toFixed(2)}
+                    {hasPublishedPrice(item.product.price)
+                      ? `S/ ${(Number(item.product.price) * item.quantity).toFixed(2)}`
+                      : 'Consultar'}
                   </div>
                 </div>
               ))}
@@ -962,9 +985,35 @@ export default function CartPage() {
                     </div>
                   </div>
 
+                  {hasUnpricedItems && (
+                    <div className="mb-4 rounded-xl border border-amber-300 bg-amber-50 p-4">
+                      <p className="text-sm font-bold text-amber-900">
+                        Hay {itemsWithoutPrice.length}{' '}
+                        {itemsWithoutPrice.length === 1 ? 'producto' : 'productos'} sin precio publicado.
+                      </p>
+                      <p className="mt-1 text-xs text-amber-800">
+                        No se pueden cobrar en linea. Quitalos del carrito o consultanos por WhatsApp para
+                        coordinarlos.
+                      </p>
+                      <a
+                        href={buildWhatsappLink(
+                          priceInquiryMessage(itemsWithoutPrice.map((i) => i.product.name).join(', '))
+                        )}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-3 inline-flex items-center justify-center rounded-lg bg-emerald-600 px-4 py-2 text-xs font-bold text-white hover:bg-emerald-700"
+                      >
+                        Consultar por WhatsApp
+                      </a>
+                    </div>
+                  )}
+
                   <button
                     onClick={() => setStep('customer')}
-                    className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-4 rounded-xl font-bold text-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center gap-2"
+                    disabled={hasUnpricedItems}
+                    className={`w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-4 rounded-xl font-bold text-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center gap-2 ${
+                      hasUnpricedItems ? 'opacity-50 cursor-not-allowed' : ''
+                    }`}
                   >
                     Continuar
                   </button>

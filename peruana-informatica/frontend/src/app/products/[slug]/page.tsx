@@ -11,6 +11,7 @@ import { useCart } from '@/hooks/useCart';
 import { SettingsService, CompanySettings } from '@/services/SettingsService';
 import { RelatedProducts } from '@/components/product/RelatedProducts';
 import { ProductReviews } from '@/components/product/ProductReviews';
+import { buildWhatsappLink, hasPublishedPrice, priceInquiryMessage } from '@/utils/whatsapp';
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -53,7 +54,7 @@ export default function ProductDetailPage() {
       if (!slug) return;
       const productService = new ProductService();
       const decodedSlug = decodeURIComponent(slug);
-      let prod = await productService.getProductBySlug(decodedSlug);
+      const prod = await productService.getProductBySlug(decodedSlug);
 
       // Fallback: slug viejo/truncado indexado por buscadores -> redirigir al slug canónico
       if (!prod) {
@@ -93,13 +94,19 @@ export default function ProductDetailPage() {
     loadData();
   }, [slug]);
 
+  // Sin precio publicado no se permite comprar en linea: el producto se
+  // coordina por WhatsApp (evita pedidos a S/ 0.00).
+  const hasPrice = hasPublishedPrice(product?.price);
+
   const handleAddToCart = () => {
+    if (!hasPrice) return;
     if (product && product.isAvailable()) {
       for (let i = 0; i < quantity; i++) addItem(product);
     }
   };
 
   const handleBuyNow = () => {
+    if (!hasPrice) return;
     handleAddToCart();
     window.location.href = '/cart';
   };
@@ -480,20 +487,41 @@ export default function ProductDetailPage() {
 
             {/* CTAs */}
             <div className="space-y-2.5">
-              <button
-                onClick={handleBuyNow}
-                disabled={!product.isAvailable()}
-                className="w-full bg-brand-red-600 hover:bg-brand-red-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white py-3.5 rounded-xl font-bold text-sm tracking-wide transition-all active:scale-95 shadow-sm"
-              >
-                Comprar Ahora
-              </button>
-              <button
-                onClick={handleAddToCart}
-                disabled={!product.isAvailable()}
-                className="w-full bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 disabled:bg-gray-200 disabled:cursor-not-allowed text-white dark:text-gray-900 py-3.5 rounded-xl font-bold text-sm tracking-wide transition-all active:scale-95"
-              >
-                Agregar al Carrito
-              </button>
+              {hasPrice ? (
+                <>
+                  <button
+                    onClick={handleBuyNow}
+                    disabled={!product.isAvailable()}
+                    className="w-full bg-brand-red-600 hover:bg-brand-red-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white py-3.5 rounded-xl font-bold text-sm tracking-wide transition-all active:scale-95 shadow-sm"
+                  >
+                    Comprar Ahora
+                  </button>
+                  <button
+                    onClick={handleAddToCart}
+                    disabled={!product.isAvailable()}
+                    className="w-full bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 disabled:bg-gray-200 disabled:cursor-not-allowed text-white dark:text-gray-900 py-3.5 rounded-xl font-bold text-sm tracking-wide transition-all active:scale-95"
+                  >
+                    Agregar al Carrito
+                  </button>
+                </>
+              ) : (
+                <div className="rounded-xl border border-amber-200 bg-amber-50 dark:border-amber-900/60 dark:bg-amber-950/30 p-4">
+                  <p className="text-sm font-semibold text-amber-900 dark:text-amber-200">
+                    Este producto no tiene precio publicado todavia.
+                  </p>
+                  <p className="mt-1 text-xs text-amber-800 dark:text-amber-300/90">
+                    Escribenos por WhatsApp con el nombre del producto y te cotizamos al instante.
+                  </p>
+                  <a
+                    href={buildWhatsappLink(priceInquiryMessage(product.name, quantity), settings?.company_whatsapp)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-3 w-full inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 rounded-xl font-bold text-sm tracking-wide transition-all active:scale-95"
+                  >
+                    Consultar por WhatsApp
+                  </a>
+                </div>
+              )}
               <div className="grid grid-cols-2 gap-2">
                 <button
                   onClick={handleToggleWishlist}

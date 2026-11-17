@@ -16,6 +16,26 @@ export const IMAGE_PLACEHOLDER = '/no-image.svg';
 const ABSOLUTE_URL = /^https?:\/\//i;
 
 /**
+ * Hosts internos que nunca son accesibles desde el navegador del visitante
+ * (datos guardados por el ERP o por el panel en desarrollo).
+ */
+const INTERNAL_HOST = /^(localhost|127\.0\.0\.1|0\.0\.0\.0|192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+)(:\d+)?$/i;
+
+/**
+ * Si la URL apunta a un host interno, se convierte en ruta relativa para
+ * que el helper la resuelva contra el host publico.
+ */
+const stripInternalHost = (value: string): string | null => {
+    try {
+        const url = new URL(value);
+        if (!INTERNAL_HOST.test(url.host)) return null;
+        return `${url.pathname}${url.search}`;
+    } catch {
+        return null;
+    }
+};
+
+/**
  * Si la ruta ya trae la carpeta de imagenes (/images/... o /uploads/...),
  * se extrae el nombre final para no duplicar el prefijo.
  */
@@ -38,8 +58,12 @@ export function getProductImageUrl(imagePath?: string | null, placeholder?: stri
     const value = imagePath.trim();
 
     // 1. URL absoluta: se respeta tal cual (el ERP guarda URLs completas).
+    //    Salvo que apunte a un host interno (localhost / IP privada): esos se
+    //    reescriben contra el host publico.
     if (ABSOLUTE_URL.test(value)) {
-        return value;
+        const relative = stripInternalHost(value);
+        if (!relative) return value;
+        return getProductImageUrl(relative, fallback);
     }
 
     const base = getBaseUrl().replace(/\/+$/, '');
@@ -61,7 +85,11 @@ export function getProductImageUrl(imagePath?: string | null, placeholder?: stri
  */
 export function getBackendImageUrl(imagePath?: string): string {
     if (!imagePath) return '';
-    if (ABSOLUTE_URL.test(imagePath)) return imagePath;
+    if (ABSOLUTE_URL.test(imagePath)) {
+        const relative = stripInternalHost(imagePath);
+        if (!relative) return imagePath;
+        return getBackendImageUrl(relative);
+    }
     const base = getBaseUrl().replace(/\/+$/, '');
     if (imagePath.startsWith('/')) return `${base}${imagePath}`;
     return `${base}/${imagePath}`;

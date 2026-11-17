@@ -56,7 +56,24 @@ check('imagen undefined', getProductImageUrl(undefined), '/no-image.svg');
 check('backend url absoluta', getBackendImageUrl('https://peruanadeinformatica.com.pe/uploads/x.jpg'), 'https://peruanadeinformatica.com.pe/uploads/x.jpg');
 check('backend ruta relativa', getBackendImageUrl('/uploads/x.jpg'), `${BASE}/uploads/x.jpg`);
 
-// 6. Nombre de archivo decodificado (para comparar contra el disco).
+// 6. Hosts internos (localhost / IP privada): se reescriben al host publico.
+check(
+    'logo con localhost (marca)',
+    getBackendImageUrl('http://localhost:3001/images/brands/logo.jpg'),
+    `${BASE}/images/brands/logo.jpg`
+);
+check(
+    'imagen con IP privada',
+    getProductImageUrl('http://192.168.1.122/images/products/foto.jpg'),
+    `${BASE}/images/products/foto.jpg`
+);
+check(
+    'URL publica se respeta',
+    getBackendImageUrl('https://peruanadeinformatica.com.pe/images/brands/logo.svg'),
+    'https://peruanadeinformatica.com.pe/images/brands/logo.svg'
+);
+
+// 7. Nombre de archivo decodificado (para comparar contra el disco).
 check('nombre decodificado', getProductImageFilename('https://x.com/images/products/Monitor%20Gamer.png'), 'Monitor Gamer.png');
 
 console.log(failed === 0 ? '\nTodas las verificaciones pasaron.' : `\n${failed} verificacion(es) fallaron.`);

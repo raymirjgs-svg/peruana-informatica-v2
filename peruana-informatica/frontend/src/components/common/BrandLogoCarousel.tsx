@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { API_CONFIG } from '@/config/api';
+import { getBackendImageUrl } from '@/utils/images';
 
 interface BrandItem {
   id: number;
@@ -53,10 +54,11 @@ export function BrandLogoCarousel() {
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={brand.logo}
+                src={getBackendImageUrl(brand.logo)}
                 alt={brand.name}
                 className="object-contain dark:invert"
                 style={{ maxHeight: '48px', maxWidth: '100px', width: 'auto', height: 'auto' }}
+                onError={(e) => { e.currentTarget.src = '/no-image.svg'; }}
               />
             </a>
           ))}

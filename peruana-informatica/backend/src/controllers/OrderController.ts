@@ -16,6 +16,10 @@ interface OrderCreationValues {
     customer_document?: string;
     total_amount: number;
     status: string;
+    invoice_type: 'boleta' | 'factura';
+    ruc?: string | null;
+    business_name?: string | null;
+    tax_address?: string | null;
 }
 
 async function createOrderWithTrackingCode(
@@ -47,6 +51,48 @@ export const createOrder = async (req: Request, res: Response) => {
         if (!items || !Array.isArray(items) || items.length === 0) {
             await t.rollback();
             return res.status(400).json({ error: 'El carrito está vacío' });
+        }
+
+        // ── Datos de facturación ───────────────────────────────────────────
+        // El cliente elige boleta o factura en el checkout. Estos datos se
+        // guardan en el pedido porque el vendedor los necesita para registrar
+        // la venta en el ERP y emitir el comprobante.
+        const invoiceTypeRaw = String(req.body.invoice_type || 'boleta').trim().toLowerCase();
+        if (invoiceTypeRaw !== 'boleta' && invoiceTypeRaw !== 'factura') {
+            await t.rollback();
+            return res.status(400).json({
+                error: 'Tipo de comprobante inválido. Elige boleta o factura.',
+                code: 'INVALID_INVOICE_TYPE'
+            });
+        }
+        const invoiceType: 'boleta' | 'factura' = invoiceTypeRaw;
+
+        let ruc: string | null = null;
+        let businessName: string | null = null;
+        let taxAddress: string | null = null;
+
+        if (invoiceType === 'factura') {
+            const rucClean = String(req.body.ruc || '').replace(/\D/g, '');
+            businessName = String(req.body.business_name || '').trim() || null;
+            taxAddress = String(req.body.tax_address || '').trim() || null;
+
+            if (rucClean.length !== 11) {
+                await t.rollback();
+                return res.status(400).json({
+                    error: 'El RUC debe tener 11 dígitos para emitir factura.',
+                    code: 'INVALID_RUC'
+                });
+            }
+
+            if (!businessName) {
+                await t.rollback();
+                return res.status(400).json({
+                    error: 'Ingresa la razón social para emitir factura.',
+                    code: 'MISSING_BUSINESS_NAME'
+                });
+            }
+
+            ruc = rucClean;
         }
 
         // 1. Batch load all products at once (avoid N+1)
@@ -120,7 +166,11 @@ export const createOrder = async (req: Request, res: Response) => {
             customer_phone,
             customer_document,
             total_amount: totalAmount,
-            status: initialStatus
+            status: initialStatus,
+            invoice_type: invoiceType,
+            ruc,
+            business_name: businessName,
+            tax_address: taxAddress
         }, t);
 
         // 3. Create OrderItems in bulk

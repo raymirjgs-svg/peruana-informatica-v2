@@ -333,7 +333,15 @@ export default function CartPage() {
         })),
         coupon_code: coupon?.code,
         discount_amount: discountAmount,
-        total_amount: finalTotal
+        total_amount: finalTotal,
+        // Datos de facturacion: los necesita el vendedor para emitir la
+        // boleta o factura desde el ERP.
+        invoice_type: invoiceType,
+        ...(invoiceType === 'factura' ? {
+          ruc: invoiceData.ruc,
+          business_name: invoiceData.business_name,
+          tax_address: invoiceData.tax_address,
+        } : {})
       };
 
       const response = await fetch(`${apiUrl}/api/orders`, {

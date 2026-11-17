@@ -8,6 +8,12 @@ import { Product } from '../models/Product';
 import { sequelize } from '../database/connection';
 import { User } from '../models/User';
 import { Setting } from '../models/Setting';
+import { normalizeTrackingCode } from '../utils/trackingCode';
+import {
+    createOrderPreference,
+    handleMercadoPagoNotification,
+    isMercadoPagoEnabled,
+} from '../services/MercadoPagoService';
 
 async function getPaymentSetting(key: string, envFallback?: string): Promise<string> {
     try {
@@ -27,12 +33,24 @@ export const paymentController = {
     async uploadProof(req: Request, res: Response) {
         try {
             const { orderId } = req.params;
-            const { payment_method, invoice_type } = req.body;
+            const { payment_method, invoice_type, tracking_code } = req.body;
             const file = req.file;
 
             const order = await Order.findByPk(orderId);
             if (!order) {
                 return res.status(404).json({ error: 'Pedido no encontrado' });
+            }
+
+            // Seguridad: solo el dueño del pedido (validando su codigo de
+            // seguimiento) puede adjuntar un comprobante. Sin esto, cualquiera
+            // podria modificar el pago de cualquier pedido por id.
+            const providedCode = normalizeTrackingCode(tracking_code);
+            const ownsOrder = Boolean(
+                providedCode && order.tracking_code && providedCode === order.tracking_code
+            );
+
+            if (!ownsOrder) {
+                return res.status(403).json({ error: 'No autorizado para actualizar este pedido' });
             }
 
             // Update payment details (only if provided)
@@ -59,11 +77,9 @@ export const paymentController = {
             }
 
             // Update status
-            order.status = 'payment_review'; // Or keep as pending but mark payment as pending_review?
-            // Let's use 'payment_review' for status if your system supports it, or keep 'pending'
-            // The frontend displays "Received" in success page, so maybe status doesn't matter too much for immediate feedback
-            // But let's set a flag or status.
-            order.status = 'pending'; // Keep as pending until admin verifies
+            // El pedido NO vuelve a 'pending': sigue aprobado y a la espera de
+            // que el administrador verifique el pago.
+            order.payment_status = 'pending';
 
             await order.save();
 
@@ -195,11 +211,21 @@ export const paymentController = {
     // Create Preference from existing Order
     async createPreferenceFromOrder(req: Request, res: Response) {
         try {
-            const { orderId } = req.body;
+            const { orderId, tracking_code } = req.body;
             const order = await Order.findByPk(orderId, { include: ['items'] });
 
             if (!order) {
                 return res.status(404).json({ error: 'Pedido no encontrado' });
+            }
+
+            // Seguridad: se exige el codigo de seguimiento del pedido.
+            const providedCode = normalizeTrackingCode(tracking_code);
+            if (!providedCode || providedCode !== order.tracking_code) {
+                return res.status(403).json({ error: 'No autorizado para pagar este pedido' });
+            }
+
+            if (!isMercadoPagoEnabled()) {
+                return res.status(503).json({ error: 'El pago en línea no está disponible en este momento' });
             }
 
             // @ts-ignore
@@ -225,7 +251,7 @@ export const paymentController = {
                 body: {
                     items: preferenceItems,
                     payer: {
-                        email: order.customer_email || user?.email || 'test_user_123@testuser.com', // Fallback for testing
+                        email: order.customer_email || user?.email || 'cliente@peruanainformatica.com.pe',
                         name: order.customer_name?.split(' ')[0] || 'Cliente',
                         surname: order.customer_name?.split(' ').slice(1).join(' ') || '',
                     },
@@ -236,7 +262,7 @@ export const paymentController = {
                         pending: `${process.env.FRONTEND_URL}/checkout/pending?order_id=${order.id}`,
                     },
                     auto_return: 'approved',
-                    notification_url: `${process.env.API_URL}/api/payment/webhook`
+                    notification_url: `${(process.env.BACKEND_PUBLIC_URL || process.env.FRONTEND_URL || '').replace(/\/+$/, '')}/api/payments/webhook`
                 }
             });
 
@@ -330,16 +356,11 @@ export const paymentController = {
         try {
             const { query } = req;
             const topic = query.topic || query.type;
-            const paymentId = query.id || query['data.id'];
+            const paymentId = (query as any)?.data?.id || query.id;
 
-            if (topic === 'payment') {
-                // Check status with MP (optional but recommended verification)
-                // const payment = await new Payment(client).get({ id: paymentId });
-                // For now, simpler implementation:
-                // Find order by external_reference if passed in webhook, usually we need to query MP
-
-                // Logic to update order status would go here
-                console.log('Webhook received for payment:', paymentId);
+            if ((topic === 'payment' || (query as any)?.action?.startsWith?.('payment')) && paymentId) {
+                const updatedOrderId = await handleMercadoPagoNotification(String(paymentId));
+                console.log('Webhook de Mercado Pago procesado:', paymentId, '-> pedido', updatedOrderId);
             }
 
             res.sendStatus(200);

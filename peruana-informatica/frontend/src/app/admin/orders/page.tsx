@@ -29,6 +29,7 @@ interface Order {
   payment_verified_at?: string;
   payment_verified_by?: string;
   invoice_type: 'boleta' | 'factura';
+  tracking_code?: string;
   invoice_number?: string;
   invoice_file?: string;
   ruc?: string;
@@ -46,6 +47,7 @@ export default function AdminOrdersPage() {
   const [invoiceNumber, setInvoiceNumber] = useState('');
   const [isGeneratingInvoice, setIsGeneratingInvoice] = useState(false);
   const [invoiceFile, setInvoiceFile] = useState<File | null>(null);
+  const [shareLink, setShareLink] = useState<string | null>(null);
 
   const fetchOrders = async () => {
     try {
@@ -78,13 +80,27 @@ export default function AdminOrdersPage() {
         body: JSON.stringify({ status: 'processed' })
       });
       if (response.ok) {
+        const data = await response.json().catch(() => null);
         fetchOrders();
+        // El email automatico depende de que SMTP este operativo; por eso se
+        // muestra el enlace para compartirlo con el cliente.
+        if (data?.tracking_url) {
+          setShareLink(data.tracking_url);
+        }
       } else {
         alert('Error al aprobar pedido');
       }
     } catch {
       alert('Error de conexión');
     }
+  };
+
+  const buildWhatsAppLink = (order: Order) => {
+    const phone = (order.customer_phone || '').replace(/\D/g, '');
+    const code = order.tracking_code || '';
+    const message = `Hola ${order.customer_name || ''}, tu pedido de Peruana Informatica fue aprobado. `
+      + `Puedes ver el estado y completar el pago aqui: ${code ? `https://peruanadeinformatica.com.pe/seguimiento/${code}` : 'https://peruanadeinformatica.com.pe/track-order'}`;
+    return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
   };
 
   const handleCancelOrder = async (orderId: number) => {
@@ -188,6 +204,27 @@ export default function AdminOrdersPage() {
           </div>
         )}
 
+        {shareLink && (
+          <div className="bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/50 px-4 py-3 rounded-xl text-sm text-emerald-800 dark:text-emerald-300">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <p className="font-semibold">Pedido aprobado. Comparte este enlace con el cliente para que pueda pagar:</p>
+              <div className="flex items-center gap-2">
+                <input readOnly value={shareLink} className="flex-1 min-w-[260px] rounded-lg border border-emerald-200 px-3 py-1.5 text-xs font-mono bg-white" onFocus={(e) => e.currentTarget.select()} />
+                <button
+                  type="button"
+                  onClick={() => { navigator.clipboard?.writeText(shareLink); }}
+                  className="rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-emerald-700"
+                >
+                  Copiar
+                </button>
+                <button type="button" onClick={() => setShareLink(null)} className="rounded-lg px-2 py-1.5 text-xs font-semibold text-emerald-700 hover:bg-emerald-100">
+                  Cerrar
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {isLoading ? (
           <div className="flex justify-center py-16">
             <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600" />
@@ -206,6 +243,11 @@ export default function AdminOrdersPage() {
                   <div>
                     <p className="font-bold text-gray-900 dark:text-white">Pedido #{order.id}</p>
                     <p className="text-xs text-gray-400 mt-0.5">{new Date(order.createdAt).toLocaleString('es-PE')}</p>
+                    {order.tracking_code && (
+                      <p className="text-xs font-mono font-semibold text-indigo-600 dark:text-indigo-400 mt-1">
+                        {order.tracking_code}
+                      </p>
+                    )}
                   </div>
                   <div className="flex flex-wrap gap-2">
                     <StatusBadge status={order.status === 'pending_approval' ? 'pending' : order.status} label={{ pending: 'Pendiente', pending_approval: 'Por aprobar', processed: 'Aprobado', cancelled: 'Cancelado' }[order.status]} size="md" />
@@ -269,7 +311,18 @@ export default function AdminOrdersPage() {
                     )}
                     {/* Paso 2: pedido aprobado, esperando pago del cliente */}
                     {order.status === 'processed' && !order.payment_proof && order.payment_status !== 'verified' && (
-                      <span className="px-3 py-2 text-xs font-medium text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 rounded-xl">Esperando comprobante del cliente</span>
+                      <>
+                        <span className="px-3 py-2 text-xs font-medium text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 rounded-xl">Esperando pago del cliente</span>
+                        <a
+                          href={buildWhatsAppLink(order)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold bg-green-50 dark:bg-green-950/30 text-green-700 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-950/50 rounded-xl transition-colors"
+                        >
+                          <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2m0 1.67c2.2 0 4.27.86 5.83 2.42a8.18 8.18 0 0 1 2.41 5.82c0 4.54-3.7 8.23-8.25 8.23a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.17 8.17 0 0 1-1.25-4.37c0-4.54 3.7-8.24 8.24-8.24m-2.46 4.09c-.15 0-.4.06-.61.28-.21.22-.8.79-.8 1.92s.82 2.23.93 2.38c.12.15 1.6 2.56 3.94 3.49 1.95.78 2.33.63 2.75.59.42-.04 1.36-.55 1.55-1.09.19-.54.19-1 .14-1.1-.06-.09-.21-.15-.44-.27-.22-.12-1.35-.67-1.56-.74-.21-.08-.36-.12-.52.12-.15.24-.59.74-.72.89-.13.15-.27.18-.5.06-.22-.12-.95-.35-1.81-1.11-.67-.6-1.12-1.33-1.25-1.56-.13-.22-.01-.34.1-.45.1-.1.22-.26.33-.4.11-.13.15-.22.22-.37.08-.15.04-.28-.02-.4-.06-.11-.52-1.26-.72-1.73-.19-.46-.38-.4-.52-.41h-.45" /></svg>
+                          Compartir con cliente
+                        </a>
+                      </>
                     )}
                     {/* Ver comprobante */}
                     {order.payment_proof && (

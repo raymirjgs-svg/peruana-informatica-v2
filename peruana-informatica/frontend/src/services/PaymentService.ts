@@ -66,7 +66,7 @@ class PaymentService {
         return data;
     }
 
-    async createPreferenceForOrder(orderId: number): Promise<PaymentPreference> {
+    async createPreferenceForOrder(orderId: number, trackingCode?: string): Promise<PaymentPreference> {
         const response = await fetch(`${this.apiBase}/create-preference-order`, {
             method: 'POST',
             headers: {
@@ -74,7 +74,7 @@ class PaymentService {
                 // Send token if available, but optional if endpoint is public/generic
                 ...((this.getToken()) ? { 'Authorization': `Bearer ${this.getToken()}` } : {})
             },
-            body: JSON.stringify({ orderId }),
+            body: JSON.stringify({ orderId, tracking_code: trackingCode }),
         });
 
         if (!response.ok) {

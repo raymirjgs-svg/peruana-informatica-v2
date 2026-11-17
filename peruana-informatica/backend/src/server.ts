@@ -141,6 +141,9 @@ app.use(requestLogger);
 // Servir archivos estáticos (imágenes del carousel y uploads)
 app.use("/images", express.static(path.join(__dirname, "../public/images")));
 app.use("/uploads", express.static(path.join(__dirname, "../public/uploads")));
+// Comprobantes de pago: volumen persistente, lo usa el panel admin para
+// revisar el comprobante del cliente.
+app.use("/payment-proofs", express.static(path.join(__dirname, "../public/payment-proofs")));
 
 // Rutas
 app.get("/health", (req, res) => {

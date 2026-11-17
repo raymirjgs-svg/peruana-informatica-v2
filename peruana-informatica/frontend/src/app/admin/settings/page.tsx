@@ -259,7 +259,7 @@ export default function SettingsPage() {
 
               <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-xl p-4 mb-6">
                 <p className="text-amber-800 dark:text-amber-200 text-sm">
-                  <strong>💡 Consejo:</strong> Cambia a "Precio Distribuidor" durante campañas promocionales
+                  <strong>💡 Consejo:</strong> Cambia a &quot;Precio Distribuidor&quot; durante campañas promocionales
                   para ofrecer los mejores precios a tus clientes.
                 </p>
               </div>
@@ -608,9 +608,9 @@ export default function SettingsPage() {
               <div className="mb-8">
                 <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Métodos habilitados</h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  {(['transferencia', 'yape', 'plin', 'tarjeta'] as const).map((method) => {
+                  {(['mercadopago', 'transferencia', 'yape', 'plin', 'tarjeta'] as const).map((method) => {
                     const enabled = settings.payment_methods_enabled.split(',').map(m => m.trim()).includes(method);
-                    const labels: Record<string, string> = { transferencia: 'Transferencia', yape: 'Yape', plin: 'Plin', tarjeta: 'Tarjeta' };
+                    const labels: Record<string, string> = { mercadopago: 'Mercado Pago', transferencia: 'Transferencia', yape: 'Yape', plin: 'Plin', tarjeta: 'Tarjeta' };
                     const toggle = () => {
                       const current = settings.payment_methods_enabled.split(',').map(m => m.trim()).filter(Boolean);
                       const updated = enabled ? current.filter(m => m !== method) : [...current, method];

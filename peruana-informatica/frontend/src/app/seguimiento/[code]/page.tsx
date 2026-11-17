@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { API_CONFIG } from '@/config/api';
 import { TrackingUnavailableNotice } from '@/components/common/TrackingUnavailableNotice';
+import PaymentPanel, { type TrackingPaymentDetails } from '@/components/tracking/PaymentPanel';
 
 const TRACKING_CODE_PATTERN = /^PI-[2-9A-HJKMNP-TV-Z]{6}-[2-9A-HJKMNP-TV-Z]{6}$/;
 
@@ -22,6 +23,9 @@ interface TrackingOrder {
     items: TrackingItem[];
     created_at: string;
     updated_at: string;
+    can_pay?: boolean;
+    payment_methods?: string[];
+    payment_details?: TrackingPaymentDetails;
 }
 
 type TrackingError = 'not_found' | 'rate_limit' | 'unavailable' | null;
@@ -45,6 +49,7 @@ const paymentMethodLabels: Record<string, string> = {
     plin: 'Plin',
     tarjeta: 'Tarjeta',
     efectivo: 'Efectivo',
+    mercadopago: 'Mercado Pago',
 };
 
 export default function TrackingOrderPage() {
@@ -55,56 +60,81 @@ export default function TrackingOrderPage() {
     const [order, setOrder] = useState<TrackingOrder | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<TrackingError>(null);
+    const [syncing, setSyncing] = useState(false);
+
+    const loadTracking = async (silent = false) => {
+        if (!silent) {
+            setLoading(true);
+            setError(null);
+            setOrder(null);
+        }
+
+        if (!TRACKING_CODE_PATTERN.test(trackingCode)) {
+            setError('not_found');
+            setLoading(false);
+            return;
+        }
+
+        try {
+            const response = await fetch(
+                `${API_CONFIG.API_BASE_URL}/api/orders/track/${encodeURIComponent(trackingCode)}`,
+                { cache: 'no-store' }
+            );
+
+            if (response.status === 404) {
+                setError('not_found');
+                return;
+            }
+            if (response.status === 429) {
+                setError('rate_limit');
+                return;
+            }
+            if (!response.ok) {
+                setError('unavailable');
+                return;
+            }
+
+            const payload = await response.json();
+            if (payload?.success && payload?.data) {
+                setOrder(payload.data as TrackingOrder);
+            }
+        } catch {
+            if (!silent) setError('unavailable');
+        } finally {
+            if (!silent) setLoading(false);
+        }
+    };
 
     useEffect(() => {
         let cancelled = false;
 
-        const loadTracking = async () => {
-            setLoading(true);
-            setError(null);
-            setOrder(null);
-
-            if (!TRACKING_CODE_PATTERN.test(trackingCode)) {
-                setError('not_found');
-                setLoading(false);
-                return;
+        const initialLoad = async () => {
+            // Si el cliente vuelve de Mercado Pago (?pago=...), primero se
+            // sincroniza el estado real del pago y luego se muestra la vista.
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('pago')) {
+                setSyncing(true);
+                try {
+                    await fetch(
+                        `${API_CONFIG.API_BASE_URL}/api/orders/track/${encodeURIComponent(trackingCode)}/payment-status`,
+                        { method: 'POST' }
+                    );
+                } catch {
+                    // si falla la sincronizacion se muestra el estado guardado
+                } finally {
+                    if (!cancelled) setSyncing(false);
+                }
             }
 
-            try {
-                const response = await fetch(
-                    `${API_CONFIG.API_BASE_URL}/api/orders/track/${encodeURIComponent(trackingCode)}`,
-                    { cache: 'no-store' }
-                );
-
-                if (response.status === 404) {
-                    setError('not_found');
-                    return;
-                }
-                if (response.status === 429) {
-                    setError('rate_limit');
-                    return;
-                }
-                if (!response.ok) {
-                    setError('unavailable');
-                    return;
-                }
-
-                const payload = await response.json();
-                if (!cancelled && payload?.success && payload?.data) {
-                    setOrder(payload.data as TrackingOrder);
-                }
-            } catch {
-                if (!cancelled) setError('unavailable');
-            } finally {
-                if (!cancelled) setLoading(false);
-            }
+            if (!cancelled) await loadTracking(Boolean(params.get('pago')));
         };
 
-        loadTracking();
+        initialLoad();
 
         return () => {
             cancelled = true;
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [trackingCode]);
 
     if (loading) {
@@ -163,6 +193,10 @@ export default function TrackingOrderPage() {
     const orderStatus = orderStatusLabels[order.status] || order.status;
     const paymentStatus = paymentStatusLabels[order.payment_status] || order.payment_status;
     const paymentMethod = order.payment_method ? paymentMethodLabels[order.payment_method] || order.payment_method : null;
+    const showPaymentPanel = Boolean(order.can_pay);
+    const awaitingConfirmation = Boolean(
+        order.payment_method === 'mercadopago' && order.payment_status === 'pending' && !order.can_pay
+    );
 
     return (
         <div className="container mx-auto max-w-3xl px-4 py-10 sm:py-14">
@@ -226,6 +260,44 @@ export default function TrackingOrderPage() {
                     </dl>
                 </div>
             </div>
+
+            {showPaymentPanel && (
+                <PaymentPanel
+                    trackingCode={order.tracking_code}
+                    methods={order.payment_methods || []}
+                    details={order.payment_details || {}}
+                    totalAmount={order.total_amount}
+                    onUpdated={() => loadTracking(true)}
+                />
+            )}
+
+            {awaitingConfirmation && (
+                <div className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-6 text-center">
+                    <p className="text-sm font-semibold text-amber-900">Estamos confirmando tu pago</p>
+                    <p className="mt-1 text-sm text-amber-800">
+                        Si ya pagaste, el estado se actualizará en unos minutos. También puedes refrescar esta página.
+                    </p>
+                    <button
+                        type="button"
+                        onClick={async () => {
+                            setSyncing(true);
+                            try {
+                                await fetch(
+                                    `${API_CONFIG.API_BASE_URL}/api/orders/track/${encodeURIComponent(order.tracking_code)}/payment-status`,
+                                    { method: 'POST' }
+                                );
+                                await loadTracking(true);
+                            } finally {
+                                setSyncing(false);
+                            }
+                        }}
+                        disabled={syncing}
+                        className="mt-4 rounded-xl bg-amber-600 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-amber-700 disabled:opacity-60"
+                    >
+                        {syncing ? 'Actualizando...' : 'Actualizar estado'}
+                    </button>
+                </div>
+            )}
 
             <p className="mt-6 text-center text-xs leading-5 text-gray-500">
                 Esta vista muestra únicamente la información necesaria para seguir tu pedido. No incluye datos personales ni de contacto.

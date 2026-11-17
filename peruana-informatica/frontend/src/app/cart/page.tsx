@@ -28,6 +28,31 @@ import { getProductImageUrl } from '@/utils/images';
 type PaymentMethod = 'efectivo' | 'transferencia' | 'tarjeta' | 'yape' | 'plin' | 'mercadopago';
 type InvoiceType = 'boleta' | 'factura';
 
+interface PaymentMethodsResponse {
+  methods: string[];
+  details: {
+    transferencia?: {
+      holder?: string;
+      bcp_account?: string;
+      bcp_cci?: string;
+      ibk_account?: string;
+      ibk_cci?: string;
+    };
+    yape?: { phone?: string };
+    plin?: { phone?: string };
+    mercadopago?: { enabled: boolean };
+  };
+}
+
+const PAYMENT_METHOD_CATALOG: { value: PaymentMethod; label: string; desc: string }[] = [
+  { value: 'efectivo', label: 'Efectivo', desc: 'Pago en tienda' },
+  { value: 'transferencia', label: 'Transferencia', desc: 'BCP / Interbank' },
+  { value: 'tarjeta', label: 'Tarjeta', desc: 'Visa/MC' },
+  { value: 'yape', label: 'Yape', desc: 'Pago rápido' },
+  { value: 'plin', label: 'Plin', desc: 'Pago móvil' },
+  { value: 'mercadopago', label: 'MercadoPago', desc: 'Tarjetas y más' }
+];
+
 export default function CartPage() {
   const { items, totalItems, totalPrice, updateQuantity, removeItem, clearCart } = useCart();
   const { data: session, status } = useSession();
@@ -78,6 +103,29 @@ export default function CartPage() {
     fetchCheckoutMode();
   }, []);
 
+  // Fetch metodos de pago habilitados por el administrador
+  useEffect(() => {
+    const fetchPaymentMethods = async () => {
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+        const res = await fetch(`${apiUrl}/api/settings/payment-methods`);
+        if (!res.ok) return;
+        const payload = await res.json();
+        const data = payload?.data || payload;
+        const methods: string[] = Array.isArray(data?.methods) ? data.methods : [];
+        setPaymentMethods(methods);
+        setPaymentDetails(data?.details || {});
+        // Selecciona el primer metodo habilitado
+        if (methods.length > 0) {
+          setPaymentMethod((current) => (methods.includes(current) ? current : (methods[0] as PaymentMethod)));
+        }
+      } catch (error) {
+        console.error('Error fetching payment methods:', error);
+      }
+    };
+    fetchPaymentMethods();
+  }, []);
+
   // Update discount when coupon or total price changes
   useEffect(() => {
     if (coupon) {
@@ -115,6 +163,9 @@ export default function CartPage() {
 
   // Datos de pago y facturación
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('efectivo');
+  // Metodos habilitados por el administrador (Admin > Ajustes > Pago).
+  const [paymentMethods, setPaymentMethods] = useState<string[]>([]);
+  const [paymentDetails, setPaymentDetails] = useState<PaymentMethodsResponse['details']>({});
   const [invoiceType, setInvoiceType] = useState<InvoiceType>('boleta');
   const [invoiceData, setInvoiceData] = useState({
     ruc: '',
@@ -305,7 +356,7 @@ export default function CartPage() {
     if (paymentMethod === 'mercadopago') {
       setIsLoading(true);
       try {
-        const { init_point } = await import('@/services/PaymentService').then(m => m.paymentService.createPreferenceForOrder(orderId!));
+        const { init_point } = await import('@/services/PaymentService').then(m => m.paymentService.createPreferenceForOrder(orderId!, trackingCode || undefined));
         window.location.href = init_point;
         return;
       } catch (e: any) {
@@ -433,6 +484,11 @@ export default function CartPage() {
         formData.append('payment_proof', paymentProof);
       }
 
+      // Seguridad: el backend exige el codigo de seguimiento del pedido.
+      if (trackingCode) {
+        formData.append('tracking_code', trackingCode);
+      }
+
       if (invoiceType === 'factura') {
         formData.append('ruc', invoiceData.ruc);
         formData.append('business_name', invoiceData.business_name);
@@ -506,6 +562,12 @@ export default function CartPage() {
                   <p className="text-sm text-indigo-700 mt-2">
                     Es único para este pedido y permite ver su estado. No lo compartas con terceros.
                   </p>
+                  {checkoutMode === 'approval' && (
+                    <p className="text-sm text-indigo-700 mt-1">
+                      Revisamos tu pedido antes de aceptarlo. Cuando lo aprobemos, podrás completar el pago
+                      desde este mismo enlace.
+                    </p>
+                  )}
                   <div className="mt-4 flex flex-col sm:flex-row gap-3 justify-center">
                     <button
                       type="button"
@@ -643,14 +705,9 @@ export default function CartPage() {
                     Selecciona tu método de pago
                   </h2>
                   <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-                    {[
-                      { value: 'efectivo', label: 'Efectivo', color: 'emerald', desc: 'Pago en tienda' },
-                      { value: 'transferencia', label: 'Transferencia', color: 'blue', desc: 'BCP' },
-                      { value: 'tarjeta', label: 'Tarjeta', color: 'orange', desc: 'Visa/MC' },
-                      { value: 'yape', label: 'Yape', color: 'purple', desc: 'Pago rápido' },
-                      { value: 'plin', label: 'Plin', color: 'green', desc: 'Pago móvil' },
-                      { value: 'mercadopago', label: 'MercadoPago', color: 'blue', desc: 'Tarjetas y más' }
-                    ].map((method) => (
+                    {PAYMENT_METHOD_CATALOG
+                      .filter((method) => paymentMethods.includes(method.value))
+                      .map((method) => (
                       <button
                         key={method.value}
                         type="button"
@@ -673,17 +730,36 @@ export default function CartPage() {
                       Datos para realizar el pago
                     </h2>
                     {paymentMethod === 'transferencia' && (
-                      <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
-                        {/* Transferencia details */}
-                        <p className="font-bold">BCP Soles</p>
-                        <p>Cuenta: 191-1234567-0-00</p>
-                        <p>CCI: 00219100123456700012</p>
-                        <p>Titular: PERUANA INFORMATICA</p>
+                      <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200 space-y-1 text-sm text-gray-700">
+                        {paymentDetails.transferencia?.holder && <p><span className="font-bold">Titular:</span> {paymentDetails.transferencia.holder}</p>}
+                        {paymentDetails.transferencia?.bcp_account && <p><span className="font-bold">BCP cuenta:</span> {paymentDetails.transferencia.bcp_account}</p>}
+                        {paymentDetails.transferencia?.bcp_cci && <p><span className="font-bold">BCP CCI:</span> {paymentDetails.transferencia.bcp_cci}</p>}
+                        {paymentDetails.transferencia?.ibk_account && <p><span className="font-bold">Interbank cuenta:</span> {paymentDetails.transferencia.ibk_account}</p>}
+                        {paymentDetails.transferencia?.ibk_cci && <p><span className="font-bold">Interbank CCI:</span> {paymentDetails.transferencia.ibk_cci}</p>}
+                        {!paymentDetails.transferencia?.holder && !paymentDetails.transferencia?.bcp_account && (
+                          <p className="text-amber-700">Los datos de transferencia no estan configurados. Escribenos por WhatsApp para coordinarlos.</p>
+                        )}
                       </div>
                     )}
-                    {/* Simplified payment details for brevity in restoration, logic remains */}
-                    {paymentMethod === 'yape' && <div className="p-4 bg-purple-50 text-purple-800 rounded">Yape: 988 552 455 - PERUANA INFORMATICA</div>}
-                    {paymentMethod === 'plin' && <div className="p-4 bg-green-50 text-green-800 rounded">Plin: 988 552 455 - PERUANA INFORMATICA</div>}
+                    {paymentMethod === 'yape' && (
+                      <div className="p-4 bg-purple-50 text-purple-800 rounded">
+                        {paymentDetails.yape?.phone
+                          ? <>Yape: {paymentDetails.yape.phone} - {paymentDetails.transferencia?.holder || 'PERUANA INFORMATICA'}</>
+                          : 'El pago por Yape no esta disponible por el momento.'}
+                      </div>
+                    )}
+                    {paymentMethod === 'plin' && (
+                      <div className="p-4 bg-green-50 text-green-800 rounded">
+                        {paymentDetails.plin?.phone
+                          ? <>Plin: {paymentDetails.plin.phone} - {paymentDetails.transferencia?.holder || 'PERUANA INFORMATICA'}</>
+                          : 'El pago por Plin no esta disponible por el momento.'}
+                      </div>
+                    )}
+                    {paymentMethod === 'mercadopago' && (
+                      <div className="p-4 bg-blue-50 text-blue-800 rounded">
+                        Te redirigimos a Mercado Pago para completar el pago con tarjeta, saldo oPoints.
+                      </div>
+                    )}
 
                     {paymentMethod === 'tarjeta' && (
                       <div className="space-y-4">

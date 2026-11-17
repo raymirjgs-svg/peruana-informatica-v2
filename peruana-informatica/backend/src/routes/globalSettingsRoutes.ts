@@ -6,5 +6,6 @@ const router = Router();
 
 router.get('/', settingsController.getAllSettings);
 router.get('/checkout-mode', getCheckoutMode);
+router.get('/payment-methods', settingsController.getPaymentMethods);
 
 export default router;

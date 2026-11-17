@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { Navigation } from '@/components/common/Navigation';
 import { ProductService } from '@/services/ProductService';
 import { Product } from '@/models/Product';
+import { getProductImageUrl } from '@/utils/images';
 import { Eye, X, ChevronUp, ChevronDown, Package, Filter } from 'lucide-react';
 import Image from 'next/image';
 
@@ -137,25 +138,18 @@ export default function ListaDistribucionPage() {
       if (!img) return null;
       if (img.includes('placeholder')) return null;
 
-      // If it's already a full URL
-      if (img.startsWith('http')) {
-        // Fix hardcoded internal IPs that are not accessible
-        if (img.includes('192.168.1.122') || img.includes('localhost:3001')) {
-          try {
-            const urlObj = new URL(img);
-            return `${baseUrl}${urlObj.pathname}`;
-          } catch (e) {
-            return `${baseUrl}/images/products/${img.split('/').pop()}`;
-          }
+      // Fix hardcoded internal IPs that are not accessible
+      if (img.includes('192.168.1.122') || img.includes('localhost:3001')) {
+        try {
+          const urlObj = new URL(img);
+          return getProductImageUrl(urlObj.pathname);
+        } catch (e) {
+          return getProductImageUrl(img.split('/').pop() || img);
         }
-        return img;
       }
 
-      // Handle relative paths - just get the filename
-      const filename = img.split('/').pop() || img;
-
-      // Product images are stored in /images/products/
-      return `${baseUrl}/images/products/${filename}`;
+      // Una sola fuente de verdad: respeta URLs absolutas y evita duplicar prefijos
+      return getProductImageUrl(img);
     };
 
     // Priority: images array > image field

@@ -3,6 +3,7 @@
 // ============================================
 'use client';
 
+import { getProductImageUrl } from '@/utils/images';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ProductService } from '@/services/ProductService';
@@ -46,9 +47,9 @@ export default function ProductDetailClient({
   const apiUrl = getApiBase();
 
   const productImages = product?.images && product.images.length > 0
-    ? product.images.map(img => img.imagen.startsWith('http') ? img.imagen : `${apiUrl}/images/products/${img.imagen}`)
+    ? product.images.map(img => getProductImageUrl(img.imagen))
     : product?.image
-      ? [product.image.startsWith('http') ? product.image : `${apiUrl}/images/products/${product.image}`]
+      ? [getProductImageUrl(product.image)]
       : ['https://placehold.co/600x600?text=Imagen+no+disponible'];
 
   useEffect(() => {

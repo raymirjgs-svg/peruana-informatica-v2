@@ -6,6 +6,7 @@ import { Modal } from '@/components/admin/Modal';
 import { Button } from '@/components/admin/Button';
 import Link from 'next/link';
 import { adminFetch, getAdminApiBase } from '@/lib/adminApi';
+import { getProductImageUrl as resolveProductImageUrl } from '@/utils/images';
 
 type Brand = { id: number; name: string; slug: string } | null;
 type Category = { id: number; name: string; slug: string } | null;
@@ -136,12 +137,10 @@ export default function AdminProductsPage() {
 
   // Obtener URL de imagen del producto
   const getProductImageUrl = (product: Product) => {
-    const baseUrl = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001').replace(/\/api\/?$/, '');
     // Prefer gallery images, fallback to main image field
     const img = product.images?.[0]?.imagen || (product as any).image;
     if (!img) return null;
-    if (img.startsWith('http')) return img;
-    return `${baseUrl}/images/products/${encodeURIComponent(img)}`;
+    return resolveProductImageUrl(img);
   };
 
   // Exportar a CSV

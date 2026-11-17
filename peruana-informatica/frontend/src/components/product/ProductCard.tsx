@@ -10,6 +10,7 @@ import { memo } from 'react';
 import { motion } from 'framer-motion';
 import { useSettings } from '@/context/SettingsContext';
 import { buildWhatsappLink, hasPublishedPrice, priceInquiryMessage } from '@/utils/whatsapp';
+import { getProductImageUrl } from '@/utils/images';
 
 interface ProductCardProps {
   product: Product;
@@ -44,19 +45,13 @@ export const ProductCard = memo(function ProductCard({ product }: ProductCardPro
     else addToCompare(product);
   };
 
+  // Una sola fuente de verdad para la URL de la imagen (respeta URLs absolutas
+  // del ERP y evita duplicar el prefijo /images/products/).
   const getImageSrc = () => {
     if (product.images && product.images.length > 0 && product.images[0]?.imagen) {
-      const image = product.images[0].imagen;
-      if (image.startsWith('http')) return image;
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-      return `${apiUrl}/images/products/${encodeURIComponent(image)}`;
+      return getProductImageUrl(product.images[0].imagen);
     }
-    if (product.image && product.image.trim() !== '') {
-      if (product.image.startsWith('http')) return product.image;
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-      return `${apiUrl}/images/products/${encodeURIComponent(product.image)}`;
-    }
-    return '/no-image.svg';
+    return getProductImageUrl(product.image);
   };
 
   const imgSrc = getImageSrc();

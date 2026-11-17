@@ -12,7 +12,8 @@
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint src",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "verify:image-urls": "node --experimental-strip-types scripts/verify-image-urls.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

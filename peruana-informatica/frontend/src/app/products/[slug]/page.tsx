@@ -12,6 +12,7 @@ import { SettingsService, CompanySettings } from '@/services/SettingsService';
 import { RelatedProducts } from '@/components/product/RelatedProducts';
 import { ProductReviews } from '@/components/product/ProductReviews';
 import { buildWhatsappLink, hasPublishedPrice, priceInquiryMessage } from '@/utils/whatsapp';
+import { getProductImageUrl } from '@/utils/images';
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -30,7 +31,7 @@ export default function ProductDetailPage() {
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
-  const toAbsolute = (url: string) => url.startsWith('http') ? url : `${apiUrl}/images/products/${url}`;
+  const toAbsolute = (url: string) => getProductImageUrl(url);
   const mainImg = product?.image ? toAbsolute(product.image) : null;
   const galleryImgs = product?.images && product.images.length > 0
     ? product.images.map(img => toAbsolute(img.imagen))

@@ -7,6 +7,7 @@ import { ProductService } from '@/services/ProductService';
 import { Product } from '@/models/Product';
 import { API_CONFIG } from '@/config/api';
 import { useDebounce } from '@/hooks/useDebounce';
+import { getProductImageUrl } from '@/utils/images';
 
 export function SearchBar() {
     const router = useRouter();
@@ -124,7 +125,7 @@ export function SearchBar() {
                                                     );
                                                 }
 
-                                                const imgUrl = `${apiBase}/images/products/${imgName}`;
+                                                const imgUrl = getProductImageUrl(imgName);
                                                 return (
                                                     <img
                                                         src={imgUrl}

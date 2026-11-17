@@ -1,22 +1,117 @@
 import { MercadoPagoConfig, Preference, Payment } from 'mercadopago';
 import { Order } from '../models/Order';
 import { OrderItem } from '../models/OrderItem';
+import { Setting } from '../models/Setting';
 
 /**
  * Integracion con Mercado Pago.
  *
- * El token y las URLs publicas se leen del entorno; nunca se exponen al
- * cliente. El codigo de seguimiento funciona como credencial: el backend
- * resuelve el pedido internamente y nunca expone el id numerico.
+ * El token se puede administrar desde el panel (Admin > Ajustes > Pago) y
+ * tiene prioridad sobre la variable de entorno. Nunca se expone al cliente.
+ * El codigo de seguimiento funciona como credencial: el backend resuelve el
+ * pedido internamente y nunca expone el id numerico.
  */
 
-const client = new MercadoPagoConfig({
-    accessToken: process.env.MP_ACCESS_TOKEN || 'TEST-TOKEN',
-});
+let cachedToken: string | null = null;
+let cachedTokenCheckedAt = 0;
+const TOKEN_CACHE_MS = 60 * 1000;
 
-export const isMercadoPagoEnabled = (): boolean => {
-    const token = process.env.MP_ACCESS_TOKEN;
+const readTokenFromSettings = async (): Promise<string> => {
+    try {
+        const row = await Setting.findByPk('mp_access_token');
+        return row?.value?.trim() || '';
+    } catch {
+        return '';
+    }
+};
+
+/** Token vigente: primero el panel de administracion, luego el entorno. */
+export const getMercadoPagoToken = async (): Promise<string> => {
+    const now = Date.now();
+    if (cachedToken && now - cachedTokenCheckedAt < TOKEN_CACHE_MS) {
+        return cachedToken;
+    }
+
+    const fromSettings = await readTokenFromSettings();
+    const token = fromSettings || (process.env.MP_ACCESS_TOKEN || '').trim();
+
+    cachedToken = token;
+    cachedTokenCheckedAt = now;
+    return token;
+};
+
+/** Limpia la cache del token (tras guardarlo desde el panel). */
+export const clearMercadoPagoTokenCache = (): void => {
+    cachedToken = null;
+    cachedTokenCheckedAt = 0;
+};
+
+const buildClient = (token: string): MercadoPagoConfig =>
+    new MercadoPagoConfig({ accessToken: token || 'TEST-TOKEN' });
+
+const getClient = async (): Promise<MercadoPagoConfig> =>
+    buildClient(await getMercadoPagoToken());
+
+export const isMercadoPagoEnabled = async (): Promise<boolean> => {
+    const token = await getMercadoPagoToken();
     return Boolean(token && token !== 'TEST-TOKEN');
+};
+
+export interface MercadoPagoStatus {
+    configured: boolean;
+    authorized: boolean;
+    site_id?: string;
+    message: string;
+}
+
+/**
+ * Verifica si el token configurado es aceptado por Mercado Pago.
+ * Se usa en el panel de administracion para saber si el cobro funcionara.
+ */
+export const checkMercadoPagoStatus = async (): Promise<MercadoPagoStatus> => {
+    const token = await getMercadoPagoToken();
+
+    if (!token || token === 'TEST-TOKEN') {
+        return {
+            configured: false,
+            authorized: false,
+            message: 'No hay un Access Token de Mercado Pago configurado.',
+        };
+    }
+
+    try {
+        const response = await fetch('https://api.mercadopago.com/users/me', {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (response.ok) {
+            const data: any = await response.json().catch(() => ({}));
+            const siteId = data?.site_id || '';
+            return {
+                configured: true,
+                authorized: true,
+                site_id: siteId,
+                message: siteId === 'TEST'
+                    ? 'Credenciales de prueba activas: los pagos no son reales.'
+                    : 'Credenciales de produccion activas.',
+            };
+        }
+
+        return {
+            configured: true,
+            authorized: false,
+            message:
+                response.status === 403
+                    ? 'Mercado Pago rechazo el token (403). Genera un Access Token nuevo en Mercado Pago > Developers > Credenciales.'
+                    : `Mercado Pago respondio con estado ${response.status}.`,
+        };
+    } catch (error: any) {
+        return {
+            configured: true,
+            authorized: false,
+            message: `No se pudo conectar con Mercado Pago: ${error?.message || 'error de red'}`,
+        };
+    }
 };
 
 const stripTrailingSlash = (value: string): string => value.replace(/\/+$/, '');
@@ -51,7 +146,7 @@ export const createOrderPreference = async (
     order: Order,
     trackingCode?: string | null
 ): Promise<OrderPreferenceResult> => {
-    if (!isMercadoPagoEnabled()) {
+    if (!(await isMercadoPagoEnabled())) {
         throw new Error('MERCADO_PAGO_NOT_ENABLED');
     }
 
@@ -101,7 +196,7 @@ export const createOrderPreference = async (
         body.notification_url = `${backend}/api/payments/webhook`;
     }
 
-    const preference = new Preference(client);
+    const preference = new Preference(await getClient());
     const result = await preference.create({ body: body as any });
 
     if (!result.init_point) {
@@ -121,11 +216,11 @@ export const createOrderPreference = async (
  * `?pago=aprobado` y disparar la sincronizacion).
  */
 export const syncMercadoPagoStatus = async (order: Order): Promise<void> => {
-    if (!isMercadoPagoEnabled() || !order?.id) return;
+    if (!(await isMercadoPagoEnabled()) || !order?.id) return;
     if (order.payment_status === 'verified' && order.payment_method === 'mercadopago') return;
 
     try {
-        const search: any = await new Payment(client).search({
+        const search: any = await new Payment(await getClient()).search({
             options: {
                 external_reference: String(order.id),
                 limit: 1,
@@ -165,10 +260,10 @@ export const syncMercadoPagoStatus = async (order: Order): Promise<void> => {
  * Devuelve el id del pedido actualizado (o null).
  */
 export const handleMercadoPagoNotification = async (paymentId: string): Promise<number | null> => {
-    if (!isMercadoPagoEnabled() || !paymentId) return null;
+    if (!(await isMercadoPagoEnabled()) || !paymentId) return null;
 
     try {
-        const payment: any = await new Payment(client).get({ id: String(paymentId) });
+        const payment: any = await new Payment(await getClient()).get({ id: String(paymentId) });
         const orderId = payment?.external_reference;
         if (!orderId) return null;
 

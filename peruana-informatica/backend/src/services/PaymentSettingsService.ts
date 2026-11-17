@@ -38,7 +38,8 @@ export const getEnabledPaymentMethods = async (): Promise<string[]> => {
         .filter(Boolean);
 
     // Mercado Pago solo se ofrece si hay token configurado.
-    return methods.filter((method) => (method === 'mercadopago' ? isMercadoPagoEnabled() : true));
+    const mpEnabled = await isMercadoPagoEnabled();
+    return methods.filter((method) => (method === 'mercadopago' ? mpEnabled : true));
 };
 
 /**
@@ -79,7 +80,7 @@ export const getPublicPaymentMethods = async (): Promise<PublicPaymentMethods> =
     }
 
     if (methods.includes('mercadopago')) {
-        details.mercadopago = { enabled: isMercadoPagoEnabled() };
+        details.mercadopago = { enabled: await isMercadoPagoEnabled() };
     }
 
     return { methods, details };

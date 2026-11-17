@@ -62,6 +62,8 @@ export default function SettingsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [testingMp, setTestingMp] = useState(false);
+  const [mpStatus, setMpStatus] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   // Settings State
   const [settings, setSettings] = useState({
@@ -96,7 +98,8 @@ export default function SettingsPage() {
     payment_holder: '',
     payment_yape_phone: '',
     payment_plin_phone: '',
-    payment_methods_enabled: 'transferencia,yape,plin,tarjeta',
+    payment_methods_enabled: 'mercadopago',
+    mp_access_token: '',
 
     // Shipping & Returns
     shipping_standard_title: 'Envío Estándar',
@@ -124,6 +127,31 @@ export default function SettingsPage() {
 
   const handleSettingChange = (key: string, value: string) => {
     setSettings(prev => ({ ...prev, [key]: value }));
+  };
+
+  const handleTestMercadoPago = async () => {
+    setTestingMp(true);
+    setMpStatus(null);
+    try {
+      // Se guarda primero (para probar el token recien pegado) y luego se valida.
+      await adminFetch('/admin/settings/mp_access_token', {
+        method: 'PUT',
+        body: JSON.stringify({ value: settings.mp_access_token })
+      });
+
+      const response = await adminFetch('/admin/payment-settings/test-mercadopago', { method: 'POST' });
+      const data = await response.json().catch(() => ({}));
+
+      if (response.ok && data?.success) {
+        setMpStatus({ type: 'success', text: data.message || 'Conexión con Mercado Pago exitosa' });
+      } else {
+        setMpStatus({ type: 'error', text: data?.error || 'Mercado Pago no responde correctamente' });
+      }
+    } catch (error) {
+      setMpStatus({ type: 'error', text: 'Error de conexion al probar Mercado Pago' });
+    } finally {
+      setTestingMp(false);
+    }
   };
 
   const handleSave = async () => {
@@ -630,6 +658,37 @@ export default function SettingsPage() {
                     );
                   })}
                 </div>
+              </div>
+
+              {/* Mercado Pago */}
+              <div className="mb-6 rounded-xl border border-gray-200 dark:border-gray-700 p-4">
+                <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Mercado Pago</h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
+                  Pega aqui el <strong>Access Token</strong> de Mercado Pago (Developers {'>'} Credenciales {'>'} Credenciales de producción).
+                  Se guarda cifrado en el servidor y nunca se muestra completo.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <input
+                    type="password"
+                    value={settings.mp_access_token}
+                    onChange={(e) => handleSettingChange('mp_access_token', e.target.value)}
+                    placeholder="APP_USR-..."
+                    className="flex-1 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm font-mono"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleTestMercadoPago}
+                    disabled={testingMp}
+                    className="rounded-lg bg-gray-900 dark:bg-gray-700 px-4 py-2 text-sm font-semibold text-white hover:bg-black disabled:opacity-60 whitespace-nowrap"
+                  >
+                    {testingMp ? 'Probando...' : 'Probar conexi&oacute;n'}
+                  </button>
+                </div>
+                {mpStatus && (
+                  <p className={`mt-3 text-xs ${mpStatus.type === 'success' ? 'text-emerald-600' : 'text-red-600'}`}>
+                    {mpStatus.text}
+                  </p>
+                )}
               </div>
 
               {/* Bank transfer data */}

@@ -108,7 +108,7 @@ export const createPaymentPreferenceByTrackingCode = async (
             });
         }
 
-        if (!isMercadoPagoEnabled()) {
+        if (!(await isMercadoPagoEnabled())) {
             return res.status(503).json({
                 success: false,
                 message: 'El pago en línea no está disponible en este momento. Contáctanos para coordinar tu pago.',
@@ -122,7 +122,23 @@ export const createPaymentPreferenceByTrackingCode = async (
             });
         }
 
-        const preference = await createOrderPreference(order, order.tracking_code);
+        let preference;
+        try {
+            preference = await createOrderPreference(order, order.tracking_code);
+        } catch (error: any) {
+            const message = String(error?.message || '');
+            if (message.includes('MERCADO_PAGO_NOT_ENABLED')) {
+                return res.status(503).json({
+                    success: false,
+                    message: 'El pago en línea no está disponible en este momento. Contáctanos para coordinar tu pago.',
+                });
+            }
+            console.error('Mercado Pago rechazo la preferencia:', error?.message || error);
+            return res.status(503).json({
+                success: false,
+                message: 'No pudimos conectar con la pasarela de pago. Escríbenos por WhatsApp para coordinar tu pago.',
+            });
+        }
 
         return res.json({
             success: true,

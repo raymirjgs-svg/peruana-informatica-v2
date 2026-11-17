@@ -224,7 +224,7 @@ export const paymentController = {
                 return res.status(403).json({ error: 'No autorizado para pagar este pedido' });
             }
 
-            if (!isMercadoPagoEnabled()) {
+            if (!(await isMercadoPagoEnabled())) {
                 return res.status(503).json({ error: 'El pago en línea no está disponible en este momento' });
             }
 

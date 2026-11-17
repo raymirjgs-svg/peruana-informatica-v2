@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { Setting } from '../../models/Setting';
+import { checkMercadoPagoStatus, clearMercadoPagoTokenCache } from '../../services/MercadoPagoService';
 
 // Keys that hold secret values — never returned in full to the frontend
 const SECRET_KEYS = ['culqi_secret_key', 'niubiz_secret_key', 'mp_access_token'];
@@ -37,6 +38,7 @@ export const PaymentSettingsController = {
                 'payment_transfer_enabled',
                 'payment_cod_enabled',
                 'payment_mode', // 'test' | 'live'
+                'mp_access_token',
             ];
 
             const raw: Record<string, string> = {};
@@ -66,6 +68,7 @@ export const PaymentSettingsController = {
                 'payment_transfer_enabled',
                 'payment_cod_enabled',
                 'payment_mode',
+                'mp_access_token',
             ];
 
             const updates: Record<string, string> = {};
@@ -82,9 +85,27 @@ export const PaymentSettingsController = {
 
             await Promise.all(Object.entries(updates).map(([k, v]) => setSetting(k, v)));
 
+            // El token de Mercado Pago se cachea: se invalida para que el
+            // nuevo valor entre en vigor de inmediato.
+            clearMercadoPagoTokenCache();
+
             res.json({ success: true, message: 'Configuración guardada correctamente' });
         } catch (err: any) {
             res.status(500).json({ success: false, error: err.message });
+        }
+    },
+
+    async testMercadoPago(req: Request, res: Response) {
+        try {
+            const status = await checkMercadoPagoStatus();
+
+            if (!status.configured || !status.authorized) {
+                return res.status(400).json({ success: false, error: status.message });
+            }
+
+            return res.json({ success: true, message: status.message, data: status });
+        } catch (err: any) {
+            return res.status(500).json({ success: false, error: `Error de conexión: ${err.message}` });
         }
     },
 

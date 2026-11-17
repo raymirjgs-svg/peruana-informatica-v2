@@ -354,11 +354,25 @@ export const paymentController = {
     // Webhook
     async receiveWebhook(req: Request, res: Response) {
         try {
-            const { query } = req;
-            const topic = query.topic || query.type;
-            const paymentId = (query as any)?.data?.id || query.id;
+            // Mercado Pago envia la notificacion en el BODY (form o json),
+            // no en la query string: leer solo req.query hacia que el pago
+            // nunca se procesara.
+            const payload: any = { ...(req.query as any), ...(req.body as any) };
+            const topic = payload.topic || payload.type;
+            const action = typeof payload.action === 'string' ? payload.action : '';
 
-            if ((topic === 'payment' || (query as any)?.action?.startsWith?.('payment')) && paymentId) {
+            // OJO: `data.id` es el id del PAGO; el `id` de nivel superior es el
+            // id de la notificacion. Por eso data.id tiene prioridad.
+            let paymentId = payload['data.id'] || payload.data?.id || payload.id;
+            if (!paymentId && typeof payload.data === 'string') {
+                try {
+                    paymentId = JSON.parse(payload.data).id;
+                } catch {
+                    // data no es JSON: se ignora
+                }
+            }
+
+            if ((topic === 'payment' || action.startsWith('payment')) && paymentId) {
                 const updatedOrderId = await handleMercadoPagoNotification(String(paymentId));
                 console.log('Webhook de Mercado Pago procesado:', paymentId, '-> pedido', updatedOrderId);
             }

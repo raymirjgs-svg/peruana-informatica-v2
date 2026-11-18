@@ -22,6 +22,12 @@ jest.mock('../models/OrderItem', () => ({
     },
 }));
 
+jest.mock('../models/Coupon', () => ({
+    Coupon: {
+        findOne: jest.fn(),
+    },
+}));
+
 jest.mock('../models/Setting', () => ({
     Setting: {
         findByPk: jest.fn(async () => ({ value: 'direct' })),

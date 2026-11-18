@@ -26,7 +26,7 @@ import { type Coupon } from '@/services/CouponService';
 import { getProductImageUrl } from '@/utils/images';
 import { buildWhatsappLink, hasPublishedPrice, priceInquiryMessage } from '@/utils/whatsapp';
 
-type PaymentMethod = 'efectivo' | 'transferencia' | 'tarjeta' | 'yape' | 'plin' | 'mercadopago';
+type PaymentMethod = 'efectivo' | 'transferencia' | 'yape' | 'plin' | 'mercadopago';
 type InvoiceType = 'boleta' | 'factura';
 
 interface PaymentMethodsResponse {
@@ -48,7 +48,6 @@ interface PaymentMethodsResponse {
 const PAYMENT_METHOD_CATALOG: { value: PaymentMethod; label: string; desc: string }[] = [
   { value: 'efectivo', label: 'Efectivo', desc: 'Pago en tienda' },
   { value: 'transferencia', label: 'Transferencia', desc: 'BCP / Interbank' },
-  { value: 'tarjeta', label: 'Tarjeta', desc: 'Visa/MC' },
   { value: 'yape', label: 'Yape', desc: 'Pago rápido' },
   { value: 'plin', label: 'Plin', desc: 'Pago móvil' },
   { value: 'mercadopago', label: 'MercadoPago', desc: 'Tarjetas y más' }
@@ -76,21 +75,6 @@ export default function CartPage() {
   // Coupon State
   const [coupon, setCoupon] = useState<Coupon | null>(null);
   const [discountAmount, setDiscountAmount] = useState(0);
-
-  // Cargar Culqi.js cuando se va a usar tarjeta
-  useEffect(() => {
-    const culqiPk = process.env.NEXT_PUBLIC_CULQI_PUBLIC_KEY;
-    if (!culqiPk || document.getElementById('culqi-js')) return;
-    const script = document.createElement('script');
-    script.id = 'culqi-js';
-    script.src = 'https://js.culqi.com/culqijs-1.0.8.js';
-    script.onload = () => {
-      if (typeof (window as any).Culqi !== 'undefined') {
-        (window as any).Culqi.setPublicKey(culqiPk);
-      }
-    };
-    document.head.appendChild(script);
-  }, []);
 
   // Fetch Checkout Mode
   useEffect(() => {
@@ -180,46 +164,8 @@ export default function CartPage() {
   });
   const [paymentProof, setPaymentProof] = useState<File | null>(null);
 
-  // Datos de tarjeta
-  const [cardData, setCardData] = useState({
-    number: '',
-    holder: '',
-    expiry: '',
-    cvv: ''
-  });
-
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  // Formatear número de tarjeta (agregar espacios cada 4 dígitos)
-  const formatCardNumber = (value: string) => {
-    const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
-    const matches = v.match(/\d{4,16}/g);
-    const match = (matches && matches[0]) || '';
-    const parts = [];
-    for (let i = 0, len = match.length; i < len; i += 4) {
-      parts.push(match.substring(i, i + 4));
-    }
-    return parts.length ? parts.join(' ') : v;
-  };
-
-  // Formatear fecha de expiración (MM/YY)
-  const formatExpiry = (value: string) => {
-    const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
-    if (v.length >= 2) {
-      return v.substring(0, 2) + '/' + v.substring(2, 4);
-    }
-    return v;
-  };
-
-  // Detectar tipo de tarjeta
-  const getCardType = (number: string) => {
-    const cleanNumber = number.replace(/\s/g, '');
-    if (/^4/.test(cleanNumber)) return 'visa';
-    if (/^5[1-5]/.test(cleanNumber)) return 'mastercard';
-    if (/^3[47]/.test(cleanNumber)) return 'amex';
-    return null;
-  };
 
   // Iconos SVG para métodos de pago
   const PaymentIcons = {
@@ -408,34 +354,7 @@ export default function CartPage() {
       }
     }
 
-    // Validación tarjeta
-    if (paymentMethod === 'tarjeta') {
-      const cleanCard = cardData.number.replace(/\s/g, '');
-      if (cleanCard.length < 13 || cleanCard.length > 19 || !/^\d+$/.test(cleanCard)) {
-        setError('Número de tarjeta inválido');
-        return;
-      }
-      if (!cardData.holder.trim()) {
-        setError('Debe ingresar el nombre del titular de la tarjeta');
-        return;
-      }
-      const expiryMatch = cardData.expiry.match(/^(\d{2})\/(\d{2})$/);
-      if (!expiryMatch) {
-        setError('Fecha de vencimiento inválida — use el formato MM/YY');
-        return;
-      }
-      const month = parseInt(expiryMatch[1]!);
-      const year = parseInt(expiryMatch[2]!) + 2000;
-      const now = new Date();
-      if (month < 1 || month > 12 || year < now.getFullYear() || (year === now.getFullYear() && month < now.getMonth() + 1)) {
-        setError('La tarjeta está vencida o la fecha es inválida');
-        return;
-      }
-      if (!/^\d{3,4}$/.test(cardData.cvv)) {
-        setError('CVV inválido — debe tener 3 o 4 dígitos');
-        return;
-      }
-    } else if (paymentMethod !== 'efectivo' && !paymentProof) {
+    if (paymentMethod !== 'efectivo' && !paymentProof) {
       setError('Debe subir un comprobante de pago');
       return;
     }
@@ -444,62 +363,14 @@ export default function CartPage() {
     setError(null);
 
     try {
-      // Pago con tarjeta vía Culqi.js
-      if (paymentMethod === 'tarjeta') {
-        const culqiPk = process.env.NEXT_PUBLIC_CULQI_PUBLIC_KEY;
-        if (!culqiPk) {
-          setError('El pago con tarjeta no está habilitado. Elija otro método.');
-          setIsLoading(false);
-          return;
-        }
-
-        const CulqiSDK = (window as any).Culqi;
-        if (!CulqiSDK) {
-          setError('Error al cargar la pasarela de pago. Recargue la página e intente nuevamente.');
-          setIsLoading(false);
-          return;
-        }
-
-        const [expMonth, expYear] = cardData.expiry.split('/');
-        const cleanCard = cardData.number.replace(/\s/g, '');
-
-        const culqiToken = await new Promise<string>((resolve, reject) => {
-          CulqiSDK.createToken(
-            {
-              card_number: cleanCard,
-              cvv: cardData.cvv,
-              expiration_month: expMonth,
-              expiration_year: `20${expYear}`,
-              email: customerData.email,
-            },
-            (token: any) => {
-              if (token.object === 'error') {
-                reject(new Error(token.user_message || 'Error al validar la tarjeta'));
-              } else {
-                resolve(token.id);
-              }
-            }
-          );
-        });
-
-        const { paymentService } = await import('@/services/PaymentService');
-        await paymentService.culqiCharge({
-          orderId: orderId!,
-          culqiToken,
-          email: customerData.email,
-          invoiceType,
-          ...(invoiceType === 'factura' ? {
-            ruc: invoiceData.ruc,
-            business_name: invoiceData.business_name,
-            tax_address: invoiceData.tax_address,
-          } : {})
-        });
-
-        setStep('success');
+      // El pago (Mercado Pago o comprobante) se hace contra el codigo de
+      // seguimiento: nunca contra el id numerico del pedido.
+      if (!trackingCode) {
+        setError('No pudimos obtener el código de seguimiento. Vuelve al carrito e inténtalo de nuevo.');
+        setIsLoading(false);
         return;
       }
 
-      // Otros métodos de pago (comprobante)
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
       const formData = new FormData();
       formData.append('payment_method', paymentMethod);
@@ -509,28 +380,26 @@ export default function CartPage() {
         formData.append('payment_proof', paymentProof);
       }
 
-      // Seguridad: el backend exige el codigo de seguimiento del pedido.
-      if (trackingCode) {
-        formData.append('tracking_code', trackingCode);
-      }
-
       if (invoiceType === 'factura') {
         formData.append('ruc', invoiceData.ruc);
         formData.append('business_name', invoiceData.business_name);
         formData.append('tax_address', invoiceData.tax_address);
       }
 
-      const response = await fetch(`${apiUrl}/api/payments/${orderId}/upload-proof`, {
-        method: 'POST',
-        body: formData
-      });
+      const response = await fetch(
+        `${apiUrl}/api/orders/track/${encodeURIComponent(trackingCode)}/payment-proof`,
+        {
+          method: 'POST',
+          body: formData
+        }
+      );
 
       const data = await response.json();
 
       if (response.ok) {
         setStep('success');
       } else {
-        setError(data.error || 'No se pudo procesar el pago');
+        setError(data.message || data.error || 'No se pudo procesar el pago');
       }
     } catch (err: any) {
       setError(err.message || 'Error de conexión. Por favor intente de nuevo.');
@@ -786,16 +655,6 @@ export default function CartPage() {
                       </div>
                     )}
 
-                    {paymentMethod === 'tarjeta' && (
-                      <div className="space-y-4">
-                        <input type="text" placeholder="Número de Tarjeta" value={cardData.number} onChange={e => setCardData({ ...cardData, number: formatCardNumber(e.target.value) })} className="w-full border p-2 rounded" />
-                        <div className="grid grid-cols-2 gap-4">
-                          <input type="text" placeholder="MM/YY" value={cardData.expiry} onChange={e => setCardData({ ...cardData, expiry: formatExpiry(e.target.value) })} className="w-full border p-2 rounded" />
-                          <input type="text" placeholder="CVV" value={cardData.cvv} onChange={e => setCardData({ ...cardData, cvv: e.target.value })} className="w-full border p-2 rounded" />
-                        </div>
-                        <input type="text" placeholder="Titular" value={cardData.holder} onChange={e => setCardData({ ...cardData, holder: e.target.value })} className="w-full border p-2 rounded" />
-                      </div>
-                    )}
                   </div>
                 )}
 
@@ -845,7 +704,7 @@ export default function CartPage() {
                   )}
                 </div>
 
-                {paymentMethod !== 'efectivo' && paymentMethod !== 'tarjeta' && (
+                {paymentMethod !== 'efectivo' && (
                   <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
                     <label className="block mb-2 font-bold">Subir Comprobante</label>
                     <input type="file" onChange={e => setPaymentProof(e.target.files?.[0] || null)} className="w-full" />

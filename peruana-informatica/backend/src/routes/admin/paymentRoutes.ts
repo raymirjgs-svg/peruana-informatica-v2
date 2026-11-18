@@ -10,10 +10,7 @@ router.use(authenticateToken, requireAdmin);
 // Verify payment
 router.patch('/:id/verify', PaymentController.verifyPayment);
 
-// Generate invoice/boleta (auto-generación)
-router.post('/:id/generate-invoice', PaymentController.generateInvoice);
-
-// Upload invoice/boleta (carga manual desde sistema externo)
+// Upload invoice/boleta (carga manual desde el ERP del cliente)
 router.post('/:id/upload-invoice', uploadInvoice.single('invoice_file'), uploadInvoiceFile);
 
 // Download invoice

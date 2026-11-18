@@ -30,58 +30,32 @@ class PaymentService {
         };
     }
 
-    async createPreference(data: CreatePreferenceRequest): Promise<PaymentPreference> {
-        const response = await fetch(`${this.apiBase}/create-preference`, {
-            method: 'POST',
-            headers: this.getHeaders(),
-            body: JSON.stringify(data),
-        });
-
-        if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.error || 'Error al crear preferencia de pago');
-        }
-
-        return await response.json();
-    }
-
-    async culqiCharge(params: {
-        orderId: number;
-        culqiToken: string;
-        email: string;
-        invoiceType: string;
-        ruc?: string;
-        business_name?: string;
-        tax_address?: string;
-    }): Promise<{ success: boolean; chargeId: string; message: string }> {
-        const response = await fetch(`${this.apiBase}/culqi/charge`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(params),
-        });
-        const data = await response.json();
-        if (!response.ok) {
-            throw new Error(data.error || 'Error al procesar el pago con tarjeta');
-        }
-        return data;
-    }
-
     async createPreferenceForOrder(orderId: number, trackingCode?: string): Promise<PaymentPreference> {
-        const response = await fetch(`${this.apiBase}/create-preference-order`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                // Send token if available, but optional if endpoint is public/generic
-                ...((this.getToken()) ? { 'Authorization': `Bearer ${this.getToken()}` } : {})
-            },
-            body: JSON.stringify({ orderId, tracking_code: trackingCode }),
-        });
+        if (!trackingCode) {
+            throw new Error('Falta el código de seguimiento del pedido');
+        }
+
+        // El codigo de seguimiento es la credencial: el id numerico del pedido
+        // nunca se envia al backend de pagos.
+        const response = await fetch(
+            `${API_CONFIG.API_BASE_URL}/api/orders/track/${encodeURIComponent(trackingCode)}/payment-preference`,
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+            }
+        );
 
         if (!response.ok) {
             const error = await response.json();
-            throw new Error(error.error || 'Error al generar link de pago');
+            throw new Error(error.message || error.error || 'Error al generar link de pago');
         }
-        return await response.json();
+
+        const payload = await response.json();
+        return {
+            preferenceId: payload?.data?.preference_id,
+            init_point: payload?.data?.init_point,
+            sandbox_init_point: payload?.data?.sandbox_init_point,
+        };
     }
 }
 

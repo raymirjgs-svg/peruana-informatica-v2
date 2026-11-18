@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { Order } from '../models/Order';
 import { OrderItem } from '../models/OrderItem';
 import { Product } from '../models/Product';
+import { Coupon } from '../models/Coupon';
 import { Op, Transaction } from 'sequelize';
 import { sequelize } from '../database/connection';
 import { EmailService } from '../services/EmailService';
@@ -20,6 +21,8 @@ interface OrderCreationValues {
     ruc?: string | null;
     business_name?: string | null;
     tax_address?: string | null;
+    coupon_code?: string | null;
+    discount_amount: number;
 }
 
 async function createOrderWithTrackingCode(
@@ -154,6 +157,45 @@ export const createOrder = async (req: Request, res: Response) => {
             });
         }
 
+        // ── Cupón ──────────────────────────────────────────────────────────
+        // El descuento lo calcula el SERVIDOR (el cliente puede mandar un
+        // total falseado). Si el cupón no existe o no es válido, el pedido se
+        // rechaza en vez de cobrar una cifra distinta a la que se mostro.
+        let couponCode: string | null = null;
+        let discountAmount = 0;
+        let appliedCoupon: Coupon | null = null;
+
+        const rawCouponCode = String(req.body.coupon_code || '').trim().toUpperCase();
+        if (rawCouponCode) {
+            const coupon = await Coupon.findOne({
+                where: { code: rawCouponCode },
+                transaction: t,
+            });
+
+            if (!coupon) {
+                await t.rollback();
+                return res.status(400).json({
+                    error: 'El cupón no existe.',
+                    code: 'INVALID_COUPON',
+                });
+            }
+
+            const validation = coupon.isValid(totalAmount);
+            if (!validation.valid) {
+                await t.rollback();
+                return res.status(400).json({
+                    error: validation.message || 'El cupón no es válido.',
+                    code: 'INVALID_COUPON',
+                });
+            }
+
+            discountAmount = Math.round(coupon.calculateDiscount(totalAmount) * 100) / 100;
+            couponCode = coupon.code;
+            appliedCoupon = coupon;
+        }
+
+        const finalTotal = Math.max(0, Math.round((totalAmount - discountAmount) * 100) / 100);
+
         // Determine Checkout Mode
         const checkoutModeSetting = await Setting.findByPk('checkout_mode');
         const checkoutMode = checkoutModeSetting?.value || 'direct';
@@ -165,13 +207,19 @@ export const createOrder = async (req: Request, res: Response) => {
             customer_email,
             customer_phone,
             customer_document,
-            total_amount: totalAmount,
+            total_amount: finalTotal,
             status: initialStatus,
             invoice_type: invoiceType,
             ruc,
             business_name: businessName,
-            tax_address: taxAddress
+            tax_address: taxAddress,
+            coupon_code: couponCode,
+            discount_amount: discountAmount
         }, t);
+
+        if (appliedCoupon) {
+            await appliedCoupon.increment('current_uses', { transaction: t });
+        }
 
         // 3. Create OrderItems in bulk
         await OrderItem.bulkCreate(

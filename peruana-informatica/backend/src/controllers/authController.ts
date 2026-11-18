@@ -4,8 +4,9 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 import { logger } from '../config/logger';
+import { JWT_SECRET } from '../middleware/authMiddleware';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'tu_secreto_super_seguro';
+export class AuthController {
 
 export class AuthController {
     // Customer Login

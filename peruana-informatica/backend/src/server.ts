@@ -192,11 +192,11 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // AUTH ROUTES MUST BE FIRST (no auth required)
 app.use("/api/admin", adminAuthRoutes);
 
-// Protect all remaining admin routes with JWT — except public carousel/active
+// Protect all remaining admin routes with requireAdmin — except public carousel/active
 app.use("/api/admin", (req: express.Request, res: express.Response, next: express.NextFunction) => {
   // GET /api/admin/carousel/active is used by the public frontend (homepage hero)
   if (req.method === "GET" && req.path === "/carousel/active") return next();
-  return authenticateToken(req, res, next);
+  return requireAdmin(req, res, next);
 });
 
 app.use("/api/admin/dashboard", dashboardRoutes);

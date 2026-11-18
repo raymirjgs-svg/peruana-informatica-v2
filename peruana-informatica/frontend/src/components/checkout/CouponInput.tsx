@@ -119,12 +119,12 @@ export function CouponInput({ subtotal, onCouponApplied }: CouponInputProps) {
                         onKeyDown={(e) => e.key === 'Enter' && handleApplyCoupon()}
                         placeholder="Ej: PERUANA20"
                         disabled={isValidating}
-                        className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white disabled:opacity-50"
+                        className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-brand-red-500 focus:border-transparent dark:bg-gray-700 dark:text-white disabled:opacity-50"
                     />
                     <button
                         onClick={handleApplyCoupon}
                         disabled={isValidating || !couponCode.trim()}
-                        className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                        className="px-6 py-2 brand-red-600 hover:bg-brand-red-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
                     >
                         {isValidating ? 'Validando...' : 'Aplicar'}
                     </button>

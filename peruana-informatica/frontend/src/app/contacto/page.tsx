@@ -90,7 +90,7 @@ export default function ContactPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Información de Contacto */}
-          <div className="bg-gradient-to-br from-blue-600 to-purple-700 text-white p-8 rounded-2xl shadow-lg">
+          <div className="bg-gradient-to-br from-brand-red-600 to-red-700 text-white p-8 rounded-2xl shadow-lg">
             <h2 className="text-2xl font-bold mb-6">Información de Contacto</h2>
 
             <div className="space-y-6">
@@ -194,7 +194,7 @@ export default function ContactPage() {
                   {...register('fullName')}
                   type="text"
                   id="fullName"
-                  className={`w-full px-4 py-3 rounded-lg border ${errors.fullName ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'
+                  className={`w-full px-4 py-3 rounded-lg border ${errors.fullName ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-brand-red-500'
                     } focus:ring-2 focus:outline-none transition`}
                   placeholder="Juan Pérez"
                 />
@@ -211,7 +211,7 @@ export default function ContactPage() {
                 <input
                   {...register('email')}
                   type="email"
-                  id="email" className={`w-full px-4 py-3 rounded-lg border ${errors.email ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'
+                  id="email" className={`w-full px-4 py-3 rounded-lg border ${errors.email ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-brand-red-500'
                     } focus:ring-2 focus:outline-none transition`}
                   placeholder="tu-email@ejemplo.com"
                 />
@@ -229,7 +229,7 @@ export default function ContactPage() {
                   {...register('phone')}
                   type="tel"
                   id="phone"
-                  className={`w-full px-4 py-3 rounded-lg border ${errors.phone ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'
+                  className={`w-full px-4 py-3 rounded-lg border ${errors.phone ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-brand-red-500'
                     } focus:ring-2 focus:outline-none transition`}
                   placeholder="987654321"
                 />
@@ -247,7 +247,7 @@ export default function ContactPage() {
                   {...register('subject')}
                   type="text"
                   id="subject"
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-red-500 focus:outline-none transition"
                   placeholder="Consulta sobre productos"
                 />
               </div>
@@ -261,7 +261,7 @@ export default function ContactPage() {
                   {...register('message')}
                   id="message"
                   rows={5}
-                  className={`w-full px-4 py-3 rounded-lg border ${errors.message ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'
+                  className={`w-full px-4 py-3 rounded-lg border ${errors.message ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-brand-red-500'
                     } focus:ring-2 focus:outline-none transition resize-none`}
                   placeholder="Escribe tu mensaje aquí..."
                 />
@@ -276,15 +276,15 @@ export default function ContactPage() {
                   {...register('acceptTerms')}
                   type="checkbox"
                   id="acceptTerms"
-                  className="mt-1 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  className="mt-1 w-4 h-4 text-brand-red-600 border-gray-300 rounded focus:ring-brand-red-500"
                 />
                 <label htmlFor="acceptTerms" className="text-sm text-gray-600">
                   Acepto los{' '}
-                  <a href="/terminos" className="text-blue-600 hover:underline">
+                  <a href="/terminos" className="text-brand-red-600 hover:underline">
                     términos y condiciones
                   </a>{' '}
                   y{' '}
-                  <a href="/privacidad" className="text-blue-600 hover:underline">
+                  <a href="/privacidad" className="text-brand-red-600 hover:underline">
                     política de privacidad
                   </a>
                 </label>
@@ -297,7 +297,7 @@ export default function ContactPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full brand-red-600 text-white py-3 px-6 rounded-lg font-semibold hover:brand-red-700 focus:ring-4 focus:ring-blue-300 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {isSubmitting ? (
                   <>

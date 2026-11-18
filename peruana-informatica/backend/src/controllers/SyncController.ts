@@ -23,7 +23,6 @@ export class SyncController {
                 return res.json({
                     success: true,
                     message: 'Token obtenido y actualizado exitosamente',
-                    token: result.token,
                     expiresAt: result.expiresAt
                 });
             } else {

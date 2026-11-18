@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { SyncController } from '../controllers/SyncController';
 import { SyncService } from '../services/SyncService';
+import { requireAdmin } from '../middleware/authMiddleware';
 
 const router = Router();
 
@@ -15,8 +16,9 @@ router.get('/status', (req: Request, res: Response) => {
 /**
  * @route POST /api/sync/force
  * @desc Inicia una sincronización inmediata en background (no bloquea)
+ * @access Admin only
  */
-router.post('/force', (req: Request, res: Response) => {
+router.post('/force', requireAdmin, (req: Request, res: Response) => {
     const status = SyncService.getSyncStatus();
     if (status.isSyncing) {
         return res.json({ success: true, message: 'Sync ya en progreso', data: status });
@@ -30,38 +32,38 @@ router.post('/force', (req: Request, res: Response) => {
  * @route POST /api/sync/token
  * @desc Solicita un nuevo token a la API externa de Peruana Informática
  * @body { usuario: string, dias: number }
- * @access Private (debería tener autenticación en producción)
+ * @access Admin only
  */
-router.post('/token', SyncController.solicitarToken);
+router.post('/token', requireAdmin, SyncController.solicitarToken);
 
 /**
  * @route GET /api/sync/verify-token
  * @desc Verifica el estado del token actual y lo renueva si es necesario
- * @access Private
+ * @access Admin only
  */
-router.get('/verify-token', SyncController.verificarToken);
+router.get('/verify-token', requireAdmin, SyncController.verificarToken);
 
 /**
  * @route POST /api/sync/product/:id
  * @desc Sincroniza un producto específico con la API externa
  * @param id - External ID del producto
- * @access Private
+ * @access Admin only
  */
-router.post('/product/:id', SyncController.sincronizarProducto);
+router.post('/product/:id', requireAdmin, SyncController.sincronizarProducto);
 
 /**
  * @route POST /api/sync/products
  * @desc Sincroniza múltiples productos con la API externa
  * @body { ids: string[] }
- * @access Private
+ * @access Admin only
  */
-router.post('/products', SyncController.sincronizarProductos);
+router.post('/products', requireAdmin, SyncController.sincronizarProductos);
 
 /**
  * @route POST /api/sync/all-products
  * @desc Sincroniza todos los productos que tienen externalId con la API externa
- * @access Private
+ * @access Admin only
  */
-router.post('/all-products', SyncController.sincronizarTodosLosProductos);
+router.post('/all-products', requireAdmin, SyncController.sincronizarTodosLosProductos);
 
 export default router;

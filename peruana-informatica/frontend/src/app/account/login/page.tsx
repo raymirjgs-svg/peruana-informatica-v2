@@ -53,7 +53,7 @@ export default function LoginPage() {
                     </h2>
                     <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
                         ¿No tienes cuenta?{' '}
-                        <Link href="/account/register" className="font-medium text-blue-600 hover:text-blue-500">
+                        <Link href="/account/register" className="font-medium text-brand-red-600 hover:text-brand-red-500">
                             Regístrate aquí
                         </Link>
                     </p>
@@ -82,7 +82,7 @@ export default function LoginPage() {
                                 type="email"
                                 autoComplete="email"
                                 {...register('email')}
-                                className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 placeholder-gray-500 text-gray-900 dark:text-white dark:bg-gray-700 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 placeholder-gray-500 text-gray-900 dark:text-white dark:bg-gray-700 rounded-md focus:outline-none signal:brand-red-500 focus:border-brand-red-500 sm:text-sm"
                             />
                             {errors.email && (
                                 <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
@@ -97,7 +97,7 @@ export default function LoginPage() {
                                 type="password"
                                 autoComplete="current-password"
                                 {...register('password')}
-                                className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 placeholder-gray-500 text-gray-900 dark:text-white dark:bg-gray-700 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 placeholder-gray-500 text-gray-900 dark:text-white dark:bg-gray-700 rounded-md focus:outline-none signal:brand-red-500 focus:border-brand-red-500 sm:text-sm"
                             />
                             {errors.password && (
                                 <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>
@@ -107,7 +107,7 @@ export default function LoginPage() {
 
                     <div className="flex items-center justify-between">
                         <div className="text-sm">
-                            <Link href="/contacto" className="font-medium text-blue-600 hover:text-blue-500">
+                            <Link href="/contacto" className="font-medium text-brand-red-600 hover:text-brand-red-500">
                                 ¿Olvidaste tu contraseña?
                             </Link>
                         </div>
@@ -117,7 +117,7 @@ export default function LoginPage() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+                            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white brand-red-600 hover:brand-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-red-500 disabled:opacity-50"
                         >
                             {loading ? 'Ingresando...' : 'Ingresar'}
                         </button>

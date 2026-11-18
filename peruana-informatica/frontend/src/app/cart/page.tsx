@@ -268,10 +268,10 @@ export default function CartPage() {
 
         if (data.status === 'pending_approval' || checkoutMode === 'approval') {
           setStep('success');
+          clearCart();
         } else {
           setStep('payment');
         }
-        clearCart();
       } else {
         setError(data.error || 'No se pudo crear el pedido');
       }
@@ -289,6 +289,7 @@ export default function CartPage() {
       setIsLoading(true);
       try {
         const { init_point } = await import('@/services/PaymentService').then(m => m.paymentService.createPreferenceForOrder(orderId!));
+        clearCart();
         window.location.href = init_point;
         return;
       } catch (e: any) {
@@ -687,7 +688,7 @@ export default function CartPage() {
 
                 <div className="flex gap-4">
                   <button type="button" onClick={() => setStep('customer')} className="px-6 py-4 border rounded-xl">Atrás</button>
-                  <button type="submit" disabled={isLoading} className="flex-1 bg-blue-600 text-white rounded-xl py-4 font-bold">
+                  <button type="submit" disabled={isLoading} className="flex-1 brand-red-600 text-white rounded-xl py-4 font-bold">
                     {isLoading ? 'Procesando...' : 'Confirmar Pedido'}
                   </button>
                 </div>
@@ -717,7 +718,7 @@ export default function CartPage() {
             {status === 'unauthenticated' && (
               <div className="bg-blue-50 p-4 rounded mb-6 flex justify-between items-center">
                 <p>¿Ya tienes cuenta?</p>
-                <button onClick={() => router.push('/account/login')} className="bg-blue-600 text-white px-4 py-2 rounded">Iniciar Sesión</button>
+                <button onClick={() => router.push('/account/login')} className="brand-red-600 text-white px-4 py-2 rounded">Iniciar Sesión</button>
               </div>
             )}
           </div>
@@ -744,7 +745,7 @@ export default function CartPage() {
 
             <div className="flex gap-4 pt-4">
               <button type="button" onClick={() => setStep('cart')} className="flex-1 border p-4 rounded-xl font-bold">Volver</button>
-              <button type="submit" disabled={isLoading} className="flex-1 bg-blue-600 text-white p-4 rounded-xl font-bold">
+              <button type="submit" disabled={isLoading} className="flex-1 brand-red-600 text-white p-4 rounded-xl font-bold">
                 {checkoutMode === 'approval' ? 'Enviar Solicitud' : 'Continuar al Pago'}
               </button>
             </div>
@@ -765,7 +766,7 @@ export default function CartPage() {
         {items.length === 0 ? (
           <div className="text-center py-12 bg-white rounded-2xl shadow">
             <p className="text-xl mb-6">Tu carrito está vacío</p>
-            <Link href="/products" className="bg-blue-600 text-white px-6 py-3 rounded-lg">Explorar Productos</Link>
+            <Link href="/products" className="brand-red-600 text-white px-6 py-3 rounded-lg">Explorar Productos</Link>
           </div>
         ) : (
           <div className="grid lg:grid-cols-3 gap-8">
@@ -794,7 +795,7 @@ export default function CartPage() {
 
             <div className="lg:col-span-1">
               <div className="bg-white shadow-xl rounded-2xl overflow-hidden sticky top-4 border border-gray-100">
-                <div className="bg-blue-600 p-4 text-white font-bold text-lg">Resumen del Pedido</div>
+                <div className="brand-red-600 p-4 text-white font-bold text-lg">Resumen del Pedido</div>
                 <div className="p-6">
                   <div className="mb-6">
                     <CouponInput

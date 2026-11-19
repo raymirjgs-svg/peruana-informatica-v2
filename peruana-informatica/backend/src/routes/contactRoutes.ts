@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { ContactController } from "../controllers/contactController";
-import { authenticateAdmin } from "../middleware/auth";
+import { authenticateToken, requireAdmin } from "../middleware/authMiddleware";
 import { createRateLimit } from "../middleware/security";
 
 const router = Router();
@@ -30,19 +30,19 @@ router.post("/", contactRateLimit, ContactController.create);
  * Obtener todos los contactos con filtros y paginación
  * Query params: page, limit, status, asunto, search, startDate, endDate
  */
-router.get("/admin", authenticateAdmin, ContactController.getAll);
+router.get("/admin", authenticateToken, requireAdmin, ContactController.getAll);
 
 /**
  * GET /api/contacts/admin/stats
  * Obtener estadísticas de contactos
  */
-router.get("/admin/stats", authenticateAdmin, ContactController.getStats);
+router.get("/admin/stats", authenticateToken, requireAdmin, ContactController.getStats);
 
 /**
  * GET /api/contacts/admin/:id
  * Obtener un contacto específico por ID
  */
-router.get("/admin/:id", authenticateAdmin, ContactController.getById);
+router.get("/admin/:id", authenticateToken, requireAdmin, ContactController.getById);
 
 /**
  * PUT /api/contacts/admin/:id/status
@@ -51,7 +51,8 @@ router.get("/admin/:id", authenticateAdmin, ContactController.getById);
  */
 router.put(
   "/admin/:id/status",
-  authenticateAdmin,
+  authenticateToken,
+  requireAdmin,
   ContactController.updateStatus,
 );
 
@@ -59,7 +60,7 @@ router.put(
  * DELETE /api/contacts/admin/:id
  * Eliminar un contacto
  */
-router.delete("/admin/:id", authenticateAdmin, ContactController.delete);
+router.delete("/admin/:id", authenticateToken, requireAdmin, ContactController.delete);
 
 /**
  * PUT /api/contacts/admin/bulk/resolve
@@ -68,7 +69,8 @@ router.delete("/admin/:id", authenticateAdmin, ContactController.delete);
  */
 router.put(
   "/admin/bulk/resolve",
-  authenticateAdmin,
+  authenticateToken,
+  requireAdmin,
   ContactController.bulkResolve,
 );
 

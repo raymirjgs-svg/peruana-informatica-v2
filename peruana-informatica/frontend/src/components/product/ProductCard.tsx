@@ -11,6 +11,7 @@ import { motion } from 'framer-motion';
 import { useSettings } from '@/context/SettingsContext';
 import { buildWhatsappLink, hasPublishedPrice, priceInquiryMessage } from '@/utils/whatsapp';
 import { getProductImageUrl } from '@/utils/images';
+import { isProductAvailable } from '@/lib/product';
 
 interface ProductCardProps {
   product: Product;
@@ -28,7 +29,7 @@ export const ProductCard = memo(function ProductCard({ product }: ProductCardPro
 
   const handleAddToCart = () => {
     if (!purchasable) return;
-    if (product.isAvailable()) addItem(product);
+    if (isProductAvailable(product)) addItem(product);
   };
 
   const handleToggleWishlist = (e: React.MouseEvent) => {
@@ -95,22 +96,22 @@ export const ProductCard = memo(function ProductCard({ product }: ProductCardPro
 
         {/* Status badges — top left */}
         <div className="absolute top-2 left-2 flex flex-col gap-1 z-10">
-          {!product.isAvailable() && (
+          {!isProductAvailable(product) && (
             <span className="px-2 py-0.5 text-[10px] font-bold tracking-wide uppercase bg-gray-700 text-white rounded">
               Agotado
             </span>
           )}
-          {product.is_new && product.isAvailable() && (
+          {product.is_new && isProductAvailable(product) && (
             <span className="px-2 py-0.5 text-[10px] font-bold tracking-wide uppercase bg-blue-600 text-white rounded">
               Nuevo
             </span>
           )}
-          {product.is_featured && product.isAvailable() && (
+          {product.is_featured && isProductAvailable(product) && (
             <span className="px-2 py-0.5 text-[10px] font-bold tracking-wide uppercase bg-amber-500 text-white rounded">
               Top
             </span>
           )}
-          {product.is_clearance && product.isAvailable() && (
+          {product.is_clearance && isProductAvailable(product) && (
             <span className="px-2 py-0.5 text-[10px] font-bold tracking-wide uppercase bg-brand-red-600 text-white rounded">
               Oferta
             </span>
@@ -189,7 +190,7 @@ export const ProductCard = memo(function ProductCard({ product }: ProductCardPro
             <span className="text-sm font-semibold text-gray-400">Consultar precio</span>
           )}
 
-          {product.isAvailable() && (
+          {isProductAvailable(product) && (
             <div className="mt-1.5 flex items-center gap-1.5">
               {product.stock < 5 ? (
                 <>
@@ -214,16 +215,16 @@ export const ProductCard = memo(function ProductCard({ product }: ProductCardPro
         {purchasable ? (
           <button
             onClick={handleAddToCart}
-            disabled={!product.isAvailable()}
+            disabled={!isProductAvailable(product)}
             className={`w-full py-2 text-[13px] font-semibold rounded-lg border transition-all duration-200 active:scale-95 ${
-              product.isAvailable()
+              isProductAvailable(product)
                 ? isInCart(product.id)
                   ? 'border-emerald-500 bg-emerald-500 text-white'
                   : 'border-gray-800 dark:border-gray-300 text-gray-900 dark:text-gray-100 hover:bg-brand-red-600 hover:border-brand-red-600 hover:text-white dark:hover:bg-brand-red-600 dark:border-brand-red-600'
                 : 'border-gray-200 dark:border-gray-700 text-gray-400 dark:text-gray-600 cursor-not-allowed'
             }`}
           >
-            {!product.isAvailable()
+            {!isProductAvailable(product)
               ? 'Agotado'
               : isInCart(product.id)
                 ? 'En el carrito'

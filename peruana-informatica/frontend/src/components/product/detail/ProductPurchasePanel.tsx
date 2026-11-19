@@ -2,6 +2,7 @@
 
 import type { Product } from '@/models/Product';
 import type { CompanySettings } from '@/services/SettingsService';
+import { buildWhatsappLink, priceInquiryMessage } from '@/utils/whatsapp';
 
 interface ProductPurchasePanelProps {
   product: Product;
@@ -44,10 +45,20 @@ export function ProductPurchasePanel({
         <div className="flex flex-col gap-1">
           {listPrice > 0 ? (
             <div className="flex items-baseline gap-4">
-              <span className="text-4xl font-bold text-blue-600">S/. {listPrice.toFixed(2)}</span>
+              <span className="text-4xl font-bold text-brand-red-600">S/. {listPrice.toFixed(2)}</span>
             </div>
           ) : (
-            <span className="text-3xl font-bold text-gray-600">Consultar Precio</span>
+            <a
+              href={buildWhatsappLink(
+                priceInquiryMessage(product.name, quantity),
+                settings?.company_whatsapp
+              )}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-3xl font-bold text-brand-red-600 hover:text-brand-red-700"
+            >
+              Consultar Precio por WhatsApp
+            </a>
           )}
         </div>
         <p className="text-sm text-gray-600 mt-2">💳 Precio especial con cualquier medio de pago</p>
@@ -127,7 +138,7 @@ export function ProductPurchasePanel({
         </button>
         <button
           onClick={onAddToCart}
-          className="w-full bg-blue-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-blue-700 transition transform hover:scale-105 shadow-lg"
+          className="w-full bg-brand-red-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-brand-red-700 transition transform hover:scale-105 shadow-brand-red"
         >
           🛒 Agregar al Carrito
         </button>
@@ -153,11 +164,11 @@ export function ProductPurchasePanel({
         </div>
       </div>
 
-      <div className="bg-blue-50 p-4 rounded-xl border border-blue-200">
-        <h4 className="font-semibold text-blue-800 mb-2">🚚 Información de Envío</h4>
-        <ul className="text-sm text-blue-700 space-y-1">
+      <div className="bg-brand-red-50 p-4 rounded-xl border border-brand-red-200">
+        <h4 className="font-semibold text-brand-red-800 mb-2">🚚 Información de Envío</h4>
+        <ul className="text-sm text-brand-red-700 space-y-1">
+          <li>• Entrega inmediata en Arequipa y Lima</li>
           <li>• Envío gratis a todo Lima</li>
-          <li>• Entrega en 24-48 horas</li>
           <li>• Provincias: 2-5 días hábiles</li>
         </ul>
       </div>

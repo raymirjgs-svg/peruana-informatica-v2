@@ -34,7 +34,7 @@ export function ProductGallery({ images, productName, selectedImage, onSelectIma
             key={index}
             onClick={() => onSelectImage(index)}
             className={`w-16 h-16 rounded-lg border-2 flex items-center justify-center text-2xl transition ${selectedImage === index
-              ? 'border-blue-500 bg-blue-50'
+              ? 'border-brand-red-500 bg-brand-red-50'
               : 'border-gray-200 bg-gray-100 hover:border-gray-300'
               }`}
           >
@@ -59,7 +59,7 @@ export function ProductGallery({ images, productName, selectedImage, onSelectIma
         <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
           ✅ En Stock
         </span>
-        <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+        <span className="bg-brand-red-100 text-brand-red-800 px-3 py-1 rounded-full text-sm font-medium">
           🚚 Envío Gratis
         </span>
         <span className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-medium">

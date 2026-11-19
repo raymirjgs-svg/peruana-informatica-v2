@@ -174,7 +174,7 @@ export default function CartPage() {
     tarjeta: <CreditCard className="w-8 h-8" />,
     yape: <Smartphone className="w-8 h-8" />,
     plin: <Smartphone className="w-8 h-8" />,
-    mercadopago: <CreditCard className="w-8 h-8 text-blue-500" />
+    mercadopago: <CreditCard className="w-8 h-8 text-brand-red-500" />
   };
 
   // Componente de Barra de Progreso Mejorada
@@ -196,7 +196,7 @@ export default function CartPage() {
 
           {/* Línea de progreso animada */}
           <div
-            className="absolute left-0 top-6 h-1 bg-gradient-to-r from-blue-500 via-blue-600 to-indigo-600 rounded-full transition-all duration-700 ease-out"
+            className="absolute left-0 top-6 h-1 bg-gradient-brand rounded-full transition-all duration-700 ease-out"
             style={{ width: `${(currentIndex / (steps.length - 1)) * 100}%` }}
           ></div>
 
@@ -213,7 +213,7 @@ export default function CartPage() {
                     ${isCompleted
                       ? 'bg-gradient-to-br from-green-400 to-green-600 border-green-300 text-white scale-100'
                       : isCurrent
-                        ? 'bg-gradient-to-br from-blue-500 to-indigo-600 border-blue-300 text-white scale-110 ring-4 ring-blue-200 ring-opacity-50'
+                        ? 'bg-gradient-brand border-brand-red-300 text-white scale-110 ring-4 ring-brand-red-200 ring-opacity-50'
                         : 'bg-white border-gray-300 text-gray-400 scale-95'
                     }
                   `}>
@@ -225,7 +225,7 @@ export default function CartPage() {
                   </div>
                   <span className={`
                     text-sm mt-3 font-semibold transition-colors duration-300
-                    ${isCurrent ? 'text-blue-600' : isCompleted ? 'text-green-600' : 'text-gray-400'}
+                    ${isCurrent ? 'text-brand-red-600' : isCompleted ? 'text-green-600' : 'text-gray-400'}
                   `}>
                     {s.label}
                   </span>
@@ -327,12 +327,8 @@ export default function CartPage() {
     if (paymentMethod === 'mercadopago') {
       setIsLoading(true);
       try {
-<<<<<<< HEAD
         const { init_point } = await import('@/services/PaymentService').then(m => m.paymentService.createPreferenceForOrder(orderId!, trackingCode || undefined));
-=======
-        const { init_point } = await import('@/services/PaymentService').then(m => m.paymentService.createPreferenceForOrder(orderId!));
         clearCart();
->>>>>>> fix/security-branding-20261118
         window.location.href = init_point;
         return;
       } catch (e: any) {
@@ -444,7 +440,7 @@ export default function CartPage() {
             </div>
 
             <div className="px-8 -mt-6 relative z-10">
-              <div className={`rounded-2xl p-6 text-center shadow-lg ${checkoutMode === 'approval' ? 'bg-gradient-to-r from-amber-500 to-orange-500' : 'bg-gradient-to-r from-blue-600 to-indigo-600'}`}>
+              <div className={`rounded-2xl p-6 text-center shadow-lg ${checkoutMode === 'approval' ? 'bg-gradient-to-r from-amber-500 to-orange-500' : 'bg-gradient-brand'}`}>
                 <p className="text-white/80 text-sm uppercase tracking-wide mb-1">Referencia interna</p>
                 <p className="text-4xl font-bold text-white">#{orderId}</p>
               </div>
@@ -452,17 +448,17 @@ export default function CartPage() {
 
             {trackingCode && (
               <div className="px-8 pt-6">
-                <div className="rounded-2xl border-2 border-indigo-200 bg-indigo-50 p-6 text-center">
+                <div className="rounded-2xl border-2 border-brand-red-200 bg-brand-red-50 p-6 text-center">
                   <div className="flex items-center justify-center gap-2 mb-2">
-                    <ShieldCheck className="w-5 h-5 text-indigo-600" />
-                    <p className="text-xs uppercase tracking-widest text-indigo-600 font-semibold">Código de seguimiento privado</p>
+                    <ShieldCheck className="w-5 h-5 text-brand-red-600" />
+                    <p className="text-xs uppercase tracking-widest text-brand-red-600 font-semibold">Código de seguimiento privado</p>
                   </div>
-                  <p className="font-mono text-3xl md:text-4xl font-bold tracking-wider text-indigo-900 break-all">{trackingCode}</p>
-                  <p className="text-sm text-indigo-700 mt-2">
+                  <p className="font-mono text-3xl md:text-4xl font-bold tracking-wider text-brand-red-900 break-all">{trackingCode}</p>
+                  <p className="text-sm text-brand-red-700 mt-2">
                     Es único para este pedido y permite ver su estado. No lo compartas con terceros.
                   </p>
                   {checkoutMode === 'approval' && (
-                    <p className="text-sm text-indigo-700 mt-1">
+                    <p className="text-sm text-brand-red-700 mt-1">
                       Revisamos tu pedido antes de aceptarlo. Cuando lo aprobemos, podrás completar el pago
                       desde este mismo enlace.
                     </p>
@@ -471,14 +467,14 @@ export default function CartPage() {
                     <button
                       type="button"
                       onClick={handleCopyTrackingCode}
-                      className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-indigo-200 bg-white px-5 py-2.5 font-semibold text-indigo-700 hover:border-indigo-400 transition-colors"
+                      className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-brand-red-200 bg-white px-5 py-2.5 font-semibold text-brand-red-700 hover:border-brand-red-400 transition-colors"
                     >
                       {copiedCode ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                       {copiedCode ? 'Código copiado' : 'Copiar código'}
                     </button>
                     <Link
                       href={`/seguimiento/${trackingCode}`}
-                      className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 font-semibold text-white hover:bg-indigo-700 transition-colors"
+                      className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-red-600 px-5 py-2.5 font-semibold text-white hover:bg-brand-red-700 transition-colors"
                     >
                       <Search className="w-4 h-4" />
                       Consultar seguimiento
@@ -491,18 +487,18 @@ export default function CartPage() {
             <div className="p-8">
               <div className="flex items-center gap-4 p-4 bg-blue-50 rounded-xl mb-6">
                 <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                  <ShieldCheck className="w-6 h-6 text-blue-600" />
+                  <ShieldCheck className="w-6 h-6 text-brand-red-600" />
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">Tu pedido quedó registrado.</p>
-                  <p className="font-semibold text-blue-600">Guarda tu código de seguimiento: es la única forma segura de consultar el pedido.</p>
+                  <p className="font-semibold text-brand-red-600">Guarda tu código de seguimiento: es la única forma segura de consultar el pedido.</p>
                 </div>
               </div>
 
               <div className="mb-8">
                 <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
                   <span className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
-                    <FileText className="w-5 h-5 text-indigo-600" />
+                    <FileText className="w-5 h-5 text-brand-red-600" />
                   </span>
                   Próximos pasos
                 </h2>
@@ -537,14 +533,14 @@ export default function CartPage() {
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link
                   href="/"
-                  className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-8 py-4 rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 font-semibold text-center shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+                  className="flex-1 bg-brand-red-600 text-white px-8 py-4 rounded-xl hover:bg-brand-red-700 transition-all duration-300 font-semibold text-center shadow-brand-red hover:shadow-xl flex items-center justify-center gap-2"
                 >
                   <Home className="w-5 h-5" />
                   Volver al inicio
                 </Link>
                 <Link
                   href={trackingCode ? `/seguimiento/${trackingCode}` : '/track-order'}
-                  className="flex-1 bg-white border-2 border-gray-300 text-gray-700 px-8 py-4 rounded-xl hover:border-blue-500 hover:text-blue-600 transition-all duration-300 font-semibold text-center flex items-center justify-center gap-2"
+                  className="flex-1 bg-white border-2 border-gray-300 text-gray-700 px-8 py-4 rounded-xl hover:border-brand-red-500 hover:text-brand-red-600 transition-all duration-300 font-semibold text-center flex items-center justify-center gap-2"
                 >
                   <Search className="w-5 h-5" />
                   Consultar seguimiento
@@ -559,18 +555,18 @@ export default function CartPage() {
 
   if (step === 'payment') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-12">
+      <div className="min-h-screen bg-gray-50 py-12">
         <div className="container mx-auto px-4 max-w-5xl">
           <ProgressBar currentStep="payment" />
           {trackingCode && (
-            <div className="max-w-2xl mx-auto mb-6 rounded-2xl border-2 border-indigo-200 bg-indigo-50 px-5 py-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div className="max-w-2xl mx-auto mb-6 rounded-2xl border-2 border-brand-red-200 bg-brand-red-50 px-5 py-4 flex flex-col sm:flex-row items-center justify-between gap-3">
               <div className="text-center sm:text-left">
-                <p className="text-xs uppercase tracking-widest text-indigo-600 font-semibold">Código de seguimiento privado</p>
-                <p className="font-mono text-xl font-bold tracking-wider text-indigo-900 break-all">{trackingCode}</p>
+                <p className="text-xs uppercase tracking-widest text-brand-red-600 font-semibold">Código de seguimiento privado</p>
+                <p className="font-mono text-xl font-bold tracking-wider text-brand-red-900 break-all">{trackingCode}</p>
               </div>
               <Link
                 href={`/seguimiento/${trackingCode}`}
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 font-semibold text-white hover:bg-indigo-700 transition-colors whitespace-nowrap"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-red-600 px-4 py-2 font-semibold text-white hover:bg-brand-red-700 transition-colors whitespace-nowrap"
               >
                 <Search className="w-4 h-4" />
                 Ver estado
@@ -597,7 +593,7 @@ export default function CartPage() {
                 <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
                   <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
                     <span className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                      <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-5 h-5 text-brand-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
                       </svg>
                     </span>
@@ -612,7 +608,7 @@ export default function CartPage() {
                         type="button"
                         onClick={() => setPaymentMethod(method.value as PaymentMethod)}
                         className={`relative p-4 rounded-xl border-2 transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1 ${paymentMethod === method.value
-                          ? 'border-blue-500 bg-blue-50 shadow-md ring-2 ring-blue-200'
+                          ? 'border-brand-red-500 bg-brand-red-50 shadow-md ring-2 ring-brand-red-200'
                           : 'border-gray-200 bg-white hover:border-gray-300'
                           }`}
                       >
@@ -629,7 +625,7 @@ export default function CartPage() {
                       Datos para realizar el pago
                     </h2>
                     {paymentMethod === 'transferencia' && (
-                      <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200 space-y-1 text-sm text-gray-700">
+                      <div className="bg-brand-red-50 rounded-xl p-6 border border-brand-red-200 space-y-1 text-sm text-gray-700">
                         {paymentDetails.transferencia?.holder && <p><span className="font-bold">Titular:</span> {paymentDetails.transferencia.holder}</p>}
                         {paymentDetails.transferencia?.bcp_account && <p><span className="font-bold">BCP cuenta:</span> {paymentDetails.transferencia.bcp_account}</p>}
                         {paymentDetails.transferencia?.bcp_cci && <p><span className="font-bold">BCP CCI:</span> {paymentDetails.transferencia.bcp_cci}</p>}
@@ -666,8 +662,8 @@ export default function CartPage() {
                 <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
                   <h2 className="text-xl font-bold text-gray-800 mb-4">Comprobante</h2>
                   <div className="flex gap-4">
-                    <button type="button" onClick={() => setInvoiceType('boleta')} className={`flex-1 p-4 border rounded ${invoiceType === 'boleta' ? 'border-blue-500 bg-blue-50' : ''}`}>Boleta</button>
-                    <button type="button" onClick={() => setInvoiceType('factura')} className={`flex-1 p-4 border rounded ${invoiceType === 'factura' ? 'border-blue-500 bg-blue-50' : ''}`}>Factura</button>
+                    <button type="button" onClick={() => setInvoiceType('boleta')} className={`flex-1 p-4 border rounded ${invoiceType === 'boleta' ? 'border-brand-red-500 bg-brand-red-50' : ''}`}>Boleta</button>
+                    <button type="button" onClick={() => setInvoiceType('factura')} className={`flex-1 p-4 border rounded ${invoiceType === 'factura' ? 'border-brand-red-500 bg-brand-red-50' : ''}`}>Factura</button>
                   </div>
                   {invoiceType === 'factura' && (
                     <div className="mt-4 space-y-3">
@@ -739,7 +735,7 @@ export default function CartPage() {
 
   if (step === 'customer') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 py-12">
+      <div className="min-h-screen bg-gray-50 py-12">
         <div className="container mx-auto px-4 max-w-4xl">
           <ProgressBar currentStep="customer" />
           <div className="text-center mb-8">
@@ -853,7 +849,7 @@ export default function CartPage() {
                     )}
                     <div className="flex justify-between items-center py-2 border-t border-gray-100 text-xl font-bold">
                       <span className="text-gray-900">Total</span>
-                      <span className="text-blue-600">S/ {finalTotal.toFixed(2)}</span>
+                      <span className="text-brand-red-600">S/ {finalTotal.toFixed(2)}</span>
                     </div>
                   </div>
 
@@ -883,7 +879,7 @@ export default function CartPage() {
                   <button
                     onClick={() => setStep('customer')}
                     disabled={hasUnpricedItems}
-                    className={`w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-4 rounded-xl font-bold text-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center gap-2 ${
+                    className={`w-full bg-brand-red-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-brand-red-700 transition-all duration-300 shadow-brand-red hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center gap-2 ${
                       hasUnpricedItems ? 'opacity-50 cursor-not-allowed' : ''
                     }`}
                   >

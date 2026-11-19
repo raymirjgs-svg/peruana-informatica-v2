@@ -36,6 +36,8 @@ export default function CompanyLogo({ className = 'h-16 w-auto object-contain ma
             alt={alt || settings?.company_name || 'Peruana Informática'}
             className={className}
             loading="eager"
+            width={160}
+            height={36}
             onError={() => {
                 if (!primaryFailed) setPrimaryFailed(true);
             }}

@@ -7,8 +7,6 @@ import { logger } from '../config/logger';
 import { JWT_SECRET } from '../middleware/authMiddleware';
 
 export class AuthController {
-
-export class AuthController {
     // Customer Login
     static async login(req: Request, res: Response): Promise<void> {
         try {

@@ -53,7 +53,7 @@ export function ProductTabs({ product, activeTab, onTabChange }: ProductTabsProp
               key={tab.id}
               onClick={() => onTabChange(tab.id)}
               className={`py-4 px-2 border-b-2 font-medium text-sm transition ${activeTab === tab.id
-                ? 'border-blue-500 text-blue-600'
+                ? 'border-brand-red-500 text-brand-red-600'
                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 }`}
             >
@@ -162,7 +162,7 @@ export function ProductTabs({ product, activeTab, onTabChange }: ProductTabsProp
               </div>
 
               <div>
-                <h4 className="text-lg font-semibold mb-3 text-blue-600">🔄 Política de Devoluciones</h4>
+                <h4 className="text-lg font-semibold mb-3 text-brand-red-600">🔄 Política de Devoluciones</h4>
                 <div className="space-y-3">
                   <div className="flex items-start gap-3">
                     <div className="text-green-500 mt-1">✅</div>

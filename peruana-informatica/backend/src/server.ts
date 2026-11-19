@@ -75,7 +75,7 @@ import {
   securityHeaders,
 } from "./middleware/security";
 import { apiLimiter, authLimiter, createLimiter, paymentLimiter } from "./middleware/rateLimiter";
-import { authenticateToken } from "./middleware/authMiddleware";
+import { authenticateToken, requireAdmin } from "./middleware/authMiddleware";
 import { initRedis } from "./config/redis";
 import { logger } from "./config/logger";
 import { requestLogger, errorLogger } from "./middleware/logger";
@@ -196,7 +196,7 @@ app.use("/api/admin", adminAuthRoutes);
 app.use("/api/admin", (req: express.Request, res: express.Response, next: express.NextFunction) => {
   // GET /api/admin/carousel/active is used by the public frontend (homepage hero)
   if (req.method === "GET" && req.path === "/carousel/active") return next();
-  return requireAdmin(req, res, next);
+  return authenticateToken(req, res, () => requireAdmin(req, res, next));
 });
 
 app.use("/api/admin/dashboard", dashboardRoutes);
@@ -227,7 +227,7 @@ app.use("/api/admin/announcements", adminAnnouncementRoutes); // Rutas admin de 
 app.use("/api/admin/quick-categories", adminQuickCategoryRoutes); // Rutas admin de accesos rápidos
 
 // Rutas API Externa y Adicionales
-app.use("/api/external", externalApiRoutes);
+app.use("/api/external", authenticateToken, requireAdmin, externalApiRoutes);
 app.use("/api/pages", pageRoutes); // Rutas públicas de páginas
 app.use("/api/sync", syncRoutes); // Rutas de sincronización con API Externa
 app.use("/api/cart", cartRoutes); // Rutas de carrito

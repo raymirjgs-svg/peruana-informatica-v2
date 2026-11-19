@@ -11,7 +11,7 @@ interface AuthRequest extends Request {
     };
 }
 
-const JWT_SECRET = requireJwtSecret();
+export const JWT_SECRET = requireJwtSecret();
 
 export const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers['authorization'];

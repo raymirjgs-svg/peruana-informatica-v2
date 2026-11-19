@@ -36,7 +36,7 @@ export default function CustomerForm({
                                 name="client_name"
                                 value={formData.client_name}
                                 onChange={onChange}
-                                className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${errors.client_name ? 'border-red-500' : 'border-gray-300'
+                                className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-brand-red-500 focus:border-brand-red-500 ${errors.client_name ? 'border-red-500' : 'border-gray-300'
                                     }`}
                                 placeholder="Ingresa tu nombre completo"
                             />
@@ -55,7 +55,7 @@ export default function CustomerForm({
                                 name="client_email"
                                 value={formData.client_email}
                                 onChange={onChange}
-                                className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${errors.client_email ? 'border-red-500' : 'border-gray-300'
+                                className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-brand-red-500 focus:border-brand-red-500 ${errors.client_email ? 'border-red-500' : 'border-gray-300'
                                     }`}
                                 placeholder="tu@email.com"
                             />
@@ -74,7 +74,7 @@ export default function CustomerForm({
                                 name="client_phone"
                                 value={formData.client_phone}
                                 onChange={onChange}
-                                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red-500 focus:border-brand-red-500"
                                 placeholder="Ej. 999 888 777"
                             />
                         </div>
@@ -89,7 +89,7 @@ export default function CustomerForm({
                                 name="client_company"
                                 value={formData.client_company}
                                 onChange={onChange}
-                                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red-500 focus:border-brand-red-500"
                                 placeholder="Nombre de tu empresa"
                             />
                         </div>
@@ -104,7 +104,7 @@ export default function CustomerForm({
                                 name="client_ruc"
                                 value={formData.client_ruc}
                                 onChange={onChange}
-                                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red-500 focus:border-brand-red-500"
                                 placeholder="11 dígitos"
                             />
                         </div>
@@ -119,7 +119,7 @@ export default function CustomerForm({
                                 name="client_address"
                                 value={formData.client_address}
                                 onChange={onChange}
-                                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red-500 focus:border-brand-red-500"
                                 placeholder="Dirección completa para facturación"
                             />
                         </div>
@@ -153,14 +153,14 @@ export default function CustomerForm({
 
                             <div
                                 className={`border-2 rounded-xl p-4 cursor-pointer transition-all ${formData.delivery_method === 'pickup'
-                                        ? 'border-blue-500 bg-blue-50'
-                                        : 'border-gray-300 hover:border-blue-300'
+                                        ? 'border-brand-red-500 bg-brand-red-50'
+                                        : 'border-gray-300 hover:border-brand-red-300'
                                     }`}
                                 onClick={() => onDeliveryMethodChange('pickup')}
                             >
                                 <div className="flex items-center">
                                     <div className={`w-5 h-5 rounded-full border-2 mr-3 flex items-center justify-center ${formData.delivery_method === 'pickup'
-                                            ? 'border-blue-500 bg-blue-500'
+                                            ? 'border-brand-red-500 bg-brand-red-500'
                                             : 'border-gray-400'
                                         }`}>
                                         {formData.delivery_method === 'pickup' && (
@@ -186,7 +186,7 @@ export default function CustomerForm({
                                     name="delivery_address"
                                     value={formData.delivery_address}
                                     onChange={onChange}
-                                    className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${errors.delivery_address ? 'border-red-500' : 'border-gray-300'
+                                    className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-brand-red-500 focus:border-brand-red-500 ${errors.delivery_address ? 'border-red-500' : 'border-gray-300'
                                         }`}
                                     placeholder="Indica la dirección exacta de entrega"
                                 />
@@ -207,7 +207,7 @@ export default function CustomerForm({
                             value={formData.special_requirements}
                             onChange={onChange}
                             rows={3}
-                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red-500 focus:border-brand-red-500"
                             placeholder="Horarios de entrega, configuraciones especiales, etc."
                         ></textarea>
                     </div>

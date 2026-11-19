@@ -19,7 +19,7 @@ export default function GlobalError({
         )}
         <button
           onClick={reset}
-          className="mt-6 rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-700"
+          className="mt-6 rounded-lg bg-brand-red-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-brand-red-700"
         >
           Reintentar
         </button>

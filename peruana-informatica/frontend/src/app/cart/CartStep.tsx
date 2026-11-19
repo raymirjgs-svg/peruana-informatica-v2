@@ -30,7 +30,7 @@ export function CartStep({
   onContinue,
 }: CartStepProps) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-blue-50 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-brand-red-50 py-8">
       <div className="container mx-auto px-4 max-w-7xl">
         <ProgressBar currentStep="cart" />
 
@@ -39,7 +39,7 @@ export function CartStep({
         {items.length === 0 ? (
           <div className="text-center py-12 bg-white rounded-2xl shadow">
             <p className="text-xl mb-6">Tu carrito está vacío</p>
-            <Link href="/products" className="bg-blue-600 text-white px-6 py-3 rounded-lg">Explorar Productos</Link>
+            <Link href="/products" className="bg-brand-red-600 text-white px-6 py-3 rounded-lg">Explorar Productos</Link>
           </div>
         ) : (
           <div className="grid lg:grid-cols-3 gap-8">
@@ -68,7 +68,7 @@ export function CartStep({
 
             <div className="lg:col-span-1">
               <div className="bg-white shadow-xl rounded-2xl overflow-hidden sticky top-4 border border-gray-100">
-                <div className="bg-blue-600 p-4 text-white font-bold text-lg">Resumen del Pedido</div>
+                <div className="bg-brand-red-600 p-4 text-white font-bold text-lg">Resumen del Pedido</div>
                 <div className="p-6">
                   <div className="mb-6">
                     <CouponInput
@@ -90,13 +90,13 @@ export function CartStep({
                     )}
                     <div className="flex justify-between items-center py-2 border-t border-gray-100 text-xl font-bold">
                       <span className="text-gray-900">Total</span>
-                      <span className="text-blue-600">S/ {finalTotal.toFixed(2)}</span>
+                      <span className="text-brand-red-600">S/ {finalTotal.toFixed(2)}</span>
                     </div>
                   </div>
 
                   <button
                     onClick={() => onContinue}
-                    className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-4 rounded-xl font-bold text-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center gap-2"
+                    className="w-full bg-gradient-to-r from-brand-red-600 to-brand-red-600 text-white py-4 rounded-xl font-bold text-lg hover:from-brand-red-700 hover:to-brand-red-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center gap-2"
                   >
                     Continuar
                   </button>

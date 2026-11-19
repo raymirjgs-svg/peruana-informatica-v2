@@ -86,7 +86,7 @@ export default function QuotationForm({ laptop, onSubmit }: QuotationFormProps) 
             name="client_name"
             value={formData.client_name}
             onChange={handleChange}
-            className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+            className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-brand-red-500 focus:border-brand-red-500 ${
               errors.client_name ? 'border-red-500' : 'border-gray-300'
             }`}
             placeholder="Ingresa tu nombre completo"
@@ -106,7 +106,7 @@ export default function QuotationForm({ laptop, onSubmit }: QuotationFormProps) 
             name="client_email"
             value={formData.client_email}
             onChange={handleChange}
-            className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+            className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-brand-red-500 focus:border-brand-red-500 ${
               errors.client_email ? 'border-red-500' : 'border-gray-300'
             }`}
             placeholder="tu@email.com"
@@ -126,7 +126,7 @@ export default function QuotationForm({ laptop, onSubmit }: QuotationFormProps) 
             name="client_phone"
             value={formData.client_phone}
             onChange={handleChange}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red-500 focus:border-brand-red-500"
             placeholder="Ej. 999 888 777"
           />
         </div>
@@ -141,7 +141,7 @@ export default function QuotationForm({ laptop, onSubmit }: QuotationFormProps) 
             name="client_company"
             value={formData.client_company}
             onChange={handleChange}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red-500 focus:border-brand-red-500"
             placeholder="Nombre de tu empresa"
           />
         </div>
@@ -156,7 +156,7 @@ export default function QuotationForm({ laptop, onSubmit }: QuotationFormProps) 
             name="client_ruc"
             value={formData.client_ruc}
             onChange={handleChange}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red-500 focus:border-brand-red-500"
             placeholder="11 dígitos"
           />
         </div>
@@ -171,7 +171,7 @@ export default function QuotationForm({ laptop, onSubmit }: QuotationFormProps) 
             name="client_address"
             value={formData.client_address}
             onChange={handleChange}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red-500 focus:border-brand-red-500"
             placeholder="Dirección completa para facturación"
           />
         </div>
@@ -179,9 +179,9 @@ export default function QuotationForm({ laptop, onSubmit }: QuotationFormProps) 
 
       <div>
         <h3 className="text-lg font-medium text-gray-800 mb-3">Método de entrega</h3>
-        <div className="border-2 border-blue-500 bg-blue-50 rounded-xl p-4">
+        <div className="border-2 border-brand-red-500 bg-brand-red-50 rounded-xl p-4">
           <div className="flex items-center">
-            <div className="w-5 h-5 rounded-full border-2 border-blue-500 bg-blue-500 mr-3 flex items-center justify-center">
+            <div className="w-5 h-5 rounded-full border-2 border-brand-red-500 bg-brand-red-500 mr-3 flex items-center justify-center">
               <div className="w-2 h-2 bg-white rounded-full"></div>
             </div>
             <div>
@@ -205,7 +205,7 @@ export default function QuotationForm({ laptop, onSubmit }: QuotationFormProps) 
           value={formData.special_requirements}
           onChange={handleChange}
           rows={3}
-          className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red-500 focus:border-brand-red-500"
           placeholder="Horarios de entrega, configuraciones especiales, etc."
         ></textarea>
       </div>

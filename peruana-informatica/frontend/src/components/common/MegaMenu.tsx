@@ -52,14 +52,14 @@ export function MegaMenu() {
                             <Link
                                 key={cat.id}
                                 href={`/products?category=${cat.slug}`}
-                                className="flex items-center gap-3 p-3 hover:bg-blue-50 rounded-lg transition-colors group"
+                                className="flex items-center gap-3 p-3 hover:bg-brand-red-50 rounded-lg transition-colors group"
                                 onClick={() => setIsOpen(false)}
                             >
                                 {/* Placeholder Icon generated from Name */}
-                                <div className="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold text-sm group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                                <div className="w-10 h-10 bg-brand-red-100 text-brand-red-600 rounded-full flex items-center justify-center font-bold text-sm group-hover:bg-brand-red-600 group-hover:text-white transition-colors">
                                     {cat.name.substring(0, 2).toUpperCase()}
                                 </div>
-                                <span className="text-gray-700 font-medium group-hover:text-blue-700 transition-colors">
+                                <span className="text-gray-700 font-medium group-hover:text-brand-red-700 transition-colors">
                                     {cat.name}
                                 </span>
                             </Link>
@@ -67,13 +67,13 @@ export function MegaMenu() {
 
                         <Link
                             href="/products"
-                            className="flex items-center gap-3 p-3 hover:bg-blue-50 rounded-lg transition-colors group border border-dashed border-blue-200"
+                            className="flex items-center gap-3 p-3 hover:bg-brand-red-50 rounded-lg transition-colors group border border-dashed border-brand-red-200"
                             onClick={() => setIsOpen(false)}
                         >
                             <div className="w-10 h-10 bg-gray-100 text-gray-600 rounded-full flex items-center justify-center font-bold text-sm">
                                 ➜
                             </div>
-                            <span className="text-blue-600 font-medium">
+                            <span className="text-brand-red-600 font-medium">
                                 Ver Todo
                             </span>
                         </Link>

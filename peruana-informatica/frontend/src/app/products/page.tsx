@@ -102,11 +102,11 @@ function ProductsContent() {
 
             {/* Filtros activos */}
             {hasFilters && (
-              <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg mb-4 flex flex-wrap items-center gap-3 border border-blue-100 dark:border-blue-800">
+              <div className="bg-brand-red-50 dark:bg-brand-red-900/20 p-4 rounded-lg mb-4 flex flex-wrap items-center gap-3 border border-brand-red-100 dark:border-brand-red-800">
                 <span className="font-semibold text-gray-800 dark:text-gray-200">Filtros activos:</span>
 
                 {categoryFilter && (
-                  <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm flex items-center gap-2">
+                  <span className="bg-brand-red-600 text-white px-3 py-1 rounded-full text-sm flex items-center gap-2">
                     Categoría: {categoryFilter}
                     <Link href={`/products?${new URLSearchParams({
                       ...(brandFilter && { brand: brandFilter }),
@@ -197,7 +197,7 @@ function ProductsContent() {
 
                 <button
                   onClick={clearFilters}
-                  className="text-blue-600 hover:text-blue-800 font-semibold text-sm underline"
+                  className="text-brand-red-600 hover:text-brand-red-800 font-semibold text-sm underline"
                 >
                   Limpiar todos los filtros
                 </button>
@@ -216,7 +216,7 @@ function ProductsContent() {
 
           {loading ? (
             <div className="text-center py-12">
-              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-brand-red-600"></div>
               <p className="text-gray-600 mt-4">Cargando productos...</p>
             </div>
           ) : products.length > 0 ? (
@@ -245,7 +245,7 @@ function ProductsContent() {
               {hasFilters && (
                 <button
                   onClick={clearFilters}
-                  className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
+                  className="bg-brand-red-600 text-white px-6 py-2 rounded-lg hover:bg-brand-red-700 transition"
                 >
                   Ver todos los productos
                 </button>
@@ -262,7 +262,7 @@ export default function ProductsPage() {
   return (
     <Suspense fallback={
       <div className="text-center py-12">
-        <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-brand-red-600"></div>
         <p className="text-gray-600 mt-4">Cargando...</p>
       </div>
     }>

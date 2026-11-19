@@ -52,7 +52,7 @@ export function FiltersToolbar({
           </button>
           <button
             onClick={onPrint}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition font-medium flex items-center gap-2 shadow-sm"
+            className="bg-brand-red-600 text-white px-4 py-2 rounded-lg hover:bg-brand-red-700 transition font-medium flex items-center gap-2 shadow-sm"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
@@ -84,7 +84,7 @@ export function FiltersToolbar({
               value={searchTerm}
               onChange={(e) => onSearchTermChange(e.target.value)}
               placeholder="Nombre, código..."
-              className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
+              className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-red-500 focus:bg-white transition-all"
             />
           </div>
 
@@ -95,7 +95,7 @@ export function FiltersToolbar({
             <select
               value={categoryFilter}
               onChange={(e) => onCategoryFilterChange(e.target.value)}
-              className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
+              className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-red-500 focus:bg-white transition-all"
             >
               <option value="all">Todas las categorías</option>
               {categories.map((cat) => (
@@ -111,7 +111,7 @@ export function FiltersToolbar({
             <select
               value={brandFilter}
               onChange={(e) => onBrandFilterChange(e.target.value)}
-              className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
+              className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-red-500 focus:bg-white transition-all"
             >
               <option value="all">Todas las marcas</option>
               {brands.map((brand) => (
@@ -127,7 +127,7 @@ export function FiltersToolbar({
             <select
               value={stockFilter}
               onChange={(e) => onStockFilterChange(e.target.value)}
-              className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
+              className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-red-500 focus:bg-white transition-all"
             >
               <option value="all">Todos los estados</option>
               <option value="available">En Stock</option>

@@ -39,7 +39,7 @@ export function ProductPurchasePanel({
           ))}
         </div>
         <span className="text-gray-600">(4.2)</span>
-        <span className="text-blue-600 hover:underline cursor-pointer">Ver 156 reseñas</span>
+        <span className="text-brand-red-600 hover:underline cursor-pointer">Ver 156 reseñas</span>
       </div>
 
       <div className="bg-gradient-to-r from-yellow-50 to-orange-50 p-6 rounded-xl mb-6 border border-yellow-200">

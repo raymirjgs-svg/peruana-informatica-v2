@@ -48,7 +48,7 @@ export function ProductDetailModal({ product, onClose }: ProductDetailModalProps
               </div>
 
               <div className="flex items-center gap-4">
-                <div className="text-3xl font-bold text-blue-600">
+                <div className="text-3xl font-bold text-brand-red-600">
                   S/ {Math.ceil(Number(product.priceCot || product.priceWeb || product.price)).toFixed(2)}
                 </div>
                 <span className={`px-3 py-1 rounded-full text-sm font-medium ${product.stock > 10 ? 'bg-green-100 text-green-800' :
@@ -93,7 +93,7 @@ export function ProductDetailModal({ product, onClose }: ProductDetailModalProps
           <a
             href={`/productos/${product.slug || product.id}`}
             target="_blank"
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition"
+            className="px-4 py-2 bg-brand-red-600 hover:bg-brand-red-700 text-white rounded-lg font-medium transition"
           >
             Ver en tienda
           </a>

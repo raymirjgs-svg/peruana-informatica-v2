@@ -70,7 +70,7 @@ export default function CategoriesPage() {
 
         {loading ? (
           <div className="text-center py-12">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-brand-red-600"></div>
             <p className="text-gray-600 mt-4">Cargando categorías...</p>
           </div>
         ) : (
@@ -79,7 +79,7 @@ export default function CategoriesPage() {
               <Link
                 key={category.id}
                 href={`/products?category=${category.slug}`}
-                className="group bg-white rounded-xl shadow-md hover:shadow-2xl transition-all overflow-hidden border-2 border-transparent hover:border-blue-500 transform hover:scale-105"
+                className="group bg-white rounded-xl shadow-md hover:shadow-2xl transition-all overflow-hidden border-2 border-transparent hover:border-brand-red-500 transform hover:scale-105"
               >
                 <div className="p-6 text-center">
                   {/* Icono */}
@@ -88,12 +88,12 @@ export default function CategoriesPage() {
                   </div>
                   
                   {/* Nombre */}
-                  <h3 className="font-bold text-lg mb-2 text-gray-800 group-hover:text-blue-600 transition">
+                  <h3 className="font-bold text-lg mb-2 text-gray-800 group-hover:text-brand-red-600 transition">
                     {category.name}
                   </h3>
                   
                   {/* Badge */}
-                  <span className="inline-block bg-blue-100 text-blue-600 text-xs px-3 py-1 rounded-full">
+                  <span className="inline-block bg-brand-red-100 text-brand-red-600 text-xs px-3 py-1 rounded-full">
                     Ver productos →
                   </span>
                 </div>

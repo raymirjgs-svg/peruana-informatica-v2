@@ -91,11 +91,11 @@ export default function BlogPage() {
       <Navigation />
       <div className="min-h-screen bg-gray-50">
         {/* Header del Blog */}
-        <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-16">
+        <div className="bg-gradient-to-r from-brand-red-600 to-purple-600 text-white py-16">
           <div className="container mx-auto px-4">
             <div className="text-center">
               <h1 className="text-5xl font-bold mb-4">Blog de Tecnología</h1>
-              <p className="text-xl text-blue-100 max-w-2xl mx-auto">
+              <p className="text-xl text-brand-red-100 max-w-2xl mx-auto">
                 Mantente al día con las últimas noticias, reviews y guías sobre
                 tecnología
               </p>
@@ -114,11 +114,11 @@ export default function BlogPage() {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     placeholder="Buscar artículos..."
-                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red-500 focus:border-transparent"
                   />
                   <button
                     type="submit"
-                    className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                    className="px-6 py-2 bg-brand-red-600 text-white rounded-lg hover:bg-brand-red-700 transition"
                   >
                     Buscar
                   </button>
@@ -132,7 +132,7 @@ export default function BlogPage() {
                   setCurrentPage(1);
                   loadPosts(1);
                 }}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red-500 focus:border-transparent"
               >
                 <option value="">Todas las categorías</option>
                 <option value="Laptops">Laptops</option>
@@ -154,7 +154,7 @@ export default function BlogPage() {
           {/* Loading */}
           {loading && (
             <div className="flex justify-center items-center py-20">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-red-600"></div>
             </div>
           )}
 
@@ -199,7 +199,7 @@ export default function BlogPage() {
                           .map((category, index) => (
                             <span
                               key={index}
-                              className="inline-block px-2 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded mr-2"
+                              className="inline-block px-2 py-1 bg-brand-red-100 text-brand-red-700 text-xs font-medium rounded mr-2"
                             >
                               {category}
                             </span>
@@ -208,7 +208,7 @@ export default function BlogPage() {
                     )}
 
                     {/* Título */}
-                    <h2 className="font-bold text-xl mb-3 text-gray-800 group-hover:text-blue-600 transition-colors line-clamp-2">
+                    <h2 className="font-bold text-xl mb-3 text-gray-800 group-hover:text-brand-red-600 transition-colors line-clamp-2">
                       <Link href={`/blog/${post.slug}`}>{post.title}</Link>
                     </h2>
 
@@ -245,7 +245,7 @@ export default function BlogPage() {
 
                       <Link
                         href={`/blog/${post.slug}`}
-                        className="text-blue-600 hover:text-blue-700 font-medium text-sm hover:underline"
+                        className="text-brand-red-600 hover:text-brand-red-700 font-medium text-sm hover:underline"
                       >
                         Leer más →
                       </Link>
@@ -342,7 +342,7 @@ export default function BlogPage() {
                           onClick={() => handlePageChange(i)}
                           className={`px-4 py-2 border rounded-lg font-medium transition ${
                             currentPage === i
-                              ? "bg-blue-600 text-white border-blue-600 shadow-md"
+                              ? "bg-brand-red-600 text-white border-brand-red-600 shadow-md"
                               : "border-gray-300 hover:bg-gray-50"
                           }`}
                         >

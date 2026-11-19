@@ -18,7 +18,7 @@ export function ProgressBar({ currentStep }: { currentStep: string }) {
 
           {/* Línea de progreso animada */}
           <div
-            className="absolute left-0 top-6 h-1 bg-gradient-to-r from-blue-500 via-blue-600 to-indigo-600 rounded-full transition-all duration-700 ease-out"
+            className="absolute left-0 top-6 h-1 bg-gradient-to-r from-brand-red-500 via-brand-red-600 to-brand-red-600 rounded-full transition-all duration-700 ease-out"
             style={{ width: `${(currentIndex / (steps.length - 1)) * 100}%` }}
           ></div>
 
@@ -35,7 +35,7 @@ export function ProgressBar({ currentStep }: { currentStep: string }) {
                     ${isCompleted
                       ? 'bg-gradient-to-br from-green-400 to-green-600 border-green-300 text-white scale-100'
                       : isCurrent
-                        ? 'bg-gradient-to-br from-blue-500 to-indigo-600 border-blue-300 text-white scale-110 ring-4 ring-blue-200 ring-opacity-50'
+                        ? 'bg-gradient-to-br from-brand-red-500 to-brand-red-600 border-brand-red-300 text-white scale-110 ring-4 ring-brand-red-200 ring-opacity-50'
                         : 'bg-white border-gray-300 text-gray-400 scale-95'
                     }
                   `}>
@@ -47,7 +47,7 @@ export function ProgressBar({ currentStep }: { currentStep: string }) {
                   </div>
                   <span className={`
                     text-sm mt-3 font-semibold transition-colors duration-300
-                    ${isCurrent ? 'text-blue-600' : isCompleted ? 'text-green-600' : 'text-gray-400'}
+                    ${isCurrent ? 'text-brand-red-600' : isCompleted ? 'text-green-600' : 'text-gray-400'}
                   `}>
                     {s.label}
                   </span>

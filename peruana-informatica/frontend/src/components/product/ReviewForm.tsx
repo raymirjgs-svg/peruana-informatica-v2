@@ -87,7 +87,7 @@ export function ReviewForm({ productId, onSuccess }: ReviewFormProps) {
                     required
                     value={formData.customer_name}
                     onChange={(e) => setFormData({ ...formData, customer_name: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-brand-red-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                     placeholder="Tu nombre"
                 />
             </div>
@@ -103,7 +103,7 @@ export function ReviewForm({ productId, onSuccess }: ReviewFormProps) {
                     required
                     value={formData.customer_email}
                     onChange={(e) => setFormData({ ...formData, customer_email: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-brand-red-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                     placeholder="tu@email.com"
                 />
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">No será publicado</p>
@@ -120,7 +120,7 @@ export function ReviewForm({ productId, onSuccess }: ReviewFormProps) {
                     required
                     value={formData.title}
                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-brand-red-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                     placeholder="Resumen de tu experiencia"
                     maxLength={200}
                 />
@@ -137,7 +137,7 @@ export function ReviewForm({ productId, onSuccess }: ReviewFormProps) {
                     value={formData.comment}
                     onChange={(e) => setFormData({ ...formData, comment: e.target.value })}
                     rows={5}
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white resize-none"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-brand-red-500 focus:border-transparent dark:bg-gray-700 dark:text-white resize-none"
                     placeholder="Cuéntanos sobre tu experiencia con este producto..."
                 />
             </div>
@@ -146,7 +146,7 @@ export function ReviewForm({ productId, onSuccess }: ReviewFormProps) {
             <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-brand-red-600 hover:bg-brand-red-700 text-white font-medium py-3 px-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
                 {isSubmitting ? 'Enviando...' : 'Enviar Reseña'}
             </button>

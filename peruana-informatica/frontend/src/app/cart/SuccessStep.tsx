@@ -41,27 +41,27 @@ export function SuccessStep({ checkoutMode, trackingCode, orderId, customerEmail
             </div>
 
             <div className="px-8 -mt-6 relative z-10">
-              <div className={`rounded-2xl p-6 text-center shadow-lg ${checkoutMode === 'approval' ? 'bg-gradient-to-r from-amber-500 to-orange-500' : 'bg-gradient-to-r from-blue-600 to-indigo-600'}`}>
+              <div className={`rounded-2xl p-6 text-center shadow-lg ${checkoutMode === 'approval' ? 'bg-gradient-to-r from-amber-500 to-orange-500' : 'bg-gradient-to-r from-brand-red-600 to-brand-red-600'}`}>
                 <p className="text-white/80 text-sm uppercase tracking-wide mb-1">Código de Seguimiento</p>
                 <p className="text-4xl font-bold text-white">{trackingCode ?? `#${orderId}`}</p>
               </div>
             </div>
 
             <div className="p-8">
-              <div className="flex items-center gap-4 p-4 bg-blue-50 rounded-xl mb-6">
-                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                  <Mail className="w-6 h-6 text-blue-600" />
+              <div className="flex items-center gap-4 p-4 bg-brand-red-50 rounded-xl mb-6">
+                <div className="w-12 h-12 bg-brand-red-100 rounded-full flex items-center justify-center flex-shrink-0">
+                  <Mail className="w-6 h-6 text-brand-red-600" />
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">Confirmación enviada a:</p>
-                  <p className="font-semibold text-blue-600">{customerEmail}</p>
+                  <p className="font-semibold text-brand-red-600">{customerEmail}</p>
                 </div>
               </div>
 
               <div className="mb-8">
                 <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                  <span className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
-                    <FileText className="w-5 h-5 text-indigo-600" />
+                  <span className="w-8 h-8 bg-brand-red-100 rounded-lg flex items-center justify-center">
+                    <FileText className="w-5 h-5 text-brand-red-600" />
                   </span>
                   Próximos pasos
                 </h2>
@@ -94,14 +94,14 @@ export function SuccessStep({ checkoutMode, trackingCode, orderId, customerEmail
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link
                   href="/"
-                  className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-8 py-4 rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 font-semibold text-center shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+                  className="flex-1 bg-gradient-to-r from-brand-red-600 to-brand-red-600 text-white px-8 py-4 rounded-xl hover:from-brand-red-700 hover:to-brand-red-700 transition-all duration-300 font-semibold text-center shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
                 >
                   <Home className="w-5 h-5" />
                   Volver al inicio
                 </Link>
                 <Link
                   href={`/orders/track/${trackingCode ?? orderId}`}
-                  className="flex-1 bg-white border-2 border-gray-300 text-gray-700 px-8 py-4 rounded-xl hover:border-blue-500 hover:text-blue-600 transition-all duration-300 font-semibold text-center flex items-center justify-center gap-2"
+                  className="flex-1 bg-white border-2 border-gray-300 text-gray-700 px-8 py-4 rounded-xl hover:border-brand-red-500 hover:text-brand-red-600 transition-all duration-300 font-semibold text-center flex items-center justify-center gap-2"
                 >
                   <Search className="w-5 h-5" />
                   Ver mi pedido

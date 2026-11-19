@@ -19,7 +19,7 @@ export function LoadingSpinner({
     const spinner = (
         <div className="flex flex-col items-center justify-center gap-3">
             <div
-                className={`${sizeClasses[size]} border-blue-200 border-t-blue-600 rounded-full animate-spin`}
+                className={`${sizeClasses[size]} border-brand-red-200 border-t-brand-red-600 rounded-full animate-spin`}
             />
             {text && (
                 <p className="text-gray-600 text-sm font-medium animate-pulse">

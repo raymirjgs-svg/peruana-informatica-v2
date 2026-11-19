@@ -71,7 +71,7 @@ export function CouponInput({ subtotal, onCouponApplied }: CouponInputProps) {
     return (
         <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
             <div className="flex items-center gap-2 mb-3">
-                <Tag className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                <Tag className="h-5 w-5 text-brand-red-600 dark:text-brand-red-400" />
                 <h3 className="font-semibold text-gray-900 dark:text-white">
                     Código de Descuento
                 </h3>
@@ -124,7 +124,7 @@ export function CouponInput({ subtotal, onCouponApplied }: CouponInputProps) {
                     <button
                         onClick={handleApplyCoupon}
                         disabled={isValidating || !couponCode.trim()}
-                        className="px-6 py-2 brand-red-600 hover:bg-brand-red-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                        className="px-6 py-2 bg-brand-red-600 hover:bg-brand-red-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
                     >
                         {isValidating ? 'Validando...' : 'Aplicar'}
                     </button>

@@ -39,7 +39,7 @@ export function PaymentStep({
   onBack,
 }: PaymentStepProps) {
   return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-12">
+      <div className="min-h-screen bg-gradient-to-br from-brand-red-50 via-brand-red-50 to-purple-50 py-12">
         <div className="container mx-auto px-4 max-w-5xl">
           <ProgressBar currentStep="payment" />
           <div className="text-center mb-8">
@@ -61,8 +61,8 @@ export function PaymentStep({
               <form onSubmit={onSubmit}>
                 <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
                   <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                    <span className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                      <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <span className="w-8 h-8 bg-brand-red-100 rounded-lg flex items-center justify-center">
+                      <svg className="w-5 h-5 text-brand-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
                       </svg>
                     </span>
@@ -82,7 +82,7 @@ export function PaymentStep({
                         type="button"
                         onClick={() => onPaymentMethodChange(method.value as PaymentMethod)}
                         className={`relative p-4 rounded-xl border-2 transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1 ${paymentMethod === method.value
-                          ? 'border-blue-500 bg-blue-50 shadow-md ring-2 ring-blue-200'
+                          ? 'border-brand-red-500 bg-brand-red-50 shadow-md ring-2 ring-brand-red-200'
                           : 'border-gray-200 bg-white hover:border-gray-300'
                           }`}
                       >
@@ -99,7 +99,7 @@ export function PaymentStep({
                       Datos para realizar el pago
                     </h2>
                     {paymentMethod === 'transferencia' && (
-                      <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
+                      <div className="bg-gradient-to-br from-brand-red-50 to-brand-red-50 rounded-xl p-6 border border-brand-red-200">
                         {/* Transferencia details */}
                         <p className="font-bold">BCP Soles</p>
                         <p>Cuenta: 191-1234567-0-00</p>
@@ -127,8 +127,8 @@ export function PaymentStep({
                 <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
                   <h2 className="text-xl font-bold text-gray-800 mb-4">Comprobante</h2>
                   <div className="flex gap-4">
-                    <button type="button" onClick={() => onInvoiceTypeChange('boleta')} className={`flex-1 p-4 border rounded ${invoiceType === 'boleta' ? 'border-blue-500 bg-blue-50' : ''}`}>Boleta</button>
-                    <button type="button" onClick={() => onInvoiceTypeChange('factura')} className={`flex-1 p-4 border rounded ${invoiceType === 'factura' ? 'border-blue-500 bg-blue-50' : ''}`}>Factura</button>
+                    <button type="button" onClick={() => onInvoiceTypeChange('boleta')} className={`flex-1 p-4 border rounded ${invoiceType === 'boleta' ? 'border-brand-red-500 bg-brand-red-50' : ''}`}>Boleta</button>
+                    <button type="button" onClick={() => onInvoiceTypeChange('factura')} className={`flex-1 p-4 border rounded ${invoiceType === 'factura' ? 'border-brand-red-500 bg-brand-red-50' : ''}`}>Factura</button>
                   </div>
                   {invoiceType === 'factura' && (
                     <div className="mt-4 space-y-4">
@@ -148,7 +148,7 @@ export function PaymentStep({
 
                 <div className="flex gap-4">
                   <button type="button" onClick={() => onBack} className="px-6 py-4 border rounded-xl">Atrás</button>
-                  <button type="submit" disabled={isLoading} className="flex-1 bg-blue-600 text-white rounded-xl py-4 font-bold">
+                  <button type="submit" disabled={isLoading} className="flex-1 bg-brand-red-600 text-white rounded-xl py-4 font-bold">
                     {isLoading ? 'Procesando...' : 'Confirmar Pedido'}
                   </button>
                 </div>

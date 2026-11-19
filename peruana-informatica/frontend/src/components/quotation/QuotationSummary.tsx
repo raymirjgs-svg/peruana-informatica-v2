@@ -73,7 +73,7 @@ export const QuotationSummary: React.FC<QuotationSummaryProps> = ({
                 </div>
                 <div className="flex justify-between text-lg font-bold pt-2 border-t border-gray-100">
                     <span className="text-gray-800">Total</span>
-                    <span className="text-blue-600">S/. {total.toFixed(2)}</span>
+                    <span className="text-brand-red-600">S/. {total.toFixed(2)}</span>
                 </div>
             </div>
 

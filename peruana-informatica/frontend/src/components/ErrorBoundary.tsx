@@ -113,7 +113,7 @@ export class ErrorBoundary extends Component<Props, State> {
             <div className="flex flex-col sm:flex-row gap-3">
               <button
                 onClick={this.handleReset}
-                className="flex-1 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition font-medium"
+                className="flex-1 bg-brand-red-600 text-white px-6 py-3 rounded-lg hover:bg-brand-red-700 transition font-medium"
               >
                 Intentar de nuevo
               </button>
@@ -128,7 +128,7 @@ export class ErrorBoundary extends Component<Props, State> {
             {/* Help Text */}
             <p className="mt-6 text-sm text-gray-500">
               Si el problema persiste, por favor{' '}
-              <Link href="/contacto" className="text-blue-600 hover:underline">
+              <Link href="/contacto" className="text-brand-red-600 hover:underline">
                 contáctanos
               </Link>
             </p>

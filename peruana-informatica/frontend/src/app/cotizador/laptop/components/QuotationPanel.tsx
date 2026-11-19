@@ -21,7 +21,7 @@ interface QuotationPanelProps {
 
 export function QuotationPanel({ laptop, loading, onSubmit, onClose }: QuotationPanelProps) {
   return (
-        <div className="mt-8 bg-white rounded-xl shadow-lg p-6 border border-blue-200">
+        <div className="mt-8 bg-white rounded-xl shadow-lg p-6 border border-brand-red-200">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold text-gray-800">Cotización - {laptop.name}</h2>
             <button

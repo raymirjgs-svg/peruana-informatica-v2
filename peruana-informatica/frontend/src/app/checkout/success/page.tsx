@@ -38,14 +38,14 @@ function SuccessContent() {
                     <div className="flex flex-col gap-4">
                         <Link
                             href="/"
-                            className="bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 transition font-semibold flex items-center justify-center gap-2"
+                            className="bg-brand-red-600 text-white px-6 py-3 rounded-xl hover:bg-brand-red-700 transition font-semibold flex items-center justify-center gap-2"
                         >
                             <Home className="w-5 h-5" /> Volver al Inicio
                         </Link>
                         {orderId && (
                             <Link
                                 href={`/orders/${orderId}`}
-                                className="border-2 border-gray-200 text-gray-700 px-6 py-3 rounded-xl hover:border-blue-500 hover:text-blue-600 transition font-semibold flex items-center justify-center gap-2"
+                                className="border-2 border-gray-200 text-gray-700 px-6 py-3 rounded-xl hover:border-brand-red-500 hover:text-brand-red-600 transition font-semibold flex items-center justify-center gap-2"
                             >
                                 <Search className="w-5 h-5" /> Ver Estado del Pedido
                             </Link>

@@ -103,8 +103,8 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <p className="font-semibold">Llámanos</p>
-                  <p className="text-blue-100">(054) 226796</p>
-                  <p className="text-blue-100">988 552 455</p>
+                  <p className="text-brand-red-100">(054) 226796</p>
+                  <p className="text-brand-red-100">988 552 455</p>
                 </div>
               </div>
 
@@ -117,8 +117,8 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <p className="font-semibold">Escríbenos</p>
-                  <p className="text-blue-100">info@peruanainformatica.com.pe</p>
-                  <p className="text-blue-100">ventas@peruanainformatica.com.pe</p>
+                  <p className="text-brand-red-100">info@peruanainformatica.com.pe</p>
+                  <p className="text-brand-red-100">ventas@peruanainformatica.com.pe</p>
                 </div>
               </div>
 
@@ -131,8 +131,8 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <p className="font-semibold">WhatsApp</p>
-                  <p className="text-blue-100">988 552 455</p>
-                  <p className="text-blue-100">Respuesta inmediata</p>
+                  <p className="text-brand-red-100">988 552 455</p>
+                  <p className="text-brand-red-100">Respuesta inmediata</p>
                 </div>
               </div>
 
@@ -147,7 +147,7 @@ export default function ContactPage() {
                 <div>
                   <p className="font-semibold">Visítanos</p>
                   {storeAddresses.map((line, i) => (
-                    <p key={i} className="text-blue-100">{line}</p>
+                    <p key={i} className="text-brand-red-100">{line}</p>
                   ))}
                 </div>
               </div>
@@ -297,7 +297,7 @@ export default function ContactPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full brand-red-600 text-white py-3 px-6 rounded-lg font-semibold hover:brand-red-700 focus:ring-4 focus:ring-blue-300 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full bg-brand-red-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-brand-red-700 focus:ring-4 focus:ring-brand-red-300 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {isSubmitting ? (
                   <>

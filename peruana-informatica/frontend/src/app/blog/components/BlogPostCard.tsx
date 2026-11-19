@@ -52,7 +52,7 @@ export function BlogPostCard({
               .map((category, index) => (
                 <span
                   key={index}
-                  className="inline-block px-2 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded mr-2"
+                  className="inline-block px-2 py-1 bg-brand-red-100 text-brand-red-700 text-xs font-medium rounded mr-2"
                 >
                   {category}
                 </span>
@@ -61,7 +61,7 @@ export function BlogPostCard({
         )}
 
         {/* Título */}
-        <h2 className="font-bold text-xl mb-3 text-gray-800 group-hover:text-blue-600 transition-colors line-clamp-2">
+        <h2 className="font-bold text-xl mb-3 text-gray-800 group-hover:text-brand-red-600 transition-colors line-clamp-2">
           <Link href={`/blog/${post.slug}`}>{post.title}</Link>
         </h2>
 
@@ -93,7 +93,7 @@ export function BlogPostCard({
 
           <Link
             href={`/blog/${post.slug}`}
-            className="text-blue-600 hover:text-blue-700 font-medium text-sm hover:underline"
+            className="text-brand-red-600 hover:text-brand-red-700 font-medium text-sm hover:underline"
           >
             Leer más →
           </Link>

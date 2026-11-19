@@ -77,7 +77,7 @@ export function Pagination({ currentPage, totalPages, basePath = '/products', se
               href={buildUrl(pageNum)}
               className={`px-4 py-2 rounded-lg font-semibold transition ${
                 isActive
-                  ? 'bg-blue-600 text-white'
+                  ? 'bg-brand-red-600 text-white'
                   : 'bg-gray-200 hover:bg-gray-300 text-gray-800'
               }`}
             >

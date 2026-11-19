@@ -21,7 +21,7 @@ const getLogoSrc = (logo: string | null | undefined): string | null => {
 };
 
 const getBrandColor = (name: string) => {
-  const colors = ['bg-blue-500', 'bg-green-500', 'bg-red-500', 'bg-purple-500', 'bg-yellow-500', 'bg-pink-500', 'bg-indigo-500'];
+  const colors = ['bg-brand-red-500', 'bg-green-500', 'bg-red-500', 'bg-purple-500', 'bg-yellow-500', 'bg-pink-500', 'bg-brand-red-500'];
   return colors[(name?.[0] ?? 'A').toUpperCase().charCodeAt(0) % colors.length];
 };
 

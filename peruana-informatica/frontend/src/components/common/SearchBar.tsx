@@ -67,7 +67,7 @@ export function SearchBar() {
                 <div className="relative flex items-center">
                     <input
                         type="text"
-                        className="w-full bg-slate-800/50 border border-slate-600 text-white pl-4 pr-12 py-2.5 rounded-full focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all placeholder:text-gray-400"
+                        className="w-full bg-slate-800/50 border border-slate-600 text-white pl-4 pr-12 py-2.5 rounded-full focus:outline-none focus:border-brand-red-500 focus:ring-2 focus:ring-brand-red-500/20 transition-all placeholder:text-gray-400"
                         placeholder="Buscar productos, marcas, categorías..."
                         value={query}
                         onChange={(e) => {
@@ -94,7 +94,7 @@ export function SearchBar() {
                 <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200 border border-gray-100">
                     {loading ? (
                         <div className="p-4 text-center text-gray-500">
-                            <div className="animate-spin inline-block w-5 h-5 border-2 border-current border-t-transparent text-blue-600 rounded-full mr-2"></div>
+                            <div className="animate-spin inline-block w-5 h-5 border-2 border-current border-t-transparent text-brand-red-600 rounded-full mr-2"></div>
                             Buscando...
                         </div>
                     ) : results.length > 0 ? (

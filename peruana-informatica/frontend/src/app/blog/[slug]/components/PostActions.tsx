@@ -46,7 +46,7 @@ export function PostActions({
           <span className="text-sm text-gray-600 mr-2">Compartir:</span>
           <button
             onClick={onShareTwitter}
-            className="p-2 text-blue-400 hover:text-blue-500 hover:bg-blue-50 rounded-full transition"
+            className="p-2 text-brand-red-400 hover:text-brand-red-500 hover:bg-brand-red-50 rounded-full transition"
             title="Compartir en Twitter"
           >
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -55,7 +55,7 @@ export function PostActions({
           </button>
           <button
             onClick={onShareFacebook}
-            className="p-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-full transition"
+            className="p-2 text-brand-red-600 hover:text-brand-red-700 hover:bg-brand-red-50 rounded-full transition"
             title="Compartir en Facebook"
           >
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">

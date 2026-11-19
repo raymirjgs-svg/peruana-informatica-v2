@@ -385,7 +385,7 @@ export default function LaptopQuotation() {
                 setQuotationResult(null);
                 setSelectedLaptop(null);
               }}
-              className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition font-medium"
+              className="bg-brand-red-600 text-white px-6 py-3 rounded-lg hover:bg-brand-red-700 transition font-medium"
             >
               Hacer Otra Cotización
             </button>
@@ -434,7 +434,7 @@ export default function LaptopQuotation() {
                   name="search"
                   value={filters.search}
                   onChange={handleFilterChange}
-                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-red-500 focus:border-brand-red-500"
                   placeholder="Nombre o descripción"
                 />
               </div>
@@ -444,7 +444,7 @@ export default function LaptopQuotation() {
                   name="subcategory"
                   value={filters.subcategory}
                   onChange={handleFilterChange}
-                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-red-500 focus:border-brand-red-500"
                 >
                   <option value="">Todas las categorías</option>
                   {allSubcategories.map(subcategory => (
@@ -461,7 +461,7 @@ export default function LaptopQuotation() {
                   name="minPrice"
                   value={filters.minPrice}
                   onChange={handleFilterChange}
-                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-red-500 focus:border-brand-red-500"
                   placeholder="S/. 0"
                 />
               </div>
@@ -472,7 +472,7 @@ export default function LaptopQuotation() {
                   name="maxPrice"
                   value={filters.maxPrice}
                   onChange={handleFilterChange}
-                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-red-500 focus:border-brand-red-500"
                   placeholder="S/. 10000"
                 />
               </div>
@@ -482,7 +482,7 @@ export default function LaptopQuotation() {
                   name="processor"
                   value={filters.processor}
                   onChange={handleFilterChange}
-                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-red-500 focus:border-brand-red-500"
                 >
                   <option value="">Todos los procesadores</option>
                   {processorOptions.map((processor, index) => (
@@ -498,7 +498,7 @@ export default function LaptopQuotation() {
                   name="ram"
                   value={filters.ram}
                   onChange={handleFilterChange}
-                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-red-500 focus:border-brand-red-500"
                 >
                   <option value="">Toda la RAM</option>
                   {ramOptions.map((ram, index) => (
@@ -514,7 +514,7 @@ export default function LaptopQuotation() {
                   name="storage"
                   value={filters.storage}
                   onChange={handleFilterChange}
-                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-red-500 focus:border-brand-red-500"
                 >
                   <option value="">Todo el almacenamiento</option>
                   {storageOptions.map((storage, index) => (
@@ -538,7 +538,7 @@ export default function LaptopQuotation() {
         <div className="lg:col-span-3">
           {loading ? (
             <div className="flex justify-center items-center h-64">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-red-600"></div>
             </div>
           ) : filteredLaptops.length === 0 ? (
             <div className="text-center py-12">
@@ -566,7 +566,7 @@ export default function LaptopQuotation() {
                             {laptop.subCategories.slice(0, 2).map((subcategory) => (
                               <span
                                 key={subcategory.id}
-                                className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full"
+                                className="px-2 py-1 bg-brand-red-100 text-brand-red-800 text-xs rounded-full"
                               >
                                 {subcategory.name}
                               </span>
@@ -602,7 +602,7 @@ export default function LaptopQuotation() {
                         </p>
 
                         <div className="flex justify-between items-center mb-4">
-                          <span className="text-xl font-bold text-blue-600">S/. {
+                          <span className="text-xl font-bold text-brand-red-600">S/. {
                             typeof laptop.price === 'number'
                               ? laptop.price.toFixed(2)
                               : typeof laptop.price === 'string'
@@ -624,7 +624,7 @@ export default function LaptopQuotation() {
                               addToQuotation(laptop);
                             }}
                             className={`flex-1 py-2 rounded-lg transition ${selectedLaptop?.id === laptop.id || selectedLaptop?.cod_producto === laptop.cod_producto
-                              ? 'bg-green-600 text-white' : 'bg-blue-600 hover:bg-blue-700 text-white'
+                              ? 'bg-green-600 text-white' : 'bg-brand-red-600 hover:bg-brand-red-700 text-white'
                               }`}
                             disabled={laptop.stock === 0}
                           >
@@ -663,7 +663,7 @@ export default function LaptopQuotation() {
                       disabled={currentPage === 1}
                       className={`px-4 py-2 rounded-lg ${currentPage === 1
                         ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                        : 'bg-blue-600 text-white hover:bg-blue-700'
+                        : 'bg-brand-red-600 text-white hover:bg-brand-red-700'
                         }`}
                     >
                       Anterior
@@ -678,7 +678,7 @@ export default function LaptopQuotation() {
                       disabled={currentPage === Math.ceil(filteredLaptops.length / itemsPerPage)}
                       className={`px-4 py-2 rounded-lg ${currentPage === Math.ceil(filteredLaptops.length / itemsPerPage)
                         ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                        : 'bg-blue-600 text-white hover:bg-blue-700'
+                        : 'bg-brand-red-600 text-white hover:bg-brand-red-700'
                         }`}
                     >
                       Siguiente
@@ -693,7 +693,7 @@ export default function LaptopQuotation() {
 
       {/* Panel de cotización */}
       {showForm && selectedLaptop && (
-        <div className="mt-8 bg-white rounded-xl shadow-lg p-6 border border-blue-200">
+        <div className="mt-8 bg-white rounded-xl shadow-lg p-6 border border-brand-red-200">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold text-gray-800">Cotización - {selectedLaptop.name}</h2>
             <button

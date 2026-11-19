@@ -77,7 +77,7 @@ export default function ProductSelectionPanel({
               placeholder={`Buscar ${currentStepName.toLowerCase()}...`}
               value={searchQuery}
               onChange={(e) => onSearch(e.target.value)}
-              className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red-500 focus:border-transparent"
             />
             <svg className="absolute left-3 top-3 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -90,7 +90,7 @@ export default function ProductSelectionPanel({
             <select
               value={selectedSubcategory || ''}
               onChange={(e) => onSubcategoryChange(e.target.value ? parseInt(e.target.value) : null)}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red-500 focus:border-transparent"
             >
               <option value="">Todas</option>
               {/* Las subcategorías se cargarán dinámicamente cuando existan */}
@@ -103,7 +103,7 @@ export default function ProductSelectionPanel({
 
         {loading ? (
           <div className="flex justify-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-red-600"></div>
           </div>
         ) : products.length === 0 ? (
           <div className="text-center py-12 bg-gray-50 rounded-lg border border-gray-200">
@@ -116,7 +116,7 @@ export default function ProductSelectionPanel({
             </p>
             <button
               onClick={onLoadAll}
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+              className="px-6 py-2 bg-brand-red-600 text-white rounded-lg hover:bg-brand-red-700 transition"
             >
               Ver todo el catálogo de {currentStepName}
             </button>
@@ -129,7 +129,7 @@ export default function ProductSelectionPanel({
                 onClick={() => onSelect(product)}
                 className={`
                   border rounded-lg p-4 cursor-pointer transition-all hover:shadow-md
-                  ${currentSelection?.cod_producto === product.cod_producto ? 'border-blue-500 ring-2 ring-blue-100 bg-blue-50' : 'border-gray-200 hover:border-blue-300'}
+                  ${currentSelection?.cod_producto === product.cod_producto ? 'border-brand-red-500 ring-2 ring-brand-red-100 bg-brand-red-50' : 'border-gray-200 hover:border-brand-red-300'}
                 `}
               >
                 <div className="flex justify-between items-start mb-2">
@@ -144,7 +144,7 @@ export default function ProductSelectionPanel({
 
                 <div className="flex justify-between items-center mt-auto">
                   <div className="flex flex-col items-end">
-                    <span className="text-lg font-bold text-blue-600">
+                    <span className="text-lg font-bold text-brand-red-600">
                       S/. {resolvePrice(product).toFixed(2)}
                     </span>
                     {(Number(product.priceDis || product.price_dis) > 0 || Number(product.priceCot || product.price_cot) > 0) && (
@@ -190,7 +190,7 @@ export default function ProductSelectionPanel({
                   key={pageNum}
                   onClick={() => onPageChange(pageNum)}
                   className={`px-3 py-2 rounded-lg ${currentPage === pageNum
-                    ? 'bg-blue-600 text-white'
+                    ? 'bg-brand-red-600 text-white'
                     : 'border border-gray-300 text-gray-700 hover:bg-gray-50'
                     }`}
                 >
@@ -223,7 +223,7 @@ export default function ProductSelectionPanel({
         <button
           onClick={onNext}
           disabled={!canProceed}
-          className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+          className="px-6 py-2 bg-brand-red-600 text-white rounded-lg hover:bg-brand-red-700 disabled:opacity-50"
         >
           {isLastStep ? 'Finalizar' : 'Siguiente'}
         </button>

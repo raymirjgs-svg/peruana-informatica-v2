@@ -58,7 +58,7 @@ export default function SuccessScreen({ quotationResult, onDownloadPdf }: Succes
                     </button>
                     <Link
                         href="/cotizador"
-                        className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition font-medium"
+                        className="bg-brand-red-600 text-white px-6 py-3 rounded-lg hover:bg-brand-red-700 transition font-medium"
                     >
                         Volver al Inicio
                     </Link>

@@ -8,7 +8,7 @@ export function ScrollToTopButton({ onClick }: ScrollToTopButtonProps) {
   return (
     <button
       onClick={onClick}
-      className="fixed bottom-8 right-8 bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 transition transform hover:scale-110 z-40"
+      className="fixed bottom-8 right-8 bg-brand-red-600 text-white p-4 rounded-full shadow-lg hover:bg-brand-red-700 transition transform hover:scale-110 z-40"
       aria-label="Volver arriba"
     >
       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

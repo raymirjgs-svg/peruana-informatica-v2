@@ -25,11 +25,11 @@ export function BlogFilters({
               value={searchTerm}
               onChange={(e) => onSearchTermChange(e.target.value)}
               placeholder="Buscar artículos..."
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red-500 focus:border-transparent"
             />
             <button
               type="submit"
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+              className="px-6 py-2 bg-brand-red-600 text-white rounded-lg hover:bg-brand-red-700 transition"
             >
               Buscar
             </button>
@@ -39,7 +39,7 @@ export function BlogFilters({
         <select
           value={selectedCategory}
           onChange={(e) => onCategoryChange(e.target.value)}
-          className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red-500 focus:border-transparent"
         >
           <option value="">Todas las categorías</option>
           <option value="Laptops">Laptops</option>

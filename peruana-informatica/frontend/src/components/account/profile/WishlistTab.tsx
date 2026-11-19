@@ -40,7 +40,7 @@ export function WishlistTab({ wishlist }: { wishlist: WishlistItem[] }) {
                                             />
                                         )}
                                         <h3 className="font-semibold text-gray-900 mb-2">{item.product?.name}</h3>
-                                        <p className="text-lg font-bold text-blue-600">S/ {item.product?.price}</p>
+                                        <p className="text-lg font-bold text-brand-red-600">S/ {item.product?.price}</p>
                                     </div>
                                 ))}
                             </div>

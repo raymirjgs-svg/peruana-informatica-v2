@@ -577,7 +577,7 @@ class BlogService {
     const statusColors: Record<string, string> = {
       draft: 'bg-gray-100 text-gray-700 border-gray-200',
       published: 'bg-green-100 text-green-700 border-green-200',
-      scheduled: 'bg-blue-100 text-blue-700 border-blue-200',
+      scheduled: 'bg-brand-red-100 text-brand-red-700 border-brand-red-200',
       archived: 'bg-red-100 text-red-700 border-red-200'
     };
     return statusColors[status] ?? 'bg-gray-100 text-gray-700 border-gray-200';

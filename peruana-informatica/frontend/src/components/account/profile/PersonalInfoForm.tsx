@@ -13,8 +13,8 @@ export function PersonalInfoForm({ profile, setProfile, loading, onSubmit }: Per
   return (
                             <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl border border-gray-100 p-8">
                                 <div className="flex items-center gap-3 mb-6">
-                                    <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
-                                        <User className="w-6 h-6 text-blue-600" />
+                                    <div className="w-12 h-12 rounded-xl bg-brand-red-100 flex items-center justify-center">
+                                        <User className="w-6 h-6 text-brand-red-600" />
                                     </div>
                                     <div>
                                         <h2 className="text-2xl font-bold text-gray-900">Información Personal</h2>
@@ -33,7 +33,7 @@ export function PersonalInfoForm({ profile, setProfile, loading, onSubmit }: Per
                                                 type="text"
                                                 value={profile.first_name}
                                                 onChange={(e) => setProfile({ ...profile, first_name: e.target.value })}
-                                                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-red-500 focus:border-transparent transition-all"
                                                 required
                                             />
                                         </div>
@@ -46,7 +46,7 @@ export function PersonalInfoForm({ profile, setProfile, loading, onSubmit }: Per
                                                 type="text"
                                                 value={profile.last_name}
                                                 onChange={(e) => setProfile({ ...profile, last_name: e.target.value })}
-                                                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-red-500 focus:border-transparent transition-all"
                                                 required
                                             />
                                         </div>
@@ -76,14 +76,14 @@ export function PersonalInfoForm({ profile, setProfile, loading, onSubmit }: Per
                                             value={profile.phone || ''}
                                             onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
                                             placeholder="+51 999 999 999"
-                                            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-red-500 focus:border-transparent transition-all"
                                         />
                                     </div>
 
                                     <button
                                         type="submit"
                                         disabled={loading}
-                                        className="w-full px-6 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-4 focus:ring-blue-300 disabled:opacity-50 transition-all transform hover:scale-[1.02] shadow-lg"
+                                        className="w-full px-6 py-4 bg-gradient-to-r from-brand-red-600 to-purple-600 text-white rounded-xl font-semibold hover:from-brand-red-700 hover:to-purple-700 focus:outline-none focus:ring-4 focus:ring-brand-red-300 disabled:opacity-50 transition-all transform hover:scale-[1.02] shadow-lg"
                                     >
                                         {loading ? (
                                             <span className="flex items-center justify-center gap-2">

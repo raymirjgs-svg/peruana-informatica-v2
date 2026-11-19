@@ -12,7 +12,7 @@ export function PostArticleBody({ post, tableOfContents }: PostArticleBodyProps)
     <div className="bg-white rounded-lg shadow-md p-8 mb-8">
       {/* Excerpt */}
       {post.excerpt && (
-        <div className="bg-gradient-to-r from-blue-50 to-purple-50 border-l-4 border-blue-600 p-6 mb-8 rounded-r-lg">
+        <div className="bg-gradient-to-r from-brand-red-50 to-purple-50 border-l-4 border-brand-red-600 p-6 mb-8 rounded-r-lg">
           <p className="text-lg text-gray-700 italic leading-relaxed">{post.excerpt}</p>
         </div>
       )}
@@ -26,7 +26,7 @@ export function PostArticleBody({ post, tableOfContents }: PostArticleBodyProps)
             // Títulos H1
             if (line.startsWith('# ')) {
               return (
-                <h1 key={index} id={headingId} className="text-3xl font-bold text-gray-900 mb-6 mt-8 pb-3 border-b-2 border-blue-600 scroll-mt-24">
+                <h1 key={index} id={headingId} className="text-3xl font-bold text-gray-900 mb-6 mt-8 pb-3 border-b-2 border-brand-red-600 scroll-mt-24">
                   {line.replace('# ', '')}
                 </h1>
               );
@@ -35,7 +35,7 @@ export function PostArticleBody({ post, tableOfContents }: PostArticleBodyProps)
             if (line.startsWith('## ')) {
               return (
                 <h2 key={index} id={headingId} className="text-2xl font-bold text-gray-800 mb-4 mt-8 flex items-center scroll-mt-24">
-                  <span className="bg-blue-600 w-1.5 h-8 mr-3 rounded"></span>
+                  <span className="bg-brand-red-600 w-1.5 h-8 mr-3 rounded"></span>
                   {line.replace('## ', '')}
                 </h2>
               );
@@ -95,7 +95,7 @@ export function PostArticleBody({ post, tableOfContents }: PostArticleBodyProps)
               {post.tags.split(',').map((tag, index) => (
                 <span
                   key={index}
-                  className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-1.5 rounded-full text-sm font-medium shadow-sm hover:shadow-md transition"
+                  className="bg-gradient-to-r from-brand-red-500 to-brand-red-600 text-white px-4 py-1.5 rounded-full text-sm font-medium shadow-sm hover:shadow-md transition"
                 >
                   #{tag.trim()}
                 </span>

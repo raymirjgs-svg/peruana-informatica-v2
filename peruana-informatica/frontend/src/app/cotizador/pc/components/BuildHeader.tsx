@@ -14,7 +14,7 @@ export default function BuildHeader({ steps, currentStep, onStepClick }: BuildHe
     <>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-800">Arma tu PC</h1>
-        <Link href="/cotizador" className="text-blue-600 hover:underline">Volver al inicio</Link>
+        <Link href="/cotizador" className="text-brand-red-600 hover:underline">Volver al inicio</Link>
       </div>
 
       {/* Barra de progreso */}
@@ -28,11 +28,11 @@ export default function BuildHeader({ steps, currentStep, onStepClick }: BuildHe
             >
               <div className={`
                 w-10 h-10 rounded-full flex items-center justify-center cursor-pointer transition-colors
-                ${index < currentStep - 1 ? 'bg-green-500 text-white' : index === currentStep - 1 ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-500'}
+                ${index < currentStep - 1 ? 'bg-green-500 text-white' : index === currentStep - 1 ? 'bg-brand-red-600 text-white' : 'bg-gray-200 text-gray-500'}
               `}>
                 {index < currentStep - 1 ? '✓' : index + 1}
               </div>
-              <span className={`ml-2 text-sm font-medium ${index === currentStep - 1 ? 'text-blue-600' : 'text-gray-600'}`}>
+              <span className={`ml-2 text-sm font-medium ${index === currentStep - 1 ? 'text-brand-red-600' : 'text-gray-600'}`}>
                 {comp.name}
               </span>
               {index < steps.length - 1 && (

@@ -24,7 +24,7 @@ export function ProductList({
   if (loading) {
     return (
       <div className="flex justify-center items-center py-20">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-red-600"></div>
       </div>
     );
   }
@@ -76,7 +76,7 @@ export function ProductList({
                 return (
                   <tr
                     key={product.id}
-                    className={`hover:bg-blue-50/50 transition group/row ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/30'}`}
+                    className={`hover:bg-brand-red-50/50 transition group/row ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/30'}`}
                   >
                     <td className="px-6 py-4 print:hidden">
                       <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-white border border-gray-200 flex items-center justify-center group-hover/row:scale-110 transition-transform duration-300 shadow-sm">
@@ -130,7 +130,7 @@ export function ProductList({
                     </td>
                     <td className="px-6 py-4 text-center">
                       <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold ${product.stock > 10
-                        ? 'bg-blue-50 text-blue-700'
+                        ? 'bg-brand-red-50 text-brand-red-700'
                         : product.stock > 0
                           ? 'bg-amber-50 text-amber-700'
                           : 'bg-red-50 text-red-700'
@@ -141,7 +141,7 @@ export function ProductList({
                     <td className="px-6 py-4 text-center print:hidden">
                       <button
                         onClick={() => onSelectProduct(product)}
-                        className="p-2 rounded-full hover:bg-white hover:shadow-md text-gray-400 hover:text-blue-600 transition border border-transparent hover:border-gray-100"
+                        className="p-2 rounded-full hover:bg-white hover:shadow-md text-gray-400 hover:text-brand-red-600 transition border border-transparent hover:border-gray-100"
                         title="Ver detalles"
                       >
                         <Eye className="w-5 h-5" />

@@ -485,8 +485,8 @@ export default function CartPage() {
             )}
 
             <div className="p-8">
-              <div className="flex items-center gap-4 p-4 bg-blue-50 rounded-xl mb-6">
-                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+              <div className="flex items-center gap-4 p-4 bg-brand-red-50 rounded-xl mb-6">
+                <div className="w-12 h-12 bg-brand-red-100 rounded-full flex items-center justify-center flex-shrink-0">
                   <ShieldCheck className="w-6 h-6 text-brand-red-600" />
                 </div>
                 <div>
@@ -497,7 +497,7 @@ export default function CartPage() {
 
               <div className="mb-8">
                 <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                  <span className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
+                  <span className="w-8 h-8 bg-brand-red-100 rounded-lg flex items-center justify-center">
                     <FileText className="w-5 h-5 text-brand-red-600" />
                   </span>
                   Próximos pasos
@@ -592,7 +592,7 @@ export default function CartPage() {
               <form onSubmit={handlePaymentSubmit}>
                 <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
                   <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                    <span className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <span className="w-8 h-8 bg-brand-red-100 rounded-lg flex items-center justify-center">
                       <svg className="w-5 h-5 text-brand-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
                       </svg>
@@ -651,7 +651,7 @@ export default function CartPage() {
                       </div>
                     )}
                     {paymentMethod === 'mercadopago' && (
-                      <div className="p-4 bg-blue-50 text-blue-800 rounded">
+                      <div className="p-4 bg-brand-red-50 text-brand-red-800 rounded">
                         Te redirigimos a Mercado Pago para completar el pago con tarjeta, saldo oPoints.
                       </div>
                     )}
@@ -714,7 +714,7 @@ export default function CartPage() {
 
                 <div className="flex gap-4">
                   <button type="button" onClick={() => setStep('customer')} className="px-6 py-4 border rounded-xl">Atrás</button>
-                  <button type="submit" disabled={isLoading} className="flex-1 brand-red-600 text-white rounded-xl py-4 font-bold">
+                  <button type="submit" disabled={isLoading} className="flex-1 bg-brand-red-600 hover:bg-brand-red-700 text-white rounded-xl py-4 font-bold">
                     {isLoading ? 'Procesando...' : 'Confirmar Pedido'}
                   </button>
                 </div>
@@ -742,9 +742,9 @@ export default function CartPage() {
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Datos del Cliente</h1>
             {/* Auth Prompt */}
             {status === 'unauthenticated' && (
-              <div className="bg-blue-50 p-4 rounded mb-6 flex justify-between items-center">
+              <div className="bg-brand-red-50 p-4 rounded mb-6 flex justify-between items-center">
                 <p>¿Ya tienes cuenta?</p>
-                <button onClick={() => router.push('/account/login')} className="brand-red-600 text-white px-4 py-2 rounded">Iniciar Sesión</button>
+                <button onClick={() => router.push('/account/login')} className="bg-brand-red-600 hover:bg-brand-red-700 text-white px-4 py-2 rounded">Iniciar Sesión</button>
               </div>
             )}
           </div>
@@ -771,7 +771,7 @@ export default function CartPage() {
 
             <div className="flex gap-4 pt-4">
               <button type="button" onClick={() => setStep('cart')} className="flex-1 border p-4 rounded-xl font-bold">Volver</button>
-              <button type="submit" disabled={isLoading} className="flex-1 brand-red-600 text-white p-4 rounded-xl font-bold">
+              <button type="submit" disabled={isLoading} className="flex-1 bg-brand-red-600 hover:bg-brand-red-700 text-white p-4 rounded-xl font-bold">
                 {checkoutMode === 'approval' ? 'Enviar Solicitud' : 'Continuar al Pago'}
               </button>
             </div>
@@ -783,7 +783,7 @@ export default function CartPage() {
 
   // Cart Step
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-blue-50 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-brand-red-50 py-8">
       <div className="container mx-auto px-4 max-w-7xl">
         <ProgressBar currentStep="cart" />
 
@@ -792,7 +792,7 @@ export default function CartPage() {
         {items.length === 0 ? (
           <div className="text-center py-12 bg-white rounded-2xl shadow">
             <p className="text-xl mb-6">Tu carrito está vacío</p>
-            <Link href="/products" className="brand-red-600 text-white px-6 py-3 rounded-lg">Explorar Productos</Link>
+            <Link href="/products" className="bg-brand-red-600 hover:bg-brand-red-700 text-white px-6 py-3 rounded-lg">Explorar Productos</Link>
           </div>
         ) : (
           <div className="grid lg:grid-cols-3 gap-8">
@@ -827,7 +827,7 @@ export default function CartPage() {
 
             <div className="lg:col-span-1">
               <div className="bg-white shadow-xl rounded-2xl overflow-hidden sticky top-4 border border-gray-100">
-                <div className="brand-red-600 p-4 text-white font-bold text-lg">Resumen del Pedido</div>
+                <div className="bg-brand-red-600 p-4 text-white font-bold text-lg">Resumen del Pedido</div>
                 <div className="p-6">
                   <div className="mb-6">
                     <CouponInput

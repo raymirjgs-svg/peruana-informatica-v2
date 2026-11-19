@@ -155,8 +155,8 @@ export default function ProfilePage() {
 
     if (status === 'loading') {
         return (
-            <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-                <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600"></div>
+            <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-brand-red-50 via-white to-purple-50">
+                <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-brand-red-600"></div>
             </div>
         );
     }
@@ -164,11 +164,11 @@ export default function ProfilePage() {
     const isGoogleUser = profile.auth_provider?.includes('google');
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-12 px-4">
+        <div className="min-h-screen bg-gradient-to-br from-brand-red-50 via-white to-purple-50 py-12 px-4">
             <div className="max-w-6xl mx-auto">
                 {/* Header */}
                 <div className="mb-8 text-center">
-                    <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 mb-4 shadow-lg">
+                    <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-brand-red-600 to-purple-600 mb-4 shadow-lg">
                         <User className="w-10 h-10 text-white" />
                     </div>
                     <h1 className="text-4xl font-bold text-gray-900 mb-2">Mi Cuenta</h1>
@@ -181,7 +181,7 @@ export default function ProfilePage() {
                         <button
                             onClick={() => setActiveTab('profile')}
                             className={`flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all ${activeTab === 'profile'
-                                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
+                                    ? 'bg-gradient-to-r from-brand-red-600 to-purple-600 text-white shadow-lg'
                                     : 'text-gray-600 hover:bg-gray-50'
                                 }`}
                         >
@@ -191,7 +191,7 @@ export default function ProfilePage() {
                         <button
                             onClick={() => setActiveTab('orders')}
                             className={`flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all ${activeTab === 'orders'
-                                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
+                                    ? 'bg-gradient-to-r from-brand-red-600 to-purple-600 text-white shadow-lg'
                                     : 'text-gray-600 hover:bg-gray-50'
                                 }`}
                         >
@@ -201,7 +201,7 @@ export default function ProfilePage() {
                         <button
                             onClick={() => setActiveTab('wishlist')}
                             className={`flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all ${activeTab === 'wishlist'
-                                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
+                                    ? 'bg-gradient-to-r from-brand-red-600 to-purple-600 text-white shadow-lg'
                                     : 'text-gray-600 hover:bg-gray-50'
                                 }`}
                         >

@@ -148,7 +148,7 @@ export function ProductTabs({ product, activeTab, onTabChange }: ProductTabsProp
                     <div className="text-sm text-gray-600">2-5 días hábiles</div>
                     <div className="text-sm text-gray-600">Lima y provincias</div>
                   </div>
-                  <div className="border border-blue-200 rounded-lg p-4">
+                  <div className="border border-brand-red-200 rounded-lg p-4">
                     <div className="font-semibold">Envío Express - S/. 15</div>
                     <div className="text-sm text-gray-600">24-48 horas</div>
                     <div className="text-sm text-gray-600">Solo Lima Metropolitana</div>

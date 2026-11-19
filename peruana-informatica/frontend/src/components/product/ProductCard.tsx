@@ -102,7 +102,7 @@ export const ProductCard = memo(function ProductCard({ product }: ProductCardPro
             </span>
           )}
           {product.is_new && isProductAvailable(product) && (
-            <span className="px-2 py-0.5 text-[10px] font-bold tracking-wide uppercase bg-blue-600 text-white rounded">
+            <span className="px-2 py-0.5 text-[10px] font-bold tracking-wide uppercase bg-brand-red-600 text-white rounded">
               Nuevo
             </span>
           )}

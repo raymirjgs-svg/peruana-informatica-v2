@@ -81,7 +81,7 @@ export function BlogPagination({
                   onClick={() => onPageChange(i)}
                   className={`px-4 py-2 border rounded-lg font-medium transition ${
                     currentPage === i
-                      ? "bg-blue-600 text-white border-blue-600 shadow-md"
+                      ? "bg-brand-red-600 text-white border-brand-red-600 shadow-md"
                       : "border-gray-300 hover:bg-gray-50"
                   }`}
                 >

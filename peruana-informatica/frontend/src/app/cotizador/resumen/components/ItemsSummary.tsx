@@ -43,12 +43,12 @@ export default function ItemsSummary({ items, subtotal, igv, total }: ItemsSumma
                     </div>
                     <div className="flex justify-between text-lg font-bold pt-2 border-t border-gray-100">
                         <span className="text-gray-800">Total</span>
-                        <span className="text-blue-600">S/. {total.toFixed(2)}</span>
+                        <span className="text-brand-red-600">S/. {total.toFixed(2)}</span>
                     </div>
                 </div>
 
                 <div className="mt-6">
-                    <Link href="/cotizador/pc" className="text-blue-600 text-sm hover:underline flex items-center justify-center">
+                    <Link href="/cotizador/pc" className="text-brand-red-600 text-sm hover:underline flex items-center justify-center">
                         ← Editar componentes
                     </Link>
                 </div>

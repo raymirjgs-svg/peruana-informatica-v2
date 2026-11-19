@@ -26,7 +26,7 @@ export function LaptopList({
     <div className="lg:col-span-3">
           {loading ? (
             <div className="flex justify-center items-center h-64">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-red-600"></div>
             </div>
           ) : laptops.length === 0 ? (
             <div className="text-center py-12">
@@ -56,7 +56,7 @@ export function LaptopList({
                       disabled={currentPage === 1}
                       className={`px-4 py-2 rounded-lg ${currentPage === 1
                         ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                        : 'bg-blue-600 text-white hover:bg-blue-700'
+                        : 'bg-brand-red-600 text-white hover:bg-brand-red-700'
                         }`}
                     >
                       Anterior
@@ -71,7 +71,7 @@ export function LaptopList({
                       disabled={currentPage === totalPages}
                       className={`px-4 py-2 rounded-lg ${currentPage === totalPages
                         ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                        : 'bg-blue-600 text-white hover:bg-blue-700'
+                        : 'bg-brand-red-600 text-white hover:bg-brand-red-700'
                         }`}
                     >
                       Siguiente

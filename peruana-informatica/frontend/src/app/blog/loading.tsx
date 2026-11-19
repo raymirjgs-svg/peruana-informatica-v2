@@ -1,7 +1,7 @@
 export default function BlogLoading() {
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-16">
+      <div className="bg-gradient-to-r from-brand-red-600 to-purple-600 text-white py-16">
         <div className="container mx-auto px-4 text-center">
           <div className="h-12 bg-white/20 rounded w-1/3 mx-auto mb-4" />
           <div className="h-6 bg-white/20 rounded w-1/2 mx-auto" />

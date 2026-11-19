@@ -39,10 +39,10 @@ export default async function DynamicPage({ params }: PageProps) {
         <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                 {/* Header */}
-                <div className="bg-gradient-to-r from-blue-600 to-indigo-700 px-8 py-10 text-white">
+                <div className="bg-gradient-to-r from-brand-red-600 to-brand-red-700 px-8 py-10 text-white">
                     <h1 className="text-3xl md:text-4xl font-bold mb-2">{page.title}</h1>
-                    <div className="h-1 w-20 bg-blue-400 rounded-full"></div>
-                    <p className="text-blue-100 mt-4 text-sm">
+                    <div className="h-1 w-20 bg-brand-red-400 rounded-full"></div>
+                    <p className="text-brand-red-100 mt-4 text-sm">
                         Última actualización: {new Date(page.updated_at).toLocaleDateString()}
                     </p>
                 </div>

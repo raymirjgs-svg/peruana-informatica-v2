@@ -24,7 +24,7 @@ export function LaptopCard({ laptop, isSelected, onAdd }: LaptopCardProps) {
                             {laptop.subCategories.slice(0, 2).map((subcategory) => (
                               <span
                                 key={subcategory.id}
-                                className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full"
+                                className="px-2 py-1 bg-brand-red-100 text-brand-red-800 text-xs rounded-full"
                               >
                                 {subcategory.name}
                               </span>
@@ -62,7 +62,7 @@ export function LaptopCard({ laptop, isSelected, onAdd }: LaptopCardProps) {
                         </p>
 
                         <div className="flex justify-between items-center mb-4">
-                          <span className="text-xl font-bold text-blue-600">S/. {
+                          <span className="text-xl font-bold text-brand-red-600">S/. {
                             typeof laptop.price === 'number'
                               ? laptop.price.toFixed(2)
                               : typeof laptop.price === 'string'
@@ -84,7 +84,7 @@ export function LaptopCard({ laptop, isSelected, onAdd }: LaptopCardProps) {
                               onAdd(laptop);
                             }}
                             className={`flex-1 py-2 rounded-lg transition ${isSelected
-                              ? 'bg-green-600 text-white' : 'bg-blue-600 hover:bg-blue-700 text-white'
+                              ? 'bg-green-600 text-white' : 'bg-brand-red-600 hover:bg-brand-red-700 text-white'
                               }`}
                             disabled={laptop.stock === 0}
                           >

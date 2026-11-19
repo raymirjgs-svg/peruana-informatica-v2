@@ -105,17 +105,17 @@ export function PromoModal() {
                         )}
 
                         {banner.coupon_code && (
-                            <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border-2 border-dashed border-blue-400 dark:border-blue-600 rounded-xl p-6 mb-6">
+                            <div className="bg-gradient-to-r from-brand-red-50 to-purple-50 dark:from-brand-red-900/20 dark:to-purple-900/20 border-2 border-dashed border-brand-red-400 dark:border-brand-red-600 rounded-xl p-6 mb-6">
                                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
                                     Usa el código:
                                 </p>
                                 <div className="flex items-center justify-center gap-3">
-                                    <code className="text-3xl font-bold text-blue-600 dark:text-blue-400 tracking-wider">
+                                    <code className="text-3xl font-bold text-brand-red-600 dark:text-brand-red-400 tracking-wider">
                                         {banner.coupon_code}
                                     </code>
                                     <button
                                         onClick={handleCopyCoupon}
-                                        className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
+                                        className="px-4 py-2 bg-brand-red-600 hover:bg-brand-red-700 text-white rounded-lg font-medium transition-colors"
                                     >
                                         Copiar
                                     </button>
@@ -125,7 +125,7 @@ export function PromoModal() {
 
                         <button
                             onClick={handleClose}
-                            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-4 px-8 rounded-xl transition-all transform hover:scale-105 shadow-lg"
+                            className="w-full bg-gradient-to-r from-brand-red-600 to-purple-600 hover:from-brand-red-700 hover:to-purple-700 text-white font-bold py-4 px-8 rounded-xl transition-all transform hover:scale-105 shadow-lg"
                         >
                             ¡Empezar a Comprar!
                         </button>

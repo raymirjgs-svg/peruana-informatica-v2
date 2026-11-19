@@ -192,7 +192,7 @@ export default function LaptopSelection({ onSelect, selectedLaptop }: LaptopSele
                 name="minPrice"
                 value={filters.minPrice}
                 onChange={handleFilterChange}
-                className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                className="w-full p-2 border border-gray-300 rounded-md focus:ring-brand-red-500 focus:border-brand-red-500"
                 placeholder="S/. 0"
               />
             </div>
@@ -204,7 +204,7 @@ export default function LaptopSelection({ onSelect, selectedLaptop }: LaptopSele
                 name="maxPrice"
                 value={filters.maxPrice}
                 onChange={handleFilterChange}
-                className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                className="w-full p-2 border border-gray-300 rounded-md focus:ring-brand-red-500 focus:border-brand-red-500"
                 placeholder="S/. 5000"
               />
             </div>
@@ -216,7 +216,7 @@ export default function LaptopSelection({ onSelect, selectedLaptop }: LaptopSele
                 name="processor"
                 value={filters.processor}
                 onChange={handleFilterChange}
-                className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                className="w-full p-2 border border-gray-300 rounded-md focus:ring-brand-red-500 focus:border-brand-red-500"
                 placeholder="Ej. i5, Ryzen 5..."
               />
             </div>
@@ -228,7 +228,7 @@ export default function LaptopSelection({ onSelect, selectedLaptop }: LaptopSele
                 name="ram"
                 value={filters.ram}
                 onChange={handleFilterChange}
-                className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                className="w-full p-2 border border-gray-300 rounded-md focus:ring-brand-red-500 focus:border-brand-red-500"
                 placeholder="Ej. 8GB, 16GB..."
               />
             </div>
@@ -240,7 +240,7 @@ export default function LaptopSelection({ onSelect, selectedLaptop }: LaptopSele
                 name="storage"
                 value={filters.storage}
                 onChange={handleFilterChange}
-                className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                className="w-full p-2 border border-gray-300 rounded-md focus:ring-brand-red-500 focus:border-brand-red-500"
                 placeholder="Ej. 256GB SSD..."
               />
             </div>
@@ -259,7 +259,7 @@ export default function LaptopSelection({ onSelect, selectedLaptop }: LaptopSele
       <div className="lg:col-span-3">
         {loading ? (
           <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-brand-red-500"></div>
           </div>
         ) : filteredLaptops.length === 0 ? (
           <div className="text-center py-12">
@@ -283,7 +283,7 @@ export default function LaptopSelection({ onSelect, selectedLaptop }: LaptopSele
                   <p className="text-gray-700 text-sm mb-4 line-clamp-2">{laptop.description}</p>
 
                   <div className="flex justify-between items-center mb-4">
-                    <span className="text-xl font-bold text-blue-600">S/. {laptop.price.toFixed(2)}</span>
+                    <span className="text-xl font-bold text-brand-red-600">S/. {laptop.price.toFixed(2)}</span>
                     <span className={`px-2 py-1 rounded-full text-xs ${laptop.stock > 5 ? 'bg-green-100 text-green-800' :
                       laptop.stock > 0 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'
                       }`}>
@@ -297,7 +297,7 @@ export default function LaptopSelection({ onSelect, selectedLaptop }: LaptopSele
                       onClick={() => onSelect(laptop)}
                       className={`flex-1 py-2 rounded-lg transition ${selectedLaptop?.id === laptop.id
                         ? 'bg-green-600 text-white'
-                        : 'bg-blue-600 text-white hover:bg-blue-700'
+                        : 'bg-brand-red-600 text-white hover:bg-brand-red-700'
                         }`}
                       disabled={laptop.stock === 0}
                     >

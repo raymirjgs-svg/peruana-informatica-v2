@@ -33,7 +33,7 @@ export function LaptopFilters({
                   name="search"
                   value={filters.search}
                   onChange={onFilterChange}
-                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-red-500 focus:border-brand-red-500"
                   placeholder="Nombre o descripción"
                 />
               </div>
@@ -43,7 +43,7 @@ export function LaptopFilters({
                   name="subcategory"
                   value={filters.subcategory}
                   onChange={onFilterChange}
-                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-red-500 focus:border-brand-red-500"
                 >
                   <option value="">Todas las categorías</option>
                   {subcategories.map(subcategory => (
@@ -60,7 +60,7 @@ export function LaptopFilters({
                   name="minPrice"
                   value={filters.minPrice}
                   onChange={onFilterChange}
-                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-red-500 focus:border-brand-red-500"
                   placeholder="S/. 0"
                 />
               </div>
@@ -71,7 +71,7 @@ export function LaptopFilters({
                   name="maxPrice"
                   value={filters.maxPrice}
                   onChange={onFilterChange}
-                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-red-500 focus:border-brand-red-500"
                   placeholder="S/. 10000"
                 />
               </div>
@@ -81,7 +81,7 @@ export function LaptopFilters({
                   name="processor"
                   value={filters.processor}
                   onChange={onFilterChange}
-                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-red-500 focus:border-brand-red-500"
                 >
                   <option value="">Todos los procesadores</option>
                   {processorOptions.map((processor, index) => (
@@ -97,7 +97,7 @@ export function LaptopFilters({
                   name="ram"
                   value={filters.ram}
                   onChange={onFilterChange}
-                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-red-500 focus:border-brand-red-500"
                 >
                   <option value="">Toda la RAM</option>
                   {ramOptions.map((ram, index) => (
@@ -113,7 +113,7 @@ export function LaptopFilters({
                   name="storage"
                   value={filters.storage}
                   onChange={onFilterChange}
-                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-red-500 focus:border-brand-red-500"
                 >
                   <option value="">Todo el almacenamiento</option>
                   {storageOptions.map((storage, index) => (

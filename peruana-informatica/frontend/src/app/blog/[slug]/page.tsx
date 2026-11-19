@@ -125,7 +125,7 @@ export default function BlogPostPage() {
         <Navigation />
         <div className="min-h-screen bg-gray-50 flex items-center justify-center">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-brand-red-600 mx-auto mb-4"></div>
             <p className="text-gray-600">Cargando post...</p>
           </div>
         </div>
@@ -145,7 +145,7 @@ export default function BlogPostPage() {
             </p>
             <Link
               href="/blog"
-              className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition"
+              className="inline-block bg-brand-red-600 text-white px-6 py-3 rounded-lg hover:bg-brand-red-700 transition"
             >
               ← Volver al blog
             </Link>
@@ -162,7 +162,7 @@ export default function BlogPostPage() {
       {/* Barra de progreso de lectura */}
       <div className="fixed top-0 left-0 w-full h-1 bg-gray-200 z-50">
         <div
-          className="h-full bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-150"
+          className="h-full bg-gradient-to-r from-brand-red-600 to-purple-600 transition-all duration-150"
           style={{ width: `${readProgress}%` }}
         />
       </div>
@@ -172,11 +172,11 @@ export default function BlogPostPage() {
         <div className="bg-white border-b">
           <div className="container mx-auto px-4 max-w-4xl py-3">
             <nav className="flex items-center text-sm text-gray-600">
-              <Link href="/" className="hover:text-blue-600 transition">Inicio</Link>
+              <Link href="/" className="hover:text-brand-red-600 transition">Inicio</Link>
               <svg className="w-4 h-4 mx-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
-              <Link href="/blog" className="hover:text-blue-600 transition">Blog</Link>
+              <Link href="/blog" className="hover:text-brand-red-600 transition">Blog</Link>
               <svg className="w-4 h-4 mx-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
@@ -186,11 +186,11 @@ export default function BlogPostPage() {
         </div>
 
         {/* Header del post */}
-        <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-12 md:py-16">
+        <div className="bg-gradient-to-r from-brand-red-600 to-purple-600 text-white py-12 md:py-16">
           <div className="container mx-auto px-4 max-w-4xl">
             <Link
               href="/blog"
-              className="inline-flex items-center text-blue-100 hover:text-white mb-6 transition"
+              className="inline-flex items-center text-brand-red-100 hover:text-white mb-6 transition"
             >
               <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -200,9 +200,9 @@ export default function BlogPostPage() {
 
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 leading-tight">{post.title}</h1>
 
-            <div className="flex flex-wrap items-center gap-4 text-blue-100">
+            <div className="flex flex-wrap items-center gap-4 text-brand-red-100">
               <div className="flex items-center">
-                <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-blue-600 font-bold mr-3">
+                <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-brand-red-600 font-bold mr-3">
                   {(post.author_name?.[0] ?? 'A').toUpperCase()}
                 </div>
                 <span className="font-medium">{post.author_name}</span>
@@ -251,7 +251,7 @@ export default function BlogPostPage() {
               <aside className="hidden lg:block lg:w-64 flex-shrink-0">
                 <div className="sticky top-24 bg-white rounded-lg shadow-md p-6">
                   <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
-                    <svg className="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 mr-2 text-brand-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h7" />
                     </svg>
                     En este artículo
@@ -261,7 +261,7 @@ export default function BlogPostPage() {
                       <a
                         key={index}
                         href={`#${heading.id}`}
-                        className={`block text-sm hover:text-blue-600 transition ${heading.level === 1 ? 'font-bold' : heading.level === 2 ? 'ml-0 font-semibold' : 'ml-4 text-gray-600'
+                        className={`block text-sm hover:text-brand-red-600 transition ${heading.level === 1 ? 'font-bold' : heading.level === 2 ? 'ml-0 font-semibold' : 'ml-4 text-gray-600'
                           }`}
                       >
                         {heading.text}
@@ -277,7 +277,7 @@ export default function BlogPostPage() {
               <div className="bg-white rounded-lg shadow-md p-8 mb-8">
                 {/* Excerpt */}
                 {post.excerpt && (
-                  <div className="bg-gradient-to-r from-blue-50 to-purple-50 border-l-4 border-blue-600 p-6 mb-8 rounded-r-lg">
+                  <div className="bg-gradient-to-r from-brand-red-50 to-purple-50 border-l-4 border-brand-red-600 p-6 mb-8 rounded-r-lg">
                     <p className="text-lg text-gray-700 italic leading-relaxed">{post.excerpt}</p>
                   </div>
                 )}
@@ -291,7 +291,7 @@ export default function BlogPostPage() {
                       // Títulos H1
                       if (line.startsWith('# ')) {
                         return (
-                          <h1 key={index} id={headingId} className="text-3xl font-bold text-gray-900 mb-6 mt-8 pb-3 border-b-2 border-blue-600 scroll-mt-24">
+                          <h1 key={index} id={headingId} className="text-3xl font-bold text-gray-900 mb-6 mt-8 pb-3 border-b-2 border-brand-red-600 scroll-mt-24">
                             {line.replace('# ', '')}
                           </h1>
                         );
@@ -300,7 +300,7 @@ export default function BlogPostPage() {
                       if (line.startsWith('## ')) {
                         return (
                           <h2 key={index} id={headingId} className="text-2xl font-bold text-gray-800 mb-4 mt-8 flex items-center scroll-mt-24">
-                            <span className="bg-blue-600 w-1.5 h-8 mr-3 rounded"></span>
+                            <span className="bg-brand-red-600 w-1.5 h-8 mr-3 rounded"></span>
                             {line.replace('## ', '')}
                           </h2>
                         );
@@ -360,7 +360,7 @@ export default function BlogPostPage() {
                         {post.tags.split(',').map((tag, index) => (
                           <span
                             key={index}
-                            className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-1.5 rounded-full text-sm font-medium shadow-sm hover:shadow-md transition"
+                            className="bg-gradient-to-r from-brand-red-500 to-brand-red-600 text-white px-4 py-1.5 rounded-full text-sm font-medium shadow-sm hover:shadow-md transition"
                           >
                             #{tag.trim()}
                           </span>
@@ -419,7 +419,7 @@ export default function BlogPostPage() {
                     <span className="text-sm text-gray-600 mr-2">Compartir:</span>
                     <button
                       onClick={shareOnTwitter}
-                      className="p-2 text-blue-400 hover:text-blue-500 hover:bg-blue-50 rounded-full transition"
+                      className="p-2 text-brand-red-400 hover:text-brand-red-500 hover:bg-brand-red-50 rounded-full transition"
                       title="Compartir en Twitter"
                     >
                       <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -428,7 +428,7 @@ export default function BlogPostPage() {
                     </button>
                     <button
                       onClick={shareOnFacebook}
-                      className="p-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-full transition"
+                      className="p-2 text-brand-red-600 hover:text-brand-red-700 hover:bg-brand-red-50 rounded-full transition"
                       title="Compartir en Facebook"
                     >
                       <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -458,12 +458,12 @@ export default function BlogPostPage() {
               </div>
 
               {/* CTA final */}
-              <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg shadow-lg p-8 text-white text-center mb-8">
+              <div className="bg-gradient-to-r from-brand-red-600 to-purple-600 rounded-lg shadow-lg p-8 text-white text-center mb-8">
                 <h3 className="text-2xl font-bold mb-3">¿Te gustó este artículo?</h3>
-                <p className="text-blue-100 mb-6">Descubre más contenido tecnológico en nuestro blog</p>
+                <p className="text-brand-red-100 mb-6">Descubre más contenido tecnológico en nuestro blog</p>
                 <Link
                   href="/blog"
-                  className="inline-block bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition shadow-md hover:shadow-lg"
+                  className="inline-block bg-white text-brand-red-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition shadow-md hover:shadow-lg"
                 >
                   Ver más posts →
                 </Link>
@@ -477,7 +477,7 @@ export default function BlogPostPage() {
       {showScrollTop && (
         <button
           onClick={scrollToTop}
-          className="fixed bottom-8 right-8 bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 transition transform hover:scale-110 z-40"
+          className="fixed bottom-8 right-8 bg-brand-red-600 text-white p-4 rounded-full shadow-lg hover:bg-brand-red-700 transition transform hover:scale-110 z-40"
           aria-label="Volver arriba"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

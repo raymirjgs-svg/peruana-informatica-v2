@@ -14,7 +14,7 @@ export default function QuotationHome() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Opción de laptop */}
         <Link href="/cotizador/laptop">
-          <div className="border-2 border-gray-200 rounded-xl p-6 hover:border-blue-300 hover:shadow-lg transition-all duration-300 cursor-pointer hover:-translate-y-1">
+          <div className="border-2 border-gray-200 rounded-xl p-6 hover:border-brand-red-300 hover:shadow-lg transition-all duration-300 cursor-pointer hover:-translate-y-1">
             <div className="text-center">
               <div className="mx-auto bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16 flex items-center justify-center mb-4">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -26,7 +26,7 @@ export default function QuotationHome() {
                 Selecciona una laptop según tus necesidades y presupuesto
               </p>
               <div className="text-center">
-                <span className="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
+                <span className="inline-block bg-brand-red-600 text-white px-6 py-2 rounded-lg hover:bg-brand-red-700 transition">
                   Crear Cotización
                 </span>
               </div>
@@ -62,21 +62,21 @@ export default function QuotationHome() {
         <h3 className="text-xl font-semibold mb-4 text-gray-800">¿Cómo funciona?</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="flex items-start">
-            <div className="bg-blue-100 text-blue-800 rounded-full w-8 h-8 flex items-center justify-center mr-3 flex-shrink-0">1</div>
+            <div className="bg-brand-red-100 text-brand-red-800 rounded-full w-8 h-8 flex items-center justify-center mr-3 flex-shrink-0">1</div>
             <div>
               <h4 className="font-medium text-gray-800">Selecciona</h4>
               <p className="text-gray-600 text-sm">Elige tus componentes preferidos</p>
             </div>
           </div>
           <div className="flex items-start">
-            <div className="bg-blue-100 text-blue-800 rounded-full w-8 h-8 flex items-center justify-center mr-3 flex-shrink-0">2</div>
+            <div className="bg-brand-red-100 text-brand-red-800 rounded-full w-8 h-8 flex items-center justify-center mr-3 flex-shrink-0">2</div>
             <div>
               <h4 className="font-medium text-gray-800">Personaliza</h4>
               <p className="text-gray-600 text-sm">Ajusta las especificaciones según necesites</p>
             </div>
           </div>
           <div className="flex items-start">
-            <div className="bg-blue-100 text-blue-800 rounded-full w-8 h-8 flex items-center justify-center mr-3 flex-shrink-0">3</div>
+            <div className="bg-brand-red-100 text-brand-red-800 rounded-full w-8 h-8 flex items-center justify-center mr-3 flex-shrink-0">3</div>
             <div>
               <h4 className="font-medium text-gray-800">Cotiza</h4>
               <p className="text-gray-600 text-sm">Obtén tu cotización con detalles</p>

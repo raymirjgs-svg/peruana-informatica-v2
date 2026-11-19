@@ -24,16 +24,16 @@ export function CustomerStep({
   checkoutMode,
 }: CustomerStepProps) {
   return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 py-12">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-brand-red-50 to-brand-red-50 py-12">
         <div className="container mx-auto px-4 max-w-4xl">
           <ProgressBar currentStep="customer" />
           <div className="text-center mb-8">
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Datos del Cliente</h1>
             {/* Auth Prompt */}
             {status === 'unauthenticated' && (
-              <div className="bg-blue-50 p-4 rounded mb-6 flex justify-between items-center">
+              <div className="bg-brand-red-50 p-4 rounded mb-6 flex justify-between items-center">
                 <p>¿Ya tienes cuenta?</p>
-                <button onClick={() => onLogin()} className="bg-blue-600 text-white px-4 py-2 rounded">Iniciar Sesión</button>
+                <button onClick={() => onLogin()} className="bg-brand-red-600 text-white px-4 py-2 rounded">Iniciar Sesión</button>
               </div>
             )}
           </div>
@@ -60,7 +60,7 @@ export function CustomerStep({
 
             <div className="flex gap-4 pt-4">
               <button type="button" onClick={onBack} className="flex-1 border p-4 rounded-xl font-bold">Volver</button>
-              <button type="submit" disabled={isLoading} className="flex-1 bg-blue-600 text-white p-4 rounded-xl font-bold">
+              <button type="submit" disabled={isLoading} className="flex-1 bg-brand-red-600 text-white p-4 rounded-xl font-bold">
                 {checkoutMode === 'approval' ? 'Enviar Solicitud' : 'Continuar al Pago'}
               </button>
             </div>

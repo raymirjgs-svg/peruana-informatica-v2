@@ -8,11 +8,11 @@ interface PostHeroProps {
 
 export function PostHero({ post, formatDate }: PostHeroProps) {
   return (
-    <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-12 md:py-16">
+    <div className="bg-gradient-to-r from-brand-red-600 to-purple-600 text-white py-12 md:py-16">
       <div className="container mx-auto px-4 max-w-4xl">
         <Link
           href="/blog"
-          className="inline-flex items-center text-blue-100 hover:text-white mb-6 transition"
+          className="inline-flex items-center text-brand-red-100 hover:text-white mb-6 transition"
         >
           <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -22,9 +22,9 @@ export function PostHero({ post, formatDate }: PostHeroProps) {
 
         <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 leading-tight">{post.title}</h1>
 
-        <div className="flex flex-wrap items-center gap-4 text-blue-100">
+        <div className="flex flex-wrap items-center gap-4 text-brand-red-100">
           <div className="flex items-center">
-            <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-blue-600 font-bold mr-3">
+            <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-brand-red-600 font-bold mr-3">
               {post.author_name.charAt(0).toUpperCase()}
             </div>
             <span className="font-medium">{post.author_name}</span>

@@ -116,14 +116,14 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
                                     <button
                                         key={star}
                                         onClick={() => toggleStarFilter(star)}
-                                        className={`w-full flex items-center gap-3 group px-2 rounded-md transition-colors ${isSelected ? 'bg-blue-50 dark:bg-blue-900/20 ring-1 ring-blue-500' : 'hover:bg-gray-100 dark:hover:bg-gray-700/50'}`}
+                                        className={`w-full flex items-center gap-3 group px-2 rounded-md transition-colors ${isSelected ? 'bg-brand-red-50 dark:bg-brand-red-900/20 ring-1 ring-brand-red-500' : 'hover:bg-gray-100 dark:hover:bg-gray-700/50'}`}
                                     >
-                                        <span className="text-sm font-medium w-12 text-blue-600 dark:text-blue-400 cursor-pointer hover:underline text-left">
+                                        <span className="text-sm font-medium w-12 text-brand-red-600 dark:text-brand-red-400 cursor-pointer hover:underline text-left">
                                             {star} estrellas
                                         </span>
                                         <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-4 relative overflow-hidden">
                                             <div
-                                                className={`h-full rounded-full transition-all duration-500 ${isSelected ? 'bg-blue-500' : 'bg-yellow-400'}`}
+                                                className={`h-full rounded-full transition-all duration-500 ${isSelected ? 'bg-brand-red-500' : 'bg-yellow-400'}`}
                                                 style={{ width: `${percentage}%` }}
                                             />
                                         </div>
@@ -144,7 +144,7 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
                                         type="checkbox"
                                         checked={filters.verifiedOnly}
                                         onChange={(e) => setFilters(prev => ({ ...prev, verifiedOnly: e.target.checked, page: 1 }))}
-                                        className="rounded text-blue-600 focus:ring-blue-500"
+                                        className="rounded text-brand-red-600 focus:ring-brand-red-500"
                                     />
                                     <span className="text-sm text-gray-700 dark:text-gray-300">Solo compras verificadas</span>
                                 </label>
@@ -152,7 +152,7 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
                                 <select
                                     value={filters.sort}
                                     onChange={(e) => setFilters(prev => ({ ...prev, sort: e.target.value, page: 1 }))}
-                                    className="w-full text-sm border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600"
+                                    className="w-full text-sm border-gray-300 rounded-md shadow-sm focus:border-brand-red-500 focus:ring-brand-red-500 dark:bg-gray-700 dark:border-gray-600"
                                 >
                                     <option value="newest">Más recientes</option>
                                     <option value="helpful">Más útiles</option>
@@ -163,7 +163,7 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
 
                             <button
                                 onClick={() => setShowReviewForm(!showReviewForm)}
-                                className="w-full px-4 py-2 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:hover:bg-gray-600 transition-colors"
+                                className="w-full px-4 py-2 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-red-500 dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:hover:bg-gray-600 transition-colors"
                             >
                                 {showReviewForm ? 'Cancelar' : 'Escribir mi opinión'}
                             </button>
@@ -182,14 +182,14 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
 
             {/* Filter Status Badge */}
             {(filters.minRating > 0 || filters.verifiedOnly) && (
-                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 bg-blue-50 dark:bg-blue-900/20 p-3 rounded-md">
+                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 bg-brand-red-50 dark:bg-brand-red-900/20 p-3 rounded-md">
                     <span>Mostrando:</span>
-                    {filters.minRating > 0 && <span className="font-semibold text-blue-600"> {filters.minRating} estrellas </span>}
+                    {filters.minRating > 0 && <span className="font-semibold text-brand-red-600"> {filters.minRating} estrellas </span>}
                     {filters.minRating > 0 && filters.verifiedOnly && <span> + </span>}
                     {filters.verifiedOnly && <span className="font-semibold text-green-600"> Compras verificadas </span>}
                     <button
                         onClick={() => setFilters({ minRating: 0, verifiedOnly: false, sort: 'newest' })}
-                        className="ml-auto text-blue-600 hover:text-blue-800 underline"
+                        className="ml-auto text-brand-red-600 hover:text-brand-red-800 underline"
                     >
                         Borrar filtros
                     </button>
@@ -221,7 +221,7 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
                         </p>
                         <button
                             onClick={() => setShowReviewForm(true)}
-                            className="text-blue-600 font-medium hover:underline"
+                            className="text-brand-red-600 font-medium hover:underline"
                         >
                             ¡Sé el primero en opinar!
                         </button>
@@ -296,7 +296,7 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
                                 key={pageNum}
                                 onClick={() => setPage(pageNum)}
                                 className={`w-8 h-8 flex items-center justify-center rounded-md text-sm border ${page === pageNum
-                                    ? 'bg-blue-600 text-white border-blue-600'
+                                    ? 'bg-brand-red-600 text-white border-brand-red-600'
                                     : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
                                     }`}
                             >

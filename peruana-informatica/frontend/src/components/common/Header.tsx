@@ -261,7 +261,7 @@ export function Header() {
                   <svg className={`w-5 h-5 transition-transform duration-300 ${mobileCategoriesOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
                 </button>
                 {mobileCategoriesOpen && (
-                  <div className="pl-4 space-y-2 mt-1 mb-3 border-l-2 border-blue-500/30 ml-1 animate-in slide-in-from-top-2 duration-200">
+                  <div className="pl-4 space-y-2 mt-1 mb-3 border-l-2 border-brand-red-500/30 ml-1 animate-in slide-in-from-top-2 duration-200">
                     {categories.map((cat) => (
                       <Link key={cat.id} href={`/products?category=${cat.slug}`} className="block text-gray-400 hover:text-red-400 py-2 text-sm" onClick={() => setMobileMenuOpen(false)}>
                         {cat.name}

@@ -147,7 +147,7 @@ export default function QuotationSummaryPage() {
     if (loading) {
         return (
             <div className="flex justify-center items-center min-h-screen">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-red-600"></div>
             </div>
         );
     }
@@ -167,7 +167,7 @@ export default function QuotationSummaryPage() {
                 <div className="bg-white rounded-xl shadow-md p-8">
                     <h2 className="text-xl font-semibold text-gray-800 mb-4">No hay items en la cotización</h2>
                     <p className="text-gray-600 mb-6">Parece que no has seleccionado ningún componente.</p>
-                    <Link href="/cotizador/pc" className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
+                    <Link href="/cotizador/pc" className="bg-brand-red-600 text-white px-6 py-2 rounded-lg hover:bg-brand-red-700 transition">
                         Ir al Armador de PC
                     </Link>
                 </div>

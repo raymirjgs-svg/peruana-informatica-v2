@@ -32,6 +32,7 @@ export interface RawProduct {
     // Inventario
     stock?: number;
     stock_actual?: number; // Legacy
+    stock_display?: string; // Etiqueta publica ("10+" cuando hay mas de 10)
 
     // Reviews
     average_rating?: number | string | null;

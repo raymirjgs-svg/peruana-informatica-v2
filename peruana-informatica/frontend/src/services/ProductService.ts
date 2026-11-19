@@ -114,6 +114,9 @@ export class ProductService {
     // Instanciar Modelo
     const product = new Product(id, name, description, price, stock, categoryName);
 
+    // Etiqueta publica de stock ("10+" si hay mas de 10 unidades)
+    if (item.stock_display) product.stockDisplay = item.stock_display;
+
     // Completar propiedades adicionales
 
     // Slug

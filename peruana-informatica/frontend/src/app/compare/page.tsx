@@ -7,6 +7,7 @@ import { useCart } from '@/hooks/useCart';
 import { Product } from '@/models/Product';
 import { useState } from 'react';
 import { getProductImageUrl } from '@/utils/images';
+import { formatStockLabel } from '@/lib/product';
 
 export default function ComparePage() {
   const { compareList, compareCount, removeFromCompare, clearCompare, maxCompareItems } = useCompare();
@@ -169,7 +170,7 @@ export default function ComparePage() {
                     <td key={product.id} className="p-4 text-center">
                       <span className={`px-3 py-1 rounded-full text-sm font-semibold ${product.stock > 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
                         }`}>
-                        {product.stock > 0 ? `${product.stock} disponibles` : 'Agotado'}
+                        {product.stock > 0 ? `${formatStockLabel(product.stock, product.stockDisplay)} disponibles` : 'Agotado'}
                       </span>
                     </td>
                   ))}
@@ -263,7 +264,7 @@ export default function ComparePage() {
                     <span className="font-semibold">Stock:</span>
                     <span className={`px-2 py-1 rounded text-sm ${product.stock > 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
                       }`}>
-                      {product.stock > 0 ? `${product.stock} unidades` : 'Agotado'}
+                      {product.stock > 0 ? `${formatStockLabel(product.stock, product.stockDisplay)} unidades` : 'Agotado'}
                     </span>
                   </div>
                   <div className="flex justify-between items-center py-2 border-b">

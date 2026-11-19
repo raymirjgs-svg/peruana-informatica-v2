@@ -11,7 +11,7 @@ import { motion } from 'framer-motion';
 import { useSettings } from '@/context/SettingsContext';
 import { buildWhatsappLink, hasPublishedPrice, priceInquiryMessage } from '@/utils/whatsapp';
 import { getProductImageUrl } from '@/utils/images';
-import { isProductAvailable } from '@/lib/product';
+import { isProductAvailable, formatStockLabel } from '@/lib/product';
 
 interface ProductCardProps {
   product: Product;
@@ -196,7 +196,7 @@ export const ProductCard = memo(function ProductCard({ product }: ProductCardPro
                 <>
                   <span className="w-1.5 h-1.5 rounded-full bg-amber-500 flex-none" />
                   <span className="text-[11px] text-amber-600 dark:text-amber-400 font-medium">
-                    Solo {product.stock} en stock
+                    Solo {formatStockLabel(product.stock, product.stockDisplay)} en stock
                   </span>
                 </>
               ) : (

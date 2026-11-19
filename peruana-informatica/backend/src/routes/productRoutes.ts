@@ -12,6 +12,7 @@ import { sequelize } from '../database/connection';
 import { searchRateLimit } from '../middleware/security';
 import { SyncService } from '../services/SyncService';
 import { cacheSuccessMiddleware, invalidateProductsCache, invalidateProductCache } from '../middleware/cache';
+import { maskStock } from '../utils/stockDisplay';
 
 const router = express.Router();
 
@@ -281,7 +282,7 @@ router.get('/', searchRateLimit, cacheSuccessMiddleware('products', 60), [
     });
 
     res.json({
-      products,
+      products: products.map(maskStock),
       total,
       page,
       totalPages: Math.ceil(total / limit),
@@ -337,7 +338,7 @@ router.get('/:id', cacheSuccessMiddleware('product', 600), [
         timestamp: new Date().toISOString()
       });
     }
-    res.json(product);
+    res.json(maskStock(product));
   } catch (error) {
     console.error('Error getting product:', error);
     res.status(500).json({
@@ -403,7 +404,7 @@ router.get('/slug/:slug', cacheSuccessMiddleware('product-slug', 60), [
         timestamp: new Date().toISOString()
       });
     }
-    res.json(product);
+    res.json(maskStock(product));
   } catch (error) {
     console.error('Error getting product:', error);
     res.status(500).json({

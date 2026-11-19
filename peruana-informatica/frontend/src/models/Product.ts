@@ -20,6 +20,7 @@ export class Product {
   priceCot?: number;
   priceDis?: number;
   stock: number;
+  stockDisplay?: string;
   category: string;
   codigo_interno?: string;
   rating?: { average: number; count: number };

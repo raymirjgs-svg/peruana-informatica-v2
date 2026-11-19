@@ -3,6 +3,7 @@
 import type { Product } from '@/models/Product';
 import type { CompanySettings } from '@/services/SettingsService';
 import { buildWhatsappLink, priceInquiryMessage } from '@/utils/whatsapp';
+import { formatStockLabel } from '@/lib/product';
 
 interface ProductPurchasePanelProps {
   product: Product;
@@ -99,7 +100,9 @@ export function ProductPurchasePanel({
       <div className="grid grid-cols-2 gap-4 mb-6">
         <div className="bg-gray-50 p-4 rounded-lg">
           <p className="text-sm text-gray-600 mb-1">Stock disponible</p>
-          <p className="text-xl font-bold text-green-600">{product.stock} unidades</p>
+          <p className="text-xl font-bold text-green-600">
+            {formatStockLabel(product.stock, product.stockDisplay)} unidades
+          </p>
         </div>
         <div className="bg-gray-50 p-4 rounded-lg">
           <p className="text-sm text-gray-600 mb-1">Categoría</p>
@@ -125,7 +128,9 @@ export function ProductPurchasePanel({
           >
             +
           </button>
-          <span className="text-sm text-gray-600 ml-2">({product.stock} disponibles)</span>
+          <span className="text-sm text-gray-600 ml-2">
+            ({formatStockLabel(product.stock, product.stockDisplay)} disponibles)
+          </span>
         </div>
       </div>
 

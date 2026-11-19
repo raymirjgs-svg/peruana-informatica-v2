@@ -45,7 +45,7 @@ export function AnnouncementTab({ settings, onSettingChange }: AnnouncementTabPr
                 value={settings.announcement_bar_text}
                 onChange={(e) => onSettingChange('announcement_bar_text', e.target.value)}
                 className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500"
-                placeholder="Ej: ¡Envío gratis solo por hoy!"
+                placeholder="Ej: ¡Atención personalizada por WhatsApp!"
               />
             </div>
 

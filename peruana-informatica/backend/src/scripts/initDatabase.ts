@@ -110,8 +110,8 @@ async function initDatabase() {
           order: 1
         },
         {
-          title: 'Envío Gratis a Todo el Perú',
-          description: 'Recibe tus productos en la comodidad de tu hogar con nuestro servicio de envío gratuito.',
+          title: 'Envío a Todo el Perú',
+          description: 'Recibe tus productos en la comodidad de tu hogar con nuestro servicio de envío a todo el país.',
           buttonText: 'Comprar Ahora',
           buttonUrl: '/products',
           backgroundColor: 'from-green-500 to-green-700',

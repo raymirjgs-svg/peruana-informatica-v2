@@ -335,8 +335,8 @@ export default function ColorDemo() {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                                 <div>
-                                    <h4 className="font-bold text-blue-800">Envío gratis</h4>
-                                    <p className="text-sm text-blue-700">En compras superiores a S/. 100.00</p>
+                                    <h4 className="font-bold text-blue-800">Envío a todo el Perú</h4>
+                                    <p className="text-sm text-blue-700">Consulta cobertura y tarifas por WhatsApp</p>
                                 </div>
                             </div>
                         </div>

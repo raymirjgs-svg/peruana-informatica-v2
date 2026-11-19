@@ -60,7 +60,7 @@ export function ProductGallery({ images, productName, selectedImage, onSelectIma
           ✅ En Stock
         </span>
         <span className="bg-brand-red-100 text-brand-red-800 px-3 py-1 rounded-full text-sm font-medium">
-          🚚 Envío Gratis
+          🚚 Envío a todo el Perú
         </span>
         <span className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-medium">
           🛡️ Garantía

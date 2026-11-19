@@ -86,7 +86,7 @@ export default function SettingsPage() {
 
     // Announcement Bar
     announcement_bar_enabled: 'false',
-    announcement_bar_text: '¡Envío gratis en compras mayores a S/. 500!',
+    announcement_bar_text: 'Soporte técnico por WhatsApp: +51 988 552 455',
     announcement_bar_link: '/products',
     announcement_bar_color: '#1e40af', // blue-800
 
@@ -104,7 +104,7 @@ export default function SettingsPage() {
     // Shipping & Returns
     shipping_standard_title: 'Envío Estándar',
     shipping_standard_subtitle: '2–5 días hábiles · Lima y provincias',
-    shipping_standard_badge: 'GRATIS',
+    shipping_standard_badge: 'Pago en destino',
     shipping_express_title: 'Envío Express',
     shipping_express_subtitle: '24–48 h · Solo Lima Metropolitana',
     shipping_express_badge: 'S/. 15',
@@ -586,7 +586,7 @@ export default function SettingsPage() {
                         value={settings.announcement_bar_text}
                         onChange={(e) => handleSettingChange('announcement_bar_text', e.target.value)}
                         className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500"
-                        placeholder="Ej: ¡Envío gratis solo por hoy!"
+                        placeholder="Ej: ¡Atención personalizada por WhatsApp!"
                       />
                     </div>
 
@@ -817,7 +817,7 @@ export default function SettingsPage() {
                     <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Badge (precio/etiqueta)</label>
                     <input type="text" value={settings.shipping_standard_badge}
                       onChange={e => handleSettingChange('shipping_standard_badge', e.target.value)}
-                      placeholder="GRATIS"
+                      placeholder="Pago en destino"
                       className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500" />
                   </div>
                 </div>

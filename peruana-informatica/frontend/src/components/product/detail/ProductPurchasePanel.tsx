@@ -173,7 +173,7 @@ export function ProductPurchasePanel({
         <h4 className="font-semibold text-brand-red-800 mb-2">🚚 Información de Envío</h4>
         <ul className="text-sm text-brand-red-700 space-y-1">
           <li>• Entrega inmediata en Arequipa y Lima</li>
-          <li>• Envío gratis a todo Lima</li>
+          <li>• Entrega en Lima y provincias</li>
           <li>• Provincias: 2-5 días hábiles</li>
         </ul>
       </div>

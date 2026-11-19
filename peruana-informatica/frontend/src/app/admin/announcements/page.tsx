@@ -106,7 +106,7 @@ function AnnouncementModal({
               value={text}
               onChange={(e) => setText(e.target.value)}
               maxLength={200}
-              placeholder="Ej: Envío gratis en compras mayores a S/. 100"
+              placeholder="Ej: Remates con hasta 70% de descuento"
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500"
             />
             <p className="text-xs text-gray-400 mt-1">{text.length}/200 caracteres</p>

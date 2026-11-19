@@ -144,9 +144,9 @@ export function ProductTabs({ product, activeTab, onTabChange }: ProductTabsProp
                 <h4 className="text-lg font-semibold mb-3 text-green-600">🚚 Opciones de Envío</h4>
                 <div className="space-y-4">
                   <div className="border border-green-200 rounded-lg p-4">
-                    <div className="font-semibold">Envío Estándar - GRATIS</div>
+                    <div className="font-semibold">Envío Estándar - Pago en destino</div>
                     <div className="text-sm text-gray-600">2-5 días hábiles</div>
-                    <div className="text-sm text-gray-600">Para pedidos mayores a S/. 100</div>
+                    <div className="text-sm text-gray-600">Lima y provincias</div>
                   </div>
                   <div className="border border-blue-200 rounded-lg p-4">
                     <div className="font-semibold">Envío Express - S/. 15</div>
@@ -154,7 +154,7 @@ export function ProductTabs({ product, activeTab, onTabChange }: ProductTabsProp
                     <div className="text-sm text-gray-600">Solo Lima Metropolitana</div>
                   </div>
                   <div className="border border-purple-200 rounded-lg p-4">
-                    <div className="font-semibold">Recojo en Tienda - GRATIS</div>
+                    <div className="font-semibold">Recojo en Tienda</div>
                     <div className="text-sm text-gray-600">Disponible en 2 horas</div>
                     <div className="text-sm text-gray-600">Av. Tecnología 123, Lima</div>
                   </div>

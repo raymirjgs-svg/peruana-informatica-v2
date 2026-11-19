@@ -93,6 +93,7 @@ export class Product {
       priceCot: this.priceCot,
       priceDis: this.priceDis,
       stock: this.stock,
+      stockDisplay: this.stockDisplay,
       available: this.isAvailable(),
       image: this.image,
       category: this.category,

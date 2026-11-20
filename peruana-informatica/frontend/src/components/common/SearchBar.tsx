@@ -67,6 +67,12 @@ export function SearchBar() {
                 <div className="relative flex items-center">
                     <input
                         type="text"
+                        aria-label="Buscar productos, marcas y categorías"
+                        role="combobox"
+                        aria-expanded={showDropdown && query.length >= 2}
+                        aria-controls="resultados-busqueda"
+                        aria-autocomplete="list"
+                        autoComplete="off"
                         className="w-full bg-slate-800/50 border border-slate-600 text-white pl-4 pr-12 py-2.5 rounded-full focus:outline-none focus:border-brand-red-500 focus:ring-2 focus:ring-brand-red-500/20 transition-all placeholder:text-gray-400"
                         placeholder="Buscar productos, marcas, categorías..."
                         value={query}
@@ -80,6 +86,7 @@ export function SearchBar() {
                     />
                     <button
                         type="submit"
+                        aria-label="Buscar"
                         className="absolute right-1 top-1/2 -translate-y-1/2 bg-red-600 p-1.5 rounded-full text-white hover:bg-red-700 transition-colors"
                     >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -90,8 +97,15 @@ export function SearchBar() {
             </form>
 
             {/* Dropdown de Resultados */}
+            <div aria-live="polite" className="sr-only">
+                {loading
+                    ? 'Buscando productos'
+                    : query.length >= 2
+                        ? `${results.length} resultado${results.length === 1 ? '' : 's'} encontrado${results.length === 1 ? '' : 's'}`
+                        : ''}
+            </div>
             {showDropdown && (query.length >= 2) && (
-                <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200 border border-gray-100">
+                <div id="resultados-busqueda" role="listbox" aria-label="Resultados de búsqueda" className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200 border border-gray-100">
                     {loading ? (
                         <div className="p-4 text-center text-gray-500">
                             <div className="animate-spin inline-block w-5 h-5 border-2 border-current border-t-transparent text-brand-red-600 rounded-full mr-2"></div>
@@ -103,6 +117,8 @@ export function SearchBar() {
                                 {results.map((product) => (
                                     <Link
                                         key={product.id}
+                                        role="option"
+                                        aria-selected="false"
                                         href={`/products/${product.slug}`}
                                         className="flex items-center gap-4 p-3 hover:bg-gray-50 transition-colors group border-b border-gray-50 last:border-0"
                                         onClick={() => setShowDropdown(false)}

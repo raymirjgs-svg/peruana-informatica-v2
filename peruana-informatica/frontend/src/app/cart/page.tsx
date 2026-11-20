@@ -546,13 +546,15 @@ export default function CartPage() {
                     </span>
                     Selecciona tu método de pago
                   </h2>
-                  <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                  <div role="radiogroup" aria-label="Método de pago" className="grid grid-cols-2 md:grid-cols-5 gap-3">
                     {PAYMENT_METHOD_CATALOG
                       .filter((method) => paymentMethods.includes(method.value))
                       .map((method) => (
                       <button
                         key={method.value}
                         type="button"
+                        role="radio"
+                        aria-checked={paymentMethod === method.value}
                         onClick={() => setPaymentMethod(method.value as PaymentMethod)}
                         className={`relative p-4 rounded-xl border-2 transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1 ${paymentMethod === method.value
                           ? 'border-brand-red-500 bg-brand-red-50 shadow-md ring-2 ring-brand-red-200'
@@ -718,11 +720,26 @@ export default function CartPage() {
                     )}
                     <div className="flex items-center gap-4 mt-2">
                       <div className="flex items-center border rounded">
-                        <button onClick={() => updateQuantity(item.product.id, Math.max(1, item.quantity - 1))} className="px-3 py-1">-</button>
-                        <span className="px-3">{item.quantity}</span>
-                        <button onClick={() => updateQuantity(item.product.id, item.quantity + 1)} className="px-3 py-1">+</button>
+                        <button
+                          type="button"
+                          aria-label={`Quitar una unidad de ${item.product.name}`}
+                          onClick={() => updateQuantity(item.product.id, Math.max(1, item.quantity - 1))}
+                          className="px-3 py-1"
+                        >-</button>
+                        <span className="px-3" aria-live="polite">{item.quantity}</span>
+                        <button
+                          type="button"
+                          aria-label={`Agregar una unidad de ${item.product.name}`}
+                          onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
+                          className="px-3 py-1"
+                        >+</button>
                       </div>
-                      <button onClick={() => removeItem(item.product.id)} className="text-red-500">Eliminar</button>
+                      <button
+                        type="button"
+                        aria-label={`Eliminar ${item.product.name} del carrito`}
+                        onClick={() => removeItem(item.product.id)}
+                        className="text-red-500"
+                      >Eliminar</button>
                     </div>
                   </div>
                   <div className="font-bold">

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { SearchBar } from './SearchBar';
@@ -60,6 +60,20 @@ export function Header() {
     };
   }, [mobileMenuOpen]);
 
+  // El menu movil se cierra con Escape y devuelve el foco al boton que lo abrio
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setMobileMenuOpen(false);
+        menuButtonRef.current?.focus();
+      }
+    };
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [mobileMenuOpen]);
+
   return (
     <div className="sticky top-0 z-50 flex flex-col transition-all duration-300 shadow-xl">
       {/* Announcement ticker */}
@@ -74,6 +88,11 @@ export function Header() {
             <div className="flex items-center gap-3 min-w-fit">
               {/* Mobile Menu Button */}
               <button
+                ref={menuButtonRef}
+                type="button"
+                aria-label={mobileMenuOpen ? 'Cerrar menú' : 'Abrir menú'}
+                aria-expanded={mobileMenuOpen}
+                aria-controls="menu-movil"
                 className="md:hidden p-2 -ml-2 text-gray-300 hover:text-white"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               >
@@ -104,6 +123,10 @@ export function Header() {
             <div className="flex items-center gap-2 min-w-fit">
               {/* Mobile Search Toggle */}
               <button
+                type="button"
+                aria-label={mobileSearchOpen ? 'Cerrar búsqueda' : 'Buscar productos'}
+                aria-expanded={mobileSearchOpen}
+                aria-controls="busqueda-movil"
                 className="md:hidden p-2 text-gray-300 hover:text-white"
                 onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
               >
@@ -161,7 +184,7 @@ export function Header() {
 
           {/* Mobile Search Bar */}
           {mobileSearchOpen && (
-            <div className="md:hidden mt-3 pb-2 animate-in fade-in slide-in-from-top-2">
+            <div id="busqueda-movil" className="md:hidden mt-3 pb-2 animate-in fade-in slide-in-from-top-2">
               <SearchBar />
             </div>
           )}
@@ -231,11 +254,17 @@ export function Header() {
 
       {/* Mobile Menu Overlay */}
       {mobileMenuOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-950 md:hidden h-[100dvh] flex flex-col animate-in fade-in duration-200">
+        <div
+          id="menu-movil"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Menú de navegación"
+          className="fixed inset-0 z-50 bg-slate-950 md:hidden h-[100dvh] flex flex-col animate-in fade-in duration-200"
+        >
           {/* Sticky Header */}
           <div className="flex justify-between items-center p-4 border-b border-gray-800 bg-slate-950 sticky top-0 z-10 shrink-0">
             <h2 className="text-xl font-bold text-white">Menú</h2>
-            <button onClick={() => setMobileMenuOpen(false)} className="text-gray-400 hover:text-white p-2 rounded-lg hover:bg-white/10 transition-colors">
+            <button type="button" aria-label="Cerrar menú" onClick={() => setMobileMenuOpen(false)} className="text-gray-400 hover:text-white p-2 rounded-lg hover:bg-white/10 transition-colors">
               <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
           </div>
@@ -251,6 +280,8 @@ export function Header() {
               {/* Categories Accordion */}
               <div className="border-b border-gray-800/50 pb-2">
                 <button
+                  type="button"
+                  aria-expanded={mobileCategoriesOpen}
                   onClick={() => setMobileCategoriesOpen(!mobileCategoriesOpen)}
                   className="w-full flex justify-between items-center text-lg font-medium text-gray-300 hover:text-white py-3"
                 >

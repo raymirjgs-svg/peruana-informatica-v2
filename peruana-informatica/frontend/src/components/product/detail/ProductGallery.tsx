@@ -32,6 +32,9 @@ export function ProductGallery({ images, productName, selectedImage, onSelectIma
         {images.map((img, index) => (
           <button
             key={index}
+            type="button"
+            aria-label={`Ver imagen ${index + 1} de ${images.length} de ${productName}`}
+            aria-pressed={selectedImage === index}
             onClick={() => onSelectImage(index)}
             className={`w-16 h-16 rounded-lg border-2 flex items-center justify-center text-2xl transition ${selectedImage === index
               ? 'border-brand-red-500 bg-brand-red-50'

@@ -47,10 +47,16 @@ export function ProductTabs({ product, activeTab, onTabChange }: ProductTabsProp
   return (
     <div className="bg-white rounded-xl shadow-lg mb-8">
       <div className="border-b border-gray-200">
-        <nav className="flex space-x-8 px-8">
+        <nav role="tablist" aria-label="Información del producto" className="flex space-x-8 px-8">
           {TABS.map((tab) => (
             <button
               key={tab.id}
+              type="button"
+              role="tab"
+              id={`tab-${tab.id}`}
+              aria-selected={activeTab === tab.id}
+              aria-controls={`panel-${tab.id}`}
+              tabIndex={activeTab === tab.id ? 0 : -1}
               onClick={() => onTabChange(tab.id)}
               className={`py-4 px-2 border-b-2 font-medium text-sm transition ${activeTab === tab.id
                 ? 'border-brand-red-500 text-brand-red-600'
@@ -63,7 +69,7 @@ export function ProductTabs({ product, activeTab, onTabChange }: ProductTabsProp
         </nav>
       </div>
 
-      <div className="p-8">
+      <div className="p-8" role="tabpanel" id={`panel-${activeTab}`} aria-labelledby={`tab-${activeTab}`}>
         {activeTab === 'description' && (
           <div>
             <h3 className="text-2xl font-bold mb-4">Descripción del Producto</h3>

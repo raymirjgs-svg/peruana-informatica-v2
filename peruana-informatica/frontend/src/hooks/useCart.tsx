@@ -169,9 +169,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
   };
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
+  // El total usa el mismo precio que ve el cliente en la ficha (product.price)
+  // y que cobra el servidor. price_web es un precio distinto del ERP y hacia
+  // que el carrito mostrara un total diferente al que se cobra.
   const totalPrice = items.reduce((sum, item) => {
-    const price = Number(item.product.priceWeb) > 0 ? Number(item.product.priceWeb) : Number(item.product.price);
-    return sum + (price * item.quantity);
+    return sum + (Number(item.product.price || 0) * item.quantity);
   }, 0);
 
   return (

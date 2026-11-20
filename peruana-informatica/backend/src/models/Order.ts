@@ -11,6 +11,7 @@ export class Order extends Model {
     public user_id?: number; // Relación con usuario registrado
     public tracking_code?: string | null; // Código opaco para seguimiento público
     public tracking_code_sent_at?: Date | null; // Control de envío del código
+    public idempotency_key?: string | null; // Evita pedidos duplicados por doble clic
     public total_amount!: number;
     public status!: string; // 'pending', 'processed', 'cancelled'
     public coupon_code?: string; // Cupón aplicado al pedido
@@ -84,6 +85,11 @@ Order.init(
         tracking_code_sent_at: {
             type: DataTypes.DATE,
             allowNull: true,
+        },
+        idempotency_key: {
+            type: DataTypes.STRING(64),
+            allowNull: true,
+            unique: true,
         },
         total_amount: {
             type: DataTypes.DECIMAL(10, 2),

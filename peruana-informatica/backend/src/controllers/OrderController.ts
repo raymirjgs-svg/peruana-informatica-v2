@@ -23,7 +23,19 @@ interface OrderCreationValues {
     tax_address?: string | null;
     coupon_code?: string | null;
     discount_amount: number;
+    idempotency_key?: string | null;
 }
+
+/**
+ * Clave de idempotencia del cliente: un mismo intento de compra, incluso si
+ * se repite por doble clic, produce un unico pedido.
+ */
+const readIdempotencyKey = (raw: unknown): string | null => {
+    const key = String(raw || '').trim();
+    if (!key) return null;
+    if (!/^[A-Za-z0-9_-]{8,64}$/.test(key)) return null;
+    return key;
+};
 
 async function createOrderWithTrackingCode(
     values: OrderCreationValues,
@@ -47,9 +59,28 @@ async function createOrderWithTrackingCode(
 
 export const createOrder = async (req: Request, res: Response) => {
     const t = await sequelize.transaction();
+    const idempotencyKey = readIdempotencyKey(req.body.idempotency_key);
 
     try {
         const { customer_name, customer_email, customer_phone, customer_document, items } = req.body;
+
+        // ── Idempotencia ──────────────────────────────────────────────────
+        // Si la clave ya se uso, el pedido ya existe: se devuelve el mismo
+        // en vez de crear otro (doble clic o reintento del navegador).
+        if (idempotencyKey) {
+            const existing = await Order.findOne({ where: { idempotency_key: idempotencyKey } });
+            if (existing) {
+                await t.rollback();
+                return res.status(200).json({
+                    success: true,
+                    message: 'El pedido ya fue registrado',
+                    order_id: existing.id,
+                    tracking_code: existing.tracking_code,
+                    status: existing.status,
+                    duplicate: true,
+                });
+            }
+        }
 
         if (!items || !Array.isArray(items) || items.length === 0) {
             await t.rollback();
@@ -214,7 +245,8 @@ export const createOrder = async (req: Request, res: Response) => {
             business_name: businessName,
             tax_address: taxAddress,
             coupon_code: couponCode,
-            discount_amount: discountAmount
+            discount_amount: discountAmount,
+            idempotency_key: idempotencyKey,
         }, t);
 
         if (appliedCoupon) {
@@ -261,6 +293,25 @@ export const createOrder = async (req: Request, res: Response) => {
 
     } catch (error) {
         await t.rollback();
+
+        // Dos clics simultaneos con la misma clave: el indice unico bloquea
+        // el segundo INSERT. Se devuelve el pedido que gano la carrera.
+        const isUniqueConflict =
+            error instanceof Error && error.name === 'SequelizeUniqueConstraintError';
+        if (isUniqueConflict && idempotencyKey) {
+            const existing = await Order.findOne({ where: { idempotency_key: idempotencyKey } });
+            if (existing) {
+                return res.status(200).json({
+                    success: true,
+                    message: 'El pedido ya fue registrado',
+                    order_id: existing.id,
+                    tracking_code: existing.tracking_code,
+                    status: existing.status,
+                    duplicate: true,
+                });
+            }
+        }
+
         console.error('Error creating order:', error);
         return res.status(500).json({ error: 'Error al procesar el pedido' });
     }

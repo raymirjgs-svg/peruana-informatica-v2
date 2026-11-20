@@ -3,7 +3,7 @@
 import { useCart } from '@/hooks/useCart';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import {
@@ -59,6 +59,19 @@ export default function CartPage() {
   // Coupon State
   const [coupon, setCoupon] = useState<Coupon | null>(null);
   const [discountAmount, setDiscountAmount] = useState(0);
+
+  // Clave de idempotencia: la misma clave en cada reintento del pedido, asi
+  // un doble clic no genera dos pedidos. Se renueva al terminar la compra.
+  const idempotencyKeyRef = useRef<string>('');
+  const getIdempotencyKey = () => {
+    if (!idempotencyKeyRef.current) {
+      idempotencyKeyRef.current =
+        typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+          ? crypto.randomUUID()
+          : `k-${Date.now()}-${Math.random().toString(36).slice(2, 12)}`;
+    }
+    return idempotencyKeyRef.current;
+  };
 
   // Fetch Checkout Mode
   useEffect(() => {
@@ -251,6 +264,8 @@ export default function CartPage() {
         coupon_code: coupon?.code,
         discount_amount: discountAmount,
         total_amount: finalTotal,
+        // Misma clave en los reintentos: el servidor no crea dos pedidos.
+        idempotency_key: getIdempotencyKey(),
         // Datos de facturacion: los necesita el vendedor para emitir la
         // boleta o factura desde el ERP.
         invoice_type: invoiceType,
@@ -275,6 +290,8 @@ export default function CartPage() {
         setOrderId(data.order_id);
         setOrderTotal(finalTotal);
         setTrackingCode(data.tracking_code || null);
+        // Compra terminada: la siguiente compra usa una clave nueva.
+        idempotencyKeyRef.current = '';
 
         if (data.status === 'pending_approval' || checkoutMode === 'approval') {
           setStep('success');

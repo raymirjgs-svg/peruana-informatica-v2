@@ -4,15 +4,6 @@ import { useState } from 'react';
 import { API_CONFIG } from '@/config/api';
 
 export interface TrackingPaymentDetails {
-    transferencia?: {
-        holder?: string;
-        bcp_account?: string;
-        bcp_cci?: string;
-        ibk_account?: string;
-        ibk_cci?: string;
-    };
-    yape?: { phone?: string };
-    plin?: { phone?: string };
     mercadopago?: { enabled: boolean };
 }
 
@@ -26,10 +17,6 @@ interface PaymentPanelProps {
 
 const methodLabels: Record<string, string> = {
     mercadopago: 'Mercado Pago',
-    transferencia: 'Transferencia bancaria',
-    yape: 'Yape',
-    plin: 'Plin',
-    efectivo: 'Efectivo en tienda',
 };
 
 /**
@@ -47,8 +34,6 @@ export default function PaymentPanel({
 }: PaymentPanelProps) {
     const [busy, setBusy] = useState<string | null>(null);
     const [message, setMessage] = useState<{ type: 'ok' | 'error'; text: string } | null>(null);
-    const [proofFile, setProofFile] = useState<File | null>(null);
-    const [proofMethod, setProofMethod] = useState<string>('transferencia');
 
     const postToTracking = async (path: string, body?: FormData) => {
         const response = await fetch(
@@ -84,44 +69,7 @@ export default function PaymentPanel({
         }
     };
 
-    const handleProofUpload = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!proofFile) {
-            setMessage({ type: 'error', text: 'Selecciona el archivo de tu comprobante.' });
-            return;
-        }
-
-        setBusy('proof');
-        setMessage(null);
-        try {
-            const formData = new FormData();
-            formData.append('payment_proof', proofFile);
-            formData.append('payment_method', proofMethod);
-
-            const { response, payload } = await postToTracking('/payment-proof', formData);
-            if (!response.ok) {
-                setMessage({
-                    type: 'error',
-                    text: payload?.message || 'No pudimos registrar tu comprobante.',
-                });
-                return;
-            }
-            setMessage({ type: 'ok', text: payload?.message || 'Comprobante recibido.' });
-            setProofFile(null);
-            onUpdated();
-        } catch {
-            setMessage({ type: 'error', text: 'Error de conexión. Inténtalo nuevamente.' });
-        } finally {
-            setBusy(null);
-        }
-    };
-
     const hasMercadoPago = methods.includes('mercadopago') && details.mercadopago?.enabled !== false;
-    const hasProofMethods = methods.some((method) =>
-        ['transferencia', 'yape', 'plin'].includes(method)
-    );
-    const walletPhone =
-        proofMethod === 'yape' ? details.yape?.phone : proofMethod === 'plin' ? details.plin?.phone : undefined;
 
     return (
         <div className="mt-6 rounded-2xl border-2 border-brand-red-200 bg-brand-red-50/40 p-6">
@@ -158,74 +106,7 @@ export default function PaymentPanel({
                     </button>
                 )}
 
-                {hasProofMethods && (
-                    <div className="rounded-xl border border-gray-200 bg-white p-4">
-                        <p className="text-sm font-semibold text-gray-800">Otherí pago por {methodLabels[proofMethod]}</p>
-
-                        {proofMethod === 'transferencia' && details.transferencia && (
-                            <dl className="mt-3 space-y-1 text-sm text-gray-700">
-                                {details.transferencia.holder && (
-                                    <div><dt className="inline font-semibold">Titular: </dt><dd className="inline">{details.transferencia.holder}</dd></div>
-                                )}
-                                {details.transferencia.bcp_account && (
-                                    <div><dt className="inline font-semibold">BCP cuenta: </dt><dd className="inline">{details.transferencia.bcp_account}</dd></div>
-                                )}
-                                {details.transferencia.bcp_cci && (
-                                    <div><dt className="inline font-semibold">BCP CCI: </dt><dd className="inline">{details.transferencia.bcp_cci}</dd></div>
-                                )}
-                                {details.transferencia.ibk_account && (
-                                    <div><dt className="inline font-semibold">Interbank cuenta: </dt><dd className="inline">{details.transferencia.ibk_account}</dd></div>
-                                )}
-                                {details.transferencia.ibk_cci && (
-                                    <div><dt className="inline font-semibold">Interbank CCI: </dt><dd className="inline">{details.transferencia.ibk_cci}</dd></div>
-                                )}
-                            </dl>
-                        )}
-
-                        {(proofMethod === 'yape' || proofMethod === 'plin') && walletPhone && (
-                            <p className="mt-3 text-sm text-gray-700">
-                                Número: <strong>{walletPhone}</strong>
-                            </p>
-                        )}
-
-                        <form onSubmit={handleProofUpload} className="mt-4 space-y-3">
-                            <select
-                                value={proofMethod}
-                                onChange={(e) => setProofMethod(e.target.value)}
-                                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-                            >
-                                {methods
-                                    .filter((method) => ['transferencia', 'yape', 'plin'].includes(method))
-                                    .map((method) => (
-                                        <option key={method} value={method}>{methodLabels[method]}</option>
-                                    ))}
-                            </select>
-
-                            <input
-                                type="file"
-                                accept="image/jpeg,image/png,image/webp,application/pdf"
-                                onChange={(e) => setProofFile(e.target.files?.[0] || null)}
-                                className="block w-full text-sm text-gray-700 file:mr-3 file:rounded-lg file:border-0 file:bg-gray-100 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-gray-700"
-                            />
-
-                            <button
-                                type="submit"
-                                disabled={busy !== null}
-                                className="w-full rounded-xl bg-gray-900 px-6 py-3 text-sm font-bold text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-60"
-                            >
-                                {busy === 'proof' ? 'Enviando...' : 'Enviar comprobante'}
-                            </button>
-                        </form>
-                    </div>
-                )}
-
-                {methods.includes('efectivo') && (
-                    <p className="rounded-xl border border-gray-200 bg-white p-4 text-sm text-gray-700">
-                        Puedes pagar en efectivo en nuestra tienda. Te confirmaremos por WhatsApp la dirección exacta.
-                    </p>
-                )}
-
-                {!hasMercadoPago && !hasProofMethods && !methods.includes('efectivo') && (
+                {!hasMercadoPago && (
                     <p className="rounded-xl border border-gray-200 bg-white p-4 text-sm text-gray-700">
                         Por ahora el pago en línea no está disponible. Escríbenos por WhatsApp para coordinar tu pago.
                     </p>

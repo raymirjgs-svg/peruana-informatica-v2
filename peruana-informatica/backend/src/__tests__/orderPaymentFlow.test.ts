@@ -3,7 +3,6 @@ import request from 'supertest';
 import { Order } from '../models/Order';
 import {
     createPaymentPreferenceByTrackingCode,
-    uploadPaymentProofByTrackingCode,
 } from '../controllers/OrderTrackingController';
 
 jest.mock('../models/Order', () => ({
@@ -61,11 +60,6 @@ describe('Flujo de pago por codigo de seguimiento', () => {
         app = express();
         app.use(express.json());
         app.post('/api/orders/track/:code/payment-preference', createPaymentPreferenceByTrackingCode);
-        app.post('/api/orders/track/:code/payment-proof', (req, res, next) => {
-            // multer simulado: el archivo ya llega en req.file
-            (req as any).file = { filename: 'comprobante.png' };
-            next();
-        }, uploadPaymentProofByTrackingCode);
     });
 
     beforeEach(() => {
@@ -120,29 +114,16 @@ describe('Flujo de pago por codigo de seguimiento', () => {
         expect(mockedFindOne).not.toHaveBeenCalled();
     });
 
-    it('registra el comprobante manteniendo el pedido aprobado', async () => {
-        const order: any = { ...baseOrder, save: jest.fn(async function (this: any) { return this; }) };
-        mockedFindOne.mockResolvedValue(order);
-
-        const response = await request(app)
-            .post('/api/orders/track/PI-ABC234-DEF567/payment-proof')
-            .send({ payment_method: 'transferencia' })
-            .expect(200);
-
-        expect(response.body.success).toBe(true);
-        expect(order.payment_proof).toBe('/payment-proofs/comprobante.png');
-        expect(order.payment_method).toBe('transferencia');
-        expect(order.payment_status).toBe('pending');
-        // El pedido sigue aprobado (no vuelve a 'pending')
-        expect(order.status).toBe('processed');
-        expect(order.save).toHaveBeenCalled();
-    });
-
-    it('no acepta un segundo comprobante si ya existe uno', async () => {
-        mockedFindOne.mockResolvedValue({ ...baseOrder, payment_proof: '/payment-proofs/previo.png' });
+    it('no expone un endpoint para subir comprobantes: el pago es solo con Mercado Pago', async () => {
+        // El flujo legacy (subir comprobante) fue eliminado: el unico metodo
+        // de cobro es Mercado Pago.
+        mockedFindOne.mockResolvedValue({ ...baseOrder });
 
         await request(app)
             .post('/api/orders/track/PI-ABC234-DEF567/payment-proof')
-            .expect(409);
+            .send({ payment_method: 'transferencia' })
+            .expect(404);
+
+        expect(mockedFindOne).not.toHaveBeenCalled();
     });
 });

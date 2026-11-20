@@ -15,8 +15,6 @@ interface PaymentSettings {
   payment_niubiz_enabled: string;
   niubiz_merchant_id: string;
   niubiz_secret_key: string;
-  payment_transfer_enabled: string;
-  payment_cod_enabled: string;
   payment_mode: string;
 }
 
@@ -27,8 +25,6 @@ const DEFAULTS: PaymentSettings = {
   payment_niubiz_enabled: '0',
   niubiz_merchant_id: '',
   niubiz_secret_key: '',
-  payment_transfer_enabled: '1',
-  payment_cod_enabled: '1',
   payment_mode: 'test',
 };
 
@@ -327,32 +323,13 @@ export default function PaymentSettingsPage() {
             )}
           </div>
 
-          {/* Métodos manuales */}
+          {/* Metodo de pago */}
           <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-            <h2 className="font-semibold text-gray-900 dark:text-white mb-4">Otros métodos de pago</h2>
-            <div className="space-y-3">
-              {[
-                { key: 'payment_transfer_enabled' as const, label: 'Transferencia bancaria', desc: 'El cliente sube comprobante y espera confirmación manual' },
-                { key: 'payment_cod_enabled' as const, label: 'Pago contra entrega', desc: 'El cliente paga en efectivo al recibir el pedido' },
-              ].map(item => (
-                <div key={item.key} className="flex items-center justify-between p-4 rounded-lg border border-gray-100 dark:border-gray-700">
-                  <div>
-                    <div className="font-medium text-gray-900 dark:text-white text-sm">{item.label}</div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">{item.desc}</div>
-                  </div>
-                  <button
-                    onClick={() => toggle(item.key)}
-                    className={`relative w-12 h-6 rounded-full transition-colors flex-shrink-0 ${
-                      settings[item.key] === '1' ? 'bg-green-500' : 'bg-gray-300 dark:bg-gray-600'
-                    }`}
-                  >
-                    <span className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-transform ${
-                      settings[item.key] === '1' ? 'translate-x-7' : 'translate-x-1'
-                    }`} />
-                  </button>
-                </div>
-              ))}
-            </div>
+            <h2 className="font-semibold text-gray-900 dark:text-white mb-2">Metodo de pago</h2>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Todo el cobro se realiza por <strong>Mercado Pago</strong>. Los metodos manuales
+              (transferencia con comprobante, pago contra entrega) se retiraron del sitio.
+            </p>
           </div>
 
           {/* Cómo obtener las claves */}

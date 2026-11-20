@@ -91,14 +91,6 @@ export default function SettingsPage() {
     announcement_bar_color: '#1e40af', // blue-800
 
     // Payment Methods
-    payment_bcp_account: '',
-    payment_bcp_cci: '',
-    payment_ibk_account: '',
-    payment_ibk_cci: '',
-    payment_holder: '',
-    payment_yape_phone: '',
-    payment_plin_phone: '',
-    payment_methods_enabled: 'mercadopago',
     mp_access_token: '',
 
     // Shipping & Returns
@@ -632,31 +624,12 @@ export default function SettingsPage() {
                 <p className="text-gray-500 dark:text-gray-400">Configura los datos bancarios y métodos disponibles para los clientes.</p>
               </div>
 
-              {/* Enabled methods */}
+              {/* Metodo de pago */}
               <div className="mb-8">
-                <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Métodos habilitados</h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  {(['mercadopago', 'transferencia', 'yape', 'plin', 'tarjeta'] as const).map((method) => {
-                    const enabled = settings.payment_methods_enabled.split(',').map(m => m.trim()).includes(method);
-                    const labels: Record<string, string> = { mercadopago: 'Mercado Pago', transferencia: 'Transferencia', yape: 'Yape', plin: 'Plin', tarjeta: 'Tarjeta' };
-                    const toggle = () => {
-                      const current = settings.payment_methods_enabled.split(',').map(m => m.trim()).filter(Boolean);
-                      const updated = enabled ? current.filter(m => m !== method) : [...current, method];
-                      handleSettingChange('payment_methods_enabled', updated.join(','));
-                    };
-                    return (
-                      <button
-                        key={method}
-                        onClick={toggle}
-                        className={`flex items-center justify-between p-4 border-2 rounded-xl transition-all ${enabled
-                          ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200'
-                          : 'border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800'}`}
-                      >
-                        <span className="font-semibold">{labels[method]}</span>
-                        {enabled ? <CheckCircle className="h-5 w-5 text-blue-600" /> : <div className="h-5 w-5 rounded-full border-2 border-gray-300 dark:border-gray-600" />}
-                      </button>
-                    );
-                  })}
+                <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Metodo de pago</h3>
+                <div className="rounded-xl border-2 border-brand-red-500 bg-brand-red-50 dark:bg-brand-red-900/20 p-4 flex items-center justify-between">
+                  <span className="font-semibold text-brand-red-800 dark:text-brand-red-200">Mercado Pago</span>
+                  <span className="text-xs text-brand-red-700 dark:text-brand-red-300">Unico metodo de cobro</span>
                 </div>
               </div>
 
@@ -691,99 +664,6 @@ export default function SettingsPage() {
                 )}
               </div>
 
-              {/* Bank transfer data */}
-              <div className="mb-6">
-                <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Datos para Transferencia Bancaria</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Titular / Beneficiario</label>
-                    <input
-                      type="text"
-                      value={settings.payment_holder}
-                      onChange={(e) => handleSettingChange('payment_holder', e.target.value)}
-                      placeholder="Nombre del titular"
-                      className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div className="md:col-span-2">
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">BCP</p>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">N° de Cuenta BCP</label>
-                        <input
-                          type="text"
-                          value={settings.payment_bcp_account}
-                          onChange={(e) => handleSettingChange('payment_bcp_account', e.target.value)}
-                          placeholder="Ej: 193-12345678-0-12"
-                          className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">CCI BCP</label>
-                        <input
-                          type="text"
-                          value={settings.payment_bcp_cci}
-                          onChange={(e) => handleSettingChange('payment_bcp_cci', e.target.value)}
-                          placeholder="Ej: 00219300123456780123"
-                          className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="md:col-span-2">
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">Interbank</p>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">N° de Cuenta Interbank</label>
-                        <input
-                          type="text"
-                          value={settings.payment_ibk_account}
-                          onChange={(e) => handleSettingChange('payment_ibk_account', e.target.value)}
-                          placeholder="Ej: 200-12345678-9"
-                          className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">CCI Interbank</label>
-                        <input
-                          type="text"
-                          value={settings.payment_ibk_cci}
-                          onChange={(e) => handleSettingChange('payment_ibk_cci', e.target.value)}
-                          placeholder="Ej: 00320012345678901234"
-                          className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Yape / Plin */}
-              <div>
-                <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Datos para Yape / Plin</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Número Yape</label>
-                    <input
-                      type="text"
-                      value={settings.payment_yape_phone}
-                      onChange={(e) => handleSettingChange('payment_yape_phone', e.target.value)}
-                      placeholder="Ej: 999 999 999"
-                      className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Número Plin</label>
-                    <input
-                      type="text"
-                      value={settings.payment_plin_phone}
-                      onChange={(e) => handleSettingChange('payment_plin_phone', e.target.value)}
-                      placeholder="Ej: 999 999 999"
-                      className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                </div>
-              </div>
             </div>
           )}
 

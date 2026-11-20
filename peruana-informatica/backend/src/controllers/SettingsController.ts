@@ -9,14 +9,6 @@ import { getPublicPaymentMethods } from '../services/PaymentSettingsService';
  */
 const PUBLIC_SETTING_KEYS = new Set([
     'checkout_mode',
-    'payment_methods_enabled',
-    'payment_holder',
-    'payment_bcp_account',
-    'payment_bcp_cci',
-    'payment_ibk_account',
-    'payment_ibk_cci',
-    'payment_yape_phone',
-    'payment_plin_phone',
     'primary_color',
     'secondary_color',
     'return_policy_lines',

@@ -10,9 +10,6 @@ import {
   User,
   CreditCard,
   CheckCircle,
-  Banknote,
-  ArrowRightLeft,
-  Smartphone,
   Search,
   FileText,
   Home,
@@ -26,30 +23,17 @@ import { type Coupon } from '@/services/CouponService';
 import { getProductImageUrl } from '@/utils/images';
 import { buildWhatsappLink, hasPublishedPrice, priceInquiryMessage } from '@/utils/whatsapp';
 
-type PaymentMethod = 'efectivo' | 'transferencia' | 'yape' | 'plin' | 'mercadopago';
+type PaymentMethod = 'mercadopago';
 type InvoiceType = 'boleta' | 'factura';
 
 interface PaymentMethodsResponse {
   methods: string[];
   details: {
-    transferencia?: {
-      holder?: string;
-      bcp_account?: string;
-      bcp_cci?: string;
-      ibk_account?: string;
-      ibk_cci?: string;
-    };
-    yape?: { phone?: string };
-    plin?: { phone?: string };
     mercadopago?: { enabled: boolean };
   };
 }
 
 const PAYMENT_METHOD_CATALOG: { value: PaymentMethod; label: string; desc: string }[] = [
-  { value: 'efectivo', label: 'Efectivo', desc: 'Pago en tienda' },
-  { value: 'transferencia', label: 'Transferencia', desc: 'BCP / Interbank' },
-  { value: 'yape', label: 'Yape', desc: 'Pago rápido' },
-  { value: 'plin', label: 'Plin', desc: 'Pago móvil' },
   { value: 'mercadopago', label: 'MercadoPago', desc: 'Tarjetas y más' }
 ];
 
@@ -104,7 +88,6 @@ export default function CartPage() {
         const data = payload?.data || payload;
         const methods: string[] = Array.isArray(data?.methods) ? data.methods : [];
         setPaymentMethods(methods);
-        setPaymentDetails(data?.details || {});
         // Selecciona el primer metodo habilitado
         if (methods.length > 0) {
           setPaymentMethod((current) => (methods.includes(current) ? current : (methods[0] as PaymentMethod)));
@@ -152,30 +135,18 @@ export default function CartPage() {
 
 
   // Datos de pago y facturación
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('efectivo');
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('mercadopago');
   // Metodos habilitados por el administrador (Admin > Ajustes > Pago).
   const [paymentMethods, setPaymentMethods] = useState<string[]>([]);
-  const [paymentDetails, setPaymentDetails] = useState<PaymentMethodsResponse['details']>({});
   const [invoiceType, setInvoiceType] = useState<InvoiceType>('boleta');
   const [invoiceData, setInvoiceData] = useState({
     ruc: '',
     business_name: '',
     tax_address: ''
   });
-  const [paymentProof, setPaymentProof] = useState<File | null>(null);
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  // Iconos SVG para métodos de pago
-  const PaymentIcons = {
-    efectivo: <Banknote className="w-8 h-8" />,
-    transferencia: <ArrowRightLeft className="w-8 h-8" />,
-    tarjeta: <CreditCard className="w-8 h-8" />,
-    yape: <Smartphone className="w-8 h-8" />,
-    plin: <Smartphone className="w-8 h-8" />,
-    mercadopago: <CreditCard className="w-8 h-8 text-brand-red-500" />
-  };
 
   // Componente de Barra de Progreso Mejorada
   const ProgressBar = ({ currentStep }: { currentStep: string }) => {
@@ -324,39 +295,25 @@ export default function CartPage() {
   const handlePaymentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (paymentMethod === 'mercadopago') {
-      setIsLoading(true);
-      try {
-        const { init_point } = await import('@/services/PaymentService').then(m => m.paymentService.createPreferenceForOrder(orderId!, trackingCode || undefined));
-        clearCart();
-        window.location.href = init_point;
-        return;
-      } catch (e: any) {
-        setError(e.message || 'Error al conectar con MercadoPago');
-        setIsLoading(false);
-        return;
-      }
-    }
-
-    // Validación factura
+    // Validacion factura
     if (invoiceType === 'factura') {
       const rucClean = invoiceData.ruc.replace(/\D/g, '');
       if (rucClean.length !== 11) {
-        setError('El RUC debe tener exactamente 11 dígitos');
+        setError('El RUC debe tener exactamente 11 digitos');
         return;
       }
       if (!invoiceData.business_name.trim()) {
-        setError('Debe ingresar la Razón Social');
+        setError('Debe ingresar la Razon Social');
         return;
       }
       if (!invoiceData.tax_address.trim()) {
-        setError('Debe ingresar la Dirección Fiscal');
+        setError('Debe ingresar la Direccion Fiscal');
         return;
       }
     }
 
-    if (paymentMethod !== 'efectivo' && !paymentProof) {
-      setError('Debe subir un comprobante de pago');
+    if (paymentMethod !== 'mercadopago') {
+      setError('Por ahora solo aceptamos pago con Mercado Pago.');
       return;
     }
 
@@ -364,47 +321,20 @@ export default function CartPage() {
     setError(null);
 
     try {
-      // El pago (Mercado Pago o comprobante) se hace contra el codigo de
-      // seguimiento: nunca contra el id numerico del pedido.
-      if (!trackingCode) {
-        setError('No pudimos obtener el código de seguimiento. Vuelve al carrito e inténtalo de nuevo.');
+      // El cobro se completa en Mercado Pago. El pedido ya existe y los datos
+      // de facturacion se enviaron al crearlo.
+      if (!orderId) {
+        setError('No pudimos identificar el pedido. Vuelve al carrito e intentalo de nuevo.');
         setIsLoading(false);
         return;
       }
 
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-      const formData = new FormData();
-      formData.append('payment_method', paymentMethod);
-      formData.append('invoice_type', invoiceType);
-
-      if (paymentProof) {
-        formData.append('payment_proof', paymentProof);
-      }
-
-      if (invoiceType === 'factura') {
-        formData.append('ruc', invoiceData.ruc);
-        formData.append('business_name', invoiceData.business_name);
-        formData.append('tax_address', invoiceData.tax_address);
-      }
-
-      const response = await fetch(
-        `${apiUrl}/api/orders/track/${encodeURIComponent(trackingCode)}/payment-proof`,
-        {
-          method: 'POST',
-          body: formData
-        }
-      );
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setStep('success');
-      } else {
-        setError(data.message || data.error || 'No se pudo procesar el pago');
-      }
+      const { init_point } = await import('@/services/PaymentService').then(m => m.paymentService.createPreferenceForOrder(orderId!, trackingCode || undefined));
+      clearCart();
+      window.location.href = init_point;
+      return;
     } catch (err: any) {
-      setError(err.message || 'Error de conexión. Por favor intente de nuevo.');
-    } finally {
+      setError(err.message || 'Error al conectar con MercadoPago');
       setIsLoading(false);
     }
   };
@@ -619,45 +549,14 @@ export default function CartPage() {
                   </div>
                 </div>
 
-                {paymentMethod !== 'efectivo' && (
-                  <div className="bg-white rounded-2xl shadow-lg p-6 mb-6 overflow-hidden">
-                    <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                      Datos para realizar el pago
-                    </h2>
-                    {paymentMethod === 'transferencia' && (
-                      <div className="bg-brand-red-50 rounded-xl p-6 border border-brand-red-200 space-y-1 text-sm text-gray-700">
-                        {paymentDetails.transferencia?.holder && <p><span className="font-bold">Titular:</span> {paymentDetails.transferencia.holder}</p>}
-                        {paymentDetails.transferencia?.bcp_account && <p><span className="font-bold">BCP cuenta:</span> {paymentDetails.transferencia.bcp_account}</p>}
-                        {paymentDetails.transferencia?.bcp_cci && <p><span className="font-bold">BCP CCI:</span> {paymentDetails.transferencia.bcp_cci}</p>}
-                        {paymentDetails.transferencia?.ibk_account && <p><span className="font-bold">Interbank cuenta:</span> {paymentDetails.transferencia.ibk_account}</p>}
-                        {paymentDetails.transferencia?.ibk_cci && <p><span className="font-bold">Interbank CCI:</span> {paymentDetails.transferencia.ibk_cci}</p>}
-                        {!paymentDetails.transferencia?.holder && !paymentDetails.transferencia?.bcp_account && (
-                          <p className="text-amber-700">Los datos de transferencia no estan configurados. Escribenos por WhatsApp para coordinarlos.</p>
-                        )}
-                      </div>
-                    )}
-                    {paymentMethod === 'yape' && (
-                      <div className="p-4 bg-purple-50 text-purple-800 rounded">
-                        {paymentDetails.yape?.phone
-                          ? <>Yape: {paymentDetails.yape.phone} - {paymentDetails.transferencia?.holder || 'PERUANA INFORMATICA'}</>
-                          : 'El pago por Yape no esta disponible por el momento.'}
-                      </div>
-                    )}
-                    {paymentMethod === 'plin' && (
-                      <div className="p-4 bg-green-50 text-green-800 rounded">
-                        {paymentDetails.plin?.phone
-                          ? <>Plin: {paymentDetails.plin.phone} - {paymentDetails.transferencia?.holder || 'PERUANA INFORMATICA'}</>
-                          : 'El pago por Plin no esta disponible por el momento.'}
-                      </div>
-                    )}
-                    {paymentMethod === 'mercadopago' && (
-                      <div className="p-4 bg-brand-red-50 text-brand-red-800 rounded">
-                        Te redirigimos a Mercado Pago para completar el pago con tarjeta, saldo oPoints.
-                      </div>
-                    )}
-
+                <div className="bg-white rounded-2xl shadow-lg p-6 mb-6 overflow-hidden">
+                  <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    Pago con Mercado Pago
+                  </h2>
+                  <div className="p-4 bg-brand-red-50 text-brand-red-800 rounded">
+                    Te redirigimos a Mercado Pago para completar el pago con tarjeta, saldo oPoints.
                   </div>
-                )}
+                </div>
 
                 <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
                   <h2 className="text-xl font-bold text-gray-800 mb-4">Comprobante</h2>
@@ -704,13 +603,6 @@ export default function CartPage() {
                     </div>
                   )}
                 </div>
-
-                {paymentMethod !== 'efectivo' && (
-                  <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
-                    <label className="block mb-2 font-bold">Subir Comprobante</label>
-                    <input type="file" onChange={e => setPaymentProof(e.target.files?.[0] || null)} className="w-full" />
-                  </div>
-                )}
 
                 <div className="flex gap-4">
                   <button type="button" onClick={() => setStep('customer')} className="px-6 py-4 border rounded-xl">Atrás</button>

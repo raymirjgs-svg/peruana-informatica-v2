@@ -190,11 +190,9 @@ export function Footer() {
             </div>
             <div className="flex flex-wrap justify-center gap-2">
               {[
+                { label: 'Mercado Pago', color: '#009BDE', text: 'white' },
                 { label: 'Visa', color: '#1a1f71', text: 'white' },
                 { label: 'Mastercard', color: '#eb001b', text: 'white' },
-                { label: 'Yape', color: '#6d1b7b', text: 'white' },
-                { label: 'Plin', color: '#00b09b', text: 'white' },
-                { label: 'Transferencia', color: '#1e293b', text: '#94a3b8' },
               ].map((pm) => (
                 <div
                   key={pm.label}

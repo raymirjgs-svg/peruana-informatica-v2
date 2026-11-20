@@ -17,7 +17,7 @@ export class Order extends Model {
     public discount_amount?: number; // Descuento aplicado
 
     // Payment fields
-    public payment_method?: string; // 'efectivo', 'transferencia', 'tarjeta', 'yape', 'plin'
+    public payment_method?: string; // 'mercadopago' (los valores historicos siguen en el ENUM)
     public payment_status!: string; // 'pending', 'verified', 'rejected'
     public payment_proof?: string;
     public payment_verified_at?: Date;
@@ -104,7 +104,7 @@ Order.init(
             defaultValue: 'pending',
         },
         payment_method: {
-            type: DataTypes.ENUM('efectivo', 'transferencia', 'tarjeta', 'yape', 'plin'),
+            type: DataTypes.ENUM('efectivo', 'transferencia', 'tarjeta', 'yape', 'plin', 'mercadopago'),
             allowNull: true,
         },
         payment_status: {

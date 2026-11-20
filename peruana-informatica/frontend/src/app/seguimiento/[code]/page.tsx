@@ -45,6 +45,7 @@ const paymentStatusLabels: Record<string, string> = {
 };
 
 const paymentMethodLabels: Record<string, string> = {
+    // Valores historicos de pedidos ya pagados.
     transferencia: 'Transferencia',
     yape: 'Yape',
     plin: 'Plin',

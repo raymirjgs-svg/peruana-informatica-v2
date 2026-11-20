@@ -35,8 +35,6 @@ export const PaymentSettingsController = {
                 'payment_niubiz_enabled',
                 'niubiz_merchant_id',
                 'niubiz_secret_key',
-                'payment_transfer_enabled',
-                'payment_cod_enabled',
                 'payment_mode', // 'test' | 'live'
                 'mp_access_token',
             ];
@@ -65,8 +63,6 @@ export const PaymentSettingsController = {
                 'payment_niubiz_enabled',
                 'niubiz_merchant_id',
                 'niubiz_secret_key',
-                'payment_transfer_enabled',
-                'payment_cod_enabled',
                 'payment_mode',
                 'mp_access_token',
             ];

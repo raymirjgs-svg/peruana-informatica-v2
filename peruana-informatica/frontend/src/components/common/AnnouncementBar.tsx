@@ -10,7 +10,7 @@ const FALLBACK_MESSAGES = [
   { id: 2, icon: '✅', text: 'Garantía oficial del fabricante en todos los productos' },
   { id: 3, icon: '📞', text: 'Soporte técnico — Escríbenos al WhatsApp: +51 988 552 455' },
   { id: 4, icon: '🔥', text: 'Remates con hasta 70% de descuento — ¡Stock limitado!' },
-  { id: 5, icon: '💳', text: 'Pagos seguros: Visa, Mastercard, Yape y Plin' },
+  { id: 5, icon: '💳', text: 'Pagos seguros con Mercado Pago — Tarjetas, saldo y puntos' },
   { id: 6, icon: '⚡', text: 'Más de 1,000 productos en stock disponibles hoy' },
 ];
 

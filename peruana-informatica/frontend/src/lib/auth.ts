@@ -29,7 +29,7 @@ export const authOptions: NextAuthOptions = {
                 password: { label: "Contraseña", type: "password" },
                 type: { label: "Type", type: "text" }, // 'admin' | 'customer'
             },
-            async authorize(credentials) {
+            async authorize(credentials, req) {
                 const email = credentials?.email;
                 if (!email || !credentials?.password) return null;
 
@@ -38,13 +38,23 @@ export const authOptions: NextAuthOptions = {
                     const isCustomer = credentials?.type === 'customer';
                     const endpoint = isCustomer ? `${apiBase}/api/auth/login` : `${apiBase}/api/admin/login`;
 
+                    // El backend limita los intentos por IP. Esta llamada es
+                    // servidor a servidor, asi que sin reenviar la IP real
+                    // todos los usuarios comparten un solo contador y un
+                    // bloqueo afecta a todo el mundo. Nginx anade la IP real
+                    // al final de X-Forwarded-For.
+                    const headers: Record<string, string> = { "Content-Type": "application/json" };
+                    const forwarded = (req as { headers?: Record<string, string> })?.headers?.["x-forwarded-for"];
+                    const clientIp = String(forwarded || "").split(",").pop()?.trim();
+                    if (clientIp) headers["X-Forwarded-For"] = clientIp;
+
                     const res = await fetch(endpoint, {
                         method: "POST",
-                        headers: { "Content-Type": "application/json" },
+                        headers,
                         body: JSON.stringify({ email, password: credentials.password }),
                     });
 
-                    const data = await res.json();
+                    const data = await res.json().catch(() => ({}));
 
                     if (res.ok && data.accessToken) {
                         return {
@@ -53,6 +63,10 @@ export const authOptions: NextAuthOptions = {
                             token: data.accessToken,
                             role: data.user?.role || (isCustomer ? 'customer' : 'admin'),
                         };
+                    }
+
+                    if (res.status === 429) {
+                        console.warn(`[auth] Rate limit de login alcanzado (${isCustomer ? 'cliente' : 'admin'})`);
                     }
 
                     return null;

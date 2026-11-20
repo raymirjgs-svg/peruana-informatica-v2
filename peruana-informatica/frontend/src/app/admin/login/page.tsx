@@ -31,7 +31,7 @@ export default function AdminLoginPage() {
       });
 
       if (res?.error) {
-        setError("Credenciales incorrectas");
+        setError("Credenciales incorrectas. Si inginaste varias veces seguidas, espera 15 minutos antes de reintentar.");
         return;
       }
 

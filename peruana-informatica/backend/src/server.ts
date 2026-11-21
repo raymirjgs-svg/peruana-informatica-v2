@@ -63,7 +63,8 @@ import adminDiscountRoutes from "./routes/admin/discountRoutes"; // Rutas admin 
 import adminMarketingRoutes from "./routes/admin/marketingRoutes"; // Rutas admin de marketing
 import adminAnnouncementRoutes from "./routes/admin/announcementRoutes"; // Rutas admin de anuncios
 import announcementRoutes from "./routes/announcementRoutes"; // Rutas públicas de anuncios
-import adminQuickCategoryRoutes from "./routes/admin/quickCategoryRoutes"; // Rutas admin de accesos rápidos
+import adminQuickCategoryRoutes from "./routes/admin/quickCategoryRoutes";
+import adminUserRoutes from "./routes/admin/userRoutes"; // Rutas admin de usuarios del staff // Rutas admin de accesos rápidos
 import quickCategoryRoutes from "./routes/quickCategoryRoutes"; // Rutas públicas de accesos rápidos
 import { initAssociations } from "./models/associations"; // Inicialización de asociaciones
 
@@ -220,11 +221,12 @@ app.use("/api/admin/pages", adminPageRoutes); // Rutas admin de páginas
 app.use("/api/admin/wishlists", adminWishlistRoutes); // Rutas admin de wishlists
 app.use("/api/admin/analytics", adminAnalyticsRoutes); // Rutas admin de analytics
 app.use("/api/admin/system", adminSystemRoutes); // Rutas de monitoreo del sistema
-app.use("/api/admin/roles", adminRoleRoutes); // Rutas admin de roles y permisos
+app.use("/api/admin", adminRoleRoutes); // Rutas admin de roles y permisos (/api/admin/roles, /api/admin/permissions)
 app.use("/api/admin/discounts", adminDiscountRoutes); // Rutas admin de descuentos
 app.use("/api/admin/marketing", adminMarketingRoutes); // Rutas admin de marketing
 app.use("/api/admin/announcements", adminAnnouncementRoutes); // Rutas admin de anuncios
-app.use("/api/admin/quick-categories", adminQuickCategoryRoutes); // Rutas admin de accesos rápidos
+app.use("/api/admin/quick-categories", adminQuickCategoryRoutes);
+app.use("/api/admin/users", adminUserRoutes); // Usuarios del staff (no customers) // Rutas admin de accesos rápidos
 
 // Rutas API Externa y Adicionales
 app.use("/api/external", authenticateToken, requireAdmin, externalApiRoutes);

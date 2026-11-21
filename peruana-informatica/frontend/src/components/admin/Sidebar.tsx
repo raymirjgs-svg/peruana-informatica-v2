@@ -34,6 +34,7 @@ import {
   LayoutGrid,
   Wand2,
   CreditCard,
+  Shield,
 } from 'lucide-react';
 
 interface MenuItem {
@@ -102,6 +103,7 @@ const menuItems: MenuItem[] = [
       { name: "Pasarelas de Pago", href: "/admin/payment-settings", icon: <CreditCard className="h-4 w-4" /> },
       { name: "Clientes", href: "/admin/customers", icon: <Users className="h-4 w-4" /> },
       { name: "Usuarios", href: "/admin/users", icon: <Users className="h-4 w-4" /> },
+      { name: "Roles y Permisos", href: "/admin/roles", icon: <Shield className="h-4 w-4" /> },
       { name: "Configuración", href: "/admin/settings", icon: <Settings className="h-4 w-4" /> },
       { name: "Monitor de Sistema", href: "/admin/system", icon: <Activity className="h-4 w-4" /> },
       { name: "Contactos", href: "/admin/contacts", icon: <Mail className="h-4 w-4" /> },

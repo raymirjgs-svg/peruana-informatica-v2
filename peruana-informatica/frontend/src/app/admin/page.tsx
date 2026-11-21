@@ -23,6 +23,7 @@ import {
 import { toast } from 'sonner';
 import Link from 'next/link';
 import { API_CONFIG } from '@/config/api';
+import { adminFetch } from '@/lib/adminApi';
 
 // ── ERP Sync Status Widget ──────────────────────────────────────────────────
 interface SyncStatus {
@@ -77,7 +78,7 @@ function ERPSyncWidget() {
   const forceSync = async () => {
     setForcing(true);
     try {
-      const res = await fetch(`${API_CONFIG.BASE_URL}/api/sync/force`, { method: 'POST' });
+      const res = await adminFetch('/sync/force', { method: 'POST' });
       const json = await res.json();
       if (json.success) {
         toast.success('Sincronización iniciada correctamente');

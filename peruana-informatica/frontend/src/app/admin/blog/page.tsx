@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { Button } from "@/components/admin/Button";
+import { getAdminHeaders } from "@/lib/adminApi";
 
 interface BlogPost {
   id: number;
@@ -112,16 +113,9 @@ export default function BlogAdminPage() {
   // Configuración de la API
   const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
-  const getAuthHeaders = () => {
-    const username = process.env.NEXT_PUBLIC_ADMIN_USERNAME || "admin";
-    const password = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "admin123";
-    const credentials = btoa(`${username}:${password}`);
-
-    return {
-      Authorization: `Basic ${credentials}`,
-      "Content-Type": "application/json",
-    };
-  };
+  // El backend exige el JWT de admin (Bearer), no Basic Auth.
+  // getAdminHeaders lo lee de localStorage (lo guarda AdminSessionSync).
+  const getAuthHeaders = () => getAdminHeaders();
 
   // Cargar datos del blog
   const loadBlogData = useCallback(async () => {

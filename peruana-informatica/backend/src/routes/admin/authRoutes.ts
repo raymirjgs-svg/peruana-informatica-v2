@@ -3,7 +3,7 @@ import { body, validationResult } from 'express-validator';
 import { User } from '../../models/User';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
-import { JWT_SECRET } from '../../middleware/authMiddleware';
+import { JWT_SECRET, authenticateToken, requireAdmin } from '../../middleware/authMiddleware';
 import { createRateLimit } from '../../middleware/security';
 
 const router = express.Router();
@@ -118,6 +118,58 @@ router.get('/me', async (req: Request, res: Response) => {
 
   } catch (error) {
     res.status(401).json({ error: 'Token inválido' });
+  }
+});
+
+// PATCH /api/admin/password - Cambiar la contraseña del admin autenticado
+router.patch('/password', authenticateToken, requireAdmin, [
+  body('currentPassword').notEmpty().withMessage('La contraseña actual es requerida'),
+  body('newPassword').isLength({ min: 8 }).withMessage('La nueva contraseña debe tener al menos 8 caracteres'),
+], async (req: Request, res: Response) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Datos de entrada inválidos',
+        errors: errors.array()
+      });
+    }
+
+    const { currentPassword, newPassword } = req.body;
+    const userId = (req as any).user?.id;
+
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'Usuario no encontrado' });
+    }
+
+    if (user.auth_provider !== 'local' && user.auth_provider !== 'local_and_google') {
+      return res.status(400).json({
+        success: false,
+        message: 'No se puede cambiar la contraseña de una cuenta de login social'
+      });
+    }
+
+    const isValid = await bcrypt.compare(currentPassword, user.password_hash);
+    if (!isValid) {
+      return res.status(401).json({ success: false, message: 'La contraseña actual es incorrecta' });
+    }
+
+    if (currentPassword === newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: 'La nueva contraseña debe ser distinta de la actual'
+      });
+    }
+
+    user.password_hash = await bcrypt.hash(newPassword, 10);
+    await user.save();
+
+    return res.json({ success: true, message: 'Contraseña actualizada correctamente' });
+  } catch (error) {
+    console.error('Error changing password:', error);
+    return res.status(500).json({ success: false, message: 'Error al procesar el cambio de contraseña' });
   }
 });
 

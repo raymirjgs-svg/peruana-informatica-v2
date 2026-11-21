@@ -1,10 +1,10 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { useTheme } from '@/context/ThemeContext';
-import { Sun, Moon, LogOut, ChevronRight, Home } from 'lucide-react';
+import { Sun, Moon, LogOut, ChevronRight, Home, KeyRound } from 'lucide-react';
 
 const routeLabels: Record<string, string> = {
   admin: 'Dashboard', products: 'Productos', categories: 'Categorías',
@@ -16,11 +16,12 @@ const routeLabels: Record<string, string> = {
   inventory: 'Inventario', contacts: 'Contactos', seo: 'SEO',
   taxonomy: 'Taxonomía', announcements: 'Anuncios', pages: 'Páginas',
   'quick-categories': 'Accesos Rápidos', 'promo-banners': 'Pop-ups',
-  'company-settings': 'Empresa', roles: 'Roles',
+  'company-settings': 'Empresa', roles: 'Roles', 'cambiar-contrasena': 'Cambiar contraseña',
 };
 
 export function Header() {
   const pathname = usePathname();
+  const router = useRouter();
   const { data: session } = useSession();
   const { theme, toggleTheme } = useTheme();
   const [showMenu, setShowMenu] = useState(false);
@@ -97,6 +98,16 @@ export function Header() {
                     <p className="text-sm font-semibold text-gray-900 dark:text-white">{adminUser}</p>
                     <p className="text-xs text-gray-400 mt-0.5">Sesión activa</p>
                   </div>
+                  <button
+                    onClick={() => {
+                      setShowMenu(false);
+                      router.push('/admin/cambiar-contrasena');
+                    }}
+                    className="w-full text-left px-4 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-700/50 text-gray-700 dark:text-gray-200 transition-colors flex items-center gap-2.5 text-sm font-medium"
+                  >
+                    <KeyRound className="h-4 w-4" />
+                    Cambiar contraseña
+                  </button>
                   <button
                     onClick={handleLogout}
                     className="w-full text-left px-4 py-2.5 mt-1 hover:bg-red-50 dark:hover:bg-red-900/20 text-red-500 dark:text-red-400 transition-colors flex items-center gap-2.5 text-sm font-medium"

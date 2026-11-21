@@ -29,6 +29,13 @@ export const checkPermission = (requiredPermission: string) => {
                 });
             }
 
+            // Los administradores de la tienda (users.role = 'admin' | 'super-admin')
+            // tienen acceso total. Sin esto, un admin sin fila en la tabla `roles`
+            // queda bloqueado por checkPermission.
+            if (user.role === 'admin' || user.role === 'super-admin') {
+                return next();
+            }
+
             const role = user.role
                 ? await Role.findOne({
                     where: { slug: user.role },
@@ -87,6 +94,13 @@ export const checkAnyPermission = (requiredPermissions: string[]) => {
                     success: false,
                     message: 'Usuario no encontrado'
                 });
+            }
+
+            // Los administradores de la tienda (users.role = 'admin' | 'super-admin')
+            // tienen acceso total. Sin esto, un admin sin fila en la tabla `roles`
+            // queda bloqueado por checkAnyPermission.
+            if (user.role === 'admin' || user.role === 'super-admin') {
+                return next();
             }
 
             const role = user.role

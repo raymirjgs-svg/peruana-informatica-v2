@@ -53,16 +53,6 @@ class SystemService {
     private static readonly BASE_URL = API_CONFIG.BASE_URL;
     private static readonly API_BASE = API_CONFIG.API_BASE_URL;
 
-    private static getAuthHeaders(): Record<string, string> {
-        const username = process.env.NEXT_PUBLIC_ADMIN_USERNAME || "admin";
-        const password = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "admin123";
-        const credentials = btoa(`${username}:${password}`);
-
-        return {
-            Authorization: `Basic ${credentials}`,
-        };
-    }
-
     static async getHealth(): Promise<SystemHealth> {
         try {
             const response = await fetch(`${this.API_BASE}/api/admin/system/health-check`);

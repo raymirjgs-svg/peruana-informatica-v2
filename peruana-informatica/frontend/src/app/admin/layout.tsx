@@ -5,6 +5,7 @@ import { Toaster } from "sonner";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { usePathname } from "next/navigation";
 import { AdminAuthGuard } from "@/components/admin/AdminAuthGuard";
+import { AdminSessionSync } from "@/components/admin/AdminSessionSync";
 
 // Intercept all fetch calls to /api/admin/* and inject the JWT token automatically
 function useAdminFetchInterceptor() {
@@ -12,7 +13,7 @@ function useAdminFetchInterceptor() {
     const originalFetch = window.fetch;
     window.fetch = function (input: RequestInfo | URL, init?: RequestInit) {
       const url = typeof input === 'string' ? input : input instanceof URL ? input.href : (input as Request).url;
-      if (url.includes('/api/admin/') || url.includes('/api/blog/admin') || url.includes('/contacts/admin') || url.includes('/reviews/admin')) {
+      if (url.includes('/api/admin/') || url.includes('/api/blog/admin') || url.includes('/contacts/admin') || url.includes('/reviews/admin') || url.includes('/api/quotations')) {
         const token = localStorage.getItem('adminToken');
         if (token) {
           const headers = new Headers(init?.headers);
@@ -42,9 +43,11 @@ export default function AdminRootLayout({ children }: { children: React.ReactNod
       {isLoginPage ? (
         children
       ) : (
-        <AdminAuthGuard>
-          {children}
-        </AdminAuthGuard>
+        <AdminSessionSync>
+          <AdminAuthGuard>
+            {children}
+          </AdminAuthGuard>
+        </AdminSessionSync>
       )}
       <Toaster position="top-right" richColors />
     </ThemeProvider>

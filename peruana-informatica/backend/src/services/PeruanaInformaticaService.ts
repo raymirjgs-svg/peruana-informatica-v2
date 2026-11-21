@@ -20,7 +20,8 @@ interface ArticuloResponse {
 }
 
 export class PeruanaInformaticaService {
-    private static baseUrl = 'http://54.144.139.115/peruanadeinformatica/api';
+    // URL base de la API del ERP. Configurable por entorno (ERP_API_URL).
+    private static baseUrl = process.env.ERP_API_URL || 'http://54.144.139.115/peruanadeinformatica/api';
     private static token = process.env.API_PERUANA_TOKEN;
     private static tokenExpiresAt: Date | null = null;
 

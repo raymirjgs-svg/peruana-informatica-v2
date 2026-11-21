@@ -24,6 +24,7 @@ import { toast } from 'sonner';
 import Link from 'next/link';
 import { API_CONFIG } from '@/config/api';
 import { adminFetch } from '@/lib/adminApi';
+import { getProductImageUrl } from '@/utils/images';
 
 // ── ERP Sync Status Widget ──────────────────────────────────────────────────
 interface SyncStatus {
@@ -347,7 +348,7 @@ export default function AdminDashboardPage() {
                       </div>
                       <div className="w-12 h-12 rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
                         <img
-                          src={item.product?.image || '/placeholder.png'}
+                          src={getProductImageUrl(item.product?.image)}
                           alt={item.product?.name}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         />

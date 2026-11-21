@@ -153,6 +153,38 @@ router.post('/', [
   }
 });
 
+// PUT actualizar orden de slides
+// Debe declararse ANTES de PUT /:id o Express captura "reorder" como si fuera un id.
+router.put('/reorder', [
+  body('slides').isArray().withMessage('slides debe ser un array'),
+  body('slides.*.id').isInt({ min: 1 }).withMessage('ID de slide debe ser un número entero mayor a 0'),
+  body('slides.*.order').isInt({ min: 0 }).withMessage('Orden debe ser un número entero mayor o igual a 0'),
+], validateRequest, async (req: Request, res: Response) => {
+  try {
+    const { slides } = req.body;
+
+    // Actualizar el orden de cada slide
+    for (const slideData of slides) {
+      await Carousel.update(
+        { order: slideData.order },
+        { where: { id: slideData.id } }
+      );
+    }
+
+    res.json({ 
+      message: 'Orden actualizado correctamente',
+      updatedSlides: slides.length
+    });
+  } catch (error) {
+    console.error('Error reordering slides:', error);
+    res.status(500).json({ 
+      error: 'Error al actualizar orden',
+      code: 'SLIDE_REORDER_ERROR',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // PUT actualizar slide
 router.put('/:id', [
   param('id').isInt({ min: 1 }).withMessage('ID debe ser un número entero mayor a 0'),
@@ -215,37 +247,6 @@ router.delete('/:id', [
     res.status(500).json({ 
       error: 'Error al eliminar slide',
       code: 'SLIDE_DELETE_ERROR',
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// PUT actualizar orden de slides
-router.put('/reorder', [
-  body('slides').isArray().withMessage('slides debe ser un array'),
-  body('slides.*.id').isInt({ min: 1 }).withMessage('ID de slide debe ser un número entero mayor a 0'),
-  body('slides.*.order').isInt({ min: 0 }).withMessage('Orden debe ser un número entero mayor o igual a 0'),
-], validateRequest, async (req: Request, res: Response) => {
-  try {
-    const { slides } = req.body;
-
-    // Actualizar el orden de cada slide
-    for (const slideData of slides) {
-      await Carousel.update(
-        { order: slideData.order },
-        { where: { id: slideData.id } }
-      );
-    }
-
-    res.json({ 
-      message: 'Orden actualizado correctamente',
-      updatedSlides: slides.length
-    });
-  } catch (error) {
-    console.error('Error reordering slides:', error);
-    res.status(500).json({ 
-      error: 'Error al actualizar orden',
-      code: 'SLIDE_REORDER_ERROR',
       timestamp: new Date().toISOString()
     });
   }

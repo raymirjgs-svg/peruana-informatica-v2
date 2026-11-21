@@ -117,6 +117,12 @@ export const updateQuotationStatus = async (req: Request, res: Response) => {
 
     const quotation = await quotationService.updateQuotationStatus(parseInt(id), status as QuotationStatus);
 
+    if (!quotation) {
+      return res.status(404).json({
+        error: 'Cotización no encontrada'
+      });
+    }
+
     res.json({
       message: 'Estado de cotización actualizado exitosamente',
       quotation,

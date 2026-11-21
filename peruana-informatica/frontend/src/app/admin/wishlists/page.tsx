@@ -9,6 +9,7 @@ import { wishlistService, WishlistAnalytics } from '@/services/WishlistService';
 import { Heart, TrendingUp, Package, Clock, ShoppingBag } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from 'sonner';
+import { getProductImageUrl } from '@/utils/images';
 
 export default function WishlistsPage() {
     const [analytics, setAnalytics] = useState<WishlistAnalytics | null>(null);
@@ -106,7 +107,7 @@ export default function WishlistsPage() {
                                     {/* Product Image */}
                                     <div className="flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700">
                                         <img
-                                            src={item.product?.image || '/placeholder.png'}
+                                            src={getProductImageUrl(item.product?.image)}
                                             alt={item.product?.name}
                                             className="w-full h-full object-cover"
                                         />

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
+import Link from 'next/link';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { API_CONFIG } from '@/config/api';
 import {
@@ -43,6 +44,7 @@ interface Quotation {
   status: string;
   valid_until?: string;
   createdAt: string;
+  created_at?: string;
   items?: QuotationItem[];
 }
 
@@ -73,7 +75,8 @@ export default function AdminQuotations() {
       if (!response.ok) throw new Error('Error');
       const data = await response.json();
       const items = Array.isArray(data) ? data : (data.quotations || data.data || []);
-      setQuotations(items);
+      // El backend devuelve created_at (snake_case); la pantalla usa createdAt.
+      setQuotations(items.map((q: Quotation) => ({ ...q, createdAt: q.createdAt || q.created_at })));
     } catch (error) {
       console.error('Error fetching quotations:', error);
     } finally {
@@ -295,6 +298,14 @@ export default function AdminQuotations() {
                       </p>
                     </div>
                     <div className="flex items-center gap-2">
+                      <Link
+                        href={`/admin/quotations/${quotation.id}`}
+                        onClick={(e) => e.stopPropagation()}
+                        className="p-2 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-lg hover:bg-indigo-200 dark:hover:bg-indigo-900/50 transition"
+                        title="Ver detalle"
+                      >
+                        <Eye className="h-5 w-5" />
+                      </Link>
                       <a
                         href={`${API_CONFIG.API_BASE_URL}/api/quotations/${quotation.code}/pdf`}
                         target="_blank"

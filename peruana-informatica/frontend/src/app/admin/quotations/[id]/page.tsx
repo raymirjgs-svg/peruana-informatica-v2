@@ -6,24 +6,18 @@ import Link from 'next/link';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { API_CONFIG } from '@/config/api';
 
-type PriceType = 'normal' | 'mayorista' | 'especial';
+type QuotationStatus = 'pending' | 'sent' | 'accepted' | 'rejected' | 'expired';
 
 interface QuotationItem {
-  id: string;
-  product_id: string;
-  name: string;
+  id: number;
+  product_name: string;
+  product_price: number;
   quantity: number;
-  price: number;
-  price_type: PriceType;
-  normal_price: number;
-  mayorista_price: number;
-  especial_price: number;
   subtotal: number;
-  discount: number;
 }
 
 interface QuotationDetails {
-  id: string;
+  id: number;
   code: string;
   client_name: string;
   client_email: string;
@@ -34,29 +28,34 @@ interface QuotationDetails {
   subtotal: number;
   igv: number;
   total: number;
-  status: 'pending' | 'sent' | 'accepted' | 'rejected' | 'expired';
+  status: QuotationStatus;
   valid_until: string;
   created_at: string;
   items: QuotationItem[];
 }
 
+const money = (value: number) => `S/. ${Number(value || 0).toFixed(2)}`;
+
 export default function QuotationDetail({ params }: { params: { id: string } }) {
   const [quotation, setQuotation] = useState<QuotationDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [status, setStatus] = useState<'pending' | 'sent' | 'accepted' | 'rejected' | 'expired'>('pending');
+  const [error, setError] = useState<string | null>(null);
+  const [status, setStatus] = useState<QuotationStatus>('pending');
   const router = useRouter();
 
   useEffect(() => {
     const fetchQuotation = async () => {
       try {
-        const response = await fetch(`${API_CONFIG.API_BASE_URL}/api/quotations/${params.id}`);
+        // El backend expone la búsqueda por id en /id/:id (la pública usa el código).
+        const response = await fetch(`${API_CONFIG.API_BASE_URL}/api/quotations/id/${params.id}`);
         if (!response.ok) throw new Error('Error al cargar la cotización');
         const data = await response.json();
         setQuotation(data);
         setStatus(data.status);
       } catch (error) {
         console.error('Error:', error);
+        setError('No se pudo cargar la cotización');
       } finally {
         setLoading(false);
       }
@@ -65,95 +64,7 @@ export default function QuotationDetail({ params }: { params: { id: string } }) 
     fetchQuotation();
   }, [params.id]);
 
-  const handlePriceTypeChange = (itemId: string, newPriceType: PriceType) => {
-    if (!quotation) return;
-
-    const updatedItems = quotation.items.map(item => {
-      if (item.id === itemId) {
-        const newPrice = {
-          normal: item.normal_price,
-          mayorista: item.mayorista_price,
-          especial: item.especial_price
-        }[newPriceType];
-
-        return {
-          ...item,
-          price_type: newPriceType,
-          price: newPrice,
-          subtotal: newPrice * item.quantity * (1 - (item.discount / 100))
-        };
-      }
-      return item;
-    });
-
-    const subtotal = updatedItems.reduce((sum, item) => sum + item.subtotal, 0);
-    const igv = subtotal * 0.18; // 18% IGV
-    const total = subtotal + igv;
-
-    setQuotation({
-      ...quotation,
-      items: updatedItems,
-      subtotal,
-      igv,
-      total
-    });
-  };
-
-  const handleQuantityChange = (itemId: string, newQuantity: number) => {
-    if (!quotation || newQuantity < 1) return;
-
-    const updatedItems = quotation.items.map(item => {
-      if (item.id === itemId) {
-        return {
-          ...item,
-          quantity: newQuantity,
-          subtotal: item.price * newQuantity * (1 - (item.discount / 100))
-        };
-      }
-      return item;
-    });
-
-    const subtotal = updatedItems.reduce((sum, item) => sum + item.subtotal, 0);
-    const igv = subtotal * 0.18; // 18% IGV
-    const total = subtotal + igv;
-
-    setQuotation({
-      ...quotation,
-      items: updatedItems,
-      subtotal,
-      igv,
-      total
-    });
-  };
-
-  const handleDiscountChange = (itemId: string, newDiscount: number) => {
-    if (!quotation || newDiscount < 0 || newDiscount > 100) return;
-
-    const updatedItems = quotation.items.map(item => {
-      if (item.id === itemId) {
-        return {
-          ...item,
-          discount: newDiscount,
-          subtotal: item.price * item.quantity * (1 - (newDiscount / 100))
-        };
-      }
-      return item;
-    });
-
-    const subtotal = updatedItems.reduce((sum, item) => sum + item.subtotal, 0);
-    const igv = subtotal * 0.18; // 18% IGV
-    const total = subtotal + igv;
-
-    setQuotation({
-      ...quotation,
-      items: updatedItems,
-      subtotal,
-      igv,
-      total
-    });
-  };
-
-  const handleStatusChange = (newStatus: typeof status) => {
+  const handleStatusChange = (newStatus: QuotationStatus) => {
     setStatus(newStatus);
   };
 
@@ -162,25 +73,17 @@ export default function QuotationDetail({ params }: { params: { id: string } }) 
 
     setSaving(true);
     try {
-      const response = await fetch(`${API_CONFIG.API_BASE_URL}/api/quotations/${params.id}`, {
+      // El backend solo permite actualizar el estado de la cotización.
+      const response = await fetch(`${API_CONFIG.API_BASE_URL}/api/quotations/${params.id}/status`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          items: quotation.items.map(item => ({
-            id: item.id,
-            price_type: item.price_type,
-            quantity: item.quantity,
-            discount: item.discount
-          })),
-          status
-        }),
+        body: JSON.stringify({ status }),
       });
 
       if (!response.ok) throw new Error('Error al guardar los cambios');
 
-      // Show success message
       alert('Cambios guardados exitosamente');
       router.refresh();
     } catch (error) {
@@ -188,27 +91,6 @@ export default function QuotationDetail({ params }: { params: { id: string } }) 
       alert('Ocurrió un error al guardar los cambios');
     } finally {
       setSaving(false);
-    }
-  };
-
-  const handleSendEmail = async () => {
-    if (!quotation) return;
-
-    if (confirm('¿Está seguro de enviar esta cotización por correo electrónico?')) {
-      try {
-        const response = await fetch(`${API_CONFIG.API_BASE_URL}/api/quotations/${params.id}/send-email`, {
-          method: 'POST',
-        });
-
-        if (!response.ok) throw new Error('Error al enviar el correo');
-
-        alert('Correo enviado exitosamente');
-        // Update status to 'sent'
-        setStatus('sent');
-      } catch (error) {
-        console.error('Error:', error);
-        alert('Ocurrió un error al enviar el correo');
-      }
     }
   };
 
@@ -223,7 +105,7 @@ export default function QuotationDetail({ params }: { params: { id: string } }) 
   if (!quotation) {
     return (
       <AdminLayout>
-        <div className="p-8">No se encontró la cotización solicitada</div>
+        <div className="p-8">{error || 'No se encontró la cotización solicitada'}</div>
       </AdminLayout>
     );
   }
@@ -253,12 +135,6 @@ export default function QuotationDetail({ params }: { params: { id: string } }) 
             >
               Ver PDF
             </a>
-            <button
-              onClick={handleSendEmail}
-              className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            >
-              Enviar por correo
-            </button>
             <button
               onClick={handleSaveChanges}
               disabled={saving}
@@ -308,7 +184,7 @@ export default function QuotationDetail({ params }: { params: { id: string } }) 
               <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                 <dt className="text-sm font-medium text-gray-500">Dirección</dt>
                 <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                  {quotation.client_address || 'No especificada'}
+                  {quotation.client_address || 'No especificado'}
                 </dd>
               </div>
               <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -316,7 +192,7 @@ export default function QuotationDetail({ params }: { params: { id: string } }) 
                 <dd className="mt-1 text-sm sm:mt-0 sm:col-span-2">
                   <select
                     value={status}
-                    onChange={(e) => handleStatusChange(e.target.value as any)}
+                    onChange={(e) => handleStatusChange(e.target.value as QuotationStatus)}
                     className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                   >
                     <option value="pending">Pendiente</option>
@@ -349,78 +225,48 @@ export default function QuotationDetail({ params }: { params: { id: string } }) 
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Producto</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Precio Unitario</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cantidad</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descuento %</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subtotal</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {quotation.items.map((item) => (
                     <tr key={item.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">{item.name}</div>
-                        <div className="mt-1">
-                          <select
-                            value={item.price_type}
-                            onChange={(e) => handlePriceTypeChange(item.id, e.target.value as PriceType)}
-                            className="mt-1 block w-full pl-3 pr-10 py-1 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-                          >
-                            <option value="normal">Precio Normal (S/. {item.normal_price})</option>
-                            <option value="mayorista">Precio Mayorista (S/. {item.mayorista_price})</option>
-                            <option value="especial">Precio Especial (S/. {item.especial_price})</option>
-                          </select>
-                        </div>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {item.product_name}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        S/. {item.price.toFixed(2)}
+                        {money(item.product_price)}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <input
-                          type="number"
-                          min="1"
-                          value={item.quantity}
-                          onChange={(e) => handleQuantityChange(item.id, parseInt(e.target.value) || 1)}
-                          className="w-20 px-2 py-1 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        />
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <input
-                          type="number"
-                          min="0"
-                          max="100"
-                          value={item.discount}
-                          onChange={(e) => handleDiscountChange(item.id, parseFloat(e.target.value) || 0)}
-                          className="w-20 px-2 py-1 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        />
-                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.quantity}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        S/. {item.subtotal.toFixed(2)}
+                        {money(item.subtotal)}
                       </td>
                     </tr>
                   ))}
                 </tbody>
                 <tfoot className="bg-gray-50">
                   <tr>
-                    <td colSpan={4} className="px-6 py-3 text-right text-sm font-medium text-gray-500">
+                    <td colSpan={3} className="px-6 py-3 text-right text-sm font-medium text-gray-500">
                       Subtotal
                     </td>
                     <td className="px-6 py-3 text-right text-sm font-medium text-gray-900">
-                      S/. {quotation.subtotal.toFixed(2)}
+                      {money(quotation.subtotal)}
                     </td>
                   </tr>
                   <tr>
-                    <td colSpan={4} className="px-6 py-3 text-right text-sm font-medium text-gray-500">
+                    <td colSpan={3} className="px-6 py-3 text-right text-sm font-medium text-gray-500">
                       IGV (18%)
                     </td>
                     <td className="px-6 py-3 text-right text-sm font-medium text-gray-900">
-                      S/. {quotation.igv.toFixed(2)}
+                      {money(quotation.igv)}
                     </td>
                   </tr>
                   <tr>
-                    <td colSpan={4} className="px-6 py-3 text-right text-sm font-bold text-gray-900">
+                    <td colSpan={3} className="px-6 py-3 text-right text-sm font-bold text-gray-900">
                       Total
                     </td>
                     <td className="px-6 py-3 text-right text-sm font-bold text-gray-900">
-                      S/. {quotation.total.toFixed(2)}
+                      {money(quotation.total)}
                     </td>
                   </tr>
                 </tfoot>

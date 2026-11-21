@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import { useTheme } from '@/context/ThemeContext';
 import { useSettings } from '@/context/SettingsContext';
@@ -114,11 +115,16 @@ const menuItems: MenuItem[] = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { data: session } = useSession();
   const { theme, toggleTheme } = useTheme();
   const { settings, logoUrl } = useSettings();
   const [expandedMenus, setExpandedMenus] = useState<Record<string, boolean>>({});
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeItem, setActiveItem] = useState<string>('');
+
+  // Datos del admin en sesion (sin email hardcodeado)
+  const adminName = session?.user?.username || session?.user?.name || 'Administrador';
+  const adminEmail = session?.user?.email || 'Sesión iniciada';
 
   useEffect(() => {
     // Auto expand menu based on active route
@@ -317,12 +323,12 @@ export function Sidebar() {
             <div className="flex items-center gap-3 mb-3">
               <div className="h-10 w-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 p-0.5">
                 <div className="h-full w-full rounded-full bg-white dark:bg-gray-800 flex items-center justify-center overflow-hidden">
-                  <img src="https://ui-avatars.com/api/?name=Admin+User&background=random" alt="Admin" className="w-full h-full" />
+                  <img src={`https://ui-avatars.com/api/?name=${encodeURIComponent(adminName)}&background=random`} alt={adminName} className="w-full h-full" />
                 </div>
               </div>
               <div className="overflow-hidden">
-                <p className="text-sm font-bold text-gray-900 dark:text-white truncate">Administrador</p>
-                <p className="text-xs text-gray-500 dark:text-gray-400 truncate">admin@peruana.com</p>
+                <p className="text-sm font-bold text-gray-900 dark:text-white truncate">{adminName}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{adminEmail}</p>
               </div>
             </div>
 

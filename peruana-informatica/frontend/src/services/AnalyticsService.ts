@@ -2,20 +2,32 @@ import { API_CONFIG } from '../config/api';
 const API_BASE = API_CONFIG.API_BASE_URL;
 
 export interface KPIs {
+    /** Ingresos cobrados (pago verificado) */
     totalRevenue: string;
+    /** Pedidos cobrados (pago verificado) */
     totalOrders: number;
     avgOrderValue: string;
     monthRevenue: string;
     monthOrders: number;
+    /** Pedidos recibidos (cobrados o no) */
+    receivedOrders: number;
+    /** Suma de todos los pedidos recibidos (cobrados o no) */
+    receivedRevenue: string;
+    monthReceivedOrders: number;
     pendingOrders: number;
+    rejectedOrders: number;
     totalCustomers: number;
     newCustomersMonth: number;
 }
 
 export interface SalesDataPoint {
     date: string;
+    /** Pedidos recibidos ese dia */
     orders: number;
+    /** Ingresos cobrados ese dia */
     revenue: string;
+    /** Suma de todos los pedidos recibidos ese dia */
+    receivedRevenue: string;
 }
 
 export interface TopProduct {

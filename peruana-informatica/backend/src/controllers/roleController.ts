@@ -164,8 +164,8 @@ export class RoleController {
                 return res.status(403).json({ error: 'No se puede eliminar un rol protegido del sistema' });
             }
 
-            // Check if role is in use
-            const usersCount = await User.count({ where: { role_id: id } });
+            // Check if role is in use (el usuario guarda el slug del rol)
+            const usersCount = await User.count({ where: { role: role.slug } });
             if (usersCount > 0) {
                 return res.status(400).json({
                     error: `No se puede eliminar. ${usersCount} usuario(s) tienen este rol asignado`
@@ -277,7 +277,7 @@ export class RoleController {
                 }
             }
 
-            await user.update({ role_id: roleId });
+            await user.update({ role: role.slug });
             logAudit('ASSIGN_ROLE', String(adminId), { userId, roleId, roleName: role.name });
 
             return res.json({

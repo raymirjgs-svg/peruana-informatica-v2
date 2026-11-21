@@ -9,23 +9,11 @@ import {
 } from 'lucide-react';
 
 interface PaymentSettings {
-  payment_culqi_enabled: string;
-  culqi_public_key: string;
-  culqi_secret_key: string;
-  payment_niubiz_enabled: string;
-  niubiz_merchant_id: string;
-  niubiz_secret_key: string;
-  payment_mode: string;
+  mp_access_token: string;
 }
 
 const DEFAULTS: PaymentSettings = {
-  payment_culqi_enabled: '0',
-  culqi_public_key: '',
-  culqi_secret_key: '',
-  payment_niubiz_enabled: '0',
-  niubiz_merchant_id: '',
-  niubiz_secret_key: '',
-  payment_mode: 'test',
+  mp_access_token: '',
 };
 
 export default function PaymentSettingsPage() {
@@ -33,8 +21,8 @@ export default function PaymentSettingsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [testing, setTesting] = useState(false);
-  const [showCulqiSecret, setShowCulqiSecret] = useState(false);
-  const [showNiubizSecret, setShowNiubizSecret] = useState(false);
+  const [showToken, setShowToken] = useState(false);
+  const [mpStatus, setMpStatus] = useState<{ ok: boolean; msg: string } | null>(null);
   const [toast, setToast] = useState<{ type: 'success' | 'error'; msg: string } | null>(null);
 
   useEffect(() => {
@@ -67,15 +55,22 @@ export default function PaymentSettingsPage() {
     }
   };
 
-  const testCulqi = async () => {
+  const testMercadoPago = async () => {
     setTesting(true);
+    setMpStatus(null);
     try {
-      const r = await adminFetch('/admin/payment-settings/test-culqi', { method: 'POST' });
+      const r = await adminFetch('/admin/payment-settings/test-mercadopago', { method: 'POST' });
       const d = await r.json();
-      if (d.success) showToast('success', d.message);
-      else showToast('error', d.error || 'Prueba fallida');
+      if (d.success) {
+        setMpStatus({ ok: true, msg: d.message });
+        showToast('success', d.message);
+      } else {
+        setMpStatus({ ok: false, msg: d.error || 'Prueba fallida' });
+        showToast('error', d.error || 'Prueba fallida');
+      }
     } catch {
-      showToast('error', 'No se pudo conectar con Culqi');
+      setMpStatus({ ok: false, msg: 'No se pudo conectar con Mercado Pago' });
+      showToast('error', 'No se pudo conectar con Mercado Pago');
     } finally {
       setTesting(false);
     }
@@ -83,9 +78,6 @@ export default function PaymentSettingsPage() {
 
   const set = (key: keyof PaymentSettings, val: string) =>
     setSettings(prev => ({ ...prev, [key]: val }));
-
-  const toggle = (key: keyof PaymentSettings) =>
-    set(key, settings[key] === '1' ? '0' : '1');
 
   if (loading) return (
     <AdminLayout>
@@ -106,7 +98,7 @@ export default function PaymentSettingsPage() {
               Pasarelas de Pago
             </h1>
             <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">
-              Configura los métodos de pago disponibles en la tienda. Las claves secretas se guardan cifradas.
+              Todo el cobro de la tienda se realiza con Mercado Pago.
             </p>
           </div>
           <button
@@ -135,192 +127,82 @@ export default function PaymentSettingsPage() {
 
         <div className="space-y-6">
 
-          {/* Modo test/producción */}
+          {/* Mercado Pago */}
           <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-            <h2 className="font-semibold text-gray-900 dark:text-white mb-4">Modo de operación</h2>
-            <div className="flex gap-3">
-              {[
-                { val: 'test', label: 'Pruebas', desc: 'No se cobra dinero real', color: 'amber' },
-                { val: 'live', label: 'Producción', desc: 'Cobros reales activados', color: 'green' },
-              ].map(opt => (
-                <button
-                  key={opt.val}
-                  onClick={() => set('payment_mode', opt.val)}
-                  className={`flex-1 p-4 rounded-lg border-2 text-left transition ${
-                    settings.payment_mode === opt.val
-                      ? opt.val === 'live'
-                        ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
-                        : 'border-amber-500 bg-amber-50 dark:bg-amber-900/20'
-                      : 'border-gray-200 dark:border-gray-600 hover:border-gray-300'
-                  }`}
-                >
-                  <div className="font-semibold text-gray-900 dark:text-white">{opt.label}</div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">{opt.desc}</div>
-                </button>
-              ))}
-            </div>
-            {settings.payment_mode === 'live' && (
-              <div className="flex items-start gap-2 mt-3 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg text-amber-800 dark:text-amber-300 text-xs">
-                <Info className="h-4 w-4 flex-shrink-0 mt-0.5" />
-                En modo Producción los cobros son reales. Asegúrate de haber probado antes en modo Pruebas.
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-10 h-10 bg-sky-100 dark:bg-sky-900/30 rounded-lg flex items-center justify-center">
+                <span className="text-sky-600 font-bold text-sm">MP</span>
               </div>
-            )}
-          </div>
-
-          {/* Culqi */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-            <div className="flex items-center justify-between mb-5">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
-                  <span className="text-blue-600 font-bold text-sm">CQ</span>
-                </div>
-                <div>
-                  <h2 className="font-semibold text-gray-900 dark:text-white">Culqi</h2>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Pagos con tarjeta — empresa peruana</p>
-                </div>
+              <div>
+                <h2 className="font-semibold text-gray-900 dark:text-white">Mercado Pago</h2>
+                <p className="text-xs text-gray-500 dark:text-gray-400">Tarjetas, debito, credito y saldo en cuenta</p>
               </div>
-              <button
-                onClick={() => toggle('payment_culqi_enabled')}
-                className={`relative w-12 h-6 rounded-full transition-colors ${
-                  settings.payment_culqi_enabled === '1' ? 'bg-blue-600' : 'bg-gray-300 dark:bg-gray-600'
-                }`}
-              >
-                <span className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-transform ${
-                  settings.payment_culqi_enabled === '1' ? 'translate-x-7' : 'translate-x-1'
-                }`} />
-              </button>
+              {mpStatus && (
+                <span className={`ml-auto flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full ${
+                  mpStatus.ok
+                    ? 'bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-300'
+                    : 'bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-300'
+                }`}>
+                  {mpStatus.ok ? <Wifi className="h-3.5 w-3.5" /> : <WifiOff className="h-3.5 w-3.5" />}
+                  {mpStatus.ok ? 'Conectado' : 'Sin conexion'}
+                </span>
+              )}
             </div>
 
-            {settings.payment_culqi_enabled === '1' && (
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Clave Pública <span className="text-gray-400 font-normal">(pk_live_... o pk_test_...)</span>
-                  </label>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Access Token <span className="text-gray-400 font-normal">(APP_USR-... o PROD-...)</span>
+                </label>
+                <div className="relative">
                   <input
-                    type="text"
-                    value={settings.culqi_public_key}
-                    onChange={e => set('culqi_public_key', e.target.value)}
-                    placeholder="pk_live_xxxxxxxxxxxxxxxx"
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm font-mono focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    type={showToken ? 'text' : 'password'}
+                    value={settings.mp_access_token}
+                    onChange={e => set('mp_access_token', e.target.value)}
+                    placeholder="APP_USR-xxxxxxxxxxxxxxxx"
+                    className="w-full px-3 py-2 pr-10 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm font-mono focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
-                  <p className="text-xs text-gray-400 mt-1">Visible en el navegador — no es secreta.</p>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Clave Secreta <span className="text-gray-400 font-normal">(sk_live_... o sk_test_...)</span>
-                  </label>
-                  <div className="relative">
-                    <input
-                      type={showCulqiSecret ? 'text' : 'password'}
-                      value={settings.culqi_secret_key}
-                      onChange={e => set('culqi_secret_key', e.target.value)}
-                      placeholder="sk_live_xxxxxxxxxxxxxxxx"
-                      className="w-full px-3 py-2 pr-10 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm font-mono focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowCulqiSecret(v => !v)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                    >
-                      {showCulqiSecret ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                    </button>
-                  </div>
-                  <p className="text-xs text-gray-400 mt-1">
-                    Solo el servidor la usa. Nunca se muestra completa una vez guardada.
-                  </p>
-                </div>
-
-                <div className="flex items-center gap-3 pt-2 border-t border-gray-100 dark:border-gray-700">
                   <button
-                    onClick={testCulqi}
-                    disabled={testing}
-                    className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 font-medium disabled:opacity-50"
+                    type="button"
+                    onClick={() => setShowToken(v => !v)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                   >
-                    {testing
-                      ? <Loader2 className="h-4 w-4 animate-spin" />
-                      : <TestTube className="h-4 w-4" />}
-                    Probar conexión con Culqi
+                    {showToken ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
-                  <a
-                    href="https://culqi.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs text-gray-400 hover:text-gray-600 underline ml-auto"
-                  >
-                    Ir al panel de Culqi →
-                  </a>
                 </div>
+                <p className="text-xs text-gray-400 mt-1">
+                  Solo el servidor la usa. Nunca se muestra completa una vez guardada.
+                </p>
               </div>
-            )}
-          </div>
 
-          {/* Niubiz */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-            <div className="flex items-center justify-between mb-5">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg flex items-center justify-center">
-                  <span className="text-indigo-600 font-bold text-sm">NB</span>
-                </div>
-                <div>
-                  <h2 className="font-semibold text-gray-900 dark:text-white">Niubiz (VisaNet)</h2>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Requiere contrato con banco emisor</p>
-                </div>
+              <div className="flex items-center gap-3 pt-2 border-t border-gray-100 dark:border-gray-700">
+                <button
+                  onClick={testMercadoPago}
+                  disabled={testing}
+                  className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 font-medium disabled:opacity-50"
+                >
+                  {testing
+                    ? <Loader2 className="h-4 w-4 animate-spin" />
+                    : <TestTube className="h-4 w-4" />}
+                  Probar conexion con Mercado Pago
+                </button>
+                <a
+                  href="https://www.mercadopago.com.pe/developers/panel/app"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-gray-400 hover:text-gray-600 underline ml-auto"
+                >
+                  Ir al panel de Mercado Pago →
+                </a>
               </div>
-              <button
-                onClick={() => toggle('payment_niubiz_enabled')}
-                className={`relative w-12 h-6 rounded-full transition-colors ${
-                  settings.payment_niubiz_enabled === '1' ? 'bg-indigo-600' : 'bg-gray-300 dark:bg-gray-600'
-                }`}
-              >
-                <span className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-transform ${
-                  settings.payment_niubiz_enabled === '1' ? 'translate-x-7' : 'translate-x-1'
-                }`} />
-              </button>
+
+              {mpStatus && !mpStatus.ok && (
+                <div className="flex items-start gap-2 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-800 dark:text-red-300 text-xs">
+                  <AlertCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
+                  {mpStatus.msg}
+                </div>
+              )}
             </div>
-
-            {settings.payment_niubiz_enabled === '1' && (
-              <div className="space-y-4">
-                <div className="flex items-start gap-2 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg text-blue-800 dark:text-blue-300 text-xs">
-                  <Info className="h-4 w-4 flex-shrink-0 mt-0.5" />
-                  La integración de Niubiz requiere desarrollo adicional. Guarda tus credenciales aquí para cuando esté lista.
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Merchant ID
-                  </label>
-                  <input
-                    type="text"
-                    value={settings.niubiz_merchant_id}
-                    onChange={e => set('niubiz_merchant_id', e.target.value)}
-                    placeholder="123456789"
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm font-mono focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Clave Secreta
-                  </label>
-                  <div className="relative">
-                    <input
-                      type={showNiubizSecret ? 'text' : 'password'}
-                      value={settings.niubiz_secret_key}
-                      onChange={e => set('niubiz_secret_key', e.target.value)}
-                      placeholder="••••••••••••••••"
-                      className="w-full px-3 py-2 pr-10 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm font-mono focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowNiubizSecret(v => !v)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                    >
-                      {showNiubizSecret ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
 
           {/* Metodo de pago */}
@@ -332,18 +214,18 @@ export default function PaymentSettingsPage() {
             </p>
           </div>
 
-          {/* Cómo obtener las claves */}
+          {/* Cómo obtener el token */}
           <div className="bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
             <h3 className="font-semibold text-gray-700 dark:text-gray-300 mb-3 flex items-center gap-2">
               <Info className="h-4 w-4" />
-              ¿Cómo obtener las claves de Culqi?
+              ¿Cómo obtener el Access Token?
             </h3>
             <ol className="space-y-2 text-sm text-gray-600 dark:text-gray-400 list-decimal list-inside">
-              <li>Ingresa a <strong>culqi.com</strong> y crea una cuenta comercial</li>
-              <li>Verifica tu RUC y sube los documentos requeridos (DNI del representante, cuenta bancaria)</li>
-              <li>Una vez aprobado (2-5 días hábiles), ve a <strong>Desarrolladores → API Keys</strong></li>
-              <li>Copia la <strong>Clave Pública</strong> (pk_...) y la <strong>Clave Secreta</strong> (sk_...)</li>
-              <li>Pégalas aquí, activa el modo <strong>Producción</strong> y guarda</li>
+              <li>Entra a <strong>mercadopago.com.pe/developers/panel/app</strong> con tu cuenta</li>
+              <li>Crea una aplicación o usa la existente y asocia tu cuenta cobradora</li>
+              <li>En <strong>Credenciales</strong> copia el <strong>Access Token de producción</strong> (empieza con <strong>APP_USR-</strong> o <strong>PROD-</strong>)</li>
+              <li>Pégalo aquí, presiona <strong>Guardar</strong> y luego <strong>Probar conexión</strong></li>
+              <li>Sin un token válido la tienda no puede cobrar: el checkout se rechaza</li>
             </ol>
           </div>
 

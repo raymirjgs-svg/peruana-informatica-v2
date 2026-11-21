@@ -5,7 +5,6 @@ const router = Router();
 
 router.get('/', PaymentSettingsController.getSettings);
 router.put('/', PaymentSettingsController.saveSettings);
-router.post('/test-culqi', PaymentSettingsController.testCulqi);
 router.post('/test-mercadopago', PaymentSettingsController.testMercadoPago);
 
 export default router;

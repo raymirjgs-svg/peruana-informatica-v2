@@ -39,18 +39,24 @@ export class AnalyticsController {
                     startDate.setDate(now.getDate() - 30);
             }
 
-            // Get daily sales
+            // Get daily sales: pedidos recibidos + ingresos efectivamente cobrados
             const dailySales = await Order.findAll({
                 attributes: [
                     [Order.sequelize!.fn('DATE', Order.sequelize!.col('createdAt')), 'date'],
                     [Order.sequelize!.fn('COUNT', Order.sequelize!.col('id')), 'orders'],
-                    [Order.sequelize!.fn('SUM', Order.sequelize!.col('total_amount')), 'revenue']
+                    [Order.sequelize!.fn('SUM', Order.sequelize!.col('total_amount')), 'receivedRevenue'],
+                    [
+                        Order.sequelize!.fn(
+                            'SUM',
+                            Order.sequelize!.literal("CASE WHEN payment_status = 'verified' THEN total_amount ELSE 0 END")
+                        ),
+                        'revenue'
+                    ]
                 ],
                 where: {
                     createdAt: {
                         [Op.gte]: startDate
-                    },
-                    payment_status: 'verified'
+                    }
                 },
                 group: [Order.sequelize!.fn('DATE', Order.sequelize!.col('createdAt'))],
                 order: [[Order.sequelize!.fn('DATE', Order.sequelize!.col('createdAt')), 'ASC']],
@@ -72,17 +78,21 @@ export class AnalyticsController {
      */
     async getKPIs(req: Request, res: Response) {
         try {
-            // Total revenue (all time)
+            // Pedidos recibidos (todos, cobrados o no)
+            const receivedOrders = await Order.count();
+            const receivedRevenue = await Order.sum('total_amount') || 0;
+
+            // Pedidos cobrados (pago verificado)
             const totalRevenue = await Order.sum('total_amount', {
                 where: { payment_status: 'verified' }
             }) || 0;
 
-            // Total orders
+            // Total orders cobrados
             const totalOrders = await Order.count({
                 where: { payment_status: 'verified' }
             });
 
-            // Average order value
+            // Average order value (sobre pedidos cobrados)
             const avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
 
             // Revenue this month
@@ -99,7 +109,7 @@ export class AnalyticsController {
                 }
             }) || 0;
 
-            // Orders this month
+            // Orders cobrados este mes
             const monthOrders = await Order.count({
                 where: {
                     payment_status: 'verified',
@@ -109,16 +119,29 @@ export class AnalyticsController {
                 }
             });
 
-            // Pending orders (require attention)
+            // Pedidos recibidos este mes
+            const monthReceivedOrders = await Order.count({
+                where: {
+                    createdAt: {
+                        [Op.gte]: startOfMonth
+                    }
+                }
+            });
+
+            // Pedidos pendientes de pago
             const pendingOrders = await Order.count({
                 where: { payment_status: 'pending' }
             });
 
-            // Total customers (unique users)
+            // Pedidos rechazados / cancelados
+            const rejectedOrders = await Order.count({
+                where: { payment_status: 'rejected' }
+            });
+
+            // Total customers (unique users que han pedido)
             const totalCustomers = await Order.count({
                 distinct: true,
-                col: 'customer_email',
-                where: { payment_status: 'verified' }
+                col: 'customer_email'
             });
 
             // New customers this month
@@ -126,7 +149,6 @@ export class AnalyticsController {
                 distinct: true,
                 col: 'customer_email',
                 where: {
-                    payment_status: 'verified',
                     createdAt: {
                         [Op.gte]: startOfMonth
                     }
@@ -136,12 +158,18 @@ export class AnalyticsController {
             return res.json({
                 success: true,
                 data: {
+                    // Ingresos cobrados (pago verificado)
                     totalRevenue: Number(totalRevenue).toFixed(2),
                     totalOrders,
                     avgOrderValue: Number(avgOrderValue).toFixed(2),
                     monthRevenue: Number(monthRevenue).toFixed(2),
                     monthOrders,
+                    // Pedidos recibidos (cobrados o no)
+                    receivedOrders,
+                    receivedRevenue: Number(receivedRevenue).toFixed(2),
+                    monthReceivedOrders,
                     pendingOrders,
+                    rejectedOrders,
                     totalCustomers,
                     newCustomersMonth
                 }

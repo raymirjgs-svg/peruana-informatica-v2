@@ -37,10 +37,20 @@ export function SalesChart({ data }: SalesChartProps) {
         labels: data.map(d => new Date(d.date).toLocaleDateString('es-PE', { month: 'short', day: 'numeric' })),
         datasets: [
             {
-                label: 'Ingresos (S/)',
+                label: 'Ingresos cobrados (S/)',
                 data: data.map(d => parseFloat(d.revenue)),
                 borderColor: 'rgb(59, 130, 246)',
                 backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                yAxisID: 'y',
+                fill: true,
+                tension: 0.4
+            },
+            {
+                label: 'Pedidos recibidos',
+                data: data.map(d => d.orders),
+                borderColor: 'rgb(16, 185, 129)',
+                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                yAxisID: 'y1',
                 fill: true,
                 tension: 0.4
             }
@@ -52,7 +62,8 @@ export function SalesChart({ data }: SalesChartProps) {
         maintainAspectRatio: false,
         plugins: {
             legend: {
-                display: false
+                display: true,
+                labels: { boxWidth: 12, font: { size: 11 } }
             },
             tooltip: {
                 mode: 'index' as const,
@@ -62,8 +73,16 @@ export function SalesChart({ data }: SalesChartProps) {
         scales: {
             y: {
                 beginAtZero: true,
+                position: 'left' as const,
                 grid: {
                     color: 'rgba(0, 0, 0, 0.05)'
+                }
+            },
+            y1: {
+                beginAtZero: true,
+                position: 'right' as const,
+                grid: {
+                    display: false
                 }
             },
             x: {

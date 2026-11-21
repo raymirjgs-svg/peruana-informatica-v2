@@ -19,6 +19,7 @@
     "migrate:coupon-discount": "node dist/scripts/migrateOrderCouponDiscount.js",
     "migrate:mp-payment-method": "node dist/scripts/migrateMercadoPagoPaymentMethod.js",
     "migrate:idempotency-key": "node dist/scripts/migrateOrderIdempotencyKey.js",
+    "seed:roles": "node dist/scripts/seedRolesAndPermissions.js",
     "backfill:tracking-code": "node dist/scripts/backfillTrackingCodes.js",
     "send:tracking-codes": "node dist/scripts/sendTrackingCodes.js",
     "rollback:tracking-code": "node dist/scripts/rollbackOrderTrackingCode.js",

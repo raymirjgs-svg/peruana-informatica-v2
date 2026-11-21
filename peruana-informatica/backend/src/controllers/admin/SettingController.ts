@@ -3,7 +3,35 @@ import { Setting } from '../../models/Setting';
 import { clearMercadoPagoTokenCache } from '../../services/MercadoPagoService';
 
 // Claves secretas: se devuelven enmascaradas al panel.
-const SECRET_KEYS = ['mp_access_token', 'culqi_secret_key', 'niubiz_secret_key'];
+const SECRET_KEYS = ['mp_access_token'];
+
+/**
+ * Claves que el panel puede guardar. Todo lo demas se rechaza para que un
+ * typo no cree ajustes basura en la tabla `settings`.
+ */
+const ALLOWED_KEYS = [
+    'announcement_bar_color',
+    'announcement_bar_enabled',
+    'announcement_bar_link',
+    'announcement_bar_text',
+    'checkout_mode',
+    'cotizador_price_type',
+    'home_section_brands',
+    'home_section_categories',
+    'home_section_clearance',
+    'home_section_featured',
+    'home_section_new',
+    'mp_access_token',
+    'primary_color',
+    'return_policy_lines',
+    'secondary_color',
+    'shipping_express_badge',
+    'shipping_express_subtitle',
+    'shipping_express_title',
+    'shipping_standard_badge',
+    'shipping_standard_subtitle',
+    'shipping_standard_title',
+];
 
 const maskSecret = (value: string): string => {
     if (!value || value.length < 8) return '';
@@ -30,6 +58,10 @@ export const updateSetting = async (req: Request, res: Response) => {
 
         if (!key) {
             return res.status(400).json({ error: 'Falta el nombre de la configuracion' });
+        }
+
+        if (!ALLOWED_KEYS.includes(key)) {
+            return res.status(400).json({ error: `Configuracion desconocida: ${key}` });
         }
 
         // Si el valor llega enmascarado, el admin no lo modifico: se conserva

@@ -60,6 +60,7 @@ export const authOptions: NextAuthOptions = {
                         return {
                             id: String(data.user?.id || "1"),
                             username: data.user?.username || email.split('@')[0],
+                            email: data.user?.email || email,
                             token: data.accessToken,
                             role: data.user?.role || (isCustomer ? 'customer' : 'admin'),
                         };
@@ -128,6 +129,8 @@ export const authOptions: NextAuthOptions = {
                 token.accessToken = user.token as string;
                 token.username = user.username as string;
                 token.role = user.role as string;
+                // El panel muestra el email del admin en la barra lateral.
+                token.email = user.email;
             }
             return token;
         },

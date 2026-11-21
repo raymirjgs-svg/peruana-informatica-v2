@@ -3,10 +3,10 @@ import { Setting } from '../../models/Setting';
 import { checkMercadoPagoStatus, clearMercadoPagoTokenCache } from '../../services/MercadoPagoService';
 
 // Keys that hold secret values — never returned in full to the frontend
-const SECRET_KEYS = ['culqi_secret_key', 'niubiz_secret_key', 'mp_access_token'];
+const SECRET_KEYS = ['mp_access_token'];
 
 function maskSecret(value: string): string {
-    if (!value || value.length < 8) return '••••••••';
+    if (!value || value.length < 8) return '';
     return `••••••••${value.slice(-4)}`;
 }
 
@@ -29,12 +29,6 @@ export const PaymentSettingsController = {
     async getSettings(req: Request, res: Response) {
         try {
             const keys = [
-                'payment_culqi_enabled',
-                'culqi_public_key',
-                'culqi_secret_key',
-                'payment_niubiz_enabled',
-                'niubiz_merchant_id',
-                'niubiz_secret_key',
                 'payment_mode', // 'test' | 'live'
                 'mp_access_token',
             ];
@@ -57,12 +51,6 @@ export const PaymentSettingsController = {
     async saveSettings(req: Request, res: Response) {
         try {
             const allowed = [
-                'payment_culqi_enabled',
-                'culqi_public_key',
-                'culqi_secret_key',
-                'payment_niubiz_enabled',
-                'niubiz_merchant_id',
-                'niubiz_secret_key',
                 'payment_mode',
                 'mp_access_token',
             ];
@@ -102,31 +90,6 @@ export const PaymentSettingsController = {
             return res.json({ success: true, message: status.message, data: status });
         } catch (err: any) {
             return res.status(500).json({ success: false, error: `Error de conexión: ${err.message}` });
-        }
-    },
-
-    async testCulqi(req: Request, res: Response) {
-        try {
-            const secretKey = (await getSetting('culqi_secret_key')) || process.env.CULQI_SECRET_KEY;
-            if (!secretKey) {
-                return res.status(400).json({ success: false, error: 'Clave secreta de Culqi no configurada' });
-            }
-
-            // Culqi doesn't have a dedicated "ping" endpoint, so we hit the tokens list
-            // A 401 means wrong key, 200 means valid
-            const resp = await fetch('https://api.culqi.com/v2/tokens?limit=1', {
-                headers: { Authorization: `Bearer ${secretKey}` }
-            });
-
-            if (resp.status === 200 || resp.status === 204) {
-                return res.json({ success: true, message: 'Conexión con Culqi exitosa ✓' });
-            }
-            if (resp.status === 401) {
-                return res.status(400).json({ success: false, error: 'Clave secreta inválida (401 Unauthorized)' });
-            }
-            return res.json({ success: true, message: `Culqi respondió con estado ${resp.status}` });
-        } catch (err: any) {
-            res.status(500).json({ success: false, error: `Error de conexión: ${err.message}` });
         }
     },
 };

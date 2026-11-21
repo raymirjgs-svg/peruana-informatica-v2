@@ -91,9 +91,9 @@ export default function ReportsPage() {
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           <MotionWrapper delay={0.1}>
             <StatsCard
-              title="Ingresos Totales"
+              title="Ingresos Cobrados"
               value={`S/ ${kpis?.totalRevenue || '0.00'}`}
-              description="Volumen bruto de ventas"
+              description="Pagos verificados (Mercado Pago)"
               icon={DollarSign}
               trend={{ value: `${kpis?.monthRevenue ? '+' + kpis.monthRevenue : '+0'} este mes`, isPositive: true }}
               color="indigo"
@@ -101,11 +101,11 @@ export default function ReportsPage() {
           </MotionWrapper>
           <MotionWrapper delay={0.2}>
             <StatsCard
-              title="Transacciones"
-              value={kpis?.totalOrders.toString() || '0'}
-              description="Pedidos procesados exitosamente"
+              title="Pedidos Recibidos"
+              value={kpis?.receivedOrders.toString() || '0'}
+              description={`${kpis?.totalOrders || 0} cobrados · ${kpis?.pendingOrders || 0} pendientes`}
               icon={Package}
-              trend={{ value: `${kpis?.monthOrders || 0} nuevos`, isPositive: true }}
+              trend={{ value: `${kpis?.monthReceivedOrders || 0} este mes`, isPositive: true }}
               color="blue"
             />
           </MotionWrapper>
@@ -113,18 +113,18 @@ export default function ReportsPage() {
             <StatsCard
               title="Ticket Promedio"
               value={`S/ ${kpis?.avgOrderValue || '0.00'}`}
-              description="Valor medio por pedido"
+              description="Promedio sobre pedidos cobrados"
               icon={TrendingUp}
               color="green"
             />
           </MotionWrapper>
           <MotionWrapper delay={0.4}>
             <StatsCard
-              title="Conversion"
-              value="3.2%"
-              description="Visitantes a compradores"
+              title="Cobrados vs. Recibidos"
+              value={`${kpis?.receivedOrders ? ((kpis.totalOrders / kpis.receivedOrders) * 100).toFixed(1) : '0.0'}%`}
+              description={`${kpis?.totalOrders || 0} de ${kpis?.receivedOrders || 0} pedidos tienen pago verificado`}
               icon={Activity}
-              trend={{ value: '+0.4%', isPositive: true }}
+              trend={{ value: `${kpis?.pendingOrders || 0} pendientes de pago`, isPositive: false }}
               color="purple"
             />
           </MotionWrapper>

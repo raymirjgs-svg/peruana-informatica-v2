@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import { getAdminEmailFromToken } from '@/lib/adminSession';
 import { useState, useEffect } from 'react';
 import { useTheme } from '@/context/ThemeContext';
 import { useSettings } from '@/context/SettingsContext';
@@ -124,7 +125,15 @@ export function Sidebar() {
 
   // Datos del admin en sesion (sin email hardcodeado)
   const adminName = session?.user?.username || session?.user?.name || 'Administrador';
-  const adminEmail = session?.user?.email || 'Sesión iniciada';
+  const [tokenEmail, setTokenEmail] = useState('');
+
+  // El JWT del backend siempre trae el email: sirve de respaldo cuando la
+  // sesion de NextAuth es anterior al ultimo despliegue.
+  useEffect(() => {
+    setTokenEmail(getAdminEmailFromToken());
+  }, []);
+
+  const adminEmail = session?.user?.email || tokenEmail || 'Sesión iniciada';
 
   useEffect(() => {
     // Auto expand menu based on active route

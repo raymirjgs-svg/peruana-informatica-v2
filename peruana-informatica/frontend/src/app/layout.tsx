@@ -121,6 +121,13 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href={SITE_URL} />
+        {/* Aplica el tema oscuro ANTES del primer pintado (evita el flash blanco).
+            Solo afecta a /admin: el sitio publico nunca se oscurece. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var p=window.location.pathname||'';if(p.indexOf('/admin')!==0){return;}var t=localStorage.getItem('adminTheme')||localStorage.getItem('theme');if(t==='dark'){document.documentElement.classList.add('dark');}}catch(e){}})();`,
+          }}
+        />
         <OrganizationSchema />
         <WebSiteSchema />
         <LocalBusinessSchema />

@@ -10,9 +10,9 @@ interface SeoSettingsListProps {
 
 export function SeoSettingsList({ settings, onNew, onEdit, onDelete }: SeoSettingsListProps) {
   return (
-        <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
+        <div className="dark:bg-gray-900 border dark:border-gray-700 rounded-xl p-6 mb-6">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold text-gray-800">
+            <h2 className="text-xl font-bold dark:text-gray-100">
               Configuraciones SEO
             </h2>
             <Button onClick={onNew}>+ Nueva Configuración</Button>
@@ -22,7 +22,7 @@ export function SeoSettingsList({ settings, onNew, onEdit, onDelete }: SeoSettin
             {settings.map((setting) => (
               <div
                 key={setting.id}
-                className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors"
+                className="border dark:border-gray-700 rounded-lg p-4 dark:hover:bg-gray-800 transition-colors"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
@@ -33,7 +33,7 @@ export function SeoSettingsList({ settings, onNew, onEdit, onDelete }: SeoSettin
                         )?.label || setting.page_type}
                       </span>
                       {setting.page_identifier && (
-                        <span className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">
+                        <span className="px-2 py-1 dark:bg-gray-800 dark:text-gray-300 text-xs rounded">
                           {setting.page_identifier}
                         </span>
                       )}
@@ -43,13 +43,13 @@ export function SeoSettingsList({ settings, onNew, onEdit, onDelete }: SeoSettin
                         </span>
                       )}
                     </div>
-                    <h3 className="font-semibold text-gray-800">
+                    <h3 className="font-semibold dark:text-gray-100">
                       {setting.meta_title || "Sin título"}
                     </h3>
-                    <p className="text-sm text-gray-600 mt-1 line-clamp-2">
+                    <p className="text-sm dark:text-gray-400 mt-1 line-clamp-2">
                       {setting.meta_description || "Sin descripción"}
                     </p>
-                    <div className="flex items-center gap-4 mt-2 text-xs text-gray-500">
+                    <div className="flex items-center gap-4 mt-2 text-xs dark:text-gray-400">
                       <span>Robots: {setting.robots}</span>
                       <span>Prioridad: {setting.priority}</span>
                       <span>Frecuencia: {setting.change_frequency}</span>
@@ -76,7 +76,7 @@ export function SeoSettingsList({ settings, onNew, onEdit, onDelete }: SeoSettin
             ))}
 
             {settings.length === 0 && (
-              <div className="text-center py-12 text-gray-500">
+              <div className="text-center py-12 dark:text-gray-400">
                 No hay configuraciones SEO. Crea la primera configuración.
               </div>
             )}

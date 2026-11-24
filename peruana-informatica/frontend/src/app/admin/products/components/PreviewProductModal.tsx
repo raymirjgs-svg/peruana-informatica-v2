@@ -20,7 +20,7 @@ export function PreviewProductModal({ controller, forms }: { controller: Data; f
         <Modal isOpen={!!previewProduct} onClose={() => setPreviewProduct(null)} title="Vista Previa del Producto" size="lg">
           {previewProduct && (
             <div className="grid md:grid-cols-2 gap-6">
-              <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
+              <div className="aspect-square dark:bg-gray-800 rounded-lg overflow-hidden">
                 {getProductImageUrl(previewProduct) ? (
                   <img src={getProductImageUrl(previewProduct)!} alt="" className="w-full h-full object-contain" />
                 ) : (
@@ -28,14 +28,14 @@ export function PreviewProductModal({ controller, forms }: { controller: Data; f
                 )}
               </div>
               <div className="space-y-4">
-                <h3 className="text-xl font-bold text-gray-800">{previewProduct.name}</h3>
+                <h3 className="text-xl font-bold dark:text-gray-100">{previewProduct.name}</h3>
                 <div className="grid grid-cols-2 gap-3 text-sm">
-                  <div><span className="text-gray-500">Código:</span> <span className="font-medium">{previewProduct.codigo_interno || '-'}</span></div>
-                  <div><span className="text-gray-500">Precio:</span> <span className="font-bold text-blue-600">S/. {Number(previewProduct.price).toLocaleString()}</span></div>
-                  <div><span className="text-gray-500">Stock:</span> <span className={`font-medium ${previewProduct.stock > 0 ? 'text-green-600' : 'text-red-600'}`}>{previewProduct.stock}</span></div>
-                  <div><span className="text-gray-500">Estado:</span> <span className={previewProduct.is_active ? 'text-green-600' : 'text-gray-500'}>{previewProduct.is_active ? 'Activo' : 'Inactivo'}</span></div>
-                  <div><span className="text-gray-500">Categoría:</span> <span className="font-medium">{previewProduct.productCategory?.name || '-'}</span></div>
-                  <div><span className="text-gray-500">Marca:</span> <span className="font-medium">{previewProduct.productBrand?.name || '-'}</span></div>
+                  <div><span className="dark:text-gray-400">Código:</span> <span className="font-medium">{previewProduct.codigo_interno || '-'}</span></div>
+                  <div><span className="dark:text-gray-400">Precio:</span> <span className="font-bold text-blue-600">S/. {Number(previewProduct.price).toLocaleString()}</span></div>
+                  <div><span className="dark:text-gray-400">Stock:</span> <span className={`font-medium ${previewProduct.stock > 0 ? 'text-green-600' : 'text-red-600'}`}>{previewProduct.stock}</span></div>
+                  <div><span className="dark:text-gray-400">Estado:</span> <span className={previewProduct.is_active ? 'text-green-600' : 'text-gray-500'}>{previewProduct.is_active ? 'Activo' : 'Inactivo'}</span></div>
+                  <div><span className="dark:text-gray-400">Categoría:</span> <span className="font-medium">{previewProduct.productCategory?.name || '-'}</span></div>
+                  <div><span className="dark:text-gray-400">Marca:</span> <span className="font-medium">{previewProduct.productBrand?.name || '-'}</span></div>
                 </div>
                 <div className="flex gap-2 pt-4">
                   <Button onClick={() => { startEdit(previewProduct); setPreviewProduct(null); }}>✏️ Editar</Button>

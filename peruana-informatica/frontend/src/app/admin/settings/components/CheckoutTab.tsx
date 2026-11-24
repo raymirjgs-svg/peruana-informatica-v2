@@ -17,7 +17,7 @@ export function CheckoutTab({ settings, onSettingChange }: CheckoutTabProps) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Direct Mode */}
-        <label className={`relative flex flex-col p-6 border-2 rounded-2xl cursor-pointer transition-all ${settings.checkout_mode === 'direct' ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' : 'border-gray-200 hover:border-blue-200 hover:bg-gray-50'}`}>
+        <label className={`relative flex flex-col p-6 border-2 rounded-2xl cursor-pointer transition-all ${settings.checkout_mode === 'direct' ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' : 'dark:border-gray-700 hover:border-blue-200 dark:hover:bg-gray-800'}`}>
           <input
             type="radio"
             name="checkout_mode"
@@ -27,7 +27,7 @@ export function CheckoutTab({ settings, onSettingChange }: CheckoutTabProps) {
             className="sr-only"
           />
           <div className="flex items-center justify-between mb-4">
-            <div className={`p-3 rounded-full ${settings.checkout_mode === 'direct' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500'}`}>
+            <div className={`p-3 rounded-full ${settings.checkout_mode === 'direct' ? 'bg-blue-100 text-blue-600' : 'dark:bg-gray-800 dark:text-gray-400'}`}>
               <DollarSign className="w-6 h-6" />
             </div>
             {settings.checkout_mode === 'direct' && <CheckCircle className="w-6 h-6 text-blue-600" />}
@@ -39,7 +39,7 @@ export function CheckoutTab({ settings, onSettingChange }: CheckoutTabProps) {
         </label>
 
         {/* Approval Mode */}
-        <label className={`relative flex flex-col p-6 border-2 rounded-2xl cursor-pointer transition-all ${settings.checkout_mode === 'approval' ? 'border-amber-500 bg-amber-50 dark:bg-amber-900/20' : 'border-gray-200 hover:border-amber-200 hover:bg-gray-50'}`}>
+        <label className={`relative flex flex-col p-6 border-2 rounded-2xl cursor-pointer transition-all ${settings.checkout_mode === 'approval' ? 'border-amber-500 bg-amber-50 dark:bg-amber-900/20' : 'dark:border-gray-700 hover:border-amber-200 dark:hover:bg-gray-800'}`}>
           <input
             type="radio"
             name="checkout_mode"
@@ -49,7 +49,7 @@ export function CheckoutTab({ settings, onSettingChange }: CheckoutTabProps) {
             className="sr-only"
           />
           <div className="flex items-center justify-between mb-4">
-            <div className={`p-3 rounded-full ${settings.checkout_mode === 'approval' ? 'bg-amber-100 text-amber-600' : 'bg-gray-100 text-gray-500'}`}>
+            <div className={`p-3 rounded-full ${settings.checkout_mode === 'approval' ? 'bg-amber-100 text-amber-600' : 'dark:bg-gray-800 dark:text-gray-400'}`}>
               <Users className="w-6 h-6" />
             </div>
             {settings.checkout_mode === 'approval' && <CheckCircle className="w-6 h-6 text-amber-600" />}

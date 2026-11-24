@@ -36,10 +36,10 @@ export function AdminAuthGuard({ children }: AdminAuthGuardProps) {
     // Show loading while checking auth
     if (isAuthenticated === null) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-100">
+            <div className="min-h-screen flex items-center justify-center dark:bg-gray-800">
                 <div className="flex flex-col items-center gap-4">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-                    <p className="text-gray-500">Verificando acceso...</p>
+                    <p className="dark:text-gray-400">Verificando acceso...</p>
                 </div>
             </div>
         );
@@ -48,10 +48,10 @@ export function AdminAuthGuard({ children }: AdminAuthGuardProps) {
     // Don't render children if not authenticated
     if (!isAuthenticated) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-100">
+            <div className="min-h-screen flex items-center justify-center dark:bg-gray-800">
                 <div className="flex flex-col items-center gap-4">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-                    <p className="text-gray-500">Redirigiendo al login...</p>
+                    <p className="dark:text-gray-400">Redirigiendo al login...</p>
                 </div>
             </div>
         );

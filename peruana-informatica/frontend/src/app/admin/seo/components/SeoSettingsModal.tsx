@@ -28,9 +28,9 @@ export function SeoSettingsModal({
 }: SeoSettingsModalProps) {
   return (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 overflow-y-auto">
-            <div className="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-              <div className="p-6 border-b border-gray-200">
-                <h2 className="text-xl font-bold text-gray-800">
+            <div className="dark:bg-gray-900 rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="p-6 border-b dark:border-gray-700">
+                <h2 className="text-xl font-bold dark:text-gray-100">
                   {selectedSetting
                     ? "Editar Configuración SEO"
                     : "Nueva Configuración SEO"}
@@ -60,7 +60,7 @@ export function SeoSettingsModal({
                 {/* Información básica */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium dark:text-gray-300 mb-2">
                       Tipo de Página *
                     </label>
                     <select
@@ -85,7 +85,7 @@ export function SeoSettingsModal({
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium dark:text-gray-300 mb-2">
                       Identificador de Página
                     </label>
                     <input
@@ -94,9 +94,9 @@ export function SeoSettingsModal({
                       value={formData.page_identifier || ""}
                       onChange={onChange}
                       placeholder="ej: slug, id, etc."
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs dark:text-gray-400 mt-1">
                       Para páginas específicas (opcional)
                     </p>
                   </div>
@@ -104,10 +104,10 @@ export function SeoSettingsModal({
 
                 {/* Meta Tags */}
                 <div className="space-y-4">
-                  <h3 className="font-semibold text-gray-800">Meta Tags</h3>
+                  <h3 className="font-semibold dark:text-gray-100">Meta Tags</h3>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium dark:text-gray-300 mb-2">
                       Título Meta ({formData.meta_title?.length || 0}/60)
                     </label>
                     <input
@@ -126,7 +126,7 @@ export function SeoSettingsModal({
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium dark:text-gray-300 mb-2">
                       Descripción Meta ({formData.meta_description?.length || 0}
                       /160)
                     </label>
@@ -146,7 +146,7 @@ export function SeoSettingsModal({
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium dark:text-gray-300 mb-2">
                       Keywords
                     </label>
                     <input
@@ -155,9 +155,9 @@ export function SeoSettingsModal({
                       value={formData.meta_keywords}
                       onChange={onChange}
                       placeholder="palabra1, palabra2, palabra3"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs dark:text-gray-400 mt-1">
                       Separa las palabras clave con comas
                     </p>
                   </div>
@@ -165,13 +165,13 @@ export function SeoSettingsModal({
 
                 {/* Open Graph */}
                 <div className="space-y-4">
-                  <h3 className="font-semibold text-gray-800">
+                  <h3 className="font-semibold dark:text-gray-100">
                     Open Graph (Facebook)
                   </h3>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium dark:text-gray-300 mb-2">
                         Título OG
                       </label>
                       <input
@@ -179,12 +179,12 @@ export function SeoSettingsModal({
                         name="og_title"
                         value={formData.og_title}
                         onChange={onChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium dark:text-gray-300 mb-2">
                         Imagen OG
                       </label>
                       <input
@@ -193,13 +193,13 @@ export function SeoSettingsModal({
                         value={formData.og_image}
                         onChange={onChange}
                         placeholder="https://..."
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium dark:text-gray-300 mb-2">
                       Descripción OG
                     </label>
                     <textarea
@@ -207,18 +207,18 @@ export function SeoSettingsModal({
                       value={formData.og_description}
                       onChange={onChange}
                       rows={2}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                      className="w-full px-3 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                     />
                   </div>
                 </div>
 
                 {/* Twitter */}
                 <div className="space-y-4">
-                  <h3 className="font-semibold text-gray-800">Twitter Cards</h3>
+                  <h3 className="font-semibold dark:text-gray-100">Twitter Cards</h3>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium dark:text-gray-300 mb-2">
                         Título Twitter
                       </label>
                       <input
@@ -226,12 +226,12 @@ export function SeoSettingsModal({
                         name="twitter_title"
                         value={formData.twitter_title}
                         onChange={onChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium dark:text-gray-300 mb-2">
                         Imagen Twitter
                       </label>
                       <input
@@ -240,13 +240,13 @@ export function SeoSettingsModal({
                         value={formData.twitter_image}
                         onChange={onChange}
                         placeholder="https://..."
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium dark:text-gray-300 mb-2">
                       Descripción Twitter
                     </label>
                     <textarea
@@ -254,27 +254,27 @@ export function SeoSettingsModal({
                       value={formData.twitter_description}
                       onChange={onChange}
                       rows={2}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                      className="w-full px-3 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                     />
                   </div>
                 </div>
 
                 {/* Configuración avanzada */}
                 <div className="space-y-4">
-                  <h3 className="font-semibold text-gray-800">
+                  <h3 className="font-semibold dark:text-gray-100">
                     Configuración Avanzada
                   </h3>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium dark:text-gray-300 mb-2">
                         Robots
                       </label>
                       <select
                         name="robots"
                         value={formData.robots}
                         onChange={onChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       >
                         {SeoService.getRobotsOptions().map((option) => (
                           <option key={option.value} value={option.value}>
@@ -285,7 +285,7 @@ export function SeoSettingsModal({
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium dark:text-gray-300 mb-2">
                         Prioridad (0.0-1.0)
                       </label>
                       <input
@@ -296,19 +296,19 @@ export function SeoSettingsModal({
                         min="0.0"
                         max="1.0"
                         step="0.1"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium dark:text-gray-300 mb-2">
                         Frecuencia
                       </label>
                       <select
                         name="change_frequency"
                         value={formData.change_frequency}
                         onChange={onChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       >
                         {SeoService.getChangeFrequencyOptions().map(
                           (option) => (
@@ -322,7 +322,7 @@ export function SeoSettingsModal({
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium dark:text-gray-300 mb-2">
                       URL Canónica
                     </label>
                     <input
@@ -331,12 +331,12 @@ export function SeoSettingsModal({
                       value={formData.canonical_url}
                       onChange={onChange}
                       placeholder="https://..."
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium dark:text-gray-300 mb-2">
                       Schema Markup (JSON-LD)
                     </label>
                     <textarea
@@ -345,12 +345,12 @@ export function SeoSettingsModal({
                       onChange={onChange}
                       rows={4}
                       placeholder='{"@context": "https://schema.org", "@type": "Organization", ...}'
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none font-mono text-sm"
+                      className="w-full px-3 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none font-mono text-sm"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium dark:text-gray-300 mb-2">
                       HTML Personalizado (Head)
                     </label>
                     <textarea
@@ -359,7 +359,7 @@ export function SeoSettingsModal({
                       onChange={onChange}
                       rows={3}
                       placeholder='<meta name="..." content="..." />'
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none font-mono text-sm"
+                      className="w-full px-3 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none font-mono text-sm"
                     />
                   </div>
 
@@ -369,16 +369,16 @@ export function SeoSettingsModal({
                       name="is_active"
                       checked={formData.is_active}
                       onChange={onChange}
-                      className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      className="rounded dark:border-gray-700 text-blue-600 focus:ring-blue-500"
                     />
-                    <label className="ml-2 text-sm text-gray-700">
+                    <label className="ml-2 text-sm dark:text-gray-300">
                       Configuración activa
                     </label>
                   </div>
                 </div>
               </div>
 
-              <div className="p-6 border-t border-gray-200 flex justify-end gap-4">
+              <div className="p-6 border-t dark:border-gray-700 flex justify-end gap-4">
                 <Button
                   variant="secondary"
                   onClick={onClose}

@@ -104,7 +104,7 @@ export default function ReviewsPage() {
                             <div className="text-center py-20 bg-white/50 dark:bg-gray-800/50 rounded-2xl border border-dashed border-gray-300 dark:border-gray-700">
                                 <MessageSquare className="h-12 w-12 mx-auto text-gray-400 mb-4" />
                                 <h3 className="text-lg font-medium text-gray-900 dark:text-white">No se encontraron reseñas</h3>
-                                <p className="text-gray-500">No hay reseñas con el filtro seleccionado.</p>
+                                <p className="dark:text-gray-400">No hay reseñas con el filtro seleccionado.</p>
                             </div>
                         ) : (
                             reviews.map((review) => (
@@ -138,7 +138,7 @@ export default function ReviewsPage() {
                                                 "{review.comment}"
                                             </p>
 
-                                            <div className="flex items-center gap-2 text-xs text-gray-500 bg-gray-50 dark:bg-gray-900/50 p-2 rounded-lg w-fit">
+                                            <div className="flex items-center gap-2 text-xs dark:text-gray-400 bg-gray-50 dark:bg-gray-900/50 p-2 rounded-lg w-fit">
                                                 <div className="h-8 w-8 rounded bg-gray-200 dark:bg-gray-700 overflow-hidden">
                                                     {/* Product Image Placeholder */}
                                                     <img src={review.Product?.images?.[0]?.imagen ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/uploads/${encodeURIComponent(review.Product.images[0].imagen)}` : '/no-image.svg'} className="w-full h-full object-cover" />

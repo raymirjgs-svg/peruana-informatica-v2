@@ -80,7 +80,7 @@ function AnnouncementModal({
                 <button
                   key={e}
                   onClick={() => setIcon(e)}
-                  className={`text-xl p-2 rounded-lg border-2 transition-all ${icon === e ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' : 'border-gray-200 dark:border-gray-700 hover:border-gray-300'}`}
+                  className={`text-xl p-2 rounded-lg border-2 transition-all ${icon === e ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' : 'border-gray-200 dark:border-gray-700 dark:hover:border-gray-700'}`}
                 >
                   {e}
                 </button>
@@ -227,15 +227,15 @@ export default function AnnouncementsPage() {
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
-            <p className="text-xs text-gray-500 font-medium">Total</p>
+            <p className="text-xs dark:text-gray-400 font-medium">Total</p>
             <p className="text-3xl font-bold text-gray-900 dark:text-white mt-1">{items.length}</p>
           </div>
           <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
-            <p className="text-xs text-gray-500 font-medium">Activos</p>
+            <p className="text-xs dark:text-gray-400 font-medium">Activos</p>
             <p className="text-3xl font-bold text-emerald-600 mt-1">{activeCount}</p>
           </div>
           <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
-            <p className="text-xs text-gray-500 font-medium">Inactivos</p>
+            <p className="text-xs dark:text-gray-400 font-medium">Inactivos</p>
             <p className="text-3xl font-bold text-gray-400 mt-1">{items.length - activeCount}</p>
           </div>
         </div>
@@ -293,7 +293,7 @@ export default function AnnouncementsPage() {
                     <p className="text-xs text-gray-400">Orden: {item.order}</p>
                   </div>
 
-                  <span className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium flex-shrink-0 ${item.is_active ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-gray-100 text-gray-500 dark:bg-gray-700'}`}>
+                  <span className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium flex-shrink-0 ${item.is_active ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-gray-100 dark:text-gray-400 dark:bg-gray-700'}`}>
                     {item.is_active ? <CheckCircle className="h-3 w-3" /> : <XCircle className="h-3 w-3" />}
                     {item.is_active ? 'Activo' : 'Inactivo'}
                   </span>

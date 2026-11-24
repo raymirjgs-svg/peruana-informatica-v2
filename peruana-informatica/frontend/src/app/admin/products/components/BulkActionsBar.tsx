@@ -14,15 +14,15 @@ export function BulkActionsBar({ controller, onOpenBulk }: { controller: Data; o
 
 
   return (
-          <div className="mb-4 flex items-center justify-between bg-gray-50 border border-gray-200 rounded-lg p-3">
+          <div className="mb-4 flex items-center justify-between dark:bg-gray-800 border dark:border-gray-700 rounded-lg p-3">
             <div className="flex items-center gap-3">
               <input
                 type="checkbox"
                 checked={selectedProducts.length === data.products.length && data.products.length > 0}
                 onChange={toggleSelectAll}
-                className="w-5 h-5 text-blue-600 rounded border-gray-300 cursor-pointer"
+                className="w-5 h-5 text-blue-600 rounded dark:border-gray-700 cursor-pointer"
               />
-              <span className="text-sm font-medium text-gray-700">
+              <span className="text-sm font-medium dark:text-gray-300">
                 {selectedProducts.length > 0
                   ? `${selectedProducts.length} producto(s) seleccionado(s)`
                   : 'Seleccionar todos'}

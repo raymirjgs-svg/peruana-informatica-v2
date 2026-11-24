@@ -699,7 +699,7 @@ export default function AdminProductsPage() {
         <div className="mb-6 flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Productos</h1>
-            <p className="text-gray-500 mt-1">Gestiona tu inventario completo {data && `(${data.total} productos)`}</p>
+            <p className="dark:text-gray-400 mt-1">Gestiona tu inventario completo {data && `(${data.total} productos)`}</p>
           </div>
           <div className="flex gap-2">
             <Button variant="secondary" onClick={exportToCSV} disabled={!data || data.products.length === 0}>
@@ -718,32 +718,32 @@ export default function AdminProductsPage() {
         </div>
 
         {/* Filtros */}
-        <form onSubmit={applyFilters} className="mb-4 border rounded-lg p-4 bg-white shadow-sm">
+        <form onSubmit={applyFilters} className="mb-4 border rounded-lg p-4 dark:bg-gray-900 shadow-sm">
           <div className="grid grid-cols-1 md:grid-cols-6 gap-3">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Código</label>
+              <label className="block text-sm font-medium dark:text-gray-300 mb-1">Código</label>
               <input className="w-full border rounded px-3 py-2" placeholder="Código interno" value={codeFilter} onChange={(e) => setCodeFilter(e.target.value)} />
             </div>
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+              <label className="block text-sm font-medium dark:text-gray-300 mb-1">Nombre</label>
               <input className="w-full border rounded px-3 py-2" placeholder="Buscar por nombre..." value={search} onChange={(e) => setSearch(e.target.value)} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Categoría</label>
+              <label className="block text-sm font-medium dark:text-gray-300 mb-1">Categoría</label>
               <select className="w-full border rounded px-3 py-2" value={filterCategoryId ?? ''} onChange={(e) => setFilterCategoryId(e.target.value ? Number(e.target.value) : undefined)}>
                 <option value="">-- Todas --</option>
                 {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Marca</label>
+              <label className="block text-sm font-medium dark:text-gray-300 mb-1">Marca</label>
               <select className="w-full border rounded px-3 py-2" value={filterBrandId ?? ''} onChange={(e) => setFilterBrandId(e.target.value ? Number(e.target.value) : undefined)}>
                 <option value="">-- Todas --</option>
                 {brands.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Stock</label>
+              <label className="block text-sm font-medium dark:text-gray-300 mb-1">Stock</label>
               <select className="w-full border rounded px-3 py-2" value={filterStock} onChange={(e) => setFilterStock(e.target.value)}>
                 <option value="">-- Todos --</option>
                 <option value="available">✓ Disponible (&gt;0)</option>
@@ -757,16 +757,16 @@ export default function AdminProductsPage() {
               <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-60" disabled={loading}>
                 🔍 Buscar
               </button>
-              <button type="button" onClick={clearFilters} className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300" disabled={loading}>
+              <button type="button" onClick={clearFilters} className="px-4 py-2 dark:bg-gray-700 rounded dark:hover:bg-gray-700" disabled={loading}>
                 Limpiar
               </button>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-500">Vista:</span>
-              <button type="button" onClick={() => setViewMode('list')} className={`p-2 rounded ${viewMode === 'list' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100'}`} title="Lista">
+              <span className="text-sm dark:text-gray-400">Vista:</span>
+              <button type="button" onClick={() => setViewMode('list')} className={`p-2 rounded ${viewMode === 'list' ? 'bg-blue-100 text-blue-600' : 'dark:bg-gray-800'}`} title="Lista">
                 ☰
               </button>
-              <button type="button" onClick={() => setViewMode('grid')} className={`p-2 rounded ${viewMode === 'grid' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100'}`} title="Cuadrícula">
+              <button type="button" onClick={() => setViewMode('grid')} className={`p-2 rounded ${viewMode === 'grid' ? 'bg-blue-100 text-blue-600' : 'dark:bg-gray-800'}`} title="Cuadrícula">
                 ⊞
               </button>
             </div>
@@ -775,15 +775,15 @@ export default function AdminProductsPage() {
 
         {/* Barra de acciones en bloque */}
         {data && data.products.length > 0 && (
-          <div className="mb-4 flex items-center justify-between bg-gray-50 border border-gray-200 rounded-lg p-3">
+          <div className="mb-4 flex items-center justify-between dark:bg-gray-800 border dark:border-gray-700 rounded-lg p-3">
             <div className="flex items-center gap-3">
               <input
                 type="checkbox"
                 checked={selectedProducts.length === data.products.length && data.products.length > 0}
                 onChange={toggleSelectAll}
-                className="w-5 h-5 text-blue-600 rounded border-gray-300 cursor-pointer"
+                className="w-5 h-5 text-blue-600 rounded dark:border-gray-700 cursor-pointer"
               />
-              <span className="text-sm font-medium text-gray-700">
+              <span className="text-sm font-medium dark:text-gray-300">
                 {selectedProducts.length > 0
                   ? `${selectedProducts.length} producto(s) seleccionado(s)`
                   : 'Seleccionar todos'}
@@ -800,14 +800,14 @@ export default function AdminProductsPage() {
         {/* Panel de Acciones en Bloque */}
         <Modal isOpen={showBulkPanel} onClose={() => setShowBulkPanel(false)} title="Actualización en Bloque" size="md">
           <div className="space-y-4">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm dark:text-gray-400">
               Aplicar cambios a <span className="font-bold text-blue-600">{selectedProducts.length}</span> producto(s) seleccionado(s)
             </p>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Categoría</label>
+              <label className="block text-sm font-medium dark:text-gray-300 mb-2">Categoría</label>
               <select
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full border dark:border-gray-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 value={bulkCategory ?? ''}
                 onChange={(e) => setBulkCategory(e.target.value ? Number(e.target.value) : undefined)}
               >
@@ -819,19 +819,19 @@ export default function AdminProductsPage() {
             {/* Subcategorías - solo visible cuando hay categoría seleccionada */}
             {bulkCategory && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium dark:text-gray-300 mb-2">
                   Subcategorías
                   {bulkSubcategories.length > 0 && (
                     <span className="ml-2 text-blue-600">({bulkSubcategories.length} seleccionadas)</span>
                   )}
                 </label>
                 {loadingBulkSubcategories ? (
-                  <div className="text-sm text-gray-500 py-2">Cargando subcategorías...</div>
+                  <div className="text-sm dark:text-gray-400 py-2">Cargando subcategorías...</div>
                 ) : bulkSubcategoryOptions.length > 0 ? (
-                  <div className="border border-gray-300 rounded-lg p-3 max-h-48 overflow-y-auto bg-gray-50">
+                  <div className="border dark:border-gray-700 rounded-lg p-3 max-h-48 overflow-y-auto dark:bg-gray-800">
                     <div className="grid grid-cols-2 gap-2">
                       {bulkSubcategoryOptions.map(sub => (
-                        <label key={sub.id} className="flex items-center gap-2 text-sm cursor-pointer hover:bg-white p-2 rounded transition-colors">
+                        <label key={sub.id} className="flex items-center gap-2 text-sm cursor-pointer dark:hover:bg-gray-900 p-2 rounded transition-colors">
                           <input
                             type="checkbox"
                             checked={bulkSubcategories.includes(sub.id)}
@@ -841,7 +841,7 @@ export default function AdminProductsPage() {
                                 : bulkSubcategories.filter(id => id !== sub.id);
                               setBulkSubcategories(newIds);
                             }}
-                            className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                            className="rounded dark:border-gray-700 text-blue-600 focus:ring-blue-500"
                           />
                           <span className="truncate">{sub.name}</span>
                         </label>
@@ -858,15 +858,15 @@ export default function AdminProductsPage() {
                     )}
                   </div>
                 ) : (
-                  <div className="text-sm text-gray-500 py-2 italic">No hay subcategorías para esta categoría</div>
+                  <div className="text-sm dark:text-gray-400 py-2 italic">No hay subcategorías para esta categoría</div>
                 )}
               </div>
             )}
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Marca</label>
+              <label className="block text-sm font-medium dark:text-gray-300 mb-2">Marca</label>
               <select
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full border dark:border-gray-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 value={bulkBrand ?? ''}
                 onChange={(e) => setBulkBrand(e.target.value ? Number(e.target.value) : undefined)}
               >
@@ -876,9 +876,9 @@ export default function AdminProductsPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Tipo de Componente (Cotizador)</label>
+              <label className="block text-sm font-medium dark:text-gray-300 mb-2">Tipo de Componente (Cotizador)</label>
               <select
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full border dark:border-gray-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 value={bulkComponentType ?? ''}
                 onChange={(e) => setBulkComponentType(e.target.value || undefined)}
               >
@@ -898,21 +898,21 @@ export default function AdminProductsPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Socket Type</label>
+              <label className="block text-sm font-medium dark:text-gray-300 mb-2">Socket Type</label>
               <input
                 type="text"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full border dark:border-gray-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="ej: LGA1700, AM5, AM4"
                 value={bulkSocketType ?? ''}
                 onChange={(e) => setBulkSocketType(e.target.value || undefined)}
               />
-              <p className="text-xs text-gray-500 mt-1">Para placas madre y procesadores</p>
+              <p className="text-xs dark:text-gray-400 mt-1">Para placas madre y procesadores</p>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">RAM Type</label>
+              <label className="block text-sm font-medium dark:text-gray-300 mb-2">RAM Type</label>
               <select
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full border dark:border-gray-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 value={bulkRamType ?? ''}
                 onChange={(e) => setBulkRamType(e.target.value || undefined)}
               >
@@ -921,13 +921,13 @@ export default function AdminProductsPage() {
                 <option value="DDR5">DDR5</option>
                 <option value="DDR3">DDR3</option>
               </select>
-              <p className="text-xs text-gray-500 mt-1">Para placas madre y memorias RAM</p>
+              <p className="text-xs dark:text-gray-400 mt-1">Para placas madre y memorias RAM</p>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Form Factor</label>
+              <label className="block text-sm font-medium dark:text-gray-300 mb-2">Form Factor</label>
               <select
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full border dark:border-gray-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 value={bulkFormFactor ?? ''}
                 onChange={(e) => setBulkFormFactor(e.target.value || undefined)}
               >
@@ -937,7 +937,7 @@ export default function AdminProductsPage() {
                 <option value="Mini-ITX">Mini-ITX</option>
                 <option value="E-ATX">E-ATX</option>
               </select>
-              <p className="text-xs text-gray-500 mt-1">Para placas madre y gabinetes</p>
+              <p className="text-xs dark:text-gray-400 mt-1">Para placas madre y gabinetes</p>
             </div>
 
             <div className="flex gap-3 justify-end pt-4 border-t">
@@ -952,33 +952,33 @@ export default function AdminProductsPage() {
 
         </Modal>
 
-        {loading && <p className="text-center py-8 text-gray-500">Cargando productos...</p>}
+        {loading && <p className="text-center py-8 dark:text-gray-400">Cargando productos...</p>}
 
         {error && <p className="text-red-600" role="alert">{error}</p>}
 
         {data && (
           <>
             {data.products.length === 0 && (
-              <div className="p-8 text-center text-gray-500 bg-white rounded-xl border">No hay productos para mostrar</div>
+              <div className="p-8 text-center dark:text-gray-400 dark:bg-gray-900 rounded-xl border">No hay productos para mostrar</div>
             )}
 
             {/* Vista Lista */}
             {viewMode === 'list' && data.products.length > 0 && (
-              <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+              <div className="dark:bg-gray-900 border dark:border-gray-700 rounded-xl shadow-sm overflow-hidden">
                 {data.products.map((p) => {
                   const imgUrl = getProductImageUrl(p);
                   return (
-                    <div key={`product-${p.slug}-${p.id}`} className="p-3 border-b border-gray-100 hover:bg-gray-50 transition-colors grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
+                    <div key={`product-${p.slug}-${p.id}`} className="p-3 border-b dark:border-gray-800 dark:hover:bg-gray-800 transition-colors grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
                       {/* Checkbox */}
                       <div className="flex items-center gap-2">
                         <input
                           type="checkbox"
                           checked={selectedProducts.includes(p.id)}
                           onChange={() => toggleProductSelection(p.id)}
-                          className="w-4 h-4 text-blue-600 rounded border-gray-300 cursor-pointer"
+                          className="w-4 h-4 text-blue-600 rounded dark:border-gray-700 cursor-pointer"
                         />
                         {/* Miniatura */}
-                        <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
+                        <div className="w-12 h-12 rounded-lg overflow-hidden dark:bg-gray-800 flex-shrink-0">
                           {imgUrl ? (
                             <img src={imgUrl} alt="" className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
                           ) : (
@@ -987,8 +987,8 @@ export default function AdminProductsPage() {
                         </div>
                       </div>
                       <div className="md:col-span-3">
-                        <div className="font-semibold text-gray-800 text-sm line-clamp-1">{p.name}</div>
-                        <div className="text-xs text-gray-500">{(p as any).codigo_interno || p.slug}</div>
+                        <div className="font-semibold dark:text-gray-100 text-sm line-clamp-1">{p.name}</div>
+                        <div className="text-xs dark:text-gray-400">{(p as any).codigo_interno || p.slug}</div>
                       </div>
                       <div className="text-sm font-medium">S/. {Number(p.price).toLocaleString()}</div>
                       <div>
@@ -997,12 +997,12 @@ export default function AdminProductsPage() {
                         </span>
                       </div>
                       <div>
-                        <span className={`px-2 py-1 rounded-full text-xs ${p.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
+                        <span className={`px-2 py-1 rounded-full text-xs ${p.is_active ? 'bg-green-100 text-green-700' : 'dark:bg-gray-800 dark:text-gray-400'}`}>
                           {p.is_active ? '✓' : '○'}
                         </span>
                       </div>
-                      <div className="text-xs text-gray-600 truncate">{p.productCategory?.name || '-'}</div>
-                      <div className="text-xs text-gray-600 truncate">{p.productBrand?.name || '-'}</div>
+                      <div className="text-xs dark:text-gray-400 truncate">{p.productCategory?.name || '-'}</div>
+                      <div className="text-xs dark:text-gray-400 truncate">{p.productBrand?.name || '-'}</div>
                       <div className="md:col-span-3 flex gap-1 justify-end flex-wrap">
                         <Button size="sm" variant="secondary" onClick={() => setPreviewProduct(p)} title="Vista previa">
                           <Eye className="h-3.5 w-3.5" />
@@ -1028,15 +1028,15 @@ export default function AdminProductsPage() {
                 {data.products.map((p) => {
                   const imgUrl = getProductImageUrl(p);
                   return (
-                    <div key={`product-grid-${p.id}`} className="bg-white border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                    <div key={`product-grid-${p.id}`} className="dark:bg-gray-900 border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                       <div className="relative">
                         <input
                           type="checkbox"
                           checked={selectedProducts.includes(p.id)}
                           onChange={() => toggleProductSelection(p.id)}
-                          className="absolute top-2 left-2 w-4 h-4 text-blue-600 rounded border-gray-300 cursor-pointer z-10"
+                          className="absolute top-2 left-2 w-4 h-4 text-blue-600 rounded dark:border-gray-700 cursor-pointer z-10"
                         />
-                        <div className="aspect-square bg-gray-100">
+                        <div className="aspect-square dark:bg-gray-800">
                           {imgUrl ? (
                             <img src={imgUrl} alt="" className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
                           ) : (
@@ -1048,8 +1048,8 @@ export default function AdminProductsPage() {
                         </span>
                       </div>
                       <div className="p-3">
-                        <div className="font-medium text-sm text-gray-800 line-clamp-2 h-10">{p.name}</div>
-                        <div className="text-xs text-gray-500 mt-1">{(p as any).codigo_interno || '-'}</div>
+                        <div className="font-medium text-sm dark:text-gray-100 line-clamp-2 h-10">{p.name}</div>
+                        <div className="text-xs dark:text-gray-400 mt-1">{(p as any).codigo_interno || '-'}</div>
                         <div className="text-lg font-bold text-blue-600 mt-2">S/. {Number(p.price).toLocaleString()}</div>
                         <div className="flex gap-1 mt-3">
                           <Button size="sm" variant="secondary" onClick={() => setPreviewProduct(p)} className="flex-1">👁</Button>
@@ -1071,7 +1071,7 @@ export default function AdminProductsPage() {
         <Modal isOpen={!!previewProduct} onClose={() => setPreviewProduct(null)} title="Vista Previa del Producto" size="lg">
           {previewProduct && (
             <div className="grid md:grid-cols-2 gap-6">
-              <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
+              <div className="aspect-square dark:bg-gray-800 rounded-lg overflow-hidden">
                 {getProductImageUrl(previewProduct) ? (
                   <img src={getProductImageUrl(previewProduct)!} alt="" className="w-full h-full object-contain" />
                 ) : (
@@ -1079,14 +1079,14 @@ export default function AdminProductsPage() {
                 )}
               </div>
               <div className="space-y-4">
-                <h3 className="text-xl font-bold text-gray-800">{previewProduct.name}</h3>
+                <h3 className="text-xl font-bold dark:text-gray-100">{previewProduct.name}</h3>
                 <div className="grid grid-cols-2 gap-3 text-sm">
-                  <div><span className="text-gray-500">Código:</span> <span className="font-medium">{(previewProduct as any).codigo_interno || '-'}</span></div>
-                  <div><span className="text-gray-500">Precio:</span> <span className="font-bold text-blue-600">S/. {Number(previewProduct.price).toLocaleString()}</span></div>
-                  <div><span className="text-gray-500">Stock:</span> <span className={`font-medium ${previewProduct.stock > 0 ? 'text-green-600' : 'text-red-600'}`}>{previewProduct.stock}</span></div>
-                  <div><span className="text-gray-500">Estado:</span> <span className={previewProduct.is_active ? 'text-green-600' : 'text-gray-500'}>{previewProduct.is_active ? 'Activo' : 'Inactivo'}</span></div>
-                  <div><span className="text-gray-500">Categoría:</span> <span className="font-medium">{previewProduct.productCategory?.name || '-'}</span></div>
-                  <div><span className="text-gray-500">Marca:</span> <span className="font-medium">{previewProduct.productBrand?.name || '-'}</span></div>
+                  <div><span className="dark:text-gray-400">Código:</span> <span className="font-medium">{(previewProduct as any).codigo_interno || '-'}</span></div>
+                  <div><span className="dark:text-gray-400">Precio:</span> <span className="font-bold text-blue-600">S/. {Number(previewProduct.price).toLocaleString()}</span></div>
+                  <div><span className="dark:text-gray-400">Stock:</span> <span className={`font-medium ${previewProduct.stock > 0 ? 'text-green-600' : 'text-red-600'}`}>{previewProduct.stock}</span></div>
+                  <div><span className="dark:text-gray-400">Estado:</span> <span className={previewProduct.is_active ? 'text-green-600' : 'text-gray-500'}>{previewProduct.is_active ? 'Activo' : 'Inactivo'}</span></div>
+                  <div><span className="dark:text-gray-400">Categoría:</span> <span className="font-medium">{previewProduct.productCategory?.name || '-'}</span></div>
+                  <div><span className="dark:text-gray-400">Marca:</span> <span className="font-medium">{previewProduct.productBrand?.name || '-'}</span></div>
                 </div>
                 <div className="flex gap-2 pt-4">
                   <Link href={`/admin/products/${previewProduct.id}/edit`}>
@@ -1109,7 +1109,7 @@ export default function AdminProductsPage() {
         {/* Paginación */}
         {data && data.totalPages > 1 && (
           <div className="mt-4 flex items-center justify-between">
-            <div className="text-sm text-gray-600">Total: {data.total} • Página {page} de {data.totalPages}</div>
+            <div className="text-sm dark:text-gray-400">Total: {data.total} • Página {page} de {data.totalPages}</div>
             <div className="flex items-center gap-2">
               <button className="px-3 py-1 border rounded disabled:opacity-60" disabled={page <= 1 || loading} onClick={() => goToPage(page - 1)}>Anterior</button>
               <select className="px-2 py-1 border rounded" value={page} onChange={(e) => goToPage(Number(e.target.value))}>

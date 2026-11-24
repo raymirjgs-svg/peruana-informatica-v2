@@ -32,7 +32,7 @@ export function HomeTab({ settings, onSettingChange }: HomeTabProps) {
                 }`}
             >
               <span
-                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${settings[section.key] === 'true' ? 'translate-x-6' : 'translate-x-1'
+                className={`inline-block h-4 w-4 transform rounded-full dark:bg-gray-900 transition-transform ${settings[section.key] === 'true' ? 'translate-x-6' : 'translate-x-1'
                   }`}
               />
             </button>

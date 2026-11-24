@@ -251,13 +251,13 @@ export default function CompanySettingsPage() {
           {/* General Tab */}
           {activeTab === 'general' && (
             <div className="p-6 animate-fadeIn">
-              <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+              <h2 className="text-xl font-bold dark:text-gray-100 mb-6 flex items-center gap-2">
                 <Building2 className="h-5 w-5 text-blue-600" />
                 Información Institucional
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="group">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold dark:text-gray-300 mb-2">
                     Nombre de la Empresa <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
@@ -267,7 +267,7 @@ export default function CompanySettingsPage() {
                       value={formData.company_name}
                       onChange={handleChange}
                       required
-                      className="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                      className="w-full pl-11 pr-4 py-3 border-2 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                       placeholder="Peruana Informática"
                     />
                     <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -275,7 +275,7 @@ export default function CompanySettingsPage() {
                 </div>
 
                 <div className="group">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold dark:text-gray-300 mb-2">
                     RUC <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -285,13 +285,13 @@ export default function CompanySettingsPage() {
                     onChange={handleChange}
                     required
                     maxLength={11}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all font-mono"
+                    className="w-full px-4 py-3 border-2 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all font-mono"
                     placeholder="20123456789"
                   />
                 </div>
 
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold dark:text-gray-300 mb-2">
                     Dirección Fiscal <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
@@ -301,15 +301,15 @@ export default function CompanySettingsPage() {
                       onChange={handleChange}
                       required
                       rows={2}
-                      className="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all resize-none"
+                      className="w-full pl-11 pr-4 py-3 border-2 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all resize-none"
                       placeholder="Av. Principal 123, Lima - Perú"
                     />
                     <MapPin className="absolute left-4 top-4 h-5 w-5 text-gray-400" />
                   </div>
                 </div>
 
-                <div className="md:col-span-2 pt-4 border-t border-gray-100">
-                  <h3 className="text-lg font-bold text-gray-800 mb-4">Configuración Adicional</h3>
+                <div className="md:col-span-2 pt-4 border-t dark:border-gray-800">
+                  <h3 className="text-lg font-bold dark:text-gray-100 mb-4">Configuración Adicional</h3>
                   <div className="flex items-center gap-4 p-4 border rounded-xl bg-orange-50 border-orange-200">
                     <input
                       type="checkbox"
@@ -317,11 +317,11 @@ export default function CompanySettingsPage() {
                       name="show_distributor_price_in_detail"
                       checked={formData.show_distributor_price_in_detail}
                       onChange={handleChange}
-                      className="w-5 h-5 text-orange-600 rounded focus:ring-orange-500 border-gray-300"
+                      className="w-5 h-5 text-orange-600 rounded focus:ring-orange-500 dark:border-gray-700"
                     />
                     <label htmlFor="show_distributor_price_in_detail" className="cursor-pointer">
-                      <div className="font-semibold text-gray-800">Mostrar Precio Distribuidor</div>
-                      <div className="text-sm text-gray-600">
+                      <div className="font-semibold dark:text-gray-100">Mostrar Precio Distribuidor</div>
+                      <div className="text-sm dark:text-gray-400">
                         Habilita la visualización del precio de distribuidor en el detalle del producto.
                       </div>
                     </label>
@@ -334,7 +334,7 @@ export default function CompanySettingsPage() {
           {/* Identity Tab */}
           {activeTab === 'identity' && (
             <div className="p-6 animate-fadeIn">
-              <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+              <h2 className="text-xl font-bold dark:text-gray-100 mb-6 flex items-center gap-2">
                 <ImageIcon className="h-5 w-5 text-indigo-600" />
                 Identidad Visual
               </h2>
@@ -343,11 +343,11 @@ export default function CompanySettingsPage() {
                 {/* Logo Upload */}
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
-                    <label className="block text-sm font-semibold text-gray-700">Logo del Sitio</label>
+                    <label className="block text-sm font-semibold dark:text-gray-300">Logo del Sitio</label>
                     <span className="text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded-full">Visible en Header y Footer</span>
                   </div>
 
-                  <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:bg-gray-50 transition-colors group relative">
+                  <div className="border-2 border-dashed dark:border-gray-700 rounded-xl p-8 text-center dark:hover:bg-gray-800 transition-colors group relative">
                     <input
                       type="file"
                       id="logo-upload"
@@ -369,7 +369,7 @@ export default function CompanySettingsPage() {
                         <div className="bg-blue-100 p-4 rounded-full mb-3 text-blue-600">
                           <ImageIcon className="h-8 w-8" />
                         </div>
-                        <p className="text-gray-500 font-medium">Arrastra o selecciona un logo</p>
+                        <p className="dark:text-gray-400 font-medium">Arrastra o selecciona un logo</p>
                         <p className="text-xs text-gray-400 mt-1">PNG transparente recomendado</p>
                       </div>
                     )}
@@ -379,11 +379,11 @@ export default function CompanySettingsPage() {
                 {/* Favicon Upload */}
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
-                    <label className="block text-sm font-semibold text-gray-700">Icono de Pestaña (Favicon)</label>
+                    <label className="block text-sm font-semibold dark:text-gray-300">Icono de Pestaña (Favicon)</label>
                     <span className="text-xs text-indigo-600 bg-indigo-50 px-2 py-1 rounded-full">Icono del navegador</span>
                   </div>
 
-                  <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:bg-gray-50 transition-colors group relative">
+                  <div className="border-2 border-dashed dark:border-gray-700 rounded-xl p-8 text-center dark:hover:bg-gray-800 transition-colors group relative">
                     <input
                       type="file"
                       id="favicon-upload"
@@ -405,7 +405,7 @@ export default function CompanySettingsPage() {
                         <div className="bg-indigo-100 p-4 rounded-full mb-3 text-indigo-600">
                           <ImageIcon className="h-8 w-8" />
                         </div>
-                        <p className="text-gray-500 font-medium">Selecciona un icono</p>
+                        <p className="dark:text-gray-400 font-medium">Selecciona un icono</p>
                         <p className="text-xs text-gray-400 mt-1">.ico o .png 32x32px</p>
                       </div>
                     )}
@@ -418,13 +418,13 @@ export default function CompanySettingsPage() {
           {/* Contact Tab */}
           {activeTab === 'contact' && (
             <div className="p-6 animate-fadeIn">
-              <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+              <h2 className="text-xl font-bold dark:text-gray-100 mb-6 flex items-center gap-2">
                 <Phone className="h-5 w-5 text-green-600" />
                 Medios de Contacto
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold dark:text-gray-300 mb-2">
                     Teléfono <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
@@ -434,7 +434,7 @@ export default function CompanySettingsPage() {
                       value={formData.company_phone}
                       onChange={handleChange}
                       required
-                      className="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
+                      className="w-full pl-11 pr-4 py-3 border-2 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
                       placeholder="(01) 123-4567"
                     />
                     <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -442,14 +442,14 @@ export default function CompanySettingsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">WhatsApp</label>
+                  <label className="block text-sm font-semibold dark:text-gray-300 mb-2">WhatsApp</label>
                   <div className="relative">
                     <input
                       type="text"
                       name="company_whatsapp"
                       value={formData.company_whatsapp}
                       onChange={handleChange}
-                      className="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
+                      className="w-full pl-11 pr-4 py-3 border-2 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
                       placeholder="+51 999 888 777"
                     />
                     <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">W</div>
@@ -457,7 +457,7 @@ export default function CompanySettingsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold dark:text-gray-300 mb-2">
                     Email <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
@@ -467,7 +467,7 @@ export default function CompanySettingsPage() {
                       value={formData.company_email}
                       onChange={handleChange}
                       required
-                      className="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
+                      className="w-full pl-11 pr-4 py-3 border-2 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
                       placeholder="ventas@peruanainformatica.com"
                     />
                     <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -475,14 +475,14 @@ export default function CompanySettingsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Sitio Web</label>
+                  <label className="block text-sm font-semibold dark:text-gray-300 mb-2">Sitio Web</label>
                   <div className="relative">
                     <input
                       type="url"
                       name="company_website"
                       value={formData.company_website}
                       onChange={handleChange}
-                      className="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
+                      className="w-full pl-11 pr-4 py-3 border-2 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
                       placeholder="https://www.peruanainformatica.com"
                     />
                     <Globe className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -495,20 +495,20 @@ export default function CompanySettingsPage() {
           {/* Location Tab */}
           {activeTab === 'location' && (
             <div className="p-6 animate-fadeIn">
-              <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+              <h2 className="text-xl font-bold dark:text-gray-100 mb-6 flex items-center gap-2">
                 <Store className="h-5 w-5 text-indigo-600" />
                 Tienda Física y Horarios
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Dirección de Tienda</label>
+                  <label className="block text-sm font-semibold dark:text-gray-300 mb-2">Dirección de Tienda</label>
                   <div className="relative">
                     <textarea
                       name="store_address"
                       value={formData.store_address}
                       onChange={handleChange}
                       rows={2}
-                      className="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all resize-none"
+                      className="w-full pl-11 pr-4 py-3 border-2 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all resize-none"
                       placeholder="Av. Principal 123, Lima - Perú"
                     />
                     <MapPin className="absolute left-4 top-4 h-5 w-5 text-gray-400" />
@@ -516,14 +516,14 @@ export default function CompanySettingsPage() {
                 </div>
 
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Horario de Atención</label>
+                  <label className="block text-sm font-semibold dark:text-gray-300 mb-2">Horario de Atención</label>
                   <div className="relative">
                     <input
                       type="text"
                       name="store_hours"
                       value={formData.store_hours}
                       onChange={handleChange}
-                      className="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+                      className="w-full pl-11 pr-4 py-3 border-2 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
                       placeholder="Lunes a Viernes: 9:00 AM - 6:00 PM"
                     />
                     <Clock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -536,20 +536,20 @@ export default function CompanySettingsPage() {
           {/* Social Tab */}
           {activeTab === 'social' && (
             <div className="p-6 animate-fadeIn">
-              <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+              <h2 className="text-xl font-bold dark:text-gray-100 mb-6 flex items-center gap-2">
                 <Share2 className="h-5 w-5 text-indigo-600" />
                 Redes Sociales
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Facebook</label>
+                  <label className="block text-sm font-semibold dark:text-gray-300 mb-2">Facebook</label>
                   <div className="relative">
                     <input
                       type="url"
                       name="facebook_url"
                       value={formData.facebook_url}
                       onChange={handleChange}
-                      className="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all"
+                      className="w-full pl-11 pr-4 py-3 border-2 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all"
                       placeholder="https://facebook.com/usuario"
                     />
                     <Facebook className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-blue-600" />
@@ -557,14 +557,14 @@ export default function CompanySettingsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Instagram</label>
+                  <label className="block text-sm font-semibold dark:text-gray-300 mb-2">Instagram</label>
                   <div className="relative">
                     <input
                       type="url"
                       name="instagram_url"
                       value={formData.instagram_url}
                       onChange={handleChange}
-                      className="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+                      className="w-full pl-11 pr-4 py-3 border-2 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
                       placeholder="https://instagram.com/usuario"
                     />
                     <Instagram className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-indigo-600" />
@@ -572,14 +572,14 @@ export default function CompanySettingsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Twitter / X</label>
+                  <label className="block text-sm font-semibold dark:text-gray-300 mb-2">Twitter / X</label>
                   <div className="relative">
                     <input
                       type="url"
                       name="twitter_url"
                       value={formData.twitter_url}
                       onChange={handleChange}
-                      className="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-all"
+                      className="w-full pl-11 pr-4 py-3 border-2 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-all"
                       placeholder="https://twitter.com/usuario"
                     />
                     <Twitter className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-sky-500" />
@@ -587,14 +587,14 @@ export default function CompanySettingsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">LinkedIn</label>
+                  <label className="block text-sm font-semibold dark:text-gray-300 mb-2">LinkedIn</label>
                   <div className="relative">
                     <input
                       type="url"
                       name="linkedin_url"
                       value={formData.linkedin_url}
                       onChange={handleChange}
-                      className="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-700 focus:border-blue-700 transition-all"
+                      className="w-full pl-11 pr-4 py-3 border-2 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-700 focus:border-blue-700 transition-all"
                       placeholder="https://linkedin.com/company/usuario"
                     />
                     <Linkedin className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-blue-700" />
@@ -609,7 +609,7 @@ export default function CompanySettingsPage() {
             <button
               type="button"
               onClick={fetchSettings}
-              className="px-6 py-3 bg-white text-gray-700 rounded-xl hover:bg-gray-100 transition-all font-semibold flex items-center justify-center gap-2 border border-gray-300 shadow-sm"
+              className="px-6 py-3 dark:bg-gray-900 dark:text-gray-300 rounded-xl dark:hover:bg-gray-800 transition-all font-semibold flex items-center justify-center gap-2 border dark:border-gray-700 shadow-sm"
             >
               <RotateCcw className="h-4 w-4" />
               Resetear

@@ -69,6 +69,8 @@ export function Header() {
             onClick={toggleTheme}
             className="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all"
             title={theme === 'light' ? 'Modo oscuro' : 'Modo claro'}
+            aria-label={theme === 'light' ? 'Activar modo oscuro' : 'Activar modo claro'}
+            aria-pressed={theme === 'dark'}
           >
             {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
           </button>

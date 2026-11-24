@@ -19,7 +19,7 @@ export function CategoryHeader({
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Gestión de Categorías y Subcategorías</h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm dark:text-gray-400 mt-1">
             {categoriesCount} categoría{categoriesCount !== 1 ? 's' : ''}
           </p>
         </div>
@@ -33,11 +33,11 @@ export function CategoryHeader({
       </div>
 
       {/* Búsqueda */}
-      <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 mb-6">
+      <div className="dark:bg-gray-900 p-4 rounded-lg shadow-sm border dark:border-gray-700 mb-6">
         <input
           type="text"
           placeholder="Buscar categorías o subcategorías..."
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+          className="w-full px-4 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
           value={searchTerm}
           onChange={onSearchChange}
         />

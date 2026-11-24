@@ -138,7 +138,7 @@ export default function CouponsPage() {
           {loading ? (
             <div className="text-center py-10">Cargando...</div>
           ) : filteredCoupons.length === 0 ? (
-            <div className="text-center py-10 text-gray-500">No se encontraron cupones</div>
+            <div className="text-center py-10 dark:text-gray-400">No se encontraron cupones</div>
           ) : (
             <div className="space-y-4">
               {filteredCoupons.map((coupon) => (
@@ -156,7 +156,7 @@ export default function CouponsPage() {
                           {coupon.is_active ? <CheckCircle className="h-3 w-3" /> : <XCircle className="h-3 w-3" />}
                           {coupon.is_active ? 'Activo' : 'Inactivo'}
                         </span>
-                        <span className="text-xs text-gray-500 border border-gray-200 dark:border-gray-600 px-2 py-0.5 rounded">
+                        <span className="text-xs dark:text-gray-400 border border-gray-200 dark:border-gray-600 px-2 py-0.5 rounded">
                           {coupon.type === 'percentage' ? `${coupon.value}% OFF` : `S/. ${coupon.value} OFF`}
                         </span>
                       </div>
@@ -165,7 +165,7 @@ export default function CouponsPage() {
                         {coupon.description || 'Sin descripción'}
                       </p>
 
-                      <div className="flex items-center gap-4 text-xs text-gray-500 flex-wrap">
+                      <div className="flex items-center gap-4 text-xs dark:text-gray-400 flex-wrap">
                         {coupon.valid_until && (
                           <span className="flex items-center gap-1">
                             <Calendar className="h-3 w-3" />

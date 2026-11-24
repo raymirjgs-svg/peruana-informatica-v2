@@ -445,7 +445,7 @@ export default function BlogAdminPage() {
         {/* Header */}
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Gestión del Blog</h1>
-          <p className="text-gray-500 mt-1">
+          <p className="dark:text-gray-400 mt-1">
             Administra contenido con IA integrada
           </p>
         </div>
@@ -465,26 +465,26 @@ export default function BlogAdminPage() {
         {/* Estadísticas */}
         {stats && (
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            <div className="bg-white border border-gray-200 rounded-xl p-6">
-              <div className="text-sm text-gray-500">Total Posts</div>
-              <div className="text-2xl font-bold text-gray-800 mt-1">
+            <div className="dark:bg-gray-900 border dark:border-gray-700 rounded-xl p-6">
+              <div className="text-sm dark:text-gray-400">Total Posts</div>
+              <div className="text-2xl font-bold dark:text-gray-100 mt-1">
                 {stats.totals.posts}
               </div>
             </div>
-            <div className="bg-white border border-gray-200 rounded-xl p-6">
-              <div className="text-sm text-gray-500">Publicados</div>
+            <div className="dark:bg-gray-900 border dark:border-gray-700 rounded-xl p-6">
+              <div className="text-sm dark:text-gray-400">Publicados</div>
               <div className="text-2xl font-bold text-green-600 mt-1">
                 {stats.totals.published}
               </div>
             </div>
-            <div className="bg-white border border-gray-200 rounded-xl p-6">
-              <div className="text-sm text-gray-500">Generados por IA</div>
+            <div className="dark:bg-gray-900 border dark:border-gray-700 rounded-xl p-6">
+              <div className="text-sm dark:text-gray-400">Generados por IA</div>
               <div className="text-2xl font-bold text-indigo-600 mt-1">
                 {stats.totals.ai_generated}
               </div>
             </div>
-            <div className="bg-white border border-gray-200 rounded-xl p-6">
-              <div className="text-sm text-gray-500">Total Vistas</div>
+            <div className="dark:bg-gray-900 border dark:border-gray-700 rounded-xl p-6">
+              <div className="text-sm dark:text-gray-400">Total Vistas</div>
               <div className="text-2xl font-bold text-blue-600 mt-1">
                 {stats.totals.views}
               </div>
@@ -530,10 +530,10 @@ export default function BlogAdminPage() {
             </div>
 
             {/* Panel de configuración de API Key */}
-            <div className="bg-white border border-gray-200 rounded-xl p-4">
+            <div className="dark:bg-gray-900 border dark:border-gray-700 rounded-xl p-4">
               <div className="flex items-center justify-between">
                 <div className="flex-1">
-                  <h3 className="text-sm font-semibold text-gray-700 mb-2">
+                  <h3 className="text-sm font-semibold dark:text-gray-300 mb-2">
                     🔑 API Key de Google Gemini
                   </h3>
                   <div className="flex items-center gap-2">
@@ -542,7 +542,7 @@ export default function BlogAdminPage() {
                       value={apiKey}
                       onChange={(e) => setApiKey(e.target.value)}
                       placeholder="AIza... (Ingresa tu API Key aquí para cambiarla)"
-                      className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                      className="flex-1 px-3 py-2 text-sm border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                     />
                     <Button
                       size="sm"
@@ -561,7 +561,7 @@ export default function BlogAdminPage() {
                       🔗 Obtener nueva
                     </a>
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs dark:text-gray-400 mt-1">
                     💡 <strong>Tip:</strong> Si hay errores, genera una nueva
                     API Key en{" "}
                     <a
@@ -609,9 +609,9 @@ export default function BlogAdminPage() {
         )}
 
         {/* Lista de Posts */}
-        <div className="bg-white border border-gray-200 rounded-xl p-6">
+        <div className="dark:bg-gray-900 border dark:border-gray-700 rounded-xl p-6">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold text-gray-800">Posts del Blog</h2>
+            <h2 className="text-xl font-bold dark:text-gray-100">Posts del Blog</h2>
             <div className="flex gap-3">
               <Button onClick={openNewPostModal}>+ Nuevo Post</Button>
             </div>
@@ -621,12 +621,12 @@ export default function BlogAdminPage() {
             {posts.map((post) => (
               <div
                 key={post.id}
-                className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors"
+                className="border dark:border-gray-700 rounded-lg p-4 dark:hover:bg-gray-800 transition-colors"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
-                      <h3 className="font-semibold text-gray-800">
+                      <h3 className="font-semibold dark:text-gray-100">
                         {post.title}
                       </h3>
                       <span
@@ -645,10 +645,10 @@ export default function BlogAdminPage() {
                         </span>
                       )}
                     </div>
-                    <p className="text-sm text-gray-600 mb-2 line-clamp-2">
+                    <p className="text-sm dark:text-gray-400 mb-2 line-clamp-2">
                       {post.excerpt || post.content.substring(0, 150) + "..."}
                     </p>
-                    <div className="flex items-center gap-4 text-xs text-gray-500">
+                    <div className="flex items-center gap-4 text-xs dark:text-gray-400">
                       <span>Por {post.author_name}</span>
                       <span>{post.word_count} palabras</span>
                       <span>{post.reading_time} min lectura</span>
@@ -660,7 +660,7 @@ export default function BlogAdminPage() {
                   <div className="flex gap-2 ml-4">
                     <Button
                       size="sm"
-                      className="bg-gray-100 hover:bg-gray-200 text-gray-700"
+                      className="dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-300"
                       onClick={() => openEditPostModal(post)}
                     >
                       Editar
@@ -696,7 +696,7 @@ export default function BlogAdminPage() {
             ))}
 
             {posts.length === 0 && (
-              <div className="text-center py-12 text-gray-500">
+              <div className="text-center py-12 dark:text-gray-400">
                 <p className="text-lg mb-4">No hay posts aún</p>
                 <p className="text-sm mb-4">Crea tu primer post para empezar a publicar.</p>
                 <div className="flex gap-3 justify-center">
@@ -710,12 +710,12 @@ export default function BlogAdminPage() {
         {/* Modal para configurar API Key */}
         {isModalOpen && modalType === "apikey" && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-xl max-w-2xl w-full">
-              <div className="p-6 border-b border-gray-200">
-                <h2 className="text-xl font-bold text-gray-800">
+            <div className="dark:bg-gray-900 rounded-xl max-w-2xl w-full">
+              <div className="p-6 border-b dark:border-gray-700">
+                <h2 className="text-xl font-bold dark:text-gray-100">
                   🔑 Configurar Google Gemini API Key (GRATIS 🎉)
                 </h2>
-                <p className="text-gray-600 mt-1">
+                <p className="dark:text-gray-400 mt-1">
                   Ingresa tu API Key gratuita de Google Gemini para habilitar
                   las funciones de IA
                 </p>
@@ -723,7 +723,7 @@ export default function BlogAdminPage() {
 
               <div className="p-6">
                 <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium dark:text-gray-300 mb-2">
                     API Key
                   </label>
                   <input
@@ -731,9 +731,9 @@ export default function BlogAdminPage() {
                     value={apiKey}
                     onChange={(e) => setApiKey(e.target.value)}
                     placeholder="AIza..."
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
-                  <p className="text-xs text-gray-500 mt-2">
+                  <p className="text-xs dark:text-gray-400 mt-2">
                     Tu API Key se guardará de forma segura en el servidor.
                     Puedes obtenerla GRATIS en{" "}
                     <a
@@ -767,7 +767,7 @@ export default function BlogAdminPage() {
                 </div>
               </div>
 
-              <div className="p-6 border-t border-gray-200 flex justify-end gap-3">
+              <div className="p-6 border-t dark:border-gray-700 flex justify-end gap-3">
                 <Button
                   variant="secondary"
                   onClick={() => {
@@ -791,12 +791,12 @@ export default function BlogAdminPage() {
         {/* Modal para sugerencias de títulos */}
         {isModalOpen && modalType === "suggestions" && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-              <div className="p-6 border-b border-gray-200">
-                <h2 className="text-xl font-bold text-gray-800">
+            <div className="dark:bg-gray-900 rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="p-6 border-b dark:border-gray-700">
+                <h2 className="text-xl font-bold dark:text-gray-100">
                   🤖 Sugerencias de Títulos de IA
                 </h2>
-                <p className="text-gray-600 mt-1">
+                <p className="dark:text-gray-400 mt-1">
                   Selecciona un título para generar el contenido completo
                 </p>
               </div>
@@ -806,14 +806,14 @@ export default function BlogAdminPage() {
                   {titleSuggestions.map((suggestion) => (
                     <div
                       key={suggestion.id}
-                      className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50"
+                      className="border dark:border-gray-700 rounded-lg p-4 dark:hover:bg-gray-800"
                     >
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
-                          <h3 className="font-semibold text-gray-800 mb-1">
+                          <h3 className="font-semibold dark:text-gray-100 mb-1">
                             {suggestion.suggested_title}
                           </h3>
-                          <div className="flex items-center gap-2 text-sm text-gray-500">
+                          <div className="flex items-center gap-2 text-sm dark:text-gray-400">
                             <span>Tema: {suggestion.topic || "General"}</span>
                             <span>•</span>
                             <span>Modelo: {suggestion.ai_model}</span>
@@ -859,13 +859,13 @@ export default function BlogAdminPage() {
                 </div>
 
                 {titleSuggestions.length === 0 && (
-                  <div className="text-center py-8 text-gray-500">
+                  <div className="text-center py-8 dark:text-gray-400">
                     No hay sugerencias pendientes. Genera nuevos títulos con IA.
                   </div>
                 )}
               </div>
 
-              <div className="p-6 border-t border-gray-200 flex justify-end">
+              <div className="p-6 border-t dark:border-gray-700 flex justify-end">
                 <Button
                   variant="secondary"
                   onClick={() => setIsModalOpen(false)}
@@ -880,12 +880,12 @@ export default function BlogAdminPage() {
         {/* Modal de crear/editar post */}
         {isModalOpen && modalType === "post" && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 overflow-y-auto">
-            <div className="bg-white rounded-xl max-w-4xl w-full my-8">
-              <div className="p-6 border-b border-gray-200">
-                <h2 className="text-xl font-bold text-gray-800">
+            <div className="dark:bg-gray-900 rounded-xl max-w-4xl w-full my-8">
+              <div className="p-6 border-b dark:border-gray-700">
+                <h2 className="text-xl font-bold dark:text-gray-100">
                   {selectedPost ? "📝 Editar Post" : "✨ Nuevo Post"}
                 </h2>
-                <p className="text-gray-600 mt-1">
+                <p className="dark:text-gray-400 mt-1">
                   {selectedPost
                     ? "Modifica los campos que desees actualizar"
                     : "Completa la información del post"}
@@ -896,7 +896,7 @@ export default function BlogAdminPage() {
                 <div className="space-y-6">
                   {/* Título */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium dark:text-gray-300 mb-2">
                       Título <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -906,13 +906,13 @@ export default function BlogAdminPage() {
                         setFormData({ ...formData, title: e.target.value })
                       }
                       placeholder="Título del post"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-4 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   </div>
 
                   {/* Extracto */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium dark:text-gray-300 mb-2">
                       Extracto
                     </label>
                     <textarea
@@ -922,13 +922,13 @@ export default function BlogAdminPage() {
                       }
                       placeholder="Breve descripción del post"
                       rows={3}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-4 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   </div>
 
                   {/* Contenido */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium dark:text-gray-300 mb-2">
                       Contenido <span className="text-red-500">*</span>
                     </label>
                     <textarea
@@ -938,13 +938,13 @@ export default function BlogAdminPage() {
                       }
                       placeholder="Contenido completo del post (Markdown soportado)"
                       rows={12}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono text-sm"
+                      className="w-full px-4 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono text-sm"
                     />
                   </div>
 
                   {/* Imagen destacada */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium dark:text-gray-300 mb-2">
                       URL de Imagen Destacada
                     </label>
                     <input
@@ -957,14 +957,14 @@ export default function BlogAdminPage() {
                         })
                       }
                       placeholder="https://ejemplo.com/imagen.jpg"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-4 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   </div>
 
                   {/* Autor */}
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium dark:text-gray-300 mb-2">
                         Nombre del Autor
                       </label>
                       <input
@@ -977,11 +977,11 @@ export default function BlogAdminPage() {
                           })
                         }
                         placeholder="Nombre del autor"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-4 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium dark:text-gray-300 mb-2">
                         Email del Autor
                       </label>
                       <input
@@ -994,7 +994,7 @@ export default function BlogAdminPage() {
                           })
                         }
                         placeholder="email@ejemplo.com"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-4 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
                   </div>
@@ -1002,7 +1002,7 @@ export default function BlogAdminPage() {
                   {/* Tags y Categorías */}
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium dark:text-gray-300 mb-2">
                         Tags
                       </label>
                       <input
@@ -1012,14 +1012,14 @@ export default function BlogAdminPage() {
                           setFormData({ ...formData, tags: e.target.value })
                         }
                         placeholder="tag1, tag2, tag3"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-4 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-xs dark:text-gray-400 mt-1">
                         Separados por comas
                       </p>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium dark:text-gray-300 mb-2">
                         Categorías
                       </label>
                       <input
@@ -1032,9 +1032,9 @@ export default function BlogAdminPage() {
                           })
                         }
                         placeholder="categoría1, categoría2"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-4 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-xs dark:text-gray-400 mt-1">
                         Separadas por comas
                       </p>
                     </div>
@@ -1042,13 +1042,13 @@ export default function BlogAdminPage() {
 
                   {/* SEO Meta */}
                   <div className="border-t pt-4">
-                    <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                    <h3 className="text-lg font-semibold dark:text-gray-100 mb-4">
                       🔍 SEO & Metadatos
                     </h3>
 
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium dark:text-gray-300 mb-2">
                           Meta Título
                         </label>
                         <input
@@ -1061,12 +1061,12 @@ export default function BlogAdminPage() {
                             })
                           }
                           placeholder="Título para SEO (si es diferente al título del post)"
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          className="w-full px-4 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium dark:text-gray-300 mb-2">
                           Meta Descripción
                         </label>
                         <textarea
@@ -1079,12 +1079,12 @@ export default function BlogAdminPage() {
                           }
                           placeholder="Descripción para motores de búsqueda"
                           rows={2}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          className="w-full px-4 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium dark:text-gray-300 mb-2">
                           Meta Keywords
                         </label>
                         <input
@@ -1097,7 +1097,7 @@ export default function BlogAdminPage() {
                             })
                           }
                           placeholder="palabra1, palabra2, palabra3"
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          className="w-full px-4 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         />
                       </div>
                     </div>
@@ -1105,13 +1105,13 @@ export default function BlogAdminPage() {
 
                   {/* Opciones */}
                   <div className="border-t pt-4">
-                    <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                    <h3 className="text-lg font-semibold dark:text-gray-100 mb-4">
                       ⚙️ Opciones
                     </h3>
 
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium dark:text-gray-300 mb-2">
                           Estado
                         </label>
                         <select
@@ -1126,7 +1126,7 @@ export default function BlogAdminPage() {
                                 | "archived",
                             })
                           }
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          className="w-full px-4 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         >
                           <option value="draft">Borrador</option>
                           <option value="published">Publicado</option>
@@ -1146,11 +1146,11 @@ export default function BlogAdminPage() {
                               is_featured: e.target.checked,
                             })
                           }
-                          className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                          className="w-4 h-4 text-blue-600 dark:border-gray-700 rounded focus:ring-blue-500"
                         />
                         <label
                           htmlFor="is_featured"
-                          className="text-sm font-medium text-gray-700"
+                          className="text-sm font-medium dark:text-gray-300"
                         >
                           ⭐ Marcar como destacado
                         </label>
@@ -1160,7 +1160,7 @@ export default function BlogAdminPage() {
                 </div>
               </div>
 
-              <div className="p-6 border-t border-gray-200 flex justify-end gap-3">
+              <div className="p-6 border-t dark:border-gray-700 flex justify-end gap-3">
                 <Button
                   variant="secondary"
                   onClick={() => {

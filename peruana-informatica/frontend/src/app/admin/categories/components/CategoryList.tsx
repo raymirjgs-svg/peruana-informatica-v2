@@ -33,8 +33,8 @@ export function CategoryList({
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
         </div>
       ) : filteredCategories.length === 0 ? (
-        <div className="text-center py-12 bg-white rounded-lg border border-gray-200">
-          <p className="text-gray-500">No se encontraron categorías</p>
+        <div className="text-center py-12 dark:bg-gray-900 rounded-lg border dark:border-gray-700">
+          <p className="dark:text-gray-400">No se encontraron categorías</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -43,7 +43,7 @@ export function CategoryList({
             const subcategories = category.subcategories || [];
 
             return (
-              <div key={category.id} className="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
+              <div key={category.id} className="dark:bg-gray-900 rounded-xl shadow-md border dark:border-gray-700 overflow-hidden">
                 {/* Categoría Header */}
                 <div className="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 border-b border-blue-200">
                   <div className="flex items-center justify-between">
@@ -55,8 +55,8 @@ export function CategoryList({
                         ▶
                       </span>
                       <div>
-                        <h2 className="text-xl font-bold text-gray-800">{category.name}</h2>
-                        <p className="text-sm text-gray-600">
+                        <h2 className="text-xl font-bold dark:text-gray-100">{category.name}</h2>
+                        <p className="text-sm dark:text-gray-400">
                           <code className="bg-blue-100 px-2 py-0.5 rounded">{category.slug}</code>
                           {" • "}
                           {subcategories.length} subcategoría{subcategories.length !== 1 ? 's' : ''}
@@ -89,9 +89,9 @@ export function CategoryList({
 
                 {/* Subcategorías */}
                 {isExpanded && (
-                  <div className="p-6 bg-gray-50">
+                  <div className="p-6 dark:bg-gray-800">
                     {subcategories.length === 0 ? (
-                      <p className="text-center text-gray-500 py-4">
+                      <p className="text-center dark:text-gray-400 py-4">
                         No hay subcategorías.
                         <button
                           onClick={() => onCreateSubcategory(category.id)}
@@ -105,16 +105,16 @@ export function CategoryList({
                         {subcategories.map(subcategory => (
                           <div
                             key={subcategory.id}
-                            className="flex items-center justify-between p-4 bg-white rounded-lg hover:shadow-md transition-shadow border border-gray-200"
+                            className="flex items-center justify-between p-4 dark:bg-gray-900 rounded-lg hover:shadow-md transition-shadow border dark:border-gray-700"
                           >
                             <div className="flex-1">
-                              <h3 className="font-semibold text-gray-900">{subcategory.name}</h3>
-                              <p className="text-sm text-gray-500 mt-1">
-                                Slug: <code className="bg-gray-200 px-2 py-0.5 rounded">{subcategory.slug}</code>
+                              <h3 className="font-semibold dark:text-white">{subcategory.name}</h3>
+                              <p className="text-sm dark:text-gray-400 mt-1">
+                                Slug: <code className="dark:bg-gray-700 px-2 py-0.5 rounded">{subcategory.slug}</code>
                                 {" • "}Orden: {subcategory.order}
                               </p>
                               {subcategory.description && (
-                                <p className="text-sm text-gray-600 mt-1">{subcategory.description}</p>
+                                <p className="text-sm dark:text-gray-400 mt-1">{subcategory.description}</p>
                               )}
                             </div>
                             <div className="flex gap-2">

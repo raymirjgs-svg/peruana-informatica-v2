@@ -29,14 +29,14 @@ export function BulkEditModal({ controller, forms }: { controller: Data; forms: 
   return (
         <Modal isOpen={showBulkPanel} onClose={() => setShowBulkPanel(false)} title="Actualización en Bloque" size="md">
           <div className="space-y-4">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm dark:text-gray-400">
               Aplicar cambios a <span className="font-bold text-blue-600">{selectedProducts.length}</span> producto(s) seleccionado(s)
             </p>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Categoría</label>
+              <label className="block text-sm font-medium dark:text-gray-300 mb-2">Categoría</label>
               <select
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full border dark:border-gray-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 value={bulkCategory ?? ''}
                 onChange={(e) => setBulkCategory(e.target.value ? Number(e.target.value) : undefined)}
               >
@@ -48,19 +48,19 @@ export function BulkEditModal({ controller, forms }: { controller: Data; forms: 
             {/* Subcategorías - solo visible cuando hay categoría seleccionada */}
             {bulkCategory && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium dark:text-gray-300 mb-2">
                   Subcategorías
                   {bulkSubcategories.length > 0 && (
                     <span className="ml-2 text-blue-600">({bulkSubcategories.length} seleccionadas)</span>
                   )}
                 </label>
                 {loadingBulkSubcategories ? (
-                  <div className="text-sm text-gray-500 py-2">Cargando subcategorías...</div>
+                  <div className="text-sm dark:text-gray-400 py-2">Cargando subcategorías...</div>
                 ) : bulkSubcategoryOptions.length > 0 ? (
-                  <div className="border border-gray-300 rounded-lg p-3 max-h-48 overflow-y-auto bg-gray-50">
+                  <div className="border dark:border-gray-700 rounded-lg p-3 max-h-48 overflow-y-auto dark:bg-gray-800">
                     <div className="grid grid-cols-2 gap-2">
                       {bulkSubcategoryOptions.map(sub => (
-                        <label key={sub.id} className="flex items-center gap-2 text-sm cursor-pointer hover:bg-white p-2 rounded transition-colors">
+                        <label key={sub.id} className="flex items-center gap-2 text-sm cursor-pointer dark:hover:bg-gray-900 p-2 rounded transition-colors">
                           <input
                             type="checkbox"
                             checked={bulkSubcategories.includes(sub.id)}
@@ -70,7 +70,7 @@ export function BulkEditModal({ controller, forms }: { controller: Data; forms: 
                                 : bulkSubcategories.filter(id => id !== sub.id);
                               setBulkSubcategories(newIds);
                             }}
-                            className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                            className="rounded dark:border-gray-700 text-blue-600 focus:ring-blue-500"
                           />
                           <span className="truncate">{sub.name}</span>
                         </label>
@@ -87,15 +87,15 @@ export function BulkEditModal({ controller, forms }: { controller: Data; forms: 
                     )}
                   </div>
                 ) : (
-                  <div className="text-sm text-gray-500 py-2 italic">No hay subcategorías para esta categoría</div>
+                  <div className="text-sm dark:text-gray-400 py-2 italic">No hay subcategorías para esta categoría</div>
                 )}
               </div>
             )}
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Marca</label>
+              <label className="block text-sm font-medium dark:text-gray-300 mb-2">Marca</label>
               <select
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full border dark:border-gray-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 value={bulkBrand ?? ''}
                 onChange={(e) => setBulkBrand(e.target.value ? Number(e.target.value) : undefined)}
               >
@@ -105,9 +105,9 @@ export function BulkEditModal({ controller, forms }: { controller: Data; forms: 
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Tipo de Componente (Cotizador)</label>
+              <label className="block text-sm font-medium dark:text-gray-300 mb-2">Tipo de Componente (Cotizador)</label>
               <select
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full border dark:border-gray-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 value={bulkComponentType ?? ''}
                 onChange={(e) => setBulkComponentType(e.target.value || undefined)}
               >
@@ -127,21 +127,21 @@ export function BulkEditModal({ controller, forms }: { controller: Data; forms: 
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Socket Type</label>
+              <label className="block text-sm font-medium dark:text-gray-300 mb-2">Socket Type</label>
               <input
                 type="text"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full border dark:border-gray-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="ej: LGA1700, AM5, AM4"
                 value={bulkSocketType ?? ''}
                 onChange={(e) => setBulkSocketType(e.target.value || undefined)}
               />
-              <p className="text-xs text-gray-500 mt-1">Para placas madre y procesadores</p>
+              <p className="text-xs dark:text-gray-400 mt-1">Para placas madre y procesadores</p>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">RAM Type</label>
+              <label className="block text-sm font-medium dark:text-gray-300 mb-2">RAM Type</label>
               <select
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full border dark:border-gray-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 value={bulkRamType ?? ''}
                 onChange={(e) => setBulkRamType(e.target.value || undefined)}
               >
@@ -150,13 +150,13 @@ export function BulkEditModal({ controller, forms }: { controller: Data; forms: 
                 <option value="DDR5">DDR5</option>
                 <option value="DDR3">DDR3</option>
               </select>
-              <p className="text-xs text-gray-500 mt-1">Para placas madre y memorias RAM</p>
+              <p className="text-xs dark:text-gray-400 mt-1">Para placas madre y memorias RAM</p>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Form Factor</label>
+              <label className="block text-sm font-medium dark:text-gray-300 mb-2">Form Factor</label>
               <select
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full border dark:border-gray-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 value={bulkFormFactor ?? ''}
                 onChange={(e) => setBulkFormFactor(e.target.value || undefined)}
               >
@@ -166,7 +166,7 @@ export function BulkEditModal({ controller, forms }: { controller: Data; forms: 
                 <option value="Mini-ITX">Mini-ITX</option>
                 <option value="E-ATX">E-ATX</option>
               </select>
-              <p className="text-xs text-gray-500 mt-1">Para placas madre y gabinetes</p>
+              <p className="text-xs dark:text-gray-400 mt-1">Para placas madre y gabinetes</p>
             </div>
 
             <div className="flex gap-3 justify-end pt-4 border-t">

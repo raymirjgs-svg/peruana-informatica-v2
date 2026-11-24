@@ -18,16 +18,16 @@ export function ContactFiltersBar({
   loading,
 }: ContactFiltersBarProps) {
   return (
-    <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
+    <div className="dark:bg-gray-900 border dark:border-gray-700 rounded-xl p-6 mb-6">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium dark:text-gray-300 mb-2">
             Estado
           </label>
           <select
             value={filters.status}
             onChange={(e) => onFilterChange("status", e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
             <option value="">Todos los estados</option>
             <option value="pending">Pendientes</option>
@@ -36,13 +36,13 @@ export function ContactFiltersBar({
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium dark:text-gray-300 mb-2">
             Asunto
           </label>
           <select
             value={filters.asunto}
             onChange={(e) => onFilterChange("asunto", e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
             <option value="">Todos los asuntos</option>
             {ContactService.getSubjectOptions().map((option) => (
@@ -53,7 +53,7 @@ export function ContactFiltersBar({
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium dark:text-gray-300 mb-2">
             Buscar
           </label>
           <input
@@ -61,7 +61,7 @@ export function ContactFiltersBar({
             value={filters.search}
             onChange={(e) => onFilterChange("search", e.target.value)}
             placeholder="Buscar por nombre, email o mensaje..."
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
         <div className="flex items-end">

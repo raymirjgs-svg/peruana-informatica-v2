@@ -101,7 +101,7 @@ export function PromoBannerModal({ banner, isOpen, onClose, onSave }: PromoBanne
                         {banner ? 'Editar Banner' : 'Nuevo Banner Publicitario'}
                     </h2>
                     <button onClick={onClose} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors">
-                        <X className="w-5 h-5 text-gray-500" />
+                        <X className="w-5 h-5 dark:text-gray-400" />
                     </button>
                 </div>
 
@@ -150,7 +150,7 @@ export function PromoBannerModal({ banner, isOpen, onClose, onSave }: PromoBanne
                                         placeholder="https://..."
                                     />
                                 </div>
-                                <p className="text-xs text-gray-500 mt-1">Recomendado: 800x600px o similar</p>
+                                <p className="text-xs dark:text-gray-400 mt-1">Recomendado: 800x600px o similar</p>
                             </div>
                         </div>
 
@@ -208,7 +208,7 @@ export function PromoBannerModal({ banner, isOpen, onClose, onSave }: PromoBanne
 
                                 {formData.show_as_popup && (
                                     <div>
-                                        <label className="text-xs text-gray-500 block mb-1">Retraso (seg)</label>
+                                        <label className="text-xs dark:text-gray-400 block mb-1">Retraso (seg)</label>
                                         <input
                                             type="number"
                                             min="0"
@@ -227,7 +227,7 @@ export function PromoBannerModal({ banner, isOpen, onClose, onSave }: PromoBanne
                         <button
                             type="button"
                             onClick={onClose}
-                            className="px-6 py-2.5 text-gray-700 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-200"
+                            className="px-6 py-2.5 dark:text-gray-300 dark:bg-gray-900 border dark:border-gray-700 rounded-xl dark:hover:bg-gray-800 focus:outline-none focus:ring-2 dark:focus:ring-gray-700"
                         >
                             Cancelar
                         </button>

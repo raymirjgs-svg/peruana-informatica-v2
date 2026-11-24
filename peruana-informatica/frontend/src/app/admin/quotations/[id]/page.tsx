@@ -115,15 +115,15 @@ export default function QuotationDetail({ params }: { params: { id: string } }) 
       <div className="p-6">
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-800">Cotización #{quotation.code}</h1>
-            <p className="text-sm text-gray-500">
+            <h1 className="text-2xl font-bold dark:text-gray-100">Cotización #{quotation.code}</h1>
+            <p className="text-sm dark:text-gray-400">
               Creada el {new Date(quotation.created_at).toLocaleDateString()}
             </p>
           </div>
           <div className="flex space-x-2">
             <Link
               href={`/admin/quotations`}
-              className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+              className="px-4 py-2 border dark:border-gray-700 rounded-md text-sm font-medium dark:text-gray-300 dark:hover:bg-gray-800"
             >
               Volver
             </Link>
@@ -131,7 +131,7 @@ export default function QuotationDetail({ params }: { params: { id: string } }) 
               href={`${API_CONFIG.API_BASE_URL}/api/quotations/${quotation.code}/pdf`}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+              className="px-4 py-2 border dark:border-gray-700 rounded-md text-sm font-medium dark:text-gray-300 dark:hover:bg-gray-800"
             >
               Ver PDF
             </a>
@@ -145,55 +145,55 @@ export default function QuotationDetail({ params }: { params: { id: string } }) 
           </div>
         </div>
 
-        <div className="bg-white shadow overflow-hidden sm:rounded-lg mb-6">
+        <div className="dark:bg-gray-900 shadow overflow-hidden sm:rounded-lg mb-6">
           <div className="px-4 py-5 sm:px-6">
-            <h3 className="text-lg leading-6 font-medium text-gray-900">Información del Cliente</h3>
+            <h3 className="text-lg leading-6 font-medium dark:text-white">Información del Cliente</h3>
           </div>
-          <div className="border-t border-gray-200">
+          <div className="border-t dark:border-gray-700">
             <dl>
-              <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500">Nombre</dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+              <div className="dark:bg-gray-800 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                <dt className="text-sm font-medium dark:text-gray-400">Nombre</dt>
+                <dd className="mt-1 text-sm dark:text-white sm:mt-0 sm:col-span-2">
                   {quotation.client_name}
                 </dd>
               </div>
-              <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500">Correo electrónico</dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+              <div className="dark:bg-gray-900 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                <dt className="text-sm font-medium dark:text-gray-400">Correo electrónico</dt>
+                <dd className="mt-1 text-sm dark:text-white sm:mt-0 sm:col-span-2">
                   {quotation.client_email}
                 </dd>
               </div>
-              <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500">Teléfono</dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+              <div className="dark:bg-gray-800 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                <dt className="text-sm font-medium dark:text-gray-400">Teléfono</dt>
+                <dd className="mt-1 text-sm dark:text-white sm:mt-0 sm:col-span-2">
                   {quotation.client_phone || 'No especificado'}
                 </dd>
               </div>
-              <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500">Empresa</dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+              <div className="dark:bg-gray-900 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                <dt className="text-sm font-medium dark:text-gray-400">Empresa</dt>
+                <dd className="mt-1 text-sm dark:text-white sm:mt-0 sm:col-span-2">
                   {quotation.client_company || 'No especificada'}
                 </dd>
               </div>
-              <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500">RUC</dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+              <div className="dark:bg-gray-800 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                <dt className="text-sm font-medium dark:text-gray-400">RUC</dt>
+                <dd className="mt-1 text-sm dark:text-white sm:mt-0 sm:col-span-2">
                   {quotation.client_ruc || 'No especificado'}
                 </dd>
               </div>
-              <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500">Dirección</dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+              <div className="dark:bg-gray-900 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                <dt className="text-sm font-medium dark:text-gray-400">Dirección</dt>
+                <dd className="mt-1 text-sm dark:text-white sm:mt-0 sm:col-span-2">
                   {quotation.client_address || 'No especificado'}
                 </dd>
               </div>
-              <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500">Estado</dt>
+              <div className="dark:bg-gray-800 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                <dt className="text-sm font-medium dark:text-gray-400">Estado</dt>
                 <dd className="mt-1 text-sm sm:mt-0 sm:col-span-2">
                   <select
                     value={status}
                     onChange={(e) => handleStatusChange(e.target.value as QuotationStatus)}
-                    className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                    className="mt-1 block w-full pl-3 pr-10 py-2 text-base dark:border-gray-700 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                   >
                     <option value="pending">Pendiente</option>
                     <option value="sent">Enviado</option>
@@ -203,9 +203,9 @@ export default function QuotationDetail({ params }: { params: { id: string } }) 
                   </select>
                 </dd>
               </div>
-              <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500">Válido hasta</dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+              <div className="dark:bg-gray-900 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                <dt className="text-sm font-medium dark:text-gray-400">Válido hasta</dt>
+                <dd className="mt-1 text-sm dark:text-white sm:mt-0 sm:col-span-2">
                   {new Date(quotation.valid_until).toLocaleDateString()}
                 </dd>
               </div>
@@ -213,59 +213,59 @@ export default function QuotationDetail({ params }: { params: { id: string } }) 
           </div>
         </div>
 
-        <div className="bg-white shadow overflow-hidden sm:rounded-lg mb-6">
+        <div className="dark:bg-gray-900 shadow overflow-hidden sm:rounded-lg mb-6">
           <div className="px-4 py-5 sm:px-6">
-            <h3 className="text-lg leading-6 font-medium text-gray-900">Productos</h3>
+            <h3 className="text-lg leading-6 font-medium dark:text-white">Productos</h3>
           </div>
-          <div className="border-t border-gray-200">
+          <div className="border-t dark:border-gray-700">
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y dark:divide-gray-700">
+                <thead className="dark:bg-gray-800">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Producto</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Precio Unitario</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cantidad</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subtotal</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium dark:text-gray-400 uppercase tracking-wider">Producto</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium dark:text-gray-400 uppercase tracking-wider">Precio Unitario</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium dark:text-gray-400 uppercase tracking-wider">Cantidad</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium dark:text-gray-400 uppercase tracking-wider">Subtotal</th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="dark:bg-gray-900 divide-y dark:divide-gray-700">
                   {quotation.items.map((item) => (
-                    <tr key={item.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    <tr key={item.id} className="dark:hover:bg-gray-800">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium dark:text-white">
                         {item.product_name}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm dark:text-gray-400">
                         {money(item.product_price)}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.quantity}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm dark:text-gray-400">{item.quantity}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium dark:text-white">
                         {money(item.subtotal)}
                       </td>
                     </tr>
                   ))}
                 </tbody>
-                <tfoot className="bg-gray-50">
+                <tfoot className="dark:bg-gray-800">
                   <tr>
-                    <td colSpan={3} className="px-6 py-3 text-right text-sm font-medium text-gray-500">
+                    <td colSpan={3} className="px-6 py-3 text-right text-sm font-medium dark:text-gray-400">
                       Subtotal
                     </td>
-                    <td className="px-6 py-3 text-right text-sm font-medium text-gray-900">
+                    <td className="px-6 py-3 text-right text-sm font-medium dark:text-white">
                       {money(quotation.subtotal)}
                     </td>
                   </tr>
                   <tr>
-                    <td colSpan={3} className="px-6 py-3 text-right text-sm font-medium text-gray-500">
+                    <td colSpan={3} className="px-6 py-3 text-right text-sm font-medium dark:text-gray-400">
                       IGV (18%)
                     </td>
-                    <td className="px-6 py-3 text-right text-sm font-medium text-gray-900">
+                    <td className="px-6 py-3 text-right text-sm font-medium dark:text-white">
                       {money(quotation.igv)}
                     </td>
                   </tr>
                   <tr>
-                    <td colSpan={3} className="px-6 py-3 text-right text-sm font-bold text-gray-900">
+                    <td colSpan={3} className="px-6 py-3 text-right text-sm font-bold dark:text-white">
                       Total
                     </td>
-                    <td className="px-6 py-3 text-right text-sm font-bold text-gray-900">
+                    <td className="px-6 py-3 text-right text-sm font-bold dark:text-white">
                       {money(quotation.total)}
                     </td>
                   </tr>
@@ -278,7 +278,7 @@ export default function QuotationDetail({ params }: { params: { id: string } }) 
         <div className="flex justify-end space-x-3">
           <Link
             href={`/admin/quotations`}
-            className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+            className="px-4 py-2 border dark:border-gray-700 rounded-md text-sm font-medium dark:text-gray-300 dark:hover:bg-gray-800"
           >
             Volver
           </Link>

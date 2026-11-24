@@ -122,15 +122,15 @@ export default function BrandsAdminPage() {
         {/* Stats */}
         <div className="grid grid-cols-3 gap-4">
           <div className="bg-white dark:bg-gray-900 rounded-2xl p-4 border border-gray-200 dark:border-gray-700 shadow-sm">
-            <p className="text-xs text-gray-500 font-medium">Total marcas</p>
+            <p className="text-xs dark:text-gray-400 font-medium">Total marcas</p>
             <p className="text-3xl font-bold text-gray-900 dark:text-white mt-1">{brands.length}</p>
           </div>
           <div className="bg-white dark:bg-gray-900 rounded-2xl p-4 border border-gray-200 dark:border-gray-700 shadow-sm">
-            <p className="text-xs text-gray-500 font-medium">Con logo</p>
+            <p className="text-xs dark:text-gray-400 font-medium">Con logo</p>
             <p className="text-3xl font-bold text-blue-600 mt-1">{withLogo}</p>
           </div>
           <div className="bg-white dark:bg-gray-900 rounded-2xl p-4 border border-gray-200 dark:border-gray-700 shadow-sm">
-            <p className="text-xs text-gray-500 font-medium">En carrusel</p>
+            <p className="text-xs dark:text-gray-400 font-medium">En carrusel</p>
             <p className="text-3xl font-bold text-emerald-600 mt-1">{inCarousel}</p>
           </div>
         </div>
@@ -138,7 +138,7 @@ export default function BrandsAdminPage() {
         {/* Vista previa mini del carrusel */}
         {inCarousel > 0 && (
           <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
-            <p className="text-xs font-medium text-gray-500 mb-3">
+            <p className="text-xs font-medium dark:text-gray-400 mb-3">
               Vista previa del carrusel ({inCarousel} marcas)
             </p>
             <div className="flex flex-wrap gap-6 items-center">

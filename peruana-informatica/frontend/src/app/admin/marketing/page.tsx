@@ -83,7 +83,7 @@ export default function MarketingEmailPage() {
                     <Mail className="w-8 h-8 text-blue-600" />
                     <div>
                         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Correos Masivos</h1>
-                        <p className="text-sm text-gray-500">Envía un correo a todos los clientes registrados</p>
+                        <p className="text-sm dark:text-gray-400">Envía un correo a todos los clientes registrados</p>
                     </div>
                 </div>
 

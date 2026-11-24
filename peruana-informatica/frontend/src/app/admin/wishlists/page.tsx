@@ -84,7 +84,7 @@ export default function WishlistsPage() {
                     </div>
 
                     {!analytics?.topProducts || analytics.topProducts.length === 0 ? (
-                        <div className="text-center py-12 text-gray-500">
+                        <div className="text-center py-12 dark:text-gray-400">
                             <Heart className="h-12 w-12 mx-auto mb-3 text-gray-300" />
                             <p>Aún no hay productos en favoritos</p>
                         </div>
@@ -138,7 +138,7 @@ export default function WishlistsPage() {
                                                 {item.wishlist_count}
                                             </span>
                                         </div>
-                                        <p className="text-xs text-gray-500 mt-1">en favoritos</p>
+                                        <p className="text-xs dark:text-gray-400 mt-1">en favoritos</p>
                                     </div>
                                 </div>
                             ))}

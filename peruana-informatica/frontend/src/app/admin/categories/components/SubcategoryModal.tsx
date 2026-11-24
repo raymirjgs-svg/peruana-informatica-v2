@@ -29,19 +29,19 @@ export function SubcategoryModal({
 }: SubcategoryModalProps) {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6">
-        <h2 className="text-2xl font-bold mb-6 text-gray-800">
+      <div className="dark:bg-gray-900 rounded-xl shadow-2xl max-w-md w-full p-6">
+        <h2 className="text-2xl font-bold mb-6 dark:text-gray-100">
           {editingSubcategory ? "Editar Subcategoría" : "Nueva Subcategoría"}
         </h2>
         <form onSubmit={onSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium dark:text-gray-300 mb-2">
               Nombre *
             </label>
             <input
               type="text"
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              className="w-full px-4 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
               value={form.name}
               onChange={onNameChange}
               placeholder="Ej: Socket AM5"
@@ -49,13 +49,13 @@ export function SubcategoryModal({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium dark:text-gray-300 mb-2">
               Slug *
             </label>
             <input
               type="text"
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none font-mono text-sm"
+              className="w-full px-4 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none font-mono text-sm"
               value={form.slug}
               onChange={onSlugChange}
               placeholder="ej: socket-am5"
@@ -63,12 +63,12 @@ export function SubcategoryModal({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium dark:text-gray-300 mb-2">
               Categoría *
             </label>
             <select
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              className="w-full px-4 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
               value={form.category_id}
               onChange={onCategoryIdChange}
             >
@@ -80,12 +80,12 @@ export function SubcategoryModal({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium dark:text-gray-300 mb-2">
               Descripción
             </label>
             <textarea
               rows={2}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              className="w-full px-4 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
               value={form.description}
               onChange={onDescriptionChange}
               placeholder="Descripción opcional"
@@ -93,24 +93,24 @@ export function SubcategoryModal({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium dark:text-gray-300 mb-2">
               Orden
             </label>
             <input
               type="number"
               min="0"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              className="w-full px-4 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
               value={form.order}
               onChange={onOrderChange}
             />
-            <p className="text-xs text-gray-500 mt-1">Orden de aparición (menor = primero)</p>
+            <p className="text-xs dark:text-gray-400 mt-1">Orden de aparición (menor = primero)</p>
           </div>
 
           <div className="flex gap-3 pt-4">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+              className="flex-1 px-4 py-2 border dark:border-gray-700 dark:text-gray-300 rounded-lg dark:hover:bg-gray-800 transition-colors font-medium"
             >
               Cancelar
             </button>

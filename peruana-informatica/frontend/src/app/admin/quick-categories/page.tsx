@@ -83,7 +83,7 @@ function CategoryModal({
                 <button
                   key={e}
                   onClick={() => setIcon(e)}
-                  className={`text-xl p-2 rounded-lg border-2 transition-all ${icon === e ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' : 'border-gray-200 dark:border-gray-700 hover:border-gray-300'}`}
+                  className={`text-xl p-2 rounded-lg border-2 transition-all ${icon === e ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' : 'border-gray-200 dark:border-gray-700 dark:hover:border-gray-700'}`}
                 >
                   {e}
                 </button>
@@ -138,7 +138,7 @@ function CategoryModal({
 
           {/* Vista previa */}
           <div>
-            <p className="text-xs text-gray-500 mb-1">Vista previa</p>
+            <p className="text-xs dark:text-gray-400 mb-1">Vista previa</p>
             <div className="inline-flex flex-col items-center gap-1.5 px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700">
               <span className="text-xl">{icon}</span>
               <span className="text-[11px] font-semibold text-gray-600 dark:text-gray-400 whitespace-nowrap">
@@ -244,15 +244,15 @@ export default function QuickCategoriesPage() {
         {/* Stats */}
         <div className="grid grid-cols-3 gap-4 mb-8">
           <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700 shadow-sm">
-            <p className="text-xs text-gray-500 font-medium">Total</p>
+            <p className="text-xs dark:text-gray-400 font-medium">Total</p>
             <p className="text-3xl font-bold text-gray-900 dark:text-white mt-1">{items.length}</p>
           </div>
           <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700 shadow-sm">
-            <p className="text-xs text-gray-500 font-medium">Activos</p>
+            <p className="text-xs dark:text-gray-400 font-medium">Activos</p>
             <p className="text-3xl font-bold text-green-600 mt-1">{activeItems.length}</p>
           </div>
           <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700 shadow-sm">
-            <p className="text-xs text-gray-500 font-medium">Inactivos</p>
+            <p className="text-xs dark:text-gray-400 font-medium">Inactivos</p>
             <p className="text-3xl font-bold text-gray-400 mt-1">{items.length - activeItems.length}</p>
           </div>
         </div>
@@ -260,7 +260,7 @@ export default function QuickCategoriesPage() {
         {/* Vista previa */}
         {activeItems.length > 0 && (
           <div className="mb-6">
-            <p className="text-xs font-medium text-gray-500 mb-2">Vista previa</p>
+            <p className="text-xs font-medium dark:text-gray-400 mb-2">Vista previa</p>
             <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-xl p-4 flex gap-3 flex-wrap">
               {activeItems.map((cat) => (
                 <div
@@ -309,7 +309,7 @@ export default function QuickCategoriesPage() {
                   <span className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium flex-shrink-0 ${
                     item.is_active
                       ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-                      : 'bg-gray-100 text-gray-500 dark:bg-gray-700'
+                      : 'bg-gray-100 dark:text-gray-400 dark:bg-gray-700'
                   }`}>
                     {item.is_active ? <CheckCircle className="h-3 w-3" /> : <XCircle className="h-3 w-3" />}
                     {item.is_active ? 'Activo' : 'Inactivo'}

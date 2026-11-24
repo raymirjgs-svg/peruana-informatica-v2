@@ -99,7 +99,7 @@ export default function RolesPage() {
                                     </div>
                                     <div>
                                         <h3 className="font-bold text-lg text-gray-900 dark:text-white">{role.name}</h3>
-                                        <p className="text-sm text-gray-500">{role.slug}</p>
+                                        <p className="text-sm dark:text-gray-400">{role.slug}</p>
                                     </div>
                                 </div>
 
@@ -126,7 +126,7 @@ export default function RolesPage() {
                             </p>
 
                             <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
-                                <p className="text-xs text-gray-500 mb-2">Permisos ({role.permissions?.length || 0})</p>
+                                <p className="text-xs dark:text-gray-400 mb-2">Permisos ({role.permissions?.length || 0})</p>
                                 <div className="flex flex-wrap gap-2">
                                     {role.permissions?.slice(0, 3).map(perm => (
                                         <span key={perm.id} className="px-2 py-1 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 text-xs rounded-md">

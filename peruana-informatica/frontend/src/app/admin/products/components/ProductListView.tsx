@@ -21,21 +21,21 @@ export function ProductListView({ controller, forms }: { controller: Data; forms
 
 
   return (
-              <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+              <div className="dark:bg-gray-900 border dark:border-gray-700 rounded-xl shadow-sm overflow-hidden">
                 {data.products.map((p) => {
                   const imgUrl = getProductImageUrl(p);
                   return (
-                    <div key={`product-${p.slug}-${p.id}`} className="p-3 border-b border-gray-100 hover:bg-gray-50 transition-colors grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
+                    <div key={`product-${p.slug}-${p.id}`} className="p-3 border-b dark:border-gray-800 dark:hover:bg-gray-800 transition-colors grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
                       {/* Checkbox */}
                       <div className="flex items-center gap-2">
                         <input
                           type="checkbox"
                           checked={selectedProducts.includes(p.id)}
                           onChange={() => toggleProductSelection(p.id)}
-                          className="w-4 h-4 text-blue-600 rounded border-gray-300 cursor-pointer"
+                          className="w-4 h-4 text-blue-600 rounded dark:border-gray-700 cursor-pointer"
                         />
                         {/* Miniatura */}
-                        <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
+                        <div className="w-12 h-12 rounded-lg overflow-hidden dark:bg-gray-800 flex-shrink-0">
                           {imgUrl ? (
                             <img src={imgUrl} alt="" className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
                           ) : (
@@ -44,8 +44,8 @@ export function ProductListView({ controller, forms }: { controller: Data; forms
                         </div>
                       </div>
                       <div className="md:col-span-3">
-                        <div className="font-semibold text-gray-800 text-sm line-clamp-1">{p.name}</div>
-                        <div className="text-xs text-gray-500">{p.codigo_interno || p.slug}</div>
+                        <div className="font-semibold dark:text-gray-100 text-sm line-clamp-1">{p.name}</div>
+                        <div className="text-xs dark:text-gray-400">{p.codigo_interno || p.slug}</div>
                       </div>
                       <div className="text-sm font-medium">S/. {Number(p.price).toLocaleString()}</div>
                       <div>
@@ -54,12 +54,12 @@ export function ProductListView({ controller, forms }: { controller: Data; forms
                         </span>
                       </div>
                       <div>
-                        <span className={`px-2 py-1 rounded-full text-xs ${p.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
+                        <span className={`px-2 py-1 rounded-full text-xs ${p.is_active ? 'bg-green-100 text-green-700' : 'dark:bg-gray-800 dark:text-gray-400'}`}>
                           {p.is_active ? '✓' : '○'}
                         </span>
                       </div>
-                      <div className="text-xs text-gray-600 truncate">{p.productCategory?.name || '-'}</div>
-                      <div className="text-xs text-gray-600 truncate">{p.productBrand?.name || '-'}</div>
+                      <div className="text-xs dark:text-gray-400 truncate">{p.productCategory?.name || '-'}</div>
+                      <div className="text-xs dark:text-gray-400 truncate">{p.productBrand?.name || '-'}</div>
                       <div className="md:col-span-3 flex gap-1 justify-end flex-wrap">
                         <Button size="sm" variant="secondary" onClick={() => setPreviewProduct(p)} title="Vista previa">👁</Button>
                         <Button size="sm" variant="secondary" onClick={() => duplicateProduct(p)} title="Duplicar">📋</Button>

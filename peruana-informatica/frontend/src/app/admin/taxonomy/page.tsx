@@ -182,8 +182,8 @@ export default function TaxonomyPage() {
     <AdminLayout>
       <div className="max-w-7xl mx-auto space-y-5">
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Asignar Taxonomía</h1>
-          <p className="text-gray-600">Asigna marcas, categorías y subcategorías a los productos</p>
+          <h1 className="text-3xl font-bold dark:text-white mb-2">Asignar Taxonomía</h1>
+          <p className="dark:text-gray-400">Asigna marcas, categorías y subcategorías a los productos</p>
         </div>
 
         <TaxonomyFilters

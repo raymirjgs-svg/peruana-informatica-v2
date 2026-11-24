@@ -253,7 +253,7 @@ export default function SystemStatusPage() {
                         {/* System Info */}
                         <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                             <h3 className="font-semibold text-lg text-gray-800 dark:text-white mb-6 flex items-center gap-2">
-                                <Server className="h-5 w-5 text-gray-500" />
+                                <Server className="h-5 w-5 dark:text-gray-400" />
                                 Recursos del Servidor
                             </h3>
 

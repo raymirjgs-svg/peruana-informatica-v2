@@ -219,7 +219,7 @@ export default function PromoBannersPage() {
                                             style={{ aspectRatio: '16/7' }}
                                         >
                                             <Upload className="w-8 h-8 mx-auto mb-2 text-gray-400" />
-                                            <p className="text-sm text-gray-500">Haz clic para subir imagen</p>
+                                            <p className="text-sm dark:text-gray-400">Haz clic para subir imagen</p>
                                             <p className="text-xs text-gray-400 mt-1">JPG, PNG, WEBP · Máx 5MB</p>
                                         </div>
                                     )}
@@ -235,7 +235,7 @@ export default function PromoBannersPage() {
                                             type="button"
                                             onClick={() => fileInputRef.current?.click()}
                                             disabled={uploading}
-                                            className="flex-1 flex items-center justify-center gap-2 px-3 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
+                                            className="flex-1 flex items-center justify-center gap-2 px-3 py-2 border dark:border-gray-700 rounded-lg text-sm hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
                                         >
                                             <Upload className="w-4 h-4" />
                                             {uploading ? 'Subiendo...' : 'Subir imagen'}
@@ -294,7 +294,7 @@ export default function PromoBannersPage() {
                                         <button
                                             type="button"
                                             onClick={handleCancel}
-                                            className="px-4 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 dark:hover:bg-gray-700"
+                                            className="px-4 py-2 border dark:border-gray-700 rounded-lg text-sm hover:bg-gray-50 dark:hover:bg-gray-700"
                                         >
                                             Cancelar
                                         </button>
@@ -314,7 +314,7 @@ export default function PromoBannersPage() {
                             </div>
 
                             {isLoading ? (
-                                <div className="p-8 text-center text-gray-500">Cargando...</div>
+                                <div className="p-8 text-center dark:text-gray-400">Cargando...</div>
                             ) : banners.length === 0 ? (
                                 <div className="p-12 text-center text-gray-400">
                                     <LayoutTemplate className="w-12 h-12 mx-auto mb-3 opacity-30" />
@@ -344,7 +344,7 @@ export default function PromoBannersPage() {
                                                     </div>
                                                 )}
                                                 <div className="flex items-center gap-2 mt-1.5">
-                                                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${banner.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
+                                                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${banner.is_active ? 'bg-green-100 text-green-700' : 'dark:bg-gray-800 dark:text-gray-400'}`}>
                                                         {banner.is_active ? 'Activo' : 'Inactivo'}
                                                     </span>
                                                     {banner.show_as_popup && (
@@ -357,7 +357,7 @@ export default function PromoBannersPage() {
                                             <div className="flex items-center gap-1 flex-shrink-0">
                                                 <button
                                                     onClick={() => handleToggle(banner)}
-                                                    className={`p-1.5 rounded-lg transition-colors ${banner.is_active ? 'text-green-600 hover:bg-green-50' : 'text-gray-400 hover:bg-gray-100'}`}
+                                                    className={`p-1.5 rounded-lg transition-colors ${banner.is_active ? 'text-green-600 hover:bg-green-50' : 'text-gray-400 dark:hover:bg-gray-800'}`}
                                                     title={banner.is_active ? 'Desactivar' : 'Activar'}
                                                 >
                                                     {banner.is_active ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}

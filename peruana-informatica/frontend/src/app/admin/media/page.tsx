@@ -198,7 +198,7 @@ export default function MediaLibraryPage() {
                   <button
                     onClick={() => copyUrl(img.url)}
                     title="Copiar URL"
-                    className="p-2 bg-white rounded-lg text-gray-800 hover:bg-blue-500 hover:text-white transition-colors shadow"
+                    className="p-2 dark:bg-gray-900 rounded-lg dark:text-gray-100 hover:bg-blue-500 hover:text-white transition-colors shadow"
                   >
                     {copied === img.url ? "✓" : "🔗"}
                   </button>
@@ -206,7 +206,7 @@ export default function MediaLibraryPage() {
                     onClick={() => deleteImage(img.filename)}
                     disabled={deleting === img.filename}
                     title="Eliminar"
-                    className="p-2 bg-white rounded-lg text-gray-800 hover:bg-red-500 hover:text-white transition-colors shadow disabled:opacity-50"
+                    className="p-2 dark:bg-gray-900 rounded-lg dark:text-gray-100 hover:bg-red-500 hover:text-white transition-colors shadow disabled:opacity-50"
                   >
                     {deleting === img.filename ? "⏳" : "🗑️"}
                   </button>

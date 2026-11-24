@@ -25,15 +25,15 @@ export function ProductGridView({ controller, forms }: { controller: Data; forms
                 {data.products.map((p) => {
                   const imgUrl = getProductImageUrl(p);
                   return (
-                    <div key={`product-grid-${p.id}`} className="bg-white border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                    <div key={`product-grid-${p.id}`} className="dark:bg-gray-900 border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                       <div className="relative">
                         <input
                           type="checkbox"
                           checked={selectedProducts.includes(p.id)}
                           onChange={() => toggleProductSelection(p.id)}
-                          className="absolute top-2 left-2 w-4 h-4 text-blue-600 rounded border-gray-300 cursor-pointer z-10"
+                          className="absolute top-2 left-2 w-4 h-4 text-blue-600 rounded dark:border-gray-700 cursor-pointer z-10"
                         />
-                        <div className="aspect-square bg-gray-100">
+                        <div className="aspect-square dark:bg-gray-800">
                           {imgUrl ? (
                             <img src={imgUrl} alt="" className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
                           ) : (
@@ -45,8 +45,8 @@ export function ProductGridView({ controller, forms }: { controller: Data; forms
                         </span>
                       </div>
                       <div className="p-3">
-                        <div className="font-medium text-sm text-gray-800 line-clamp-2 h-10">{p.name}</div>
-                        <div className="text-xs text-gray-500 mt-1">{p.codigo_interno || '-'}</div>
+                        <div className="font-medium text-sm dark:text-gray-100 line-clamp-2 h-10">{p.name}</div>
+                        <div className="text-xs dark:text-gray-400 mt-1">{p.codigo_interno || '-'}</div>
                         <div className="text-lg font-bold text-blue-600 mt-2">S/. {Number(p.price).toLocaleString()}</div>
                         <div className="flex gap-1 mt-3">
                           <Button size="sm" variant="secondary" onClick={() => setPreviewProduct(p)} className="flex-1">👁</Button>

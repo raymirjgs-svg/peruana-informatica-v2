@@ -236,6 +236,51 @@ h3 {
   animation: badge-pulse 2s ease-in-out infinite;
 }
 
+/* =========================================================
+   Modo oscuro — ajustes base del panel admin
+   (resuelven de una vez los ~240 inputs y controles nativos
+   que no declaran color propio)
+   ========================================================= */
+.dark {
+  color-scheme: dark;
+}
+
+/* Controles de formulario: fondo siempre un tono por encima de la card */
+.dark :where(
+    input:not([type='checkbox']):not([type='radio']):not([type='file']):not([type='color']):not([type='range']),
+    textarea,
+    select
+  ) {
+  @apply bg-gray-800 text-gray-100 border-gray-700;
+}
+
+.dark :where(input, textarea)::placeholder {
+  @apply text-gray-500;
+}
+
+/* Opciones de los desplegables nativos */
+.dark option {
+  @apply bg-gray-800 text-gray-100;
+}
+
+/* Scrollbars discretos en oscuro */
+.dark ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.dark ::-webkit-scrollbar-track {
+  @apply bg-gray-900;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  @apply bg-gray-700 rounded-full;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-600;
+}
+
 @keyframes gradient-x {
   0%, 100% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }

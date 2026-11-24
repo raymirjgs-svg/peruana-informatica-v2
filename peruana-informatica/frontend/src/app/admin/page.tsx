@@ -5,7 +5,7 @@ import { AdminLayout } from '@/components/admin/AdminLayout';
 import { StatsCard } from '@/components/admin/StatsCard';
 import { MotionWrapper } from '@/components/ui/MotionWrapper';
 import dynamic from 'next/dynamic';
-const SalesChart = dynamic(() => import('@/components/admin/SalesChart').then(mod => ({ default: mod.SalesChart })), { ssr: false, loading: () => <div className="h-80 bg-gray-100 rounded-lg animate-pulse" /> });
+const SalesChart = dynamic(() => import('@/components/admin/SalesChart').then(mod => ({ default: mod.SalesChart })), { ssr: false, loading: () => <div className="h-80 dark:bg-gray-800 rounded-lg animate-pulse" /> });
 import { analyticsService, KPIs, SalesDataPoint, TopProduct } from '@/services/AnalyticsService';
 import {
   DollarSign,

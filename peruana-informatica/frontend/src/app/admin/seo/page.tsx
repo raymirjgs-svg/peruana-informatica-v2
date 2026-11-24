@@ -259,7 +259,7 @@ export default function SEOPage() {
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
             Configuración SEO
           </h1>
-          <p className="text-gray-500 mt-1">
+          <p className="dark:text-gray-400 mt-1">
             Optimiza tu sitio para motores de búsqueda
           </p>
         </div>

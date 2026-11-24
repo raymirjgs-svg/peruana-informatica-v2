@@ -86,7 +86,7 @@ export default function ReportsPage() {
                     onClick={() => setPeriod(p)}
                     className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all ${period === p
                         ? 'bg-indigo-50 text-indigo-700 shadow-sm'
-                        : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
+                        : 'dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800'
                       }`}
                   >
                     {p === '7d' ? 'Semana' : p === '30d' ? 'Mes' : 'Trimestre'}
@@ -202,10 +202,10 @@ export default function ReportsPage() {
                     <report.icon className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                   </div>
                   <div className="text-left flex-1 min-w-0">
-                    <p className="font-semibold text-gray-700 group-hover:text-gray-900 text-sm">{report.title}</p>
+                    <p className="font-semibold dark:text-gray-300 dark:group-hover:text-white text-sm">{report.title}</p>
                     <p className="text-xs text-gray-400">{report.desc}</p>
                   </div>
-                  <Download className="h-4 w-4 text-gray-300 group-hover:text-gray-600 opacity-0 group-hover:opacity-100 transition-all" />
+                  <Download className="h-4 w-4 text-gray-300 dark:group-hover:text-gray-400 opacity-0 group-hover:opacity-100 transition-all" />
                 </Link>
               ))}
             </div>

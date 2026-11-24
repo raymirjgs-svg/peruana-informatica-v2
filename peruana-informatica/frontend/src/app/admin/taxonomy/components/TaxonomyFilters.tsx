@@ -24,24 +24,24 @@ export function TaxonomyFilters({
   onCategoryChange,
 }: TaxonomyFiltersProps) {
   return (
-    <div className="bg-white rounded-lg shadow p-4 mb-6">
+    <div className="dark:bg-gray-900 rounded-lg shadow p-4 mb-6">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Buscar producto</label>
+          <label className="block text-sm font-medium dark:text-gray-300 mb-1">Buscar producto</label>
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Nombre o código..."
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+            className="w-full border dark:border-gray-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Filtrar por marca</label>
+          <label className="block text-sm font-medium dark:text-gray-300 mb-1">Filtrar por marca</label>
           <select
             value={selectedBrand}
             onChange={(e) => onBrandChange(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+            className="w-full border dark:border-gray-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
           >
             <option value="">Todas las marcas</option>
             {brands.map(brand => (
@@ -50,11 +50,11 @@ export function TaxonomyFilters({
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Filtrar por categoría</label>
+          <label className="block text-sm font-medium dark:text-gray-300 mb-1">Filtrar por categoría</label>
           <select
             value={selectedCategory}
             onChange={(e) => onCategoryChange(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+            className="w-full border dark:border-gray-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
           >
             <option value="">Todas las categorías</option>
             {categories.map(cat => (

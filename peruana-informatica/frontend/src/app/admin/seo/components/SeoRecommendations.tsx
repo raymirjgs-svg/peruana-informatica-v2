@@ -44,7 +44,7 @@ export function SeoRecommendations({ analysis }: { analysis: SeoAnalysis }) {
                             key={p.id}
                             className="bg-white/50 p-3 rounded border border-yellow-100"
                           >
-                            <div className="font-semibold text-xs text-gray-800">
+                            <div className="font-semibold text-xs dark:text-gray-100">
                               {p.page_type}: {p.page_identifier || "Global"}
                             </div>
                             <ul className="mt-1">

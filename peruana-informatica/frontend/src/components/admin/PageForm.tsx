@@ -59,13 +59,13 @@ export function PageForm({ initialData, onSubmit, isSubmitting, isEdit }: PageFo
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                     <Link href="/admin/pages" className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors">
-                        <ArrowLeft className="h-5 w-5 text-gray-500" />
+                        <ArrowLeft className="h-5 w-5 dark:text-gray-400" />
                     </Link>
                     <div>
                         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
                             {isEdit ? 'Editar Página' : 'Nueva Página'}
                         </h1>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm dark:text-gray-400">
                             {isEdit ? 'Modifica el contenido y SEO de la página' : 'Crea una nueva página estática para el sitio'}
                         </p>
                     </div>
@@ -122,7 +122,7 @@ export function PageForm({ initialData, onSubmit, isSubmitting, isEdit }: PageFo
                                     Enlace Permanente (Slug)
                                 </label>
                                 <div className="flex items-center">
-                                    <span className="px-3 py-2 bg-gray-100 dark:bg-gray-800 border border-r-0 border-gray-300 dark:border-gray-700 rounded-l-lg text-gray-500 text-sm">
+                                    <span className="px-3 py-2 bg-gray-100 dark:bg-gray-800 border border-r-0 border-gray-300 dark:border-gray-700 rounded-l-lg dark:text-gray-400 text-sm">
                                         /pages/
                                     </span>
                                     <input
@@ -144,7 +144,7 @@ export function PageForm({ initialData, onSubmit, isSubmitting, isEdit }: PageFo
                                     className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all font-mono text-sm"
                                     placeholder="<p>Escribe aquí el contenido de tu página...</p>"
                                 />
-                                <p className="text-xs text-gray-500 mt-1">Puedes escribir texto plano o código HTML.</p>
+                                <p className="text-xs dark:text-gray-400 mt-1">Puedes escribir texto plano o código HTML.</p>
                                 {errors.content && <p className="text-red-500 text-xs mt-1">{errors.content.message}</p>}
                             </div>
                         </div>
@@ -159,7 +159,7 @@ export function PageForm({ initialData, onSubmit, isSubmitting, isEdit }: PageFo
                             <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Estado</span>
                             <label className="relative inline-flex items-center cursor-pointer">
                                 <input type="checkbox" {...register('is_published')} className="sr-only peer" />
-                                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] dark:after:bg-gray-900 dark:after:border-gray-700 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                                 <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">
                                     {watch('is_published') ? 'Visible' : 'Oculto'}
                                 </span>

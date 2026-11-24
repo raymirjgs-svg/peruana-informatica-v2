@@ -116,7 +116,7 @@ export default function PagesPage() {
           ) : pages.length === 0 ? (
             <div className="text-center py-12">
               <FileText className="h-12 w-12 text-gray-300 mx-auto mb-3" />
-              <p className="text-gray-500">No hay páginas creadas aún o no coinciden con la búsqueda.</p>
+              <p className="dark:text-gray-400">No hay páginas creadas aún o no coinciden con la búsqueda.</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -174,15 +174,15 @@ export default function PagesPage() {
                   <button
                     disabled={currentPage === 1}
                     onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                    className="px-3 py-1 rounded-lg border border-gray-200 disabled:opacity-50"
+                    className="px-3 py-1 rounded-lg border dark:border-gray-700 disabled:opacity-50"
                   >
                     Anterior
                   </button>
-                  <span className="px-3 py-1 text-gray-500">Pág {currentPage} de {totalPages}</span>
+                  <span className="px-3 py-1 dark:text-gray-400">Pág {currentPage} de {totalPages}</span>
                   <button
                     disabled={currentPage === totalPages}
                     onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                    className="px-3 py-1 rounded-lg border border-gray-200 disabled:opacity-50"
+                    className="px-3 py-1 rounded-lg border dark:border-gray-700 disabled:opacity-50"
                   >
                     Siguiente
                   </button>

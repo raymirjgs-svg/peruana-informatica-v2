@@ -30,7 +30,7 @@ export function AnnouncementTab({ settings, onSettingChange }: AnnouncementTabPr
               }`}
           >
             <span
-              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${settings.announcement_bar_enabled === 'true' ? 'translate-x-6' : 'translate-x-1'
+              className={`inline-block h-4 w-4 transform rounded-full dark:bg-gray-900 transition-transform ${settings.announcement_bar_enabled === 'true' ? 'translate-x-6' : 'translate-x-1'
                 }`}
             />
           </button>

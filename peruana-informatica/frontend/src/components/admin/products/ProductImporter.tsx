@@ -99,9 +99,9 @@ export function ProductImporter() {
 
     return (
         <div className="space-y-6">
-            <div className="bg-white border border-gray-200 rounded-xl p-6">
-                <h2 className="text-xl font-bold text-gray-800 mb-4">📤 Importación Masiva de Productos</h2>
-                <p className="text-gray-600 text-sm mb-6">
+            <div className="dark:bg-gray-900 border dark:border-gray-700 rounded-xl p-6">
+                <h2 className="text-xl font-bold dark:text-gray-100 mb-4">📤 Importación Masiva de Productos</h2>
+                <p className="dark:text-gray-400 text-sm mb-6">
                     Importa productos desde el sistema ERP en formato JSON.
                 </p>
 
@@ -110,7 +110,7 @@ export function ProductImporter() {
                         onClick={() => setMode('file')}
                         className={`flex-1 py-3 px-4 rounded-lg font-medium transition-colors ${mode === 'file'
                             ? 'bg-blue-600 text-white'
-                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                            : 'dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
                             }`}
                     >
                         📁 Subir Archivo
@@ -119,7 +119,7 @@ export function ProductImporter() {
                         onClick={() => setMode('text')}
                         className={`flex-1 py-3 px-4 rounded-lg font-medium transition-colors ${mode === 'text'
                             ? 'bg-blue-600 text-white'
-                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                            : 'dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
                             }`}
                     >
                         📝 Pegar JSON
@@ -128,7 +128,7 @@ export function ProductImporter() {
 
                 {mode === 'file' && (
                     <div>
-                        <label className="block mb-2 text-sm font-medium text-gray-700">
+                        <label className="block mb-2 text-sm font-medium dark:text-gray-300">
                             Seleccionar archivo JSON
                         </label>
                         <div className="flex items-center gap-4">
@@ -136,7 +136,7 @@ export function ProductImporter() {
                                 type="file"
                                 accept=".json"
                                 onChange={handleFileChange}
-                                className="flex-1 text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                                className="flex-1 text-sm dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                             />
                             {file && <span className="text-sm text-green-600 font-medium">✓ {file.name}</span>}
                         </div>
@@ -145,11 +145,11 @@ export function ProductImporter() {
 
                 {mode === 'text' && (
                     <div>
-                        <label className="block mb-2 text-sm font-medium text-gray-700">
+                        <label className="block mb-2 text-sm font-medium dark:text-gray-300">
                             Pegar JSON del ERP
                         </label>
                         <textarea
-                            className="w-full h-64 border border-gray-300 rounded-lg px-3 py-2 font-mono text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            className="w-full h-64 border dark:border-gray-700 rounded-lg px-3 py-2 font-mono text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             placeholder='{\n  "products": [\n    {\n      "codigo": "LAP001",\n      "nombre": "Laptop HP",\n      "precio": 2500,\n      "stock": 10\n    }\n  ]\n}'
                             value={jsonText}
                             onChange={(e) => setJsonText(e.target.value)}
@@ -179,31 +179,31 @@ export function ProductImporter() {
 
                                 {result.summary && (
                                     <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
-                                        <div className="bg-white rounded-lg p-3 shadow-sm">
-                                            <div className="text-2xl font-bold text-gray-800">{result.summary.total}</div>
-                                            <div className="text-xs text-gray-600 uppercase mt-1">Total procesados</div>
+                                        <div className="dark:bg-gray-900 rounded-lg p-3 shadow-sm">
+                                            <div className="text-2xl font-bold dark:text-gray-100">{result.summary.total}</div>
+                                            <div className="text-xs dark:text-gray-400 uppercase mt-1">Total procesados</div>
                                         </div>
-                                        <div className="bg-white rounded-lg p-3 shadow-sm">
+                                        <div className="dark:bg-gray-900 rounded-lg p-3 shadow-sm">
                                             <div className="text-2xl font-bold text-green-600">{result.summary.creados}</div>
-                                            <div className="text-xs text-gray-600 uppercase mt-1">Creados</div>
+                                            <div className="text-xs dark:text-gray-400 uppercase mt-1">Creados</div>
                                         </div>
-                                        <div className="bg-white rounded-lg p-3 shadow-sm">
+                                        <div className="dark:bg-gray-900 rounded-lg p-3 shadow-sm">
                                             <div className="text-2xl font-bold text-blue-600">{result.summary.actualizados}</div>
-                                            <div className="text-xs text-gray-600 uppercase mt-1">Actualizados</div>
+                                            <div className="text-xs dark:text-gray-400 uppercase mt-1">Actualizados</div>
                                         </div>
-                                        <div className="bg-white rounded-lg p-3 shadow-sm">
+                                        <div className="dark:bg-gray-900 rounded-lg p-3 shadow-sm">
                                             <div className="text-2xl font-bold text-red-600">{result.summary.errores}</div>
-                                            <div className="text-xs text-gray-600 uppercase mt-1">Errores</div>
+                                            <div className="text-xs dark:text-gray-400 uppercase mt-1">Errores</div>
                                         </div>
                                     </div>
                                 )}
 
                                 {result.details && result.details.errors.length > 0 && (
-                                    <div className="mt-4 bg-white rounded-lg p-4 shadow-sm">
+                                    <div className="mt-4 dark:bg-gray-900 rounded-lg p-4 shadow-sm">
                                         <h4 className="font-semibold text-red-800 mb-2">Errores detectados:</h4>
                                         <div className="space-y-2 max-h-64 overflow-y-auto">
                                             {result.details.errors.map((err, idx: number) => (
-                                                <div key={idx} className="text-sm text-gray-700 border-l-4 border-red-400 pl-3 py-1">
+                                                <div key={idx} className="text-sm dark:text-gray-300 border-l-4 border-red-400 pl-3 py-1">
                                                     <strong>{err.codigo}</strong>: {err.error}
                                                 </div>
                                             ))}

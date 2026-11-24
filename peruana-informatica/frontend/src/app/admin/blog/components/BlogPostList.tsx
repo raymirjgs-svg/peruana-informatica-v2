@@ -22,14 +22,14 @@ export function BlogPostList({
   onDelete,
 }: BlogPostListProps) {
   return (
-        <div className="bg-white border border-gray-200 rounded-xl p-6">
+        <div className="dark:bg-gray-900 border dark:border-gray-700 rounded-xl p-6">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold text-gray-800">Posts del Blog</h2>
+            <h2 className="text-xl font-bold dark:text-gray-100">Posts del Blog</h2>
             <div className="flex gap-3">
               <Button
                 onClick={onLoadDemo}
                 disabled={loadingDemo}
-                className="bg-gray-100 hover:bg-gray-200 text-gray-700"
+                className="dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-300"
               >
                 {loadingDemo ? "Cargando..." : "📦 Cargar Posts Demo"}
               </Button>
@@ -41,12 +41,12 @@ export function BlogPostList({
             {posts.map((post) => (
               <div
                 key={post.id}
-                className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors"
+                className="border dark:border-gray-700 rounded-lg p-4 dark:hover:bg-gray-800 transition-colors"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
-                      <h3 className="font-semibold text-gray-800">
+                      <h3 className="font-semibold dark:text-gray-100">
                         {post.title}
                       </h3>
                       <span
@@ -65,10 +65,10 @@ export function BlogPostList({
                         </span>
                       )}
                     </div>
-                    <p className="text-sm text-gray-600 mb-2 line-clamp-2">
+                    <p className="text-sm dark:text-gray-400 mb-2 line-clamp-2">
                       {post.excerpt || post.content.substring(0, 150) + "..."}
                     </p>
-                    <div className="flex items-center gap-4 text-xs text-gray-500">
+                    <div className="flex items-center gap-4 text-xs dark:text-gray-400">
                       <span>Por {post.author_name}</span>
                       <span>{post.word_count} palabras</span>
                       <span>{post.reading_time} min lectura</span>
@@ -80,7 +80,7 @@ export function BlogPostList({
                   <div className="flex gap-2 ml-4">
                     <Button
                       size="sm"
-                      className="bg-gray-100 hover:bg-gray-200 text-gray-700"
+                      className="dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-300"
                       onClick={() => onEdit(post)}
                     >
                       Editar
@@ -116,7 +116,7 @@ export function BlogPostList({
             ))}
 
             {posts.length === 0 && (
-              <div className="text-center py-12 text-gray-500">
+              <div className="text-center py-12 dark:text-gray-400">
                 <p className="text-lg mb-4">No hay posts aún</p>
                 <p className="text-sm mb-4">
                   ¡Crea tu primer post o carga datos de demostración!
@@ -126,7 +126,7 @@ export function BlogPostList({
                   <Button
                     onClick={onLoadDemo}
                     disabled={loadingDemo}
-                    className="bg-gray-100 hover:bg-gray-200 text-gray-700"
+                    className="dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-300"
                   >
                     {loadingDemo ? "Cargando..." : "📦 Cargar Posts Demo"}
                   </Button>

@@ -196,19 +196,19 @@ export default function AdminQuotations() {
         {/* Métricas */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
-            <p className="text-xs text-gray-500 font-medium">Total</p>
+            <p className="text-xs dark:text-gray-400 font-medium">Total</p>
             <p className="text-3xl font-bold text-gray-900 dark:text-white mt-1">{metrics.total}</p>
           </div>
           <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
-            <p className="text-xs text-gray-500 font-medium">Hoy</p>
+            <p className="text-xs dark:text-gray-400 font-medium">Hoy</p>
             <p className="text-3xl font-bold text-emerald-600 mt-1">{metrics.today}</p>
           </div>
           <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
-            <p className="text-xs text-gray-500 font-medium">Esta Semana</p>
+            <p className="text-xs dark:text-gray-400 font-medium">Esta Semana</p>
             <p className="text-3xl font-bold text-indigo-600 mt-1">{metrics.thisWeek}</p>
           </div>
           <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
-            <p className="text-xs text-gray-500 font-medium">Valor Total</p>
+            <p className="text-xs dark:text-gray-400 font-medium">Valor Total</p>
             <p className="text-xl font-bold text-amber-600 mt-1">
               S/ {metrics.totalValue.toLocaleString('es-PE', { minimumFractionDigits: 2 })}
             </p>
@@ -231,7 +231,7 @@ export default function AdminQuotations() {
             <div className="flex p-1 bg-gray-100 dark:bg-gray-800 rounded-xl">
               {(['all', 'today', 'week', 'month'] as const).map((f) => (
                 <button key={f} onClick={() => setDateFilter(f)}
-                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${dateFilter === f ? 'bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700'}`}>
+                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${dateFilter === f ? 'bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-gray-500 dark:text-gray-400 dark:hover:text-gray-300'}`}>
                   {f === 'all' ? 'Todas' : f === 'today' ? 'Hoy' : f === 'week' ? 'Semana' : 'Mes'}
                 </button>
               ))}

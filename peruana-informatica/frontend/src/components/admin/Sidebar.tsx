@@ -311,17 +311,17 @@ export function Sidebar() {
 
           {/* Navigation */}
           <div className="flex-1 overflow-y-auto px-4 py-2 custom-scrollbar space-y-2">
-            <div className="mb-2 px-2 text-xs font-medium text-gray-500">
+            <div className="mb-2 px-2 text-xs font-medium dark:text-gray-400">
               Principal
             </div>
             {menuItems.slice(0, 2).map((item) => renderMenuItem(item))}
 
-            <div className="mt-6 mb-2 px-2 text-xs font-medium text-gray-500">
+            <div className="mt-6 mb-2 px-2 text-xs font-medium dark:text-gray-400">
               Gestión
             </div>
             {menuItems.slice(2, 5).map((item) => renderMenuItem(item))}
 
-            <div className="mt-6 mb-2 px-2 text-xs font-medium text-gray-500">
+            <div className="mt-6 mb-2 px-2 text-xs font-medium dark:text-gray-400">
               Configuración
             </div>
             {menuItems.slice(5).map((item) => renderMenuItem(item))}
@@ -345,6 +345,8 @@ export function Sidebar() {
               <button
                 onClick={toggleTheme}
                 className="flex-1 flex items-center justify-center gap-2 p-2 rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-xs font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                aria-label={theme === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+                aria-pressed={theme === 'dark'}
               >
                 {theme === 'dark' ? <Sun className="h-3.5 w-3.5" /> : <Moon className="h-3.5 w-3.5" />}
                 {theme === 'dark' ? 'Claro' : 'Oscuro'}

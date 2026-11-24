@@ -14,7 +14,7 @@ export function ProductsPagination({ controller }: { controller: Data }) {
 
   return (
           <div className="mt-4 flex items-center justify-between">
-            <div className="text-sm text-gray-600">Total: {data.total} • Página {page} de {data.totalPages}</div>
+            <div className="text-sm dark:text-gray-400">Total: {data.total} • Página {page} de {data.totalPages}</div>
             <div className="flex items-center gap-2">
               <button className="px-3 py-1 border rounded disabled:opacity-60" disabled={page <= 1 || loading} onClick={() => goToPage(page - 1)}>Anterior</button>
               <select className="px-2 py-1 border rounded" value={page} onChange={(e) => goToPage(Number(e.target.value))}>

@@ -41,7 +41,7 @@ export function AdminSessionSync({ children }: { children: React.ReactNode }) {
   if (!ready) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-sm text-gray-500">Cargando sesión...</div>
+        <div className="text-sm dark:text-gray-400">Cargando sesión...</div>
       </div>
     );
   }

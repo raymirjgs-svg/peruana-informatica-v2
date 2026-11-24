@@ -54,11 +54,11 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
-      <div className="w-full max-w-sm bg-white border border-gray-200 rounded-xl p-8 shadow-md">
+    <div className="min-h-screen flex items-center justify-center dark:bg-gray-800 p-4">
+      <div className="w-full max-w-sm dark:bg-gray-900 border dark:border-gray-700 rounded-xl p-8 shadow-md">
         <div className="mb-6 text-center">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Panel de Administración</h1>
-          <p className="text-sm text-gray-500 mt-1">Peruana de Informática</p>
+          <p className="text-sm dark:text-gray-400 mt-1">Peruana de Informática</p>
         </div>
 
         {sessionExpired && (
@@ -70,10 +70,10 @@ export default function AdminLoginPage() {
 
         <form onSubmit={onSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <label className="block text-sm font-medium dark:text-gray-300 mb-1">Email</label>
             <input
               type="email"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+              className="w-full border dark:border-gray-700 rounded-lg px-3 py-2 dark:text-white dark:bg-gray-900 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
               placeholder="admin@ejemplo.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -82,10 +82,10 @@ export default function AdminLoginPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
+            <label className="block text-sm font-medium dark:text-gray-300 mb-1">Contraseña</label>
             <input
               type="password"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+              className="w-full border dark:border-gray-700 rounded-lg px-3 py-2 dark:text-white dark:bg-gray-900 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}

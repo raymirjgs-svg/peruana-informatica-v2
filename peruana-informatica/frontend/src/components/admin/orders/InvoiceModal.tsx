@@ -23,20 +23,20 @@ export function InvoiceModal({
 }: InvoiceModalProps) {
   return (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-lg p-6 max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div className="dark:bg-gray-900 rounded-lg p-6 max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto">
               <div className="flex items-center gap-3 mb-6">
                 <div className="text-4xl">📄</div>
                 <div>
                   <h3 className="text-xl font-bold">
                     Cargar {selectedOrder.invoice_type === 'factura' ? 'Factura' : 'Boleta'}
                   </h3>
-                  <p className="text-sm text-gray-600">Pedido #{selectedOrder.id}</p>
+                  <p className="text-sm dark:text-gray-400">Pedido #{selectedOrder.id}</p>
                 </div>
               </div>
 
               {/* Número de comprobante */}
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium dark:text-gray-300 mb-2">
                   Número de Comprobante *
                 </label>
                 <input
@@ -46,17 +46,17 @@ export function InvoiceModal({
                   className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
                   placeholder={selectedOrder.invoice_type === 'factura' ? 'F001-00001' : 'B001-00001'}
                 />
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs dark:text-gray-400 mt-1">
                   Ingresa el número del comprobante generado en tu sistema de ventas
                 </p>
               </div>
 
               {/* Upload de archivo */}
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium dark:text-gray-300 mb-2">
                   Archivo PDF del Comprobante *
                 </label>
-                <div className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${invoiceFile ? 'border-green-400 bg-green-50' : 'border-gray-300 hover:border-indigo-400 hover:bg-indigo-50'
+                <div className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${invoiceFile ? 'border-green-400 bg-green-50' : 'dark:border-gray-700 hover:border-indigo-400 hover:bg-indigo-50'
                   }`}>
                   <input
                     type="file"
@@ -79,8 +79,8 @@ export function InvoiceModal({
                       </div>
                     ) : (
                       <>
-                        <p className="text-gray-700 font-bold text-lg mb-1">Seleccionar PDF</p>
-                        <p className="text-sm text-gray-500 mb-2">
+                        <p className="dark:text-gray-300 font-bold text-lg mb-1">Seleccionar PDF</p>
+                        <p className="text-sm dark:text-gray-400 mb-2">
                           Arrastra el archivo aquí o haz clic para seleccionar
                         </p>
                         <p className="text-xs text-gray-400">Máximo 10MB • Solo archivos PDF</p>
@@ -112,7 +112,7 @@ export function InvoiceModal({
                     setInvoiceNumber('');
                     setInvoiceFile(null);
                   }}
-                  className="flex-1 px-4 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition font-medium"
+                  className="flex-1 px-4 py-3 dark:bg-gray-700 dark:text-gray-100 rounded-lg dark:hover:bg-gray-700 transition font-medium"
                 >
                   Cancelar
                 </button>

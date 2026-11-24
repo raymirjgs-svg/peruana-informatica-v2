@@ -184,7 +184,7 @@ export default function UsersPage() {
               key={s.label}
               className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-4"
             >
-              <p className="text-xs text-gray-500 font-medium">{s.label}</p>
+              <p className="text-xs dark:text-gray-400 font-medium">{s.label}</p>
               <p className={`text-3xl font-bold mt-1 ${s.color}`}>{s.value}</p>
             </div>
           ))}
@@ -203,22 +203,22 @@ export default function UsersPage() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-gray-100 dark:border-gray-800">
-                  <th className="px-5 py-3 text-left text-xs font-medium text-gray-500">
+                  <th className="px-5 py-3 text-left text-xs font-medium dark:text-gray-400">
                     Usuario
                   </th>
-                  <th className="px-5 py-3 text-left text-xs font-medium text-gray-500">
+                  <th className="px-5 py-3 text-left text-xs font-medium dark:text-gray-400">
                     Email
                   </th>
-                  <th className="px-5 py-3 text-left text-xs font-medium text-gray-500">
+                  <th className="px-5 py-3 text-left text-xs font-medium dark:text-gray-400">
                     Rol
                   </th>
-                  <th className="px-5 py-3 text-left text-xs font-medium text-gray-500">
+                  <th className="px-5 py-3 text-left text-xs font-medium dark:text-gray-400">
                     Último acceso
                   </th>
-                  <th className="px-5 py-3 text-left text-xs font-medium text-gray-500">
+                  <th className="px-5 py-3 text-left text-xs font-medium dark:text-gray-400">
                     Estado
                   </th>
-                  <th className="px-5 py-3 text-left text-xs font-medium text-gray-500">
+                  <th className="px-5 py-3 text-left text-xs font-medium dark:text-gray-400">
                     Acciones
                   </th>
                 </tr>

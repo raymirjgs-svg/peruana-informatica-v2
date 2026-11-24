@@ -11,12 +11,12 @@ interface ApiKeyModalProps {
 export function ApiKeyModal({ apiKey, onApiKeyChange, savingApiKey, onSave, onClose }: ApiKeyModalProps) {
   return (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-xl max-w-2xl w-full">
-              <div className="p-6 border-b border-gray-200">
-                <h2 className="text-xl font-bold text-gray-800">
+            <div className="dark:bg-gray-900 rounded-xl max-w-2xl w-full">
+              <div className="p-6 border-b dark:border-gray-700">
+                <h2 className="text-xl font-bold dark:text-gray-100">
                   🔑 Configurar Google Gemini API Key (GRATIS 🎉)
                 </h2>
-                <p className="text-gray-600 mt-1">
+                <p className="dark:text-gray-400 mt-1">
                   Ingresa tu API Key gratuita de Google Gemini para habilitar
                   las funciones de IA
                 </p>
@@ -24,7 +24,7 @@ export function ApiKeyModal({ apiKey, onApiKeyChange, savingApiKey, onSave, onCl
 
               <div className="p-6">
                 <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium dark:text-gray-300 mb-2">
                     API Key
                   </label>
                   <input
@@ -32,9 +32,9 @@ export function ApiKeyModal({ apiKey, onApiKeyChange, savingApiKey, onSave, onCl
                     value={apiKey}
                     onChange={(e) => onApiKeyChange(e.target.value)}
                     placeholder="AIza..."
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
-                  <p className="text-xs text-gray-500 mt-2">
+                  <p className="text-xs dark:text-gray-400 mt-2">
                     Tu API Key se guardará de forma segura en el servidor.
                     Puedes obtenerla GRATIS en{" "}
                     <a
@@ -68,7 +68,7 @@ export function ApiKeyModal({ apiKey, onApiKeyChange, savingApiKey, onSave, onCl
                 </div>
               </div>
 
-              <div className="p-6 border-t border-gray-200 flex justify-end gap-3">
+              <div className="p-6 border-t dark:border-gray-700 flex justify-end gap-3">
                 <Button
                   variant="secondary"
                   onClick={onClose}

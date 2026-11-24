@@ -16,31 +16,31 @@ export function BulkAssignmentPanel({
   assigning,
 }: BulkAssignmentPanelProps) {
   return (
-    <div className="bg-white rounded-lg shadow p-6 mb-6">
-      <h2 className="text-xl font-bold text-gray-900 mb-4">Asignación Masiva</h2>
+    <div className="dark:bg-gray-900 rounded-lg shadow p-6 mb-6">
+      <h2 className="text-xl font-bold dark:text-white mb-4">Asignación Masiva</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Marca</label>
+          <label className="block text-sm font-medium dark:text-gray-300 mb-1">Marca</label>
           <input
             type="text"
             value={bulkFormData.brandName}
             onChange={(e) => onChange({ ...bulkFormData, brandName: e.target.value })}
             placeholder="Nombre de la marca..."
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+            className="w-full border dark:border-gray-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Categoría</label>
+          <label className="block text-sm font-medium dark:text-gray-300 mb-1">Categoría</label>
           <input
             type="text"
             value={bulkFormData.categoryName}
             onChange={(e) => onChange({ ...bulkFormData, categoryName: e.target.value })}
             placeholder="Nombre de la categoría..."
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+            className="w-full border dark:border-gray-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
           />
         </div>
         <div className="md:col-span-2">
-          <label className="block text-sm font-medium text-gray-700 mb-1">Subcategorías (separadas por comas)</label>
+          <label className="block text-sm font-medium dark:text-gray-300 mb-1">Subcategorías (separadas por comas)</label>
           <input
             type="text"
             value={bulkFormData.subCategoryNames.join(', ')}
@@ -49,7 +49,7 @@ export function BulkAssignmentPanel({
               subCategoryNames: e.target.value.split(',').map(s => s.trim()).filter(s => s)
             })}
             placeholder="Subcategoría 1, Subcategoría 2..."
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+            className="w-full border dark:border-gray-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
           />
         </div>
       </div>

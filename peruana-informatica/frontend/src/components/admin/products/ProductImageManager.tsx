@@ -122,7 +122,7 @@ export function ProductImageManager({ productId, onImagesUpdate }: ProductImageM
         <input
           type="url"
           placeholder="https://ejemplo.com/imagen.jpg"
-          className="flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="flex-1 border dark:border-gray-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           value={newImageUrl}
           onChange={(e) => setNewImageUrl(e.target.value)}
           disabled={addingImage}
@@ -134,14 +134,14 @@ export function ProductImageManager({ productId, onImagesUpdate }: ProductImageM
 
       {/* Images grid */}
       {images.length === 0 ? (
-        <div className="text-center py-8 text-gray-500">
+        <div className="text-center py-8 dark:text-gray-400">
           No hay imágenes para este producto
         </div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
           {images.map((image) => (
             <div key={image.cod_galeria} className="border rounded-lg overflow-hidden">
-              <div className="aspect-square bg-gray-100 flex items-center justify-center">
+              <div className="aspect-square dark:bg-gray-800 flex items-center justify-center">
                 {image.imagen ? (
                   <img
                     src={image.imagen.startsWith('http') ? image.imagen : `/uploads/${image.imagen}`}
@@ -157,7 +157,7 @@ export function ProductImageManager({ productId, onImagesUpdate }: ProductImageM
                 )}
               </div>
               <div className="p-2 flex justify-between items-center">
-                <span className="text-xs text-gray-500">ID: {image.cod_galeria}</span>
+                <span className="text-xs dark:text-gray-400">ID: {image.cod_galeria}</span>
                 <Button
                   size="sm"
                   variant="danger"

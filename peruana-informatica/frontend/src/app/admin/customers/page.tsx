@@ -102,7 +102,7 @@ export default function CustomersPage() {
                             { label: 'Nuevos este mes', value: stats.newThisMonth, color: 'text-blue-600' },
                         ].map(s => (
                             <div key={s.label} className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
-                                <p className="text-xs text-gray-500 font-medium">{s.label}</p>
+                                <p className="text-xs dark:text-gray-400 font-medium">{s.label}</p>
                                 <p className={`text-3xl font-bold mt-1 ${s.color}`}>{s.value}</p>
                             </div>
                         ))}
@@ -149,13 +149,13 @@ export default function CustomersPage() {
                                 <table className="min-w-full">
                                     <thead>
                                         <tr className="border-b border-gray-100 dark:border-gray-800">
-                                            <th className="px-5 py-3 text-left text-xs font-medium text-gray-500">Cliente</th>
-                                            <th className="px-5 py-3 text-left text-xs font-medium text-gray-500">Email</th>
-                                            <th className="px-5 py-3 text-left text-xs font-medium text-gray-500">Método</th>
-                                            <th className="px-5 py-3 text-left text-xs font-medium text-gray-500">Registrado</th>
-                                            <th className="px-5 py-3 text-left text-xs font-medium text-gray-500">Último acceso</th>
-                                            <th className="px-5 py-3 text-left text-xs font-medium text-gray-500">Estado</th>
-                                            <th className="px-5 py-3 text-left text-xs font-medium text-gray-500">Acción</th>
+                                            <th className="px-5 py-3 text-left text-xs font-medium dark:text-gray-400">Cliente</th>
+                                            <th className="px-5 py-3 text-left text-xs font-medium dark:text-gray-400">Email</th>
+                                            <th className="px-5 py-3 text-left text-xs font-medium dark:text-gray-400">Método</th>
+                                            <th className="px-5 py-3 text-left text-xs font-medium dark:text-gray-400">Registrado</th>
+                                            <th className="px-5 py-3 text-left text-xs font-medium dark:text-gray-400">Último acceso</th>
+                                            <th className="px-5 py-3 text-left text-xs font-medium dark:text-gray-400">Estado</th>
+                                            <th className="px-5 py-3 text-left text-xs font-medium dark:text-gray-400">Acción</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-gray-100 dark:divide-gray-800">

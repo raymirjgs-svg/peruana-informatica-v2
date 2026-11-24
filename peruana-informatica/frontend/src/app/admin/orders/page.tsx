@@ -249,7 +249,7 @@ export default function AdminOrdersPage() {
             <div className="flex flex-wrap items-center justify-between gap-3">
               <p className="font-semibold">Pedido aprobado. Comparte este enlace con el cliente para que pueda pagar:</p>
               <div className="flex items-center gap-2">
-                <input readOnly value={shareLink} className="flex-1 min-w-[260px] rounded-lg border border-emerald-200 px-3 py-1.5 text-xs font-mono bg-white" onFocus={(e) => e.currentTarget.select()} />
+                <input readOnly value={shareLink} className="flex-1 min-w-[260px] rounded-lg border border-emerald-200 px-3 py-1.5 text-xs font-mono dark:bg-gray-800" onFocus={(e) => e.currentTarget.select()} />
                 <button
                   type="button"
                   onClick={() => { navigator.clipboard?.writeText(shareLink); }}
@@ -329,13 +329,13 @@ export default function AdminOrdersPage() {
                 <table className="w-full min-w-[900px]">
                   <thead>
                     <tr className="bg-gray-50 dark:bg-gray-800/50 border-b border-gray-200 dark:border-gray-700">
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pedido</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
-                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pago</th>
-                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium dark:text-gray-400 uppercase tracking-wider">Pedido</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium dark:text-gray-400 uppercase tracking-wider">Cliente</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium dark:text-gray-400 uppercase tracking-wider">Fecha</th>
+                      <th className="px-4 py-3 text-right text-xs font-medium dark:text-gray-400 uppercase tracking-wider">Total</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium dark:text-gray-400 uppercase tracking-wider">Estado</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium dark:text-gray-400 uppercase tracking-wider">Pago</th>
+                      <th className="px-4 py-3 text-right text-xs font-medium dark:text-gray-400 uppercase tracking-wider">Acciones</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -349,7 +349,7 @@ export default function AdminOrdersPage() {
                         </td>
                         <td className="px-4 py-3">
                           <p className="font-medium text-gray-900 dark:text-white text-sm truncate max-w-[220px]">{order.customer_name}</p>
-                          <p className="text-xs text-gray-500 truncate max-w-[220px]">{order.customer_email}</p>
+                          <p className="text-xs dark:text-gray-400 truncate max-w-[220px]">{order.customer_email}</p>
                         </td>
                         <td className="px-4 py-3 text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
                           {new Date(order.createdAt).toLocaleDateString('es-PE')}
@@ -368,7 +368,7 @@ export default function AdminOrdersPage() {
                             <button
                               onClick={() => setSelectedOrder(order)}
                               title="Ver detalle"
-                              className="p-2 rounded-lg text-gray-500 hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-blue-950/40 transition-colors"
+                              className="p-2 rounded-lg dark:text-gray-400 hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-blue-950/40 transition-colors"
                             >
                               <Eye className="h-4 w-4" />
                             </button>
@@ -376,7 +376,7 @@ export default function AdminOrdersPage() {
                               <button
                                 onClick={() => handleApproveOrder(order.id)}
                                 title="Aprobar pedido"
-                                className="p-2 rounded-lg text-gray-500 hover:bg-emerald-50 hover:text-emerald-600 dark:hover:bg-emerald-950/40 transition-colors"
+                                className="p-2 rounded-lg dark:text-gray-400 hover:bg-emerald-50 hover:text-emerald-600 dark:hover:bg-emerald-950/40 transition-colors"
                               >
                                 <Check className="h-4 w-4" />
                               </button>
@@ -385,7 +385,7 @@ export default function AdminOrdersPage() {
                               <button
                                 onClick={() => handleCancelOrder(order.id)}
                                 title="Cancelar pedido"
-                                className="p-2 rounded-lg text-gray-500 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40 transition-colors"
+                                className="p-2 rounded-lg dark:text-gray-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40 transition-colors"
                               >
                                 <X className="h-4 w-4" />
                               </button>
@@ -430,14 +430,14 @@ export default function AdminOrdersPage() {
 
             <div className="grid md:grid-cols-2 gap-4">
               <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 space-y-1.5">
-                <p className="text-xs font-medium text-gray-500 mb-2">Cliente</p>
+                <p className="text-xs font-medium dark:text-gray-400 mb-2">Cliente</p>
                 <p className="text-sm font-semibold text-gray-900 dark:text-white">{selectedOrder.customer_name}</p>
                 <p className="text-sm text-blue-600 dark:text-blue-400 break-all">{selectedOrder.customer_email}</p>
                 <p className="text-sm text-gray-500 dark:text-gray-400">{selectedOrder.customer_phone}</p>
                 {selectedOrder.customer_document && <p className="text-sm text-gray-500 dark:text-gray-400">DNI: {selectedOrder.customer_document}</p>}
               </div>
               <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 space-y-1.5">
-                <p className="text-xs font-medium text-gray-500 mb-2">Pago</p>
+                <p className="text-xs font-medium dark:text-gray-400 mb-2">Pago</p>
                 {selectedOrder.payment_method && <p className="text-sm text-gray-500 dark:text-gray-400">Metodo: <span className="font-medium text-gray-900 dark:text-white uppercase">{selectedOrder.payment_method}</span></p>}
                 <p className="text-sm text-gray-500 dark:text-gray-400">Total: <span className="font-bold text-gray-900 dark:text-white">S/ {parseFloat(selectedOrder.total_amount).toFixed(2)}</span></p>
                 <p className="text-sm text-gray-500 dark:text-gray-400">Tipo: {selectedOrder.invoice_type === 'factura' ? 'Factura' : 'Boleta'}</p>
@@ -448,7 +448,7 @@ export default function AdminOrdersPage() {
 
             {selectedOrder.items && selectedOrder.items.length > 0 && (
               <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4">
-                <p className="text-xs font-medium text-gray-500 mb-3">Productos</p>
+                <p className="text-xs font-medium dark:text-gray-400 mb-3">Productos</p>
                 <div className="space-y-2">
                   {selectedOrder.items.map((item) => (
                     <div key={item.id} className="flex justify-between items-center text-sm py-1.5 border-b border-gray-200 dark:border-gray-700 last:border-0">

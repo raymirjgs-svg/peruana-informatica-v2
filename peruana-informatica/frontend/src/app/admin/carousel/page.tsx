@@ -146,7 +146,7 @@ function SlideModal({
                     onClick={() => setForm({ ...form, [key]: !(form as any)[key] })}
                     className={`relative w-10 h-5 rounded-full transition-colors ${(form as any)[key] ? 'bg-emerald-500' : 'bg-gray-300 dark:bg-gray-600'}`}
                   >
-                    <span className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${(form as any)[key] ? 'translate-x-5' : 'translate-x-0'}`} />
+                    <span className={`absolute top-0.5 left-0.5 w-4 h-4 dark:bg-gray-900 rounded-full shadow transition-transform ${(form as any)[key] ? 'translate-x-5' : 'translate-x-0'}`} />
                   </div>
                   <span className="text-xs text-gray-600 dark:text-gray-400 text-center leading-tight">{label}</span>
                 </label>
@@ -186,7 +186,7 @@ function SlideModal({
               onClick={() => setForm({ ...form, isActive: !form.isActive })}
               className={`relative w-11 h-6 rounded-full transition-colors ${form.isActive ? 'bg-emerald-500' : 'bg-gray-300 dark:bg-gray-600'}`}
             >
-              <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${form.isActive ? 'translate-x-5' : 'translate-x-0'}`} />
+              <span className={`absolute top-0.5 left-0.5 w-5 h-5 dark:bg-gray-900 rounded-full shadow transition-transform ${form.isActive ? 'translate-x-5' : 'translate-x-0'}`} />
             </div>
             <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{form.isActive ? 'Activo — se muestra en el carrusel' : 'Inactivo — oculto'}</span>
           </label>
@@ -368,15 +368,15 @@ export default function AdminCarouselPage() {
         {/* Stats */}
         <div className="grid grid-cols-3 gap-4">
           <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
-            <p className="text-xs text-gray-500 font-medium">Total slides</p>
+            <p className="text-xs dark:text-gray-400 font-medium">Total slides</p>
             <p className="text-3xl font-bold text-gray-900 dark:text-white mt-1">{slides.length}</p>
           </div>
           <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
-            <p className="text-xs text-gray-500 font-medium">Activos</p>
+            <p className="text-xs dark:text-gray-400 font-medium">Activos</p>
             <p className="text-3xl font-bold text-emerald-600 mt-1">{activeCount}</p>
           </div>
           <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
-            <p className="text-xs text-gray-500 font-medium">Inactivos</p>
+            <p className="text-xs dark:text-gray-400 font-medium">Inactivos</p>
             <p className="text-3xl font-bold text-gray-400 mt-1">{slides.length - activeCount}</p>
           </div>
         </div>

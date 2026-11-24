@@ -112,7 +112,7 @@ export default function DiscountsPage() {
           {loading ? (
             <div className="text-center py-12">Cargando...</div>
           ) : filteredDiscounts.length === 0 ? (
-            <div className="text-center py-12 text-gray-500">No hay descuentos registrados</div>
+            <div className="text-center py-12 dark:text-gray-400">No hay descuentos registrados</div>
           ) : (
             <div className="grid gap-4 md:grid-cols-2">
               {filteredDiscounts.map(discount => (
@@ -156,7 +156,7 @@ export default function DiscountsPage() {
                       <Calendar className="h-3 w-3" />
                       {new Date(discount.valid_from).toLocaleDateString()} - {new Date(discount.valid_until).toLocaleDateString()}
                     </span>
-                    <span className={`font-semibold flex items-center gap-1 ${discount.is_active ? 'text-green-600' : 'text-gray-500'}`}>
+                    <span className={`font-semibold flex items-center gap-1 ${discount.is_active ? 'text-green-600' : 'dark:text-gray-400'}`}>
                       {discount.is_active ? <CheckCircle className="h-3 w-3" /> : <XCircle className="h-3 w-3" />}
                       {discount.is_active ? 'Activo' : 'Inactivo'}
                     </span>

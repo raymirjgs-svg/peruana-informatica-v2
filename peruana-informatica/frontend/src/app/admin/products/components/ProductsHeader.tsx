@@ -17,7 +17,7 @@ export function ProductsHeader({ controller, onNew }: { controller: Data; onNew:
         <div className="mb-6 flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Productos</h1>
-            <p className="text-gray-500 mt-1">Gestiona tu inventario completo {data && `(${data.total} productos)`}</p>
+            <p className="dark:text-gray-400 mt-1">Gestiona tu inventario completo {data && `(${data.total} productos)`}</p>
           </div>
           <div className="flex gap-2">
             <Button variant="secondary" onClick={exportToCSV} disabled={!data || data.products.length === 0}>

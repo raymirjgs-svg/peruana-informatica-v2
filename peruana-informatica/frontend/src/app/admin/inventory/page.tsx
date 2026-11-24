@@ -180,11 +180,11 @@ export default function InventoryPage() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-gray-100 dark:border-gray-800">
-                  <th className="px-5 py-3 text-left text-xs font-medium text-gray-500">Código</th>
-                  <th className="px-5 py-3 text-left text-xs font-medium text-gray-500">Producto</th>
-                  <th className="px-5 py-3 text-center text-xs font-medium text-gray-500">Stock</th>
-                  <th className="px-5 py-3 text-right text-xs font-medium text-gray-500">Precio</th>
-                  <th className="px-5 py-3 text-right text-xs font-medium text-gray-500">Valor Total</th>
+                  <th className="px-5 py-3 text-left text-xs font-medium dark:text-gray-400">Código</th>
+                  <th className="px-5 py-3 text-left text-xs font-medium dark:text-gray-400">Producto</th>
+                  <th className="px-5 py-3 text-center text-xs font-medium dark:text-gray-400">Stock</th>
+                  <th className="px-5 py-3 text-right text-xs font-medium dark:text-gray-400">Precio</th>
+                  <th className="px-5 py-3 text-right text-xs font-medium dark:text-gray-400">Valor Total</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-gray-800">

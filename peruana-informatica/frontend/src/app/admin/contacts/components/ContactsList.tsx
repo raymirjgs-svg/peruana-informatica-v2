@@ -27,15 +27,15 @@ export function ContactsList({
     return (
       <div className="text-center py-12">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-        <p className="text-gray-500 mt-4">Cargando contactos...</p>
+        <p className="dark:text-gray-400 mt-4">Cargando contactos...</p>
       </div>
     );
   }
 
   if (contacts.length === 0) {
     return (
-      <div className="text-center py-12 bg-white border border-gray-200 rounded-xl">
-        <p className="text-gray-500">No se encontraron contactos</p>
+      <div className="text-center py-12 dark:bg-gray-900 border dark:border-gray-700 rounded-xl">
+        <p className="dark:text-gray-400">No se encontraron contactos</p>
       </div>
     );
   }
@@ -46,24 +46,24 @@ export function ContactsList({
         {contacts.map((contact) => (
           <div
             key={contact.id}
-            className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-md transition-shadow"
+            className="dark:bg-gray-900 border dark:border-gray-700 rounded-xl p-6 hover:shadow-md transition-shadow"
           >
             <div className="flex items-start justify-between mb-3">
               <div>
-                <h3 className="font-semibold text-gray-800 text-lg">
+                <h3 className="font-semibold dark:text-gray-100 text-lg">
                   {ContactService.getSubjectOptions().find(
                     (opt) => opt.value === contact.asunto,
                   )?.label || contact.asunto}
                 </h3>
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="text-sm dark:text-gray-400 mt-1">
                   De:{" "}
-                  <span className="font-medium text-gray-700">
+                  <span className="font-medium dark:text-gray-300">
                     {contact.nombre}
                   </span>{" "}
                   ({contact.email})
                 </p>
                 {contact.telefono && (
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm dark:text-gray-400">
                     Tel: {contact.telefono}
                   </p>
                 )}
@@ -74,11 +74,11 @@ export function ContactsList({
                 {ContactService.getStatusText(contact.status)}
               </span>
             </div>
-            <p className="text-gray-700 mb-4 line-clamp-3">
+            <p className="dark:text-gray-300 mb-4 line-clamp-3">
               {contact.mensaje}
             </p>
             <div className="flex items-center justify-between">
-              <span className="text-xs text-gray-500">
+              <span className="text-xs dark:text-gray-400">
                 {ContactService.formatDate(contact.createdAt)}
               </span>
               <div className="flex gap-2">
@@ -121,8 +121,8 @@ export function ContactsList({
       </div>
 
       {pagination.totalPages > 1 && (
-        <div className="mt-6 flex items-center justify-between bg-white border border-gray-200 rounded-xl p-4">
-          <div className="text-sm text-gray-500">
+        <div className="mt-6 flex items-center justify-between dark:bg-gray-900 border dark:border-gray-700 rounded-xl p-4">
+          <div className="text-sm dark:text-gray-400">
             Página {pagination.currentPage} de {pagination.totalPages} (
             {pagination.totalItems} total)
           </div>

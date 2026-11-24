@@ -55,10 +55,10 @@ export function BlogAiPanel({
             </div>
 
             {/* Panel de configuración de API Key */}
-            <div className="bg-white border border-gray-200 rounded-xl p-4">
+            <div className="dark:bg-gray-900 border dark:border-gray-700 rounded-xl p-4">
               <div className="flex items-center justify-between">
                 <div className="flex-1">
-                  <h3 className="text-sm font-semibold text-gray-700 mb-2">
+                  <h3 className="text-sm font-semibold dark:text-gray-300 mb-2">
                     🔑 API Key de Google Gemini
                   </h3>
                   <div className="flex items-center gap-2">
@@ -67,7 +67,7 @@ export function BlogAiPanel({
                       value={apiKey}
                       onChange={(e) => onApiKeyChange(e.target.value)}
                       placeholder="AIza... (Ingresa tu API Key aquí para cambiarla)"
-                      className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                      className="flex-1 px-3 py-2 text-sm border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                     />
                     <Button
                       size="sm"
@@ -86,7 +86,7 @@ export function BlogAiPanel({
                       🔗 Obtener nueva
                     </a>
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs dark:text-gray-400 mt-1">
                     💡 <strong>Tip:</strong> Si hay errores, genera una nueva
                     API Key en{" "}
                     <a

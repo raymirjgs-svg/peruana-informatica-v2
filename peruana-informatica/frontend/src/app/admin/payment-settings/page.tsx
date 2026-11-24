@@ -165,7 +165,7 @@ export default function PaymentSettingsPage() {
                   <button
                     type="button"
                     onClick={() => setShowToken(v => !v)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:hover:text-gray-400"
                   >
                     {showToken ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
@@ -190,7 +190,7 @@ export default function PaymentSettingsPage() {
                   href="https://www.mercadopago.com.pe/developers/panel/app"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-xs text-gray-400 hover:text-gray-600 underline ml-auto"
+                  className="text-xs text-gray-400 dark:hover:text-gray-400 underline ml-auto"
                 >
                   Ir al panel de Mercado Pago →
                 </a>

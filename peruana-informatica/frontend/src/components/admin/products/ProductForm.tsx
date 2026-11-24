@@ -92,7 +92,7 @@ function AlbabaVideoExtractor({ onExtracted, getApiBase }: { onExtracted: (url: 
           {loading ? '...' : 'Extraer'}
         </button>
         <button type="button" onClick={() => { setShow(false); setAliUrl(''); setResult(null); setError(''); }}
-          className="px-2 py-1.5 text-gray-500 hover:text-gray-700">
+          className="px-2 py-1.5 dark:text-gray-400 dark:hover:text-gray-300">
           <X className="h-4 w-4" />
         </button>
       </div>
@@ -367,11 +367,11 @@ export function ProductForm({ initialData, initialGalleryImages, initialSpecific
       <div className="max-w-2xl mx-auto">
         <div className="flex items-center gap-4 mb-8">
           <Link href="/admin/products" className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors">
-            <ArrowLeft className="h-5 w-5 text-gray-500" />
+            <ArrowLeft className="h-5 w-5 dark:text-gray-400" />
           </Link>
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Nuevo Producto</h1>
-            <p className="text-sm text-gray-500">Busca en el ERP o crea manualmente</p>
+            <p className="text-sm dark:text-gray-400">Busca en el ERP o crea manualmente</p>
           </div>
         </div>
 
@@ -403,7 +403,7 @@ export function ProductForm({ initialData, initialGalleryImages, initialSpecific
                   Buscar
                 </button>
               </div>
-              <p className="text-xs text-gray-500 mt-2">
+              <p className="text-xs dark:text-gray-400 mt-2">
                 El sistema buscará el producto en el sistema de ventas para cargar sus datos automáticamente.
               </p>
             </div>
@@ -413,7 +413,7 @@ export function ProductForm({ initialData, initialGalleryImages, initialSpecific
                 <div className="w-full border-t border-gray-200 dark:border-gray-700" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-white dark:bg-gray-900 text-gray-500">o</span>
+                <span className="px-4 bg-white dark:bg-gray-900 dark:text-gray-400">o</span>
               </div>
             </div>
 
@@ -436,13 +436,13 @@ export function ProductForm({ initialData, initialGalleryImages, initialSpecific
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Link href="/admin/products" className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors">
-            <ArrowLeft className="h-5 w-5 text-gray-500" />
+            <ArrowLeft className="h-5 w-5 dark:text-gray-400" />
           </Link>
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
               {isEdit ? 'Editar Producto' : 'Nuevo Producto'}
             </h1>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm dark:text-gray-400">
               {isEdit ? 'Modifica los datos del producto' : 'Completa la información del producto'}
             </p>
           </div>
@@ -787,7 +787,7 @@ export function ProductForm({ initialData, initialGalleryImages, initialSpecific
                   <button
                     type="button"
                     onClick={() => { setShowBulkImport(false); setBulkText(''); }}
-                    className="px-4 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 transition-colors"
+                    className="px-4 py-1.5 text-sm text-gray-600 dark:text-gray-400 dark:hover:text-white transition-colors"
                   >
                     Cancelar
                   </button>
@@ -862,7 +862,7 @@ export function ProductForm({ initialData, initialGalleryImages, initialSpecific
                     Subcategorías
                   </label>
                   {loadingSubcategories ? (
-                    <div className="text-sm text-gray-500">Cargando...</div>
+                    <div className="text-sm dark:text-gray-400">Cargando...</div>
                   ) : subcategories.length > 0 ? (
                     <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-3 max-h-48 overflow-y-auto space-y-2">
                       {subcategories.map(sub => (
@@ -871,14 +871,14 @@ export function ProductForm({ initialData, initialGalleryImages, initialSpecific
                             type="checkbox"
                             checked={selectedSubcategories.includes(sub.id)}
                             onChange={() => toggleSubcategory(sub.id)}
-                            className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                            className="rounded dark:border-gray-700 text-blue-600 focus:ring-blue-500"
                           />
                           {sub.name}
                         </label>
                       ))}
                     </div>
                   ) : (
-                    <div className="text-sm text-gray-500 italic">Sin subcategorías</div>
+                    <div className="text-sm dark:text-gray-400 italic">Sin subcategorías</div>
                   )}
                 </div>
               )}
@@ -910,7 +910,7 @@ export function ProductForm({ initialData, initialGalleryImages, initialSpecific
                   <input
                     type="checkbox"
                     {...register('is_featured')}
-                    className="w-5 h-5 rounded border-gray-300 text-yellow-500 focus:ring-yellow-500"
+                    className="w-5 h-5 rounded dark:border-gray-700 text-yellow-500 focus:ring-yellow-500"
                   />
                   <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                     ⭐ Producto Destacado
@@ -921,7 +921,7 @@ export function ProductForm({ initialData, initialGalleryImages, initialSpecific
                   <input
                     type="checkbox"
                     {...register('is_new')}
-                    className="w-5 h-5 rounded border-gray-300 text-green-500 focus:ring-green-500"
+                    className="w-5 h-5 rounded dark:border-gray-700 text-green-500 focus:ring-green-500"
                   />
                   <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                     🆕 Producto Nuevo
@@ -932,7 +932,7 @@ export function ProductForm({ initialData, initialGalleryImages, initialSpecific
                   <input
                     type="checkbox"
                     {...register('is_clearance')}
-                    className="w-5 h-5 rounded border-gray-300 text-red-500 focus:ring-red-500"
+                    className="w-5 h-5 rounded dark:border-gray-700 text-red-500 focus:ring-red-500"
                   />
                   <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                     🔥 En Remate

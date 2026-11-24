@@ -73,14 +73,14 @@ export default function PagesPage() {
             value={publishedCount.toString()}
             description="Visibles en el sitio"
             icon={Globe}
-            color="green"
+            color="emerald"
           />
           <StatsCard
             title="Borradores"
             value={(pages.length - publishedCount).toString()}
             description="En edición"
             icon={FileText}
-            color="yellow"
+            color="amber"
           />
           <StatsCard
             title="Total Páginas"
@@ -91,7 +91,7 @@ export default function PagesPage() {
           />
         </div>
 
-        <MotionWrapper className="bg-white/70 dark:bg-gray-900/40 backdrop-blur-xl rounded-2xl border border-gray-100 dark:border-gray-800 p-6 shadow-sm">
+        <MotionWrapper className="bg-white dark:bg-gray-900 backdrop-blur-xl rounded-2xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
             <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
               <FileText className="h-5 w-5 text-blue-500" />

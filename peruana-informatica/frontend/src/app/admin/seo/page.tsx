@@ -256,7 +256,7 @@ export default function SEOPage() {
     <AdminLayout>
       <div className="space-y-5">
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-800">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
             Configuración SEO
           </h1>
           <p className="text-gray-500 mt-1">

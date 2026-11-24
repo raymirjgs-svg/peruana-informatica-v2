@@ -244,15 +244,15 @@ export default function QuickCategoriesPage() {
         {/* Stats */}
         <div className="grid grid-cols-3 gap-4 mb-8">
           <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700 shadow-sm">
-            <p className="text-xs text-gray-500 uppercase tracking-wide font-medium">Total</p>
+            <p className="text-xs text-gray-500 font-medium">Total</p>
             <p className="text-3xl font-bold text-gray-900 dark:text-white mt-1">{items.length}</p>
           </div>
           <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700 shadow-sm">
-            <p className="text-xs text-gray-500 uppercase tracking-wide font-medium">Activos</p>
+            <p className="text-xs text-gray-500 font-medium">Activos</p>
             <p className="text-3xl font-bold text-green-600 mt-1">{activeItems.length}</p>
           </div>
           <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700 shadow-sm">
-            <p className="text-xs text-gray-500 uppercase tracking-wide font-medium">Inactivos</p>
+            <p className="text-xs text-gray-500 font-medium">Inactivos</p>
             <p className="text-3xl font-bold text-gray-400 mt-1">{items.length - activeItems.length}</p>
           </div>
         </div>
@@ -260,7 +260,7 @@ export default function QuickCategoriesPage() {
         {/* Vista previa */}
         {activeItems.length > 0 && (
           <div className="mb-6">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Vista previa</p>
+            <p className="text-xs font-medium text-gray-500 mb-2">Vista previa</p>
             <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-xl p-4 flex gap-3 flex-wrap">
               {activeItems.map((cat) => (
                 <div

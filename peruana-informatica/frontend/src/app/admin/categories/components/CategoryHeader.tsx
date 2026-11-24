@@ -18,7 +18,7 @@ export function CategoryHeader({
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">Gestión de Categorías y Subcategorías</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Gestión de Categorías y Subcategorías</h1>
           <p className="text-sm text-gray-500 mt-1">
             {categoriesCount} categoría{categoriesCount !== 1 ? 's' : ''}
           </p>

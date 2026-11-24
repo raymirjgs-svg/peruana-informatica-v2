@@ -47,9 +47,9 @@ const getColorClasses = (color: string) => {
       icon: 'text-green-600 dark:text-green-400'
     },
     purple: {
-      selected: 'border-purple-500 bg-purple-50 dark:bg-purple-900/30 dark:border-purple-400',
-      hover: 'hover:bg-purple-50 dark:hover:bg-purple-900/20',
-      icon: 'text-purple-600 dark:text-purple-400'
+      selected: 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/30 dark:border-indigo-400',
+      hover: 'hover:bg-indigo-50 dark:hover:bg-indigo-900/20',
+      icon: 'text-indigo-600 dark:text-indigo-400'
     },
     amber: {
       selected: 'border-amber-500 bg-amber-50 dark:bg-amber-900/30 dark:border-amber-400',

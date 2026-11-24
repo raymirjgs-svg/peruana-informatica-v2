@@ -56,14 +56,14 @@ export default function WishlistsPage() {
                         value={analytics?.stats.totalWishlists.toString() || '0'}
                         description="Productos guardados"
                         icon={Heart}
-                        color="purple"
+                        color="indigo"
                     />
                     <StatsCard
                         title="Productos Únicos"
                         value={analytics?.stats.uniqueProducts.toString() || '0'}
                         description="En listas de deseos"
                         icon={Package}
-                        color="purple"
+                        color="indigo"
                     />
                     <StatsCard
                         title="Últimos 7 Días"
@@ -75,10 +75,10 @@ export default function WishlistsPage() {
                 </div>
 
                 {/* Top Products */}
-                <MotionWrapper className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6">
+                <MotionWrapper className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                     <div className="flex items-center justify-between mb-6">
                         <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                            <TrendingUp className="h-5 w-5 text-pink-500" />
+                            <TrendingUp className="h-5 w-5 text-indigo-500" />
                             Top 10 Productos Más Deseados
                         </h2>
                     </div>
@@ -132,9 +132,9 @@ export default function WishlistsPage() {
 
                                     {/* Wishlist Count */}
                                     <div className="flex-shrink-0 text-right">
-                                        <div className="flex items-center gap-2 px-4 py-2 bg-pink-50 dark:bg-pink-900/20 rounded-lg">
-                                            <Heart className="h-5 w-5 text-pink-500 fill-pink-500" />
-                                            <span className="font-bold text-lg text-pink-600 dark:text-pink-400">
+                                        <div className="flex items-center gap-2 px-4 py-2 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg">
+                                            <Heart className="h-5 w-5 text-indigo-500 fill-indigo-500" />
+                                            <span className="font-bold text-lg text-indigo-600 dark:text-indigo-400">
                                                 {item.wishlist_count}
                                             </span>
                                         </div>
@@ -148,29 +148,29 @@ export default function WishlistsPage() {
 
                 {/* Insights */}
                 <div className="grid md:grid-cols-2 gap-6">
-                    <MotionWrapper className="bg-gradient-to-br from-pink-500 to-rose-600 text-white rounded-2xl p-6 shadow-lg">
+                    <MotionWrapper className="bg-gradient-to-br from-blue-600 to-indigo-600 text-white rounded-2xl p-6 shadow-lg">
                         <div className="flex items-start justify-between">
                             <div>
                                 <h3 className="text-lg font-semibold mb-2">💡 Insight</h3>
-                                <p className="text-pink-100 text-sm leading-relaxed">
+                                <p className="text-indigo-100 text-sm leading-relaxed">
                                     Los productos en favoritos tienen <strong>3x más probabilidad</strong> de convertirse en ventas.
                                     Considera crear campañas dirigidas para estos artículos.
                                 </p>
                             </div>
-                            <Heart className="h-12 w-12 text-pink-200" />
+                            <Heart className="h-12 w-12 text-indigo-200" />
                         </div>
                     </MotionWrapper>
 
-                    <MotionWrapper className="bg-gradient-to-br from-purple-500 to-indigo-600 text-white rounded-2xl p-6 shadow-lg">
+                    <MotionWrapper className="bg-gradient-to-br from-blue-600 to-indigo-600 text-white rounded-2xl p-6 shadow-lg">
                         <div className="flex items-start justify-between">
                             <div>
                                 <h3 className="text-lg font-semibold mb-2">📊 Recomendación</h3>
-                                <p className="text-purple-100 text-sm leading-relaxed">
+                                <p className="text-indigo-100 text-sm leading-relaxed">
                                     Envía notificaciones cuando haya descuentos en productos guardados.
                                     Esto puede aumentar la tasa de conversión hasta un <strong>40%</strong>.
                                 </p>
                             </div>
-                            <TrendingUp className="h-12 w-12 text-purple-200" />
+                            <TrendingUp className="h-12 w-12 text-indigo-200" />
                         </div>
                     </MotionWrapper>
                 </div>

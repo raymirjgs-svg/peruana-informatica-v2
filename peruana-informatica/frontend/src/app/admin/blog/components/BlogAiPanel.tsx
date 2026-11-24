@@ -24,7 +24,7 @@ export function BlogAiPanel({
   return (
           <div className="space-y-4 mb-6">
             {/* Panel principal de IA */}
-            <div className="bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl p-6 text-white">
+            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl p-6 text-white">
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-xl font-bold mb-2">
@@ -67,13 +67,13 @@ export function BlogAiPanel({
                       value={apiKey}
                       onChange={(e) => onApiKeyChange(e.target.value)}
                       placeholder="AIza... (Ingresa tu API Key aquí para cambiarla)"
-                      className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                     />
                     <Button
                       size="sm"
                       onClick={onSaveApiKey}
                       disabled={savingApiKey || !apiKey.trim()}
-                      className="bg-purple-600 hover:bg-purple-700 text-white"
+                      className="bg-indigo-600 hover:bg-indigo-700 text-white"
                     >
                       {savingApiKey ? "Guardando..." : "💾 Actualizar"}
                     </Button>
@@ -81,7 +81,7 @@ export function BlogAiPanel({
                       href="https://aistudio.google.com/app/apikey"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm text-purple-600 hover:text-purple-700 font-medium whitespace-nowrap"
+                      className="text-sm text-indigo-600 hover:text-indigo-700 font-medium whitespace-nowrap"
                     >
                       🔗 Obtener nueva
                     </a>
@@ -93,7 +93,7 @@ export function BlogAiPanel({
                       href="https://aistudio.google.com/app/apikey"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-purple-600 hover:underline"
+                      className="text-indigo-600 hover:underline"
                     >
                       Google AI Studio
                     </a>{" "}

@@ -17,7 +17,7 @@ export function BlogStatsGrid({ stats }: { stats: BlogStats }) {
             </div>
             <div className="bg-white border border-gray-200 rounded-xl p-6">
               <div className="text-sm text-gray-500">Generados por IA</div>
-              <div className="text-2xl font-bold text-purple-600 mt-1">
+              <div className="text-2xl font-bold text-indigo-600 mt-1">
                 {stats.totals.ai_generated}
               </div>
             </div>

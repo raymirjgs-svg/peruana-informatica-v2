@@ -9,7 +9,6 @@ const SalesChart = dynamic(() => import('@/components/admin/SalesChart').then(mo
 import { analyticsService, KPIs, SalesDataPoint, TopProduct } from '@/services/AnalyticsService';
 import {
   DollarSign,
-  ShoppingCart,
   TrendingUp,
   Users,
   Package,
@@ -17,7 +16,6 @@ import {
   Award,
   RefreshCw,
   CheckCircle2,
-  AlertCircle,
   Zap
 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -100,7 +98,7 @@ function ERPSyncWidget() {
     : 0;
 
   return (
-    <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-5">
+    <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-5">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2.5">
           <div className={`h-9 w-9 rounded-xl flex items-center justify-center shadow-md ${isActive ? 'bg-gradient-to-br from-blue-500 to-indigo-600 shadow-blue-500/20' : 'bg-gradient-to-br from-emerald-500 to-teal-600 shadow-emerald-500/20'}`}>
@@ -119,13 +117,13 @@ function ERPSyncWidget() {
 
       <div className="grid grid-cols-2 gap-3 mb-4">
         <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-3">
-          <p className="text-[10px] uppercase tracking-wider text-gray-400 mb-1">Último sync</p>
+          <p className="text-[10px] font-medium text-gray-400 mb-1">Último sync</p>
           <p className="text-xs font-semibold text-gray-700 dark:text-gray-300">
             {status ? formatRelative(status.lastSyncTime) : '—'}
           </p>
         </div>
         <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-3">
-          <p className="text-[10px] uppercase tracking-wider text-gray-400 mb-1">Próximo sync</p>
+          <p className="text-[10px] font-medium text-gray-400 mb-1">Próximo sync</p>
           <p className={`text-xs font-bold tabular-nums ${status?.nextSyncTime && Date.now() > status.nextSyncTime - 120000 ? 'text-amber-500' : 'text-gray-700 dark:text-gray-300'}`}>
             {status ? formatCountdown(status.nextSyncTime) : '—'}
           </p>
@@ -250,33 +248,32 @@ export default function AdminDashboardPage() {
         {/* KPI Cards */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <StatsCard
-            title="Ingresos Totales"
+            title="Ingresos Cobrados"
             value={`S/ ${kpis?.totalRevenue || '0'}`}
-            description={`${kpis?.totalOrders || 0} pedidos`}
+            description={`${kpis?.totalOrders || 0} pedidos con pago verificado`}
             icon={DollarSign}
-            color="green"
-            trend={{ value: '+12%', isPositive: true }}
+            color="emerald"
           />
           <StatsCard
-            title="Ventas del Mes"
-            value={`S/ ${kpis?.monthRevenue || '0'}`}
-            description="Ingresos recientes"
-            icon={TrendingUp}
+            title="Pedidos Recibidos"
+            value={(kpis?.receivedOrders || 0).toString()}
+            description={`${kpis?.monthReceivedOrders || 0} recibidos este mes`}
+            icon={Package}
             color="blue"
           />
           <StatsCard
             title="Ticket Promedio"
             value={`S/ ${kpis?.avgOrderValue || '0'}`}
-            description="Valor por venta"
-            icon={ShoppingCart}
-            color="purple"
+            description="Promedio sobre pedidos cobrados"
+            icon={TrendingUp}
+            color="indigo"
           />
           <StatsCard
             title="Clientes Nuevos"
-            value={kpis?.totalCustomers.toString() || '0'}
-            description="Registrados este mes"
+            value={(kpis?.newCustomersMonth || 0).toString()}
+            description={`${kpis?.totalCustomers || 0} clientes registrados en total`}
             icon={Users}
-            color="indigo"
+            color="blue"
           />
         </div>
 
@@ -302,7 +299,7 @@ export default function AdminDashboardPage() {
         {/* Main Content Grid */}
         <div className="grid gap-6 lg:grid-cols-3">
           {/* Sales Chart */}
-          <div className="lg:col-span-2 bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6">
+          <div className="lg:col-span-2 bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
             <div className="flex items-center gap-3 mb-6">
               <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-md shadow-blue-500/20">
                 <TrendingUp className="h-4 w-4 text-white" />
@@ -322,7 +319,7 @@ export default function AdminDashboardPage() {
           </div>
 
           {/* Top Products */}
-          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6 flex flex-col">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 flex flex-col">
             <div className="flex items-center gap-3 mb-5">
               <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-md shadow-amber-500/20">
                 <Award className="h-4 w-4 text-white" />
@@ -366,7 +363,7 @@ export default function AdminDashboardPage() {
 
                     <div className="text-right shrink-0">
                       <p className="text-sm font-bold text-gray-900 dark:text-white">{item.total_sold}</p>
-                      <p className="text-[10px] text-gray-400 uppercase tracking-wide">ventas</p>
+                      <p className="text-[10px] text-gray-400">ventas</p>
                     </div>
                   </div>
                 ))

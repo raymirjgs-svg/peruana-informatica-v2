@@ -272,7 +272,7 @@ export default function TaxonomyManagePage() {
             <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600" />
           </div>
         ) : filteredCategories.length === 0 ? (
-          <div className="text-center py-16 bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800">
+          <div className="text-center py-16 bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
             <p className="text-gray-400 text-sm">No se encontraron categorías</p>
           </div>
         ) : (
@@ -282,7 +282,7 @@ export default function TaxonomyManagePage() {
               const subcategories = category.subcategories || [];
 
               return (
-                <div key={category.id} className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden">
+                <div key={category.id} className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
                   {/* Categoría Header */}
                   <div className="px-5 py-4 flex items-center justify-between gap-3">
                     <button
@@ -337,7 +337,7 @@ export default function TaxonomyManagePage() {
                       ) : (
                         <div className="grid gap-2">
                           {subcategories.map(subcategory => (
-                            <div key={subcategory.id} className="flex items-center justify-between px-4 py-3 bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 hover:border-blue-100 dark:hover:border-blue-900 transition-colors">
+                            <div key={subcategory.id} className="flex items-center justify-between px-4 py-3 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:border-blue-100 dark:hover:border-blue-900 transition-colors">
                               <div className="flex-1 min-w-0">
                                 <p className="text-sm font-semibold text-gray-900 dark:text-white">{subcategory.name}</p>
                                 <p className="text-xs text-gray-400 mt-0.5 font-mono flex items-center gap-2">

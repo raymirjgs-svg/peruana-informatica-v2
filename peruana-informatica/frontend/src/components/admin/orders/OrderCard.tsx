@@ -62,7 +62,7 @@ export function OrderCard({
                           </>
                         )}
                         {order.invoice_number && (
-                          <p><span className="font-medium text-gray-600 dark:text-gray-400">N° Comprobante:</span> <span className="text-purple-600 dark:text-purple-400 font-semibold">{order.invoice_number}</span></p>
+                          <p><span className="font-medium text-gray-600 dark:text-gray-400">N° Comprobante:</span> <span className="text-indigo-600 dark:text-indigo-400 font-semibold">{order.invoice_number}</span></p>
                         )}
                       </div>
                     </div>
@@ -136,20 +136,20 @@ export function OrderCard({
 
                     {/* Paso 3: Generar factura/boleta */}
                     {order.payment_status === 'verified' && !order.invoice_file && (
-                      <div className="mb-3 p-3 bg-purple-50 rounded-lg border border-purple-200">
-                        <p className="text-sm font-medium text-purple-900 mb-2">
+                      <div className="mb-3 p-3 bg-indigo-50 rounded-lg border border-indigo-200">
+                        <p className="text-sm font-medium text-indigo-900 mb-2">
                           📄 Paso 3: Generar y Cargar Comprobante
                         </p>
                         <button
                           onClick={() => setSelectedOrder(order)}
-                          className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition text-sm font-medium flex items-center gap-2"
+                          className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition text-sm font-medium flex items-center gap-2"
                         >
                           <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clipRule="evenodd" />
                           </svg>
                           Generar {order.invoice_type === 'factura' ? 'Factura' : 'Boleta'}
                         </button>
-                        <p className="text-xs text-purple-700 mt-2">
+                        <p className="text-xs text-indigo-700 mt-2">
                           * Se generará el PDF y se enviará automáticamente al cliente por email
                         </p>
                       </div>

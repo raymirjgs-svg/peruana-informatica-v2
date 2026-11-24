@@ -220,7 +220,7 @@ export default function CompanySettingsPage() {
       <div className="max-w-6xl mx-auto space-y-5">
         {/* Header */}
         <div className="flex items-center gap-3">
-          <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/20 shrink-0">
+          <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-md shadow-blue-500/20 shrink-0">
             <Building2 className="h-5 w-5 text-white" />
           </div>
           <div>
@@ -246,7 +246,7 @@ export default function CompanySettingsPage() {
           ))}
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden min-h-[400px]">
+        <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden min-h-[400px]">
 
           {/* General Tab */}
           {activeTab === 'general' && (
@@ -335,7 +335,7 @@ export default function CompanySettingsPage() {
           {activeTab === 'identity' && (
             <div className="p-6 animate-fadeIn">
               <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-                <ImageIcon className="h-5 w-5 text-purple-600" />
+                <ImageIcon className="h-5 w-5 text-indigo-600" />
                 Identidad Visual
               </h2>
 
@@ -380,7 +380,7 @@ export default function CompanySettingsPage() {
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
                     <label className="block text-sm font-semibold text-gray-700">Icono de Pestaña (Favicon)</label>
-                    <span className="text-xs text-purple-600 bg-purple-50 px-2 py-1 rounded-full">Icono del navegador</span>
+                    <span className="text-xs text-indigo-600 bg-indigo-50 px-2 py-1 rounded-full">Icono del navegador</span>
                   </div>
 
                   <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:bg-gray-50 transition-colors group relative">
@@ -402,7 +402,7 @@ export default function CompanySettingsPage() {
                       </div>
                     ) : (
                       <div className="flex flex-col items-center justify-center py-6">
-                        <div className="bg-purple-100 p-4 rounded-full mb-3 text-purple-600">
+                        <div className="bg-indigo-100 p-4 rounded-full mb-3 text-indigo-600">
                           <ImageIcon className="h-8 w-8" />
                         </div>
                         <p className="text-gray-500 font-medium">Selecciona un icono</p>
@@ -496,7 +496,7 @@ export default function CompanySettingsPage() {
           {activeTab === 'location' && (
             <div className="p-6 animate-fadeIn">
               <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-                <Store className="h-5 w-5 text-purple-600" />
+                <Store className="h-5 w-5 text-indigo-600" />
                 Tienda Física y Horarios
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -508,7 +508,7 @@ export default function CompanySettingsPage() {
                       value={formData.store_address}
                       onChange={handleChange}
                       rows={2}
-                      className="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all resize-none"
+                      className="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all resize-none"
                       placeholder="Av. Principal 123, Lima - Perú"
                     />
                     <MapPin className="absolute left-4 top-4 h-5 w-5 text-gray-400" />
@@ -523,7 +523,7 @@ export default function CompanySettingsPage() {
                       name="store_hours"
                       value={formData.store_hours}
                       onChange={handleChange}
-                      className="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all"
+                      className="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
                       placeholder="Lunes a Viernes: 9:00 AM - 6:00 PM"
                     />
                     <Clock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -537,7 +537,7 @@ export default function CompanySettingsPage() {
           {activeTab === 'social' && (
             <div className="p-6 animate-fadeIn">
               <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-                <Share2 className="h-5 w-5 text-pink-600" />
+                <Share2 className="h-5 w-5 text-indigo-600" />
                 Redes Sociales
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -564,10 +564,10 @@ export default function CompanySettingsPage() {
                       name="instagram_url"
                       value={formData.instagram_url}
                       onChange={handleChange}
-                      className="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-all"
+                      className="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
                       placeholder="https://instagram.com/usuario"
                     />
-                    <Instagram className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-pink-600" />
+                    <Instagram className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-indigo-600" />
                   </div>
                 </div>
 

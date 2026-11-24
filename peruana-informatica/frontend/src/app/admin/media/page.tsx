@@ -170,7 +170,7 @@ export default function MediaLibraryPage() {
             <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600" />
           </div>
         ) : filtered.length === 0 ? (
-          <div className="text-center py-16 bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800">
+          <div className="text-center py-16 bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
             <div className="text-5xl mb-3">📭</div>
             <p className="text-gray-400 text-sm">
               {search ? "No se encontraron imágenes" : "No hay imágenes subidas aún"}
@@ -181,7 +181,7 @@ export default function MediaLibraryPage() {
             {filtered.map((img) => (
               <div
                 key={img.filename}
-                className="group relative bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 overflow-hidden hover:border-blue-200 dark:hover:border-blue-800 transition-all"
+                className="group relative bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden hover:border-blue-200 dark:hover:border-blue-800 transition-all"
               >
                 {/* Image */}
                 <div className="aspect-square bg-gray-50 dark:bg-gray-800 flex items-center justify-center overflow-hidden">

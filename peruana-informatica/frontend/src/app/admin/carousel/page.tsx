@@ -367,22 +367,22 @@ export default function AdminCarouselPage() {
 
         {/* Stats */}
         <div className="grid grid-cols-3 gap-4">
-          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-4">
-            <p className="text-xs text-gray-400 font-semibold uppercase tracking-wide">Total slides</p>
+          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
+            <p className="text-xs text-gray-500 font-medium">Total slides</p>
             <p className="text-3xl font-bold text-gray-900 dark:text-white mt-1">{slides.length}</p>
           </div>
-          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-4">
-            <p className="text-xs text-gray-400 font-semibold uppercase tracking-wide">Activos</p>
+          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
+            <p className="text-xs text-gray-500 font-medium">Activos</p>
             <p className="text-3xl font-bold text-emerald-600 mt-1">{activeCount}</p>
           </div>
-          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-4">
-            <p className="text-xs text-gray-400 font-semibold uppercase tracking-wide">Inactivos</p>
+          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
+            <p className="text-xs text-gray-500 font-medium">Inactivos</p>
             <p className="text-3xl font-bold text-gray-400 mt-1">{slides.length - activeCount}</p>
           </div>
         </div>
 
         {/* Lista */}
-        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden">
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
           <div className="px-5 py-3.5 border-b border-gray-100 dark:border-gray-800">
             <p className="text-sm font-semibold text-gray-900 dark:text-white">Slides configurados</p>
           </div>

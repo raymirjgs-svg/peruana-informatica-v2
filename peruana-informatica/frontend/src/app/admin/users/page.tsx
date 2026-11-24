@@ -152,7 +152,7 @@ export default function UsersPage() {
     {
       label: 'Administradores',
       value: users.filter((u) => u.role === 'admin' || u.role === 'super-admin').length,
-      color: 'text-purple-600',
+      color: 'text-indigo-600',
     },
     { label: 'Activos', value: users.filter((u) => !u.is_blocked).length, color: 'text-emerald-600' },
     { label: 'Bloqueados', value: users.filter((u) => u.is_blocked).length, color: 'text-red-600' },
@@ -163,7 +163,7 @@ export default function UsersPage() {
       <div className="space-y-5">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-purple-500/20 shrink-0">
+            <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/20 shrink-0">
               <Users className="h-5 w-5 text-white" />
             </div>
             <div>
@@ -182,9 +182,9 @@ export default function UsersPage() {
           {stats.map((s) => (
             <div
               key={s.label}
-              className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-4"
+              className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-4"
             >
-              <p className="text-xs text-gray-400 font-semibold uppercase tracking-wide">{s.label}</p>
+              <p className="text-xs text-gray-500 font-medium">{s.label}</p>
               <p className={`text-3xl font-bold mt-1 ${s.color}`}>{s.value}</p>
             </div>
           ))}
@@ -198,27 +198,27 @@ export default function UsersPage() {
           className="w-full max-w-sm border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
 
-        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden">
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="border-b border-gray-100 dark:border-gray-800">
-                  <th className="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                  <th className="px-5 py-3 text-left text-xs font-medium text-gray-500">
                     Usuario
                   </th>
-                  <th className="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                  <th className="px-5 py-3 text-left text-xs font-medium text-gray-500">
                     Email
                   </th>
-                  <th className="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                  <th className="px-5 py-3 text-left text-xs font-medium text-gray-500">
                     Rol
                   </th>
-                  <th className="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                  <th className="px-5 py-3 text-left text-xs font-medium text-gray-500">
                     Último acceso
                   </th>
-                  <th className="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                  <th className="px-5 py-3 text-left text-xs font-medium text-gray-500">
                     Estado
                   </th>
-                  <th className="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                  <th className="px-5 py-3 text-left text-xs font-medium text-gray-500">
                     Acciones
                   </th>
                 </tr>
@@ -246,7 +246,7 @@ export default function UsersPage() {
                     >
                       <td className="px-5 py-3.5">
                         <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
+                          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
                             {(user.first_name || user.email).charAt(0).toUpperCase()}
                           </div>
                           <span className="text-sm font-semibold text-gray-900 dark:text-white">
@@ -256,7 +256,7 @@ export default function UsersPage() {
                       </td>
                       <td className="px-5 py-3.5 text-sm text-gray-500 dark:text-gray-400">{user.email}</td>
                       <td className="px-5 py-3.5">
-                        <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300">
+                        <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300">
                           {user.role}
                         </span>
                       </td>

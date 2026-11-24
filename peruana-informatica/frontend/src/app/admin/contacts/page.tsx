@@ -105,7 +105,7 @@ export default function ContactsPage() {
     <AdminLayout>
       <div className="space-y-5">
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-800">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
             Mensajes de Contacto
           </h1>
           <p className="text-gray-500 mt-1">

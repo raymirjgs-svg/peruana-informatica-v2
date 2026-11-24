@@ -57,7 +57,7 @@ export default function AdminLoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
       <div className="w-full max-w-sm bg-white border border-gray-200 rounded-xl p-8 shadow-md">
         <div className="mb-6 text-center">
-          <h1 className="text-2xl font-bold text-gray-900">Panel de Administración</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Panel de Administración</h1>
           <p className="text-sm text-gray-500 mt-1">Peruana de Informática</p>
         </div>
 

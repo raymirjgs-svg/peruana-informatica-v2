@@ -108,7 +108,7 @@ export default function ReviewsPage() {
                             </div>
                         ) : (
                             reviews.map((review) => (
-                                <MotionWrapper key={review.id} className="bg-white dark:bg-gray-900 p-5 rounded-2xl border border-gray-100 dark:border-gray-800 hover:border-gray-200 dark:hover:border-gray-700 transition-all">
+                                <MotionWrapper key={review.id} className="bg-white dark:bg-gray-900 p-5 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm hover:border-gray-200 dark:hover:border-gray-700 transition-all">
                                     <div className="flex flex-col md:flex-row justify-between gap-6">
                                         {/* Content */}
                                         <div className="flex-1 space-y-3">

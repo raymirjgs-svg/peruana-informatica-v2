@@ -52,7 +52,7 @@ export default function ChangePasswordPage() {
     <AdminLayout>
       <div className="max-w-lg space-y-5">
         <div className="flex items-center gap-3">
-          <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/20 shrink-0">
+          <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-md shadow-blue-500/20 shrink-0">
             <KeyRound className="h-5 w-5 text-white" />
           </div>
           <div>
@@ -65,7 +65,7 @@ export default function ChangePasswordPage() {
 
         <form
           onSubmit={handleSubmit}
-          className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6 space-y-4"
+          className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 space-y-4"
         >
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">

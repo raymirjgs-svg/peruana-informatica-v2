@@ -83,7 +83,7 @@ export default function CustomersPage() {
             <div className="space-y-5">
                 {/* Header */}
                 <div className="flex items-center gap-3">
-                    <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/20 shrink-0">
+                    <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-md shadow-blue-500/20 shrink-0">
                         <Users className="h-5 w-5 text-white" />
                     </div>
                     <div>
@@ -101,8 +101,8 @@ export default function CustomersPage() {
                             { label: 'Bloqueados', value: stats.blocked, color: 'text-red-600' },
                             { label: 'Nuevos este mes', value: stats.newThisMonth, color: 'text-blue-600' },
                         ].map(s => (
-                            <div key={s.label} className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-4">
-                                <p className="text-xs text-gray-400 font-semibold uppercase tracking-wide">{s.label}</p>
+                            <div key={s.label} className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
+                                <p className="text-xs text-gray-500 font-medium">{s.label}</p>
                                 <p className={`text-3xl font-bold mt-1 ${s.color}`}>{s.value}</p>
                             </div>
                         ))}
@@ -110,7 +110,7 @@ export default function CustomersPage() {
                 )}
 
                 {/* Filters */}
-                <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-4">
+                <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                         <div className="relative">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -118,12 +118,12 @@ export default function CustomersPage() {
                                 onChange={(e) => { setSearch(e.target.value); setPage(1); }}
                                 className="w-full pl-10 pr-4 py-2.5 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-gray-100 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors" />
                         </div>
-                        <select value={authFilter} onChange={(e) => { setAuthFilter(e.target.value); setPage(1); }} className={sel}>
-                            <option value="">Todos los métodos</option>
+                        <select value={authFilter} onChange={(e) => { setAuthFilter(e.target.value); setPage(1); }} className={sel} aria-label="Filtrar por método de registro">
+                            <option value="">Todos los registros</option>
                             <option value="google">Google</option>
                             <option value="local">Email / Contraseña</option>
                         </select>
-                        <select value={blockFilter} onChange={(e) => { setBlockFilter(e.target.value); setPage(1); }} className={sel}>
+                        <select value={blockFilter} onChange={(e) => { setBlockFilter(e.target.value); setPage(1); }} className={sel} aria-label="Filtrar por estado">
                             <option value="">Todos los estados</option>
                             <option value="false">Activos</option>
                             <option value="true">Bloqueados</option>
@@ -132,7 +132,7 @@ export default function CustomersPage() {
                 </div>
 
                 {/* Table */}
-                <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden">
+                <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
                     {loading ? (
                         <div className="flex flex-col items-center justify-center py-16 gap-3">
                             <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600" />
@@ -149,13 +149,13 @@ export default function CustomersPage() {
                                 <table className="min-w-full">
                                     <thead>
                                         <tr className="border-b border-gray-100 dark:border-gray-800">
-                                            <th className="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Cliente</th>
-                                            <th className="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Email</th>
-                                            <th className="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Método</th>
-                                            <th className="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Registrado</th>
-                                            <th className="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Último acceso</th>
-                                            <th className="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Estado</th>
-                                            <th className="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Acción</th>
+                                            <th className="px-5 py-3 text-left text-xs font-medium text-gray-500">Cliente</th>
+                                            <th className="px-5 py-3 text-left text-xs font-medium text-gray-500">Email</th>
+                                            <th className="px-5 py-3 text-left text-xs font-medium text-gray-500">Método</th>
+                                            <th className="px-5 py-3 text-left text-xs font-medium text-gray-500">Registrado</th>
+                                            <th className="px-5 py-3 text-left text-xs font-medium text-gray-500">Último acceso</th>
+                                            <th className="px-5 py-3 text-left text-xs font-medium text-gray-500">Estado</th>
+                                            <th className="px-5 py-3 text-left text-xs font-medium text-gray-500">Acción</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-gray-100 dark:divide-gray-800">

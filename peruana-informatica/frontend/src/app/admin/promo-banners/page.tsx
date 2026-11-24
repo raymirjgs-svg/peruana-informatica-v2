@@ -152,7 +152,7 @@ export default function PromoBannersPage() {
             <div className="space-y-6">
                 {/* Header */}
                 <div className="flex items-center gap-3">
-                    <LayoutTemplate className="w-8 h-8 text-purple-600" />
+                    <LayoutTemplate className="w-8 h-8 text-indigo-600" />
                     <div>
                         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Banners Publicitarios</h1>
                         <p className="text-sm text-gray-500 dark:text-gray-400">Gestiona los popups y banners promocionales</p>
@@ -162,7 +162,7 @@ export default function PromoBannersPage() {
                 <div className="grid grid-cols-1 xl:grid-cols-5 gap-6">
                     {/* Form */}
                     <div className="xl:col-span-2">
-                        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6">
+                        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                             <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
                                 {editingId ? 'Editar Banner' : 'Nuevo Banner'}
                             </h2>
@@ -175,7 +175,7 @@ export default function PromoBannersPage() {
                                         required
                                         value={formData.title}
                                         onChange={e => setFormData(f => ({ ...f, title: e.target.value }))}
-                                        className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
+                                        className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
                                         placeholder="Ej: Oferta de verano"
                                     />
                                 </div>
@@ -187,7 +187,7 @@ export default function PromoBannersPage() {
                                         value={formData.description}
                                         onChange={e => setFormData(f => ({ ...f, description: e.target.value }))}
                                         rows={2}
-                                        className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
+                                        className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
                                         placeholder="Detalles de la promoción..."
                                     />
                                 </div>
@@ -215,7 +215,7 @@ export default function PromoBannersPage() {
                                     ) : (
                                         <div
                                             onClick={() => fileInputRef.current?.click()}
-                                            className="mb-2 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center cursor-pointer hover:border-purple-400 transition-colors"
+                                            className="mb-2 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center cursor-pointer hover:border-indigo-400 transition-colors"
                                             style={{ aspectRatio: '16/7' }}
                                         >
                                             <Upload className="w-8 h-8 mx-auto mb-2 text-gray-400" />
@@ -250,7 +250,7 @@ export default function PromoBannersPage() {
                                         type="text"
                                         value={formData.coupon_code}
                                         onChange={e => setFormData(f => ({ ...f, coupon_code: e.target.value }))}
-                                        className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
+                                        className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
                                         placeholder="Ej: VERANO20"
                                     />
                                 </div>
@@ -262,7 +262,7 @@ export default function PromoBannersPage() {
                                             type="checkbox"
                                             checked={formData.show_as_popup}
                                             onChange={e => setFormData(f => ({ ...f, show_as_popup: e.target.checked }))}
-                                            className="w-4 h-4 text-purple-600 rounded"
+                                            className="w-4 h-4 text-indigo-600 rounded"
                                         />
                                         <span className="text-sm text-gray-700 dark:text-gray-300">Mostrar como popup</span>
                                     </label>
@@ -285,7 +285,7 @@ export default function PromoBannersPage() {
                                     <button
                                         type="submit"
                                         disabled={saving || uploading}
-                                        className="flex-1 flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium disabled:opacity-50"
+                                        className="flex-1 flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium disabled:opacity-50"
                                     >
                                         <Save className="w-4 h-4" />
                                         {saving ? 'Guardando...' : editingId ? 'Actualizar' : 'Crear banner'}
@@ -306,7 +306,7 @@ export default function PromoBannersPage() {
 
                     {/* Lista */}
                     <div className="xl:col-span-3">
-                        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800">
+                        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
                             <div className="p-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
                                 <h2 className="font-semibold text-gray-800 dark:text-white">
                                     Banners ({banners.length})
@@ -323,7 +323,7 @@ export default function PromoBannersPage() {
                             ) : (
                                 <div className="divide-y divide-gray-100 dark:divide-gray-800">
                                     {banners.map(banner => (
-                                        <div key={banner.id} className={`flex gap-3 p-4 hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors ${editingId === banner.id ? 'bg-purple-50 dark:bg-purple-900/10' : ''}`}>
+                                        <div key={banner.id} className={`flex gap-3 p-4 hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors ${editingId === banner.id ? 'bg-indigo-50 dark:bg-indigo-900/10' : ''}`}>
                                             {/* Thumbnail */}
                                             <div className="w-24 h-16 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700 flex-shrink-0">
                                                 <img
@@ -338,7 +338,7 @@ export default function PromoBannersPage() {
                                             <div className="flex-1 min-w-0">
                                                 <p className="font-medium text-gray-800 dark:text-white text-sm truncate">{banner.title}</p>
                                                 {banner.coupon_code && (
-                                                    <div className="flex items-center gap-1 text-xs text-purple-600 mt-0.5">
+                                                    <div className="flex items-center gap-1 text-xs text-indigo-600 mt-0.5">
                                                         <Tag className="w-3 h-3" />
                                                         {banner.coupon_code}
                                                     </div>

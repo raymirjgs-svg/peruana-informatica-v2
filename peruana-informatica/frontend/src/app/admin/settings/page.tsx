@@ -185,9 +185,9 @@ export default function SettingsPage() {
         icon: 'text-green-600 dark:text-green-400'
       },
       purple: {
-        selected: 'border-purple-500 bg-purple-50 dark:bg-purple-900/30 dark:border-purple-400',
-        hover: 'hover:bg-purple-50 dark:hover:bg-purple-900/20',
-        icon: 'text-purple-600 dark:text-purple-400'
+        selected: 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/30 dark:border-indigo-400',
+        hover: 'hover:bg-indigo-50 dark:hover:bg-indigo-900/20',
+        icon: 'text-indigo-600 dark:text-indigo-400'
       },
       amber: {
         selected: 'border-amber-500 bg-amber-50 dark:bg-amber-900/30 dark:border-amber-400',
@@ -226,7 +226,7 @@ export default function SettingsPage() {
       <div className="max-w-5xl mx-auto space-y-5">
         {/* Header */}
         <div className="flex items-center gap-3">
-          <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20 shrink-0">
+          <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-md shadow-blue-500/20 shrink-0">
             <Settings className="h-5 w-5 text-white" />
           </div>
           <div>
@@ -267,7 +267,7 @@ export default function SettingsPage() {
           </div>
         )}
 
-        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden min-h-[400px]">
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden min-h-[400px]">
 
           {/* PRICING TAB */}
           {activeTab === 'pricing' && (

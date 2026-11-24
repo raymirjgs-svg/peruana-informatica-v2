@@ -7,6 +7,7 @@ import { Button } from '@/components/admin/Button';
 import Link from 'next/link';
 import { adminFetch, getAdminApiBase } from '@/lib/adminApi';
 import { getProductImageUrl as resolveProductImageUrl } from '@/utils/images';
+import { Eye, Pencil, Trash2, Copy } from 'lucide-react';
 
 type Brand = { id: number; name: string; slug: string } | null;
 type Category = { id: number; name: string; slug: string } | null;
@@ -697,7 +698,7 @@ export default function AdminProductsPage() {
         )}
         <div className="mb-6 flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-800">Productos</h1>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Productos</h1>
             <p className="text-gray-500 mt-1">Gestiona tu inventario completo {data && `(${data.total} productos)`}</p>
           </div>
           <div className="flex gap-2">
@@ -1003,15 +1004,17 @@ export default function AdminProductsPage() {
                       <div className="text-xs text-gray-600 truncate">{p.productCategory?.name || '-'}</div>
                       <div className="text-xs text-gray-600 truncate">{p.productBrand?.name || '-'}</div>
                       <div className="md:col-span-3 flex gap-1 justify-end flex-wrap">
-                        <Button size="sm" variant="secondary" onClick={() => setPreviewProduct(p)} title="Vista previa">👁</Button>
-                        <Button size="sm" variant="secondary" onClick={() => duplicateProduct(p)} title="Duplicar">📋</Button>
-                        <Button size="sm" variant={p.is_active ? "secondary" : "success"} onClick={() => toggleActive(p.id)} title={p.is_active ? 'Desactivar' : 'Activar'}>
-                          {p.is_active ? '🔒' : '✓'}
+                        <Button size="sm" variant="secondary" onClick={() => setPreviewProduct(p)} title="Vista previa">
+                          <Eye className="h-3.5 w-3.5" />
                         </Button>
-                        <Link href={`/admin/products/${p.id}/edit`}>
-                          <Button size="sm" variant="secondary">✏️</Button>
+                        <Link href={`/admin/products/${p.id}/edit`} title="Editar">
+                          <Button size="sm" variant="secondary">
+                            <Pencil className="h-3.5 w-3.5" />
+                          </Button>
                         </Link>
-                        <Button size="sm" variant="danger" onClick={() => onDelete(p.id)} isLoading={deletingId === p.id}>🗑️</Button>
+                        <Button size="sm" variant="danger" onClick={() => onDelete(p.id)} isLoading={deletingId === p.id} title="Eliminar">
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
                       </div>
                     </div>
                   );
@@ -1087,9 +1090,15 @@ export default function AdminProductsPage() {
                 </div>
                 <div className="flex gap-2 pt-4">
                   <Link href={`/admin/products/${previewProduct.id}/edit`}>
-                    <Button>✏️ Editar</Button>
+                    <Button>
+                      <Pencil className="h-4 w-4" />
+                      Editar
+                    </Button>
                   </Link>
-                  <Button variant="secondary" onClick={() => { duplicateProduct(previewProduct); setPreviewProduct(null); }}>📋 Duplicar</Button>
+                  <Button variant="secondary" onClick={() => { duplicateProduct(previewProduct); setPreviewProduct(null); }}>
+                    <Copy className="h-4 w-4" />
+                    Duplicar
+                  </Button>
                 </div>
               </div>
             </div>

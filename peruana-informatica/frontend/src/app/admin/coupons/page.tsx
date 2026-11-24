@@ -102,7 +102,7 @@ export default function CouponsPage() {
             value={activeCoupons.toString()}
             description="Disponibles para uso"
             icon={Ticket}
-            color="green"
+            color="emerald"
           />
           <StatsCard
             title="Total de Canjes"
@@ -116,11 +116,11 @@ export default function CouponsPage() {
             value={coupons.length.toString()}
             description="Registrados en sistema"
             icon={Percent}
-            color="purple"
+            color="indigo"
           />
         </div>
 
-        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-5">
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-5">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-5">
             <h2 className="text-lg font-bold text-gray-900 dark:text-white">Lista de Cupones</h2>
             <div className="relative w-full md:w-64">
@@ -142,7 +142,7 @@ export default function CouponsPage() {
           ) : (
             <div className="space-y-4">
               {filteredCoupons.map((coupon) => (
-                <div key={coupon.id} className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl p-4 hover:border-gray-200 dark:hover:border-gray-700 transition-all">
+                <div key={coupon.id} className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl p-4 shadow-sm hover:border-gray-200 dark:hover:border-gray-700 transition-all">
                   <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2 flex-wrap">

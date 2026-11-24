@@ -86,7 +86,6 @@ export default function BlogAdminPage() {
   >("post");
   const [generatingTitles, setGeneratingTitles] = useState(false);
   const [generatingContent, setGeneratingContent] = useState(false);
-  const [loadingDemo, setLoadingDemo] = useState(false);
   const [savingPost, setSavingPost] = useState(false);
 
   // Estado del formulario
@@ -275,36 +274,6 @@ export default function BlogAdminPage() {
     }
   };
 
-  // Cargar datos de demo
-  const loadDemoData = async () => {
-    if (
-      !confirm(
-        "¿Deseas cargar posts de demostración? Esto creará varios posts de ejemplo.",
-      )
-    )
-      return;
-
-    try {
-      setLoadingDemo(true);
-      const response = await fetch(`${API_BASE}/api/blog/admin/demo`, {
-        method: "POST",
-        headers: getAuthHeaders(),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Error cargando datos demo");
-      }
-
-      await loadBlogData();
-      alert("✅ Posts de demostración cargados exitosamente");
-    } catch (err: any) {
-      setError(err.message || "Error cargando datos demo");
-    } finally {
-      setLoadingDemo(false);
-    }
-  };
-
   // Guardar API Key
   const saveApiKey = async () => {
     if (!apiKey.trim()) {
@@ -475,7 +444,7 @@ export default function BlogAdminPage() {
       <div className="space-y-5">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-800">Gestión del Blog</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Gestión del Blog</h1>
           <p className="text-gray-500 mt-1">
             Administra contenido con IA integrada
           </p>
@@ -510,7 +479,7 @@ export default function BlogAdminPage() {
             </div>
             <div className="bg-white border border-gray-200 rounded-xl p-6">
               <div className="text-sm text-gray-500">Generados por IA</div>
-              <div className="text-2xl font-bold text-purple-600 mt-1">
+              <div className="text-2xl font-bold text-indigo-600 mt-1">
                 {stats.totals.ai_generated}
               </div>
             </div>
@@ -527,7 +496,7 @@ export default function BlogAdminPage() {
         {stats?.ai_configured && (
           <div className="space-y-4 mb-6">
             {/* Panel principal de IA */}
-            <div className="bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl p-6 text-white">
+            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl p-6 text-white">
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-xl font-bold mb-2">
@@ -573,13 +542,13 @@ export default function BlogAdminPage() {
                       value={apiKey}
                       onChange={(e) => setApiKey(e.target.value)}
                       placeholder="AIza... (Ingresa tu API Key aquí para cambiarla)"
-                      className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                     />
                     <Button
                       size="sm"
                       onClick={saveApiKey}
                       disabled={savingApiKey || !apiKey.trim()}
-                      className="bg-purple-600 hover:bg-purple-700 text-white"
+                      className="bg-indigo-600 hover:bg-indigo-700 text-white"
                     >
                       {savingApiKey ? "Guardando..." : "💾 Actualizar"}
                     </Button>
@@ -587,7 +556,7 @@ export default function BlogAdminPage() {
                       href="https://aistudio.google.com/app/apikey"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm text-purple-600 hover:text-purple-700 font-medium whitespace-nowrap"
+                      className="text-sm text-indigo-600 hover:text-indigo-700 font-medium whitespace-nowrap"
                     >
                       🔗 Obtener nueva
                     </a>
@@ -599,7 +568,7 @@ export default function BlogAdminPage() {
                       href="https://aistudio.google.com/app/apikey"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-purple-600 hover:underline"
+                      className="text-indigo-600 hover:underline"
                     >
                       Google AI Studio
                     </a>{" "}
@@ -644,13 +613,6 @@ export default function BlogAdminPage() {
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-bold text-gray-800">Posts del Blog</h2>
             <div className="flex gap-3">
-              <Button
-                onClick={loadDemoData}
-                disabled={loadingDemo}
-                className="bg-gray-100 hover:bg-gray-200 text-gray-700"
-              >
-                {loadingDemo ? "Cargando..." : "📦 Cargar Posts Demo"}
-              </Button>
               <Button onClick={openNewPostModal}>+ Nuevo Post</Button>
             </div>
           </div>
@@ -673,7 +635,7 @@ export default function BlogAdminPage() {
                         {post.status}
                       </span>
                       {post.ai_generated && (
-                        <span className="px-2 py-1 bg-purple-100 text-purple-700 text-xs font-medium rounded">
+                        <span className="px-2 py-1 bg-indigo-100 text-indigo-700 text-xs font-medium rounded">
                           🤖 IA
                         </span>
                       )}
@@ -736,18 +698,9 @@ export default function BlogAdminPage() {
             {posts.length === 0 && (
               <div className="text-center py-12 text-gray-500">
                 <p className="text-lg mb-4">No hay posts aún</p>
-                <p className="text-sm mb-4">
-                  ¡Crea tu primer post o carga datos de demostración!
-                </p>
+                <p className="text-sm mb-4">Crea tu primer post para empezar a publicar.</p>
                 <div className="flex gap-3 justify-center">
                   <Button onClick={openNewPostModal}>+ Crear Post</Button>
-                  <Button
-                    onClick={loadDemoData}
-                    disabled={loadingDemo}
-                    className="bg-gray-100 hover:bg-gray-200 text-gray-700"
-                  >
-                    {loadingDemo ? "Cargando..." : "📦 Cargar Posts Demo"}
-                  </Button>
                 </div>
               </div>
             )}

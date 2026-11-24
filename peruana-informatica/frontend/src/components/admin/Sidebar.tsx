@@ -311,17 +311,17 @@ export function Sidebar() {
 
           {/* Navigation */}
           <div className="flex-1 overflow-y-auto px-4 py-2 custom-scrollbar space-y-2">
-            <div className="mb-2 px-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+            <div className="mb-2 px-2 text-xs font-medium text-gray-500">
               Principal
             </div>
             {menuItems.slice(0, 2).map((item) => renderMenuItem(item))}
 
-            <div className="mt-6 mb-2 px-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+            <div className="mt-6 mb-2 px-2 text-xs font-medium text-gray-500">
               Gestión
             </div>
             {menuItems.slice(2, 5).map((item) => renderMenuItem(item))}
 
-            <div className="mt-6 mb-2 px-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+            <div className="mt-6 mb-2 px-2 text-xs font-medium text-gray-500">
               Configuración
             </div>
             {menuItems.slice(5).map((item) => renderMenuItem(item))}
@@ -330,7 +330,7 @@ export function Sidebar() {
           {/* User Profile Footer */}
           <div className="p-4 m-4 bg-gray-50/80 dark:bg-gray-800/50 rounded-2xl border border-gray-100 dark:border-gray-700/50 backdrop-blur-sm">
             <div className="flex items-center gap-3 mb-3">
-              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 p-0.5">
+              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 p-0.5">
                 <div className="h-full w-full rounded-full bg-white dark:bg-gray-800 flex items-center justify-center overflow-hidden">
                   <img src={`https://ui-avatars.com/api/?name=${encodeURIComponent(adminName)}&background=random`} alt={adminName} className="w-full h-full" />
                 </div>

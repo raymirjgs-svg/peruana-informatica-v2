@@ -82,7 +82,7 @@ export default function MarketingEmailPage() {
                 <div className="flex items-center gap-3">
                     <Mail className="w-8 h-8 text-blue-600" />
                     <div>
-                        <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Correos Masivos</h1>
+                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Correos Masivos</h1>
                         <p className="text-sm text-gray-500">Envía un correo a todos los clientes registrados</p>
                     </div>
                 </div>
@@ -136,7 +136,7 @@ export default function MarketingEmailPage() {
                         {/* Preview del email */}
                         {(subject || message) && (
                             <div>
-                                <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wide">Vista previa</p>
+                                <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">Vista previa</p>
                                 <div className="border rounded-lg p-4 bg-gray-50 dark:bg-gray-900 text-sm">
                                     <p className="font-medium text-gray-700 dark:text-gray-300 mb-1">
                                         Asunto: <span className="text-gray-900 dark:text-white">{subject || '—'}</span>

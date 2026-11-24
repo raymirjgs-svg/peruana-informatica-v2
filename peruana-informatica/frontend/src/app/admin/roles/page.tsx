@@ -85,11 +85,11 @@ export default function RolesPage() {
                     {roles.map(role => (
                         <MotionWrapper
                             key={role.id}
-                            className="bg-white/70 dark:bg-gray-900/40 backdrop-blur-xl rounded-2xl border border-gray-100 dark:border-gray-800 p-6 shadow-sm hover:shadow-lg transition-all"
+                            className="bg-white dark:bg-gray-900 backdrop-blur-xl rounded-2xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm hover:shadow-lg transition-all"
                         >
                             <div className="flex items-start justify-between mb-4">
                                 <div className="flex items-center gap-3">
-                                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${role.slug === 'super-admin' ? 'bg-gradient-to-br from-purple-500 to-pink-600' :
+                                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${role.slug === 'super-admin' ? 'bg-gradient-to-br from-blue-600 to-indigo-600' :
                                             role.slug === 'admin' ? 'bg-gradient-to-br from-blue-500 to-indigo-600' :
                                                 role.slug === 'editor' ? 'bg-gradient-to-br from-green-500 to-teal-600' :
                                                     role.slug === 'moderator' ? 'bg-gradient-to-br from-yellow-500 to-orange-600' :
@@ -145,7 +145,7 @@ export default function RolesPage() {
                 </div>
 
                 {/* Permissions Reference */}
-                <MotionWrapper className="bg-white/70 dark:bg-gray-900/40 backdrop-blur-xl rounded-2xl border border-gray-100 dark:border-gray-800 p-6 shadow-sm">
+                <MotionWrapper className="bg-white dark:bg-gray-900 backdrop-blur-xl rounded-2xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm">
                     <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Permisos Disponibles</h2>
                     <div className="grid gap-6 md:grid-cols-2">
                         {Object.entries(permissions.grouped).map(([module, perms]) => (

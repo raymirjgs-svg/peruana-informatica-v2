@@ -226,16 +226,16 @@ export default function AnnouncementsPage() {
 
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-4">
-            <p className="text-xs text-gray-400 font-semibold uppercase tracking-wide">Total</p>
+          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
+            <p className="text-xs text-gray-500 font-medium">Total</p>
             <p className="text-3xl font-bold text-gray-900 dark:text-white mt-1">{items.length}</p>
           </div>
-          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-4">
-            <p className="text-xs text-gray-400 font-semibold uppercase tracking-wide">Activos</p>
+          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
+            <p className="text-xs text-gray-500 font-medium">Activos</p>
             <p className="text-3xl font-bold text-emerald-600 mt-1">{activeCount}</p>
           </div>
-          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-4">
-            <p className="text-xs text-gray-400 font-semibold uppercase tracking-wide">Inactivos</p>
+          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
+            <p className="text-xs text-gray-500 font-medium">Inactivos</p>
             <p className="text-3xl font-bold text-gray-400 mt-1">{items.length - activeCount}</p>
           </div>
         </div>
@@ -243,7 +243,7 @@ export default function AnnouncementsPage() {
         {/* Vista previa */}
         {activeCount > 0 && (
           <div>
-            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Vista previa de la barra</p>
+            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">Vista previa de la barra</p>
             <div
               className="relative bg-gradient-to-r from-red-800 to-red-600 text-white text-xs font-semibold rounded-lg"
               style={{ height: '30px', overflow: 'hidden' }}
@@ -265,7 +265,7 @@ export default function AnnouncementsPage() {
         )}
 
         {/* Lista */}
-        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800">
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
           <div className="p-4 border-b border-gray-100 dark:border-gray-800">
             <h2 className="font-bold text-gray-900 dark:text-white">Anuncios configurados</h2>
           </div>

@@ -74,6 +74,10 @@ export function SalesChart({ data }: SalesChartProps) {
             y: {
                 beginAtZero: true,
                 position: 'left' as const,
+                ticks: {
+                    precision: 0,
+                    callback: (value: string | number) => `S/ ${Number(value).toLocaleString('es-PE')}`
+                },
                 grid: {
                     color: 'rgba(0, 0, 0, 0.05)'
                 }
@@ -81,6 +85,9 @@ export function SalesChart({ data }: SalesChartProps) {
             y1: {
                 beginAtZero: true,
                 position: 'right' as const,
+                ticks: {
+                    precision: 0
+                },
                 grid: {
                     display: false
                 }

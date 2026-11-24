@@ -122,9 +122,9 @@ export default function InventoryPage() {
         {/* Stats */}
         <div className="grid gap-6 md:grid-cols-4">
           <StatsCard title="Total Productos" value={totalProducts.toString()} description="En catálogo" icon={Package} color="blue" />
-          <StatsCard title="Stock Bajo" value={lowStockCount.toString()} description="≤ 10 unidades" icon={AlertTriangle} color="yellow" />
+          <StatsCard title="Stock Bajo" value={lowStockCount.toString()} description="≤ 10 unidades" icon={AlertTriangle} color="amber" />
           <StatsCard title="Agotados" value={outOfStockCount.toString()} description="Stock = 0" icon={TrendingDown} color="red" />
-          <StatsCard title="Valor Inventario" value={`S/ ${totalValue.toFixed(0)}`} description="Valorización total" icon={Package} color="green" />
+          <StatsCard title="Valor Inventario" value={`S/ ${totalValue.toFixed(0)}`} description="Valorización total" icon={Package} color="emerald" />
         </div>
 
         {/* Alerts */}
@@ -140,7 +140,7 @@ export default function InventoryPage() {
         )}
 
         {/* Filters */}
-        <MotionWrapper className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-4">
+        <MotionWrapper className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
           <div className="flex flex-col md:flex-row gap-4 items-center">
             <div className="relative flex-1 w-full">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -175,16 +175,16 @@ export default function InventoryPage() {
         </MotionWrapper>
 
         {/* Products Table */}
-        <MotionWrapper className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden">
+        <MotionWrapper className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="border-b border-gray-100 dark:border-gray-800">
-                  <th className="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Código</th>
-                  <th className="px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Producto</th>
-                  <th className="px-5 py-3 text-center text-xs font-semibold text-gray-400 uppercase tracking-wider">Stock</th>
-                  <th className="px-5 py-3 text-right text-xs font-semibold text-gray-400 uppercase tracking-wider">Precio</th>
-                  <th className="px-5 py-3 text-right text-xs font-semibold text-gray-400 uppercase tracking-wider">Valor Total</th>
+                  <th className="px-5 py-3 text-left text-xs font-medium text-gray-500">Código</th>
+                  <th className="px-5 py-3 text-left text-xs font-medium text-gray-500">Producto</th>
+                  <th className="px-5 py-3 text-center text-xs font-medium text-gray-500">Stock</th>
+                  <th className="px-5 py-3 text-right text-xs font-medium text-gray-500">Precio</th>
+                  <th className="px-5 py-3 text-right text-xs font-medium text-gray-500">Valor Total</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-gray-800">

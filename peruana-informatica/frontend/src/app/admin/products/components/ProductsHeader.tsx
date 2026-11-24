@@ -16,7 +16,7 @@ export function ProductsHeader({ controller, onNew }: { controller: Data; onNew:
   return (
         <div className="mb-6 flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-800">Productos</h1>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Productos</h1>
             <p className="text-gray-500 mt-1">Gestiona tu inventario completo {data && `(${data.total} productos)`}</p>
           </div>
           <div className="flex gap-2">

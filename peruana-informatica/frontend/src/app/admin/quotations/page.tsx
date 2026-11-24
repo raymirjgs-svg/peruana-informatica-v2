@@ -63,7 +63,6 @@ export default function AdminQuotations() {
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [dateFilter, setDateFilter] = useState<'all' | 'today' | 'week' | 'month'>('all');
-  const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'approved' | 'expired'>('all');
 
   useEffect(() => {
     fetchQuotations();
@@ -133,24 +132,13 @@ export default function AdminQuotations() {
       filtered = filtered.filter(q => new Date(q.createdAt) >= monthStart);
     }
 
-    // Status filter
-    if (statusFilter !== 'all') {
-      filtered = filtered.filter(q => q.status === statusFilter);
-    }
-
     // Sort by date (newest first)
     filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
     return filtered;
-  }, [quotations, searchTerm, dateFilter, statusFilter]);
+  }, [quotations, searchTerm, dateFilter]);
 
   const getStatusBadge = (status: string, validUntil?: string) => {
-    const isExpired = validUntil && new Date(validUntil) < new Date();
-
-    if (isExpired) {
-      return <span className="px-3 py-1 rounded-full text-xs font-semibold bg-gray-500 text-white">Expirada</span>;
-    }
-
     const styles: Record<string, string> = {
       pending: 'bg-amber-500 text-white',
       approved: 'bg-emerald-600 text-white',
@@ -164,6 +152,12 @@ export default function AdminQuotations() {
       rejected: 'Rechazada',
       expired: 'Expirada'
     };
+
+    // Una cotizacion vencida solo se marca "Expirada" si sigue pendiente:
+    // si ya fue aprobada o rechazada, ese estado es el que importa.
+    if (status === 'pending' && validUntil && new Date(validUntil) < new Date()) {
+      return <span className="px-3 py-1 rounded-full text-xs font-semibold bg-gray-500 text-white">Vencida</span>;
+    }
 
     return (
       <span className={`px-3 py-1 rounded-full text-xs font-semibold ${styles[status] || styles.pending}`}>
@@ -190,7 +184,7 @@ export default function AdminQuotations() {
       <div className="space-y-5">
         {/* Header */}
         <div className="flex items-center gap-3">
-          <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20 shrink-0">
+          <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-md shadow-blue-500/20 shrink-0">
             <FileText className="h-5 w-5 text-white" />
           </div>
           <div>
@@ -201,20 +195,20 @@ export default function AdminQuotations() {
 
         {/* Métricas */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-4">
-            <p className="text-xs text-gray-400 font-semibold uppercase tracking-wide">Total</p>
+          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
+            <p className="text-xs text-gray-500 font-medium">Total</p>
             <p className="text-3xl font-bold text-gray-900 dark:text-white mt-1">{metrics.total}</p>
           </div>
-          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-4">
-            <p className="text-xs text-gray-400 font-semibold uppercase tracking-wide">Hoy</p>
+          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
+            <p className="text-xs text-gray-500 font-medium">Hoy</p>
             <p className="text-3xl font-bold text-emerald-600 mt-1">{metrics.today}</p>
           </div>
-          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-4">
-            <p className="text-xs text-gray-400 font-semibold uppercase tracking-wide">Esta Semana</p>
-            <p className="text-3xl font-bold text-purple-600 mt-1">{metrics.thisWeek}</p>
+          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
+            <p className="text-xs text-gray-500 font-medium">Esta Semana</p>
+            <p className="text-3xl font-bold text-indigo-600 mt-1">{metrics.thisWeek}</p>
           </div>
-          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-4">
-            <p className="text-xs text-gray-400 font-semibold uppercase tracking-wide">Valor Total</p>
+          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
+            <p className="text-xs text-gray-500 font-medium">Valor Total</p>
             <p className="text-xl font-bold text-amber-600 mt-1">
               S/ {metrics.totalValue.toLocaleString('es-PE', { minimumFractionDigits: 2 })}
             </p>
@@ -222,7 +216,7 @@ export default function AdminQuotations() {
         </div>
 
         {/* Filtros */}
-        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-4">
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -260,7 +254,7 @@ export default function AdminQuotations() {
           {filteredQuotations.map((quotation) => (
             <div
               key={quotation.id || quotation.code}
-              className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden"
+              className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden"
             >
               {/* Header de la cotización */}
               <div
@@ -373,7 +367,7 @@ export default function AdminQuotations() {
                     {/* Información de la Cotización */}
                     <div>
                       <h4 className="font-semibold text-gray-800 dark:text-white mb-3 flex items-center gap-2">
-                        <Clock className="h-5 w-5 text-purple-600" />
+                        <Clock className="h-5 w-5 text-indigo-600" />
                         Información de Cotización
                       </h4>
                       <div className="space-y-2 text-sm">

@@ -83,7 +83,7 @@ export default function DiscountsPage() {
             value={activeCount.toString()}
             description="Promociones vigentes"
             icon={Percent}
-            color="green"
+            color="emerald"
           />
           <StatsCard
             title="Total Promociones"
@@ -94,7 +94,7 @@ export default function DiscountsPage() {
           />
         </div>
 
-        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-5">
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-5">
           <div className="flex items-center justify-between mb-5">
             <h2 className="text-lg font-bold text-gray-900 dark:text-white">Lista de Descuentos</h2>
             <div className="relative">

@@ -121,24 +121,24 @@ export default function BrandsAdminPage() {
 
         {/* Stats */}
         <div className="grid grid-cols-3 gap-4">
-          <div className="bg-white dark:bg-gray-900 rounded-2xl p-4 border border-gray-100 dark:border-gray-800">
-            <p className="text-xs text-gray-400 uppercase tracking-wide font-semibold">Total marcas</p>
+          <div className="bg-white dark:bg-gray-900 rounded-2xl p-4 border border-gray-200 dark:border-gray-700 shadow-sm">
+            <p className="text-xs text-gray-500 font-medium">Total marcas</p>
             <p className="text-3xl font-bold text-gray-900 dark:text-white mt-1">{brands.length}</p>
           </div>
-          <div className="bg-white dark:bg-gray-900 rounded-2xl p-4 border border-gray-100 dark:border-gray-800">
-            <p className="text-xs text-gray-400 uppercase tracking-wide font-semibold">Con logo</p>
+          <div className="bg-white dark:bg-gray-900 rounded-2xl p-4 border border-gray-200 dark:border-gray-700 shadow-sm">
+            <p className="text-xs text-gray-500 font-medium">Con logo</p>
             <p className="text-3xl font-bold text-blue-600 mt-1">{withLogo}</p>
           </div>
-          <div className="bg-white dark:bg-gray-900 rounded-2xl p-4 border border-gray-100 dark:border-gray-800">
-            <p className="text-xs text-gray-400 uppercase tracking-wide font-semibold">En carrusel</p>
+          <div className="bg-white dark:bg-gray-900 rounded-2xl p-4 border border-gray-200 dark:border-gray-700 shadow-sm">
+            <p className="text-xs text-gray-500 font-medium">En carrusel</p>
             <p className="text-3xl font-bold text-emerald-600 mt-1">{inCarousel}</p>
           </div>
         </div>
 
         {/* Vista previa mini del carrusel */}
         {inCarousel > 0 && (
-          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-4">
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
+            <p className="text-xs font-medium text-gray-500 mb-3">
               Vista previa del carrusel ({inCarousel} marcas)
             </p>
             <div className="flex flex-wrap gap-6 items-center">
@@ -165,7 +165,7 @@ export default function BrandsAdminPage() {
         </div>
 
         {/* Lista */}
-        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden">
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
           <div className="px-5 py-3.5 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
             <p className="text-sm font-semibold text-gray-900 dark:text-white">{filtered.length} marcas</p>
             <p className="text-xs text-gray-400">SVG, PNG, JPG o WebP · máx. 2 MB</p>

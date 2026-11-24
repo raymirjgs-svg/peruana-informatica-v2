@@ -24,9 +24,9 @@ const presets: Record<string, { dot: string; bg: string; text: string; label: st
   cancelled: { dot: 'bg-red-400',     bg: 'bg-red-50 dark:bg-red-950/40',         text: 'text-red-600 dark:text-red-400',        label: 'Cancelado' },
   low:       { dot: 'bg-amber-500',   bg: 'bg-amber-50 dark:bg-amber-950/40',     text: 'text-amber-700 dark:text-amber-400',    label: 'Stock bajo' },
   out:       { dot: 'bg-red-500',     bg: 'bg-red-50 dark:bg-red-950/40',         text: 'text-red-700 dark:text-red-400',        label: 'Sin stock' },
-  featured:  { dot: 'bg-purple-500',  bg: 'bg-purple-50 dark:bg-purple-950/40',   text: 'text-purple-700 dark:text-purple-400',  label: 'Destacado' },
+  featured:  { dot: 'bg-blue-500',    bg: 'bg-blue-50 dark:bg-blue-950/40',       text: 'text-blue-700 dark:text-blue-400',      label: 'Destacado' },
   new:       { dot: 'bg-blue-500',    bg: 'bg-blue-50 dark:bg-blue-950/40',       text: 'text-blue-700 dark:text-blue-400',      label: 'Nuevo' },
-  clearance: { dot: 'bg-orange-500',  bg: 'bg-orange-50 dark:bg-orange-950/40',   text: 'text-orange-700 dark:text-orange-400',  label: 'Remate' },
+  clearance: { dot: 'bg-amber-500',   bg: 'bg-amber-50 dark:bg-amber-950/40',     text: 'text-amber-700 dark:text-amber-400',    label: 'Remate' },
 };
 
 const fallback = { dot: 'bg-gray-400', bg: 'bg-gray-100 dark:bg-gray-800', text: 'text-gray-600 dark:text-gray-400', label: '' };

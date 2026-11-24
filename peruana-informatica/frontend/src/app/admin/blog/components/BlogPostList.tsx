@@ -55,7 +55,7 @@ export function BlogPostList({
                         {post.status}
                       </span>
                       {post.ai_generated && (
-                        <span className="px-2 py-1 bg-purple-100 text-purple-700 text-xs font-medium rounded">
+                        <span className="px-2 py-1 bg-indigo-100 text-indigo-700 text-xs font-medium rounded">
                           🤖 IA
                         </span>
                       )}

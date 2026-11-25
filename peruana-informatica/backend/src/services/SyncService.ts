@@ -37,6 +37,18 @@ export class SyncService {
         };
     }
 
+    /**
+     * Resetea el estado de sincronización (útil si un sync se quedó pillado).
+     * Solo para uso administrativo.
+     */
+    static resetSyncState() {
+        this.isSyncing = false;
+        this.lastSyncTime = 0;
+        this.productCache.clear();
+        this.brandCache.clear();
+        console.log('SyncService: Estado de sync reseteado manualmente');
+    }
+
     static async forceSyncProducts() {
         this.lastSyncTime = 0; // bypass cooldown
         return this.syncProducts();

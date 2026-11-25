@@ -1,0 +1,40 @@
+[
+  {
+    "viewport": "desktop",
+    "title": "Peruana Informática | Tecnología y Equipos en Perú",
+    "h1": "Peruana Informática — Tecnología y equipos en Perú",
+    "h1Size": "16px",
+    "h1Weight": "400",
+    "imgs": 54,
+    "imgsNoAlt": 0,
+    "smallTargets": 0,
+    "overflowX": false,
+    "docHeight": 5021,
+    "fonts": [
+      "Outfit",
+      "ui-monospace"
+    ],
+    "bodyColor": "rgb(2, 8, 23)",
+    "bodyBg": "rgb(249, 250, 251)",
+    "errores": []
+  },
+  {
+    "viewport": "mobile",
+    "title": "Peruana Informática | Tecnología y Equipos en Perú",
+    "h1": "Peruana Informática — Tecnología y equipos en Perú",
+    "h1Size": "16px",
+    "h1Weight": "400",
+    "imgs": 54,
+    "imgsNoAlt": 0,
+    "smallTargets": 0,
+    "overflowX": false,
+    "docHeight": 12159,
+    "fonts": [
+      "Outfit",
+      "ui-monospace"
+    ],
+    "bodyColor": "rgb(2, 8, 23)",
+    "bodyBg": "rgb(249, 250, 251)",
+    "errores": []
+  }
+]

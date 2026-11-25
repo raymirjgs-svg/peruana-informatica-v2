@@ -1,0 +1,151 @@
+[
+  {
+    "route": "/admin",
+    "len": 1195,
+    "errores": []
+  },
+  {
+    "route": "/admin/orders",
+    "len": 115831,
+    "errores": []
+  },
+  {
+    "route": "/admin/quotations",
+    "len": 1079,
+    "errores": []
+  },
+  {
+    "route": "/admin/reports",
+    "len": 1010,
+    "errores": []
+  },
+  {
+    "route": "/admin/products",
+    "len": 7201,
+    "errores": []
+  },
+  {
+    "route": "/admin/categories",
+    "len": 3088,
+    "errores": []
+  },
+  {
+    "route": "/admin/taxonomy",
+    "len": 85350,
+    "errores": []
+  },
+  {
+    "route": "/admin/inventory",
+    "len": 3433,
+    "errores": []
+  },
+  {
+    "route": "/admin/reviews",
+    "len": 452,
+    "errores": []
+  },
+  {
+    "route": "/admin/wishlists",
+    "len": 834,
+    "errores": []
+  },
+  {
+    "route": "/admin/coupons",
+    "len": 603,
+    "errores": []
+  },
+  {
+    "route": "/admin/discounts",
+    "len": 512,
+    "errores": []
+  },
+  {
+    "route": "/admin/promo-banners",
+    "len": 579,
+    "errores": []
+  },
+  {
+    "route": "/admin/marketing",
+    "len": 542,
+    "errores": []
+  },
+  {
+    "route": "/admin/media",
+    "error": "page.goto: Timeout 45000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"https://peruanadeinf"
+  },
+  {
+    "route": "/admin/blog",
+    "len": 5407,
+    "errores": []
+  },
+  {
+    "route": "/admin/carousel",
+    "len": 1433,
+    "errores": []
+  },
+  {
+    "route": "/admin/brands",
+    "len": 11002,
+    "errores": []
+  },
+  {
+    "route": "/admin/quick-categories",
+    "len": 512,
+    "errores": []
+  },
+  {
+    "route": "/admin/announcements",
+    "len": 1465,
+    "errores": []
+  },
+  {
+    "route": "/admin/pages",
+    "len": 642,
+    "errores": []
+  },
+  {
+    "route": "/admin/company-settings",
+    "len": 690,
+    "errores": []
+  },
+  {
+    "route": "/admin/payment-settings",
+    "len": 1199,
+    "errores": []
+  },
+  {
+    "route": "/admin/customers",
+    "len": 1561,
+    "errores": []
+  },
+  {
+    "route": "/admin/users",
+    "len": 709,
+    "errores": []
+  },
+  {
+    "route": "/admin/roles",
+    "len": 1169,
+    "errores": []
+  },
+  {
+    "route": "/admin/settings",
+    "len": 939,
+    "errores": []
+  },
+  {
+    "route": "/admin/system",
+    "len": 1009,
+    "errores": []
+  },
+  {
+    "route": "/admin/contacts",
+    "len": 1018,
+    "errores": []
+  },
+  {
+    "route": "/admin/seo",
+    "len": 2810,
+    "errores": []
+  }
+]

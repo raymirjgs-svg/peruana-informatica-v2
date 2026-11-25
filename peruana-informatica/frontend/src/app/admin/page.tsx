@@ -16,7 +16,8 @@ import {
   Award,
   RefreshCw,
   CheckCircle2,
-  Zap
+  Zap,
+  RotateCcw
 } from 'lucide-react';
 import { toast } from 'sonner';
 import Link from 'next/link';
@@ -92,6 +93,24 @@ function ERPSyncWidget() {
     }
   };
 
+  const resetSyncState = async () => {
+    setForcing(true);
+    try {
+      const res = await adminFetch('/sync/reset-state', { method: 'POST' });
+      const json = await res.json();
+      if (json.success) {
+        toast.success('Estado de sync reseteado');
+        fetchStatus();
+      } else {
+        toast.error(json.message || 'Error al resetear');
+      }
+    } catch {
+      toast.error('No se pudo conectar al servidor');
+    } finally {
+      setForcing(false);
+    }
+  };
+
   const isActive = status?.isSyncing;
   const progressPct = status?.lastSyncTime && status?.nextSyncTime
     ? Math.min(100, Math.max(0, ((Date.now() - status.lastSyncTime) / status.intervalMs) * 100))
@@ -144,14 +163,27 @@ function ERPSyncWidget() {
         </div>
       </div>
 
-      <button
-        onClick={forceSync}
-        disabled={forcing || isActive}
-        className="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-xl text-xs font-semibold transition-all duration-200 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        <RefreshCw className={`h-3.5 w-3.5 ${forcing ? 'animate-spin' : ''}`} />
-        {forcing ? 'Iniciando…' : 'Sincronizar ahora'}
-      </button>
+      <div className="space-y-2">
+        <button
+          onClick={forceSync}
+          disabled={forcing}
+          className="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-xl text-xs font-semibold transition-all duration-200 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <RefreshCw className={`h-3.5 w-3.5 ${forcing ? 'animate-spin' : ''}`} />
+          {forcing ? 'Iniciando…' : isActive ? 'Forzar sincronización' : 'Sincronizar ahora'}
+        </button>
+
+        {isActive && (
+          <button
+            onClick={resetSyncState}
+            type="button"
+            className="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-xl text-xs font-semibold transition-all duration-200 border border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-300 hover:bg-amber-50 dark:hover:bg-amber-950/30"
+          >
+            <RotateCcw className="h-3.5 w-3.5" />
+            Resetear estado (si pillado)
+          </button>
+        )}
+      </div>
     </div>
   );
 }

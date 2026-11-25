@@ -1,0 +1,50 @@
+[
+  {
+    "route": "/admin",
+    "len": 1235,
+    "dark": true,
+    "errores": []
+  },
+  {
+    "route": "/admin/products",
+    "len": 6809,
+    "dark": true,
+    "errores": []
+  },
+  {
+    "route": "/admin/quotations",
+    "len": 1068,
+    "dark": true,
+    "errores": []
+  },
+  {
+    "route": "/admin/reports",
+    "len": 904,
+    "dark": true,
+    "errores": []
+  },
+  {
+    "route": "/admin/blog",
+    "len": 5386,
+    "dark": true,
+    "errores": []
+  },
+  {
+    "route": "/admin/customers",
+    "len": 1559,
+    "dark": true,
+    "errores": []
+  },
+  {
+    "route": "/admin/settings",
+    "len": 938,
+    "dark": true,
+    "errores": []
+  },
+  {
+    "route": "/admin/contacts",
+    "len": 1017,
+    "dark": true,
+    "errores": []
+  }
+]

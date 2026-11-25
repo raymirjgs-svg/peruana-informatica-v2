@@ -6,6 +6,7 @@ import { Category } from '../models/Category';
 import { SubCategory } from '../models/SubCategory';
 import { logger } from '../config/logger';
 import { sendError } from '../middleware/errorHandler';
+import { SyncService } from '../services/SyncService';
 
 /**
  * Controlador para gestionar la sincronización con la API externa de Peruana Informática
@@ -411,5 +412,23 @@ export class SyncController {
             return sendError(res, error, 'Error al verificar token');
         }
     }
-}
 
+    /**
+     * POST /api/sync/reset-state
+     * Resetea el estado de sincronización (si se quedó pillado)
+     * @access Admin only
+     */
+    static async resetSyncState(req: Request, res: Response) {
+        try {
+            SyncService.resetSyncState();
+            return res.json({
+                success: true,
+                message: 'Estado de sincronización reseteado correctamente',
+                data: SyncService.getSyncStatus()
+            });
+        } catch (error) {
+            logger.error('Error en SyncController.resetSyncState:', error);
+            return sendError(res, error, 'Error al resetear estado de sync');
+        }
+    }
+}

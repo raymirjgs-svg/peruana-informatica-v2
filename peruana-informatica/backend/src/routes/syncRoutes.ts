@@ -29,6 +29,13 @@ router.post('/force', authenticateToken, requireAdmin, (req: Request, res: Respo
 });
 
 /**
+ * @route POST /api/sync/reset-state
+ * @desc Resetea el estado de sincronización (si se quedó pillado)
+ * @access Admin only
+ */
+router.post('/reset-state', authenticateToken, requireAdmin, SyncController.resetSyncState);
+
+/**
  * @route POST /api/sync/token
  * @desc Solicita un nuevo token a la API externa de Peruana Informática
  * @body { usuario: string, dias: number }

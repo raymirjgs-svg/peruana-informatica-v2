@@ -50,7 +50,7 @@ export class SyncService {
     }
 
     static async forceSyncProducts() {
-        this.lastSyncTime = 0; // bypass cooldown
+        // No ponemos lastSyncTime = 0 aqui; syncProducts() lo manejara
         return this.syncProducts();
     }
 

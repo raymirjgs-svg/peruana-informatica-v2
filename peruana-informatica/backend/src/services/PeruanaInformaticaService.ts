@@ -25,6 +25,13 @@ export class PeruanaInformaticaService {
     private static token = process.env.API_PERUANA_TOKEN;
     private static tokenExpiresAt: Date | null = null;
 
+    // Circuit breaker state
+    private static consecutiveFailures = 0;
+    private static readonly MAX_CONSECUTIVE_FAILURES = 5;
+    private static circuitBreakerOpen = false;
+    private static circuitBreakerOpenedAt: Date | null = null;
+    private static readonly CIRCUIT_BREAKER_RESET_MS = 60 * 1000; // 1 minuto
+
     /**
      * Solicita un nuevo token a la API
      * @param usuario Usuario para solicitar el token (ej. 'raymir' o 'Raymir')
@@ -47,7 +54,8 @@ export class PeruanaInformaticaService {
                     'Content-Type': 'application/json'
                 },
                 responseType: 'text',
-                validateStatus: () => true
+                validateStatus: () => true,
+                timeout: 10000
             });
 
             let responseBody = response.data;
@@ -98,6 +106,7 @@ export class PeruanaInformaticaService {
                 message: 'Respuesta inválida del servidor'
             };
 
+
         } catch (error: any) {
             console.error('Error en PeruanaInformaticaService.solicitarToken:', error.message);
             return {
@@ -113,10 +122,7 @@ export class PeruanaInformaticaService {
     static async checkHealth(): Promise<{ status: 'ok' | 'error'; latency: number; message?: string }> {
         const start = Date.now();
         try {
-            // Simple network reachability check to the API base URL
-            // We expect 200, 404, or 403, but getting a response means network is up.
             await axios.get(this.baseUrl, { validateStatus: () => true, timeout: 5000 });
-
             const latency = Date.now() - start;
             return { status: 'ok', latency };
         } catch (error: any) {
@@ -124,27 +130,22 @@ export class PeruanaInformaticaService {
             return { status: 'error', latency, message: error.message };
         }
     }
+
     private static async updateEnvToken(newToken: string): Promise<void> {
         try {
             const envPath = path.join(process.cwd(), '.env');
             let envContent = await fs.readFile(envPath, 'utf-8');
 
-            // Reemplazar o agregar el token
             const tokenLine = `API_PERUANA_TOKEN=${newToken}`;
 
             if (envContent.includes('API_PERUANA_TOKEN=')) {
-                // Reemplazar token existente
                 envContent = envContent.replace(/API_PERUANA_TOKEN=.*/, tokenLine);
             } else {
-                // Agregar nuevo token
                 envContent += `\n${tokenLine}`;
             }
 
             await fs.writeFile(envPath, envContent, 'utf-8');
-
-            // Actualizar variable de entorno en memoria
             process.env.API_PERUANA_TOKEN = newToken;
-
             console.log('✓ Token actualizado en .env');
         } catch (error: any) {
             console.error('Error al actualizar .env:', error.message);
@@ -170,8 +171,37 @@ export class PeruanaInformaticaService {
             return result.success;
         }
 
-
         return true;
+    }
+
+    /**
+     * Maneja el circuit breaker
+     */
+    private static checkCircuitBreaker(): boolean {
+        if (!this.circuitBreakerOpen) return false;
+
+        // Auto-reset después de un minuto
+        if (this.circuitBreakerOpenedAt && Date.now() - this.circuitBreakerOpenedAt.getTime() > this.CIRCUIT_BREAKER_RESET_MS) {
+            console.log('🔄 Circuit breaker: reset automático tras 1 min');
+            this.circuitBreakerOpen = false;
+            this.consecutiveFailures = 0;
+            this.circuitBreakerOpenedAt = null;
+            return false;
+        }
+        return true;
+    }
+
+    private static recordSuccess() {
+        this.consecutiveFailures = 0;
+    }
+
+    private static recordFailure() {
+        this.consecutiveFailures++;
+        if (this.consecutiveFailures >= this.MAX_CONSECUTIVE_FAILURES && !this.circuitBreakerOpen) {
+            this.circuitBreakerOpen = true;
+            this.circuitBreakerOpenedAt = new Date();
+            console.warn(`⚡ Circuit breaker ABIERTO tras ${this.consecutiveFailures} fallas consecutivas. API ERP considerada no disponible por 1 min.`);
+        }
     }
 
     /**
@@ -180,7 +210,6 @@ export class PeruanaInformaticaService {
      * @returns Datos del artículo o null si ocurre un error
      */
     static async consultarArticulo(idArticulo: string): Promise<ArticuloResponse> {
-        // Verificar y renovar token si es necesario
         await this.verificarYRenovarToken();
 
         if (!this.token) {
@@ -191,80 +220,123 @@ export class PeruanaInformaticaService {
             };
         }
 
-        try {
-            const url = `${this.baseUrl}/consultarArticulo`;
-
-            const payload = {
-                id: idArticulo,
-                token: this.token
-            };
-
-            const response = await axios.post(url, payload, {
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                responseType: 'text',
-                validateStatus: () => true
-            });
-
-            let responseBody: string = response.data;
-
-            // La API a veces devuelve warnings de PHP antes del JSON. Limpiamos la respuesta.
-            if (typeof responseBody === 'string') {
-                const firstBrace = responseBody.indexOf('{');
-                const lastBrace = responseBody.lastIndexOf('}');
-
-                if (firstBrace !== -1 && lastBrace !== -1) {
-                    const jsonPart = responseBody.substring(firstBrace, lastBrace + 1);
-                    try {
-                        const parsed = JSON.parse(jsonPart);
-                        // Verificar si la respuesta envuelta en data (como en el token) o directa
-                        if (parsed.data && parsed.status === 200) {
-                            return {
-                                success: true,
-                                data: parsed.data
-                            };
-                        }
-                        return {
-                            success: true,
-                            data: parsed
-                        };
-                    } catch (e) {
-                        console.error('Error al parsear el JSON extraído:', e);
-                        return {
-                            success: false,
-                            message: 'Respuesta inválida del servidor externo'
-                        };
-                    }
-                } else {
-                    console.warn('No se encontró estructura JSON en la respuesta textual.');
-                    return {
-                        success: false,
-                        message: 'No se encontró estructura JSON en la respuesta'
-                    };
-                }
-            } else {
-                // En caso axios haya parseado automáticamente
-                const parsed = response.data;
-                if (parsed.data && parsed.status === 200) {
-                    return {
-                        success: true,
-                        data: parsed.data
-                    };
-                }
-                return {
-                    success: true,
-                    data: parsed
-                };
-            }
-
-        } catch (error: any) {
-            console.error('Error en PeruanaInformaticaService.consultarArticulo:', error.message);
+        // Circuit breaker check
+        if (this.checkCircuitBreaker()) {
             return {
                 success: false,
-                message: error.message
+                message: 'Circuito abierto: API ERP no disponible (demasiadas fallas recientes). Reintente en 1 minuto.'
             };
         }
+
+        // Reintentos con backoff exponencial
+        const maxRetries = 2;
+        const baseTimeout = 8000; // 8s timeout por intento
+
+        for (let attempt = 0; attempt <= maxRetries; attempt++) {
+            try {
+                const url = `${this.baseUrl}/consultarArticulo`;
+
+                const payload = {
+                    id: idArticulo,
+                    token: this.token
+                };
+
+                const response = await axios.post(url, payload, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    responseType: 'text',
+                    validateStatus: () => true,
+                    timeout: baseTimeout
+                });
+
+                // Éxito - reset circuit breaker counter
+                this.recordSuccess();
+
+                let responseBody: string = response.data;
+
+                if (typeof responseBody === 'string') {
+                    const firstBrace = responseBody.indexOf('{');
+                    const lastBrace = responseBody.lastIndexOf('}');
+
+                    if (firstBrace !== -1 && lastBrace !== -1) {
+                        const jsonPart = responseBody.substring(firstBrace, lastBrace + 1);
+                        try {
+                            const parsed = JSON.parse(jsonPart);
+                            if (parsed.data && parsed.status === 200) {
+                                return {
+                                    success: true,
+                                    data: parsed.data
+                                };
+                            }
+                            return {
+                                success: true,
+                                data: parsed
+                            };
+                        } catch (e) {
+                            console.error('Error al parsear el JSON extraído:', e);
+                            this.recordFailure();
+                            if (attempt === maxRetries) {
+                                return {
+                                    success: false,
+                                    message: 'Respuesta inválida del servidor externo'
+                                };
+                            }
+                            // Reintentar
+                            await new Promise(r => setTimeout(r, 1000 * Math.pow(2, attempt)));
+                            continue;
+                        }
+                    } else {
+                        console.warn('No se encontró estructura JSON en la respuesta textual.');
+                        this.recordFailure();
+                        if (attempt === maxRetries) {
+                            return {
+                                success: false,
+                                message: 'No se encontró estructura JSON en la respuesta'
+                            };
+                        }
+                        await new Promise(r => setTimeout(r, 1000 * Math.pow(2, attempt)));
+                        continue;
+                    }
+                } else {
+                    const parsed = response.data;
+                    this.recordSuccess();
+                    if (parsed.data && parsed.status === 200) {
+                        return {
+                            success: true,
+                            data: parsed.data
+                        };
+                    }
+                    return {
+                        success: true,
+                        data: parsed
+                    };
+                }
+
+            } catch (error: any) {
+                this.recordFailure();
+                const isLastAttempt = attempt === maxRetries;
+                const isTimeout = error.code === 'ECONNABORTED' || error.message?.includes('timeout');
+                const msg = isTimeout ? `Timeout (${baseTimeout}ms)` : error.message;
+
+                console.warn(`⚠️ consultarArticulo(${idArticulo}) intento ${attempt + 1}/${maxRetries + 1} falló: ${msg}`);
+
+                if (isLastAttempt) {
+                    return {
+                        success: false,
+                        message: `Error consultando ERP: ${msg}`
+                    };
+                }
+                // Backoff exponencial antes de reintentar
+                await new Promise(r => setTimeout(r, 1000 * Math.pow(2, attempt)));
+            }
+        }
+
+        // No debería llegar aquí, pero por seguridad
+        return {
+            success: false,
+            message: 'Error consultando ERP tras reintentos'
+        };
     }
 
     /**
@@ -278,44 +350,27 @@ export class PeruanaInformaticaService {
         if (response.success && response.data) {
             const articulo = response.data;
 
-            // Log para debug de campos recibidos
-            // console.log(`Datos recibidos para ${idArticulo}:`, articulo);
-
-            // Parsear stock que puede venir como "65.000"
             const stockRaw = articulo.stock || 0;
             const stock = typeof stockRaw === 'string' ? parseFloat(stockRaw) : stockRaw;
-
-            // Mapeo de precios basado en respuesta real API
-            // precio_unitario_soles -> pre_cli
-            // precio_lista_preferencial_soles -> pre_web (y pre_cot)
-            // precio_lista_premium_soles -> pre_dis
 
             const round50 = (n: number) => n > 0 ? Math.ceil(n / 0.5) * 0.5 : 0;
 
             const precioUnitario = round50(parseFloat(articulo.precio_unitario_soles) || 0);
             const precioPreferencial = round50(parseFloat(articulo.precio_lista_preferencial_soles) || 0);
             const precioPremium = round50(parseFloat(articulo.precio_lista_premium_soles) || 0);
-            const precioBase = round50(parseFloat(articulo.precio) || 0); // Fallback antiguo
+            const precioBase = round50(parseFloat(articulo.precio) || 0);
 
             return {
-                // Stock
-                stock: Math.floor(stock), // Stock entero
-                disponible: stock > 0,
-
-                // Precios
+                stock: isNaN(stock) ? 0 : stock,
                 pre_cli: precioUnitario || precioBase,
-                pre_cot: precioPreferencial || precioUnitario || precioBase,
                 pre_web: precioPreferencial || precioUnitario || precioBase,
-                pre_dis: precioPremium || precioPreferencial || precioUnitario || precioBase,
-
-                // Información adicional
-                nombre: articulo.nombre || articulo.descripcion || '',
-                codigo: articulo.cod_articulo || articulo.codigo || idArticulo,
+                pre_cot: precioPreferencial || precioUnitario || precioBase,
+                pre_dis: precioPremium || precioUnitario || precioBase,
+                nombre: articulo.nombre || articulo.descripcion || null,
                 marca: articulo.marca || null,
-                categoria: articulo.categoria || null
+                categoria: articulo.categoria || articulo.familia || null
             };
         }
-
         return null;
     }
 
@@ -328,8 +383,24 @@ export class PeruanaInformaticaService {
         console.log(`Iniciando sincronización de ${idsArticulos.length} productos...`);
 
         const resultados = [];
+        let consecutiveSkipped = 0;
 
         for (const id of idsArticulos) {
+            // Si el circuit breaker está abierto, saltamos el resto
+            if (this.checkCircuitBreaker()) {
+                resultados.push({
+                    id,
+                    success: false,
+                    error: 'Circuito abierto: API ERP no disponible'
+                });
+                consecutiveSkipped++;
+                if (consecutiveSkipped > 10) {
+                    console.log('⏭️ Saltando productos restantes (circuito abierto)');
+                    break;
+                }
+                continue;
+            }
+
             try {
                 const datos = await this.obtenerStockYPrecio(id);
 
@@ -340,6 +411,7 @@ export class PeruanaInformaticaService {
                         datos
                     });
                     console.log(`✓ Producto ${id} sincronizado: Stock=${datos.stock}, Pre_CLI=${datos.pre_cli}, Pre_COT=${datos.pre_cot}, Pre_WEB=${datos.pre_web}`);
+                    consecutiveSkipped = 0;
                 } else {
                     resultados.push({
                         id,
@@ -347,10 +419,11 @@ export class PeruanaInformaticaService {
                         error: 'No se obtuvieron datos'
                     });
                     console.log(`✗ Producto ${id} no pudo sincronizarse`);
+                    consecutiveSkipped++;
                 }
 
-                // Pequeña pausa para no saturar la API
-                await new Promise(resolve => setTimeout(resolve, 500));
+                // Pausa corta entre productos
+                await new Promise(resolve => setTimeout(resolve, 300));
 
             } catch (error: any) {
                 resultados.push({
@@ -359,10 +432,15 @@ export class PeruanaInformaticaService {
                     error: error.message
                 });
                 console.error(`✗ Error sincronizando producto ${id}:`, error.message);
+                consecutiveSkipped++;
             }
         }
 
-        console.log(`✓ Sincronización completada: ${resultados.filter(r => r.success).length}/${idsArticulos.length} exitosos`);
+        const exitosos = resultados.filter(r => r.success).length;
+        console.log(`✓ Sincronización completada: ${exitosos}/${idsArticulos.length} exitosos`);
+        if (this.circuitBreakerOpen) {
+            console.warn('⚠️ Circuit breaker quedó abierto al final de la sincronización');
+        }
 
         return resultados;
     }

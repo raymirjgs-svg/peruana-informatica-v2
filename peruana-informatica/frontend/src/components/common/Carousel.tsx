@@ -41,8 +41,7 @@ const defaultSlides: CarouselSlide[] = [
 ];
 
 // Accent colors per slide index
-const slideAccents = ['#dc2626', '#ef4444', '#3b82f6'];
-const slideLabels = ['CATÁLOGO 2026', 'OFERTA ESPECIAL', 'DESPACHO NACIONAL'];
+const slideAccents = ['#dc2626', '#ef4444', '#3b82f6', '#8b5cf6', '#22c55e', '#f59e0b'];
 
 export function Carousel() {
   const [slides, setSlides] = useState<CarouselSlide[]>(defaultSlides);
@@ -156,21 +155,7 @@ export function Carousel() {
             return (
               <div className="absolute inset-0 flex items-center z-10">
                 <div className={`w-full px-10 md:px-20 flex flex-col ${alignClass}`} style={{ maxWidth: pos === 'center' ? '100%' : '768px' }}>
-                  {/* Label badge */}
-                  <div
-                    className="inline-flex items-center gap-2 mb-4 px-3 py-1 rounded-full text-xs font-bold tracking-widest uppercase"
-                    style={{
-                      backgroundColor: `${accentColor}20`,
-                      border: `1px solid ${accentColor}60`,
-                      color: accentColor,
-                      opacity: index === currentSlide ? 1 : 0,
-                      transform: index === currentSlide ? 'translateY(0)' : 'translateY(10px)',
-                      transition: 'opacity 0.5s ease 0.2s, transform 0.5s ease 0.2s',
-                    }}
-                  >
-                    <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: accentColor }} />
-                    {slideLabels[index % slideLabels.length]}
-                  </div>
+
 
                   {showTitle && (
                     <h2

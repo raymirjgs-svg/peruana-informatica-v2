@@ -108,6 +108,14 @@ export function ProductPurchasePanel({
           <p className="text-sm text-gray-600 mb-1">Categoría</p>
           <p className="text-xl font-bold text-gray-800">{product.category}</p>
         </div>
+        <div className="bg-gray-50 p-4 rounded-lg">
+          <p className="text-sm text-gray-600 mb-1">Código interno</p>
+          <p className="text-xl font-bold text-gray-800 font-mono">{product.codigo_interno || '—'}</p>
+        </div>
+        <div className="bg-gray-50 p-4 rounded-lg">
+          <p className="text-sm text-gray-600 mb-1">Marca</p>
+          <p className="text-xl font-bold text-gray-800">{product.brand || '—'}</p>
+        </div>
       </div>
 
       <div className="mb-6">

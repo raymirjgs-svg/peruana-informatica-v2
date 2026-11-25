@@ -382,7 +382,7 @@ export default function ListaDistribucionPage() {
                     {filteredProducts.length > 0 ? (
                       filteredProducts.map((product, index) => {
                         const imgUrl = getProductImage(product);
-                        const hasSpecialPrice = (product as any).priceCot > 0;
+                        const hasSpecialPrice = (product as any).priceDis > 0 && (product as any).priceDis !== (product as any).price;
                         return (
                           <tr
                             key={product.id}
@@ -429,7 +429,7 @@ export default function ListaDistribucionPage() {
                             <td className="px-6 py-4 text-right whitespace-nowrap">
                               <div className="flex flex-col items-end">
                                 <span className="text-lg font-bold text-gray-900">
-                                  S/ {Number((product as any).priceCot || (product as any).priceWeb || product.price || 0).toFixed(2)}
+                                  S/ {Number((product as any).priceDis || (product as any).priceCot || (product as any).priceWeb || product.price || 0).toFixed(2)}
                                 </span>
                                 {hasSpecialPrice && (
                                   <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-green-100 text-green-700 border border-green-200">
@@ -482,7 +482,7 @@ export default function ListaDistribucionPage() {
               {filteredProducts.length > 0 ? (
                 filteredProducts.map((product) => {
                   const imgUrl = getProductImage(product);
-                  const hasSpecialPrice = (product as any).priceCot > 0;
+                  const hasSpecialPrice = (product as any).priceDis > 0 && (product as any).priceDis !== (product as any).price;
                   return (
                     <div key={product.id} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                       <div className="p-4">
@@ -532,7 +532,7 @@ export default function ListaDistribucionPage() {
                             <div className="flex items-center justify-between mt-2">
                               <div>
                                 <div className="text-lg font-bold text-brand-black-800">
-                                  S/ {Number((product as any).priceCot || (product as any).priceWeb || product.price || 0).toFixed(2)}
+                                  S/ {Number((product as any).priceDis || (product as any).priceCot || (product as any).priceWeb || product.price || 0).toFixed(2)}
                                 </div>
                                 {hasSpecialPrice && (
                                   <span className="text-xs px-1.5 py-0.5 bg-green-100 text-green-700 rounded-full font-medium">
@@ -691,7 +691,7 @@ export default function ListaDistribucionPage() {
 
                   <div className="flex flex-wrap items-center gap-4">
                     <div className="text-2xl md:text-3xl font-bold text-brand-red-600">
-                      S/ {Number((selectedProduct as any).priceCot || (selectedProduct as any).priceWeb || selectedProduct.price || 0).toFixed(2)}
+                      S/ {Number((selectedProduct as any).priceDis || (selectedProduct as any).priceCot || (selectedProduct as any).priceWeb || selectedProduct.price || 0).toFixed(2)}
                     </div>
                     <span className={`px-3 py-1 rounded-full text-sm font-medium ${selectedProduct.stock > 10 ? 'bg-green-100 text-green-800' :
                       selectedProduct.stock > 0 ? 'bg-yellow-100 text-yellow-800' :

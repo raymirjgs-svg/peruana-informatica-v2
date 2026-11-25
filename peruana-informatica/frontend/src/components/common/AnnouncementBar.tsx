@@ -1,7 +1,24 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { Truck, BadgeCheck, Phone, Flame, CreditCard, Zap, Megaphone } from 'lucide-react';
 import { API_CONFIG } from '@/config/api';
+
+// Los iconos se guardan como emoji en la base (los edita el cliente en
+// /admin/announcements). Se traducen a iconos Lucide al renderizar; un emoji
+// desconocido se muestra tal cual, asi que ningun anuncio existente se rompe.
+const ICON_MAP: Record<string, typeof Truck> = {
+  '🚚': Truck,
+  '✅': BadgeCheck,
+  '☑️': BadgeCheck,
+  '✔️': BadgeCheck,
+  '📞': Phone,
+  '📱': Phone,
+  '🔥': Flame,
+  '💳': CreditCard,
+  '⚡': Zap,
+  '📢': Megaphone,
+};
 
 const BACKEND_URL = API_CONFIG.API_BASE_URL;
 
@@ -46,13 +63,18 @@ export function AnnouncementBar() {
         onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.animationPlayState = 'paused'; }}
         onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.animationPlayState = 'running'; }}
       >
-        {items.map((msg, i) => (
-          <span key={`${msg.id}-${i}`} className="flex items-center gap-1.5 px-8 whitespace-nowrap">
-            <span>{msg.icon}</span>
-            <span>{msg.text}</span>
-            <span className="ml-8 text-red-300/50">◆</span>
-          </span>
-        ))}
+        {items.map((msg, i) => {
+          const Icon = ICON_MAP[msg.icon];
+          return (
+            <span key={`${msg.id}-${i}`} className="flex items-center gap-1.5 px-8 whitespace-nowrap">
+              {Icon
+                ? <Icon className="w-3.5 h-3.5" aria-hidden="true" />
+                : <span aria-hidden="true">{msg.icon}</span>}
+              <span>{msg.text}</span>
+              <span className="ml-8 text-red-300/50">◆</span>
+            </span>
+          );
+        })}
       </div>
     </div>
   );

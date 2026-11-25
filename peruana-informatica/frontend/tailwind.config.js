@@ -8,6 +8,14 @@ module.exports = {
   ],
   theme: {
     extend: {
+      // La tipografia de marca (Outfit / Barlow Condensed) se carga en layout.tsx
+      // via next/font. Sin esto, `font-sans` resolvia a la sans del sistema y las
+      // variables --font-outfit / --font-barlow no las usaba ningun elemento.
+      fontFamily: {
+        sans: ['var(--font-outfit)', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+        display: ['var(--font-outfit)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        condensed: ['var(--font-barlow)', 'var(--font-outfit)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+      },
       colors: {
         // ========== SHADCN/UI COLORS (Mantener compatibilidad) ==========
         border: "hsl(var(--border))",

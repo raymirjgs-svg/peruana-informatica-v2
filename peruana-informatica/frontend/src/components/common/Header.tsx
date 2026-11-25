@@ -11,6 +11,7 @@ import { useCart } from '@/hooks/useCart';
 import { useWishlist } from '@/hooks/useWishlist';
 import { useCompare } from '@/hooks/useCompare';
 import { CategoryService, Category } from '@/services/CategoryService';
+import { Sparkles, Star, Flame } from 'lucide-react';
 
 export function Header() {
   // Usar hook
@@ -216,13 +217,13 @@ export function Header() {
             {/* Special Links */}
             <div className="flex items-center gap-4">
               <Link href="/products?new=true" className="hover:text-yellow-400 transition-colors font-medium flex items-center gap-1 hover:bg-white/5 px-3 py-1 rounded-md">
-                <span>✨</span> Nuevos
+                <Sparkles className="w-4 h-4" aria-hidden="true" /> Nuevos
               </Link>
-              <Link href="/products?featured=true" className="hover:text-purple-400 transition-colors font-medium flex items-center gap-1 hover:bg-white/5 px-3 py-1 rounded-md">
-                <span>⭐</span> Destacados
+              <Link href="/products?featured=true" className="hover:text-red-400 transition-colors font-medium flex items-center gap-1 hover:bg-white/5 px-3 py-1 rounded-md">
+                <Star className="w-4 h-4" aria-hidden="true" /> Destacados
               </Link>
               <Link href="/products?clearance=true" className="hover:text-red-400 transition-colors font-medium flex items-center gap-1 hover:bg-white/5 px-3 py-1 rounded-md">
-                <span>🔥</span> Remates
+                <Flame className="w-4 h-4" aria-hidden="true" /> Remates
               </Link>
             </div>
 
@@ -309,13 +310,13 @@ export function Header() {
               </Link>
 
               <Link href="/products?new=true" className="block text-lg font-medium text-yellow-400 py-3 border-b border-gray-800/50 flex items-center gap-3" onClick={() => setMobileMenuOpen(false)}>
-                <span>✨</span> Nuevos
+                <Sparkles className="w-5 h-5" aria-hidden="true" /> Nuevos
               </Link>
-              <Link href="/products?featured=true" className="block text-lg font-medium text-purple-400 py-3 border-b border-gray-800/50 flex items-center gap-3" onClick={() => setMobileMenuOpen(false)}>
-                <span>⭐</span> Destacados
+              <Link href="/products?featured=true" className="block text-lg font-medium text-red-400 py-3 border-b border-gray-800/50 flex items-center gap-3" onClick={() => setMobileMenuOpen(false)}>
+                <Star className="w-5 h-5" aria-hidden="true" /> Destacados
               </Link>
               <Link href="/products?clearance=true" className="block text-lg font-medium text-red-400 py-3 border-b border-gray-800/50 flex items-center gap-3" onClick={() => setMobileMenuOpen(false)}>
-                <span>🔥</span> Remates
+                <Flame className="w-5 h-5" aria-hidden="true" /> Remates
               </Link>
 
               <div className="pt-4 space-y-2">

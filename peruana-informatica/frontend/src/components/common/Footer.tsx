@@ -4,84 +4,20 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
 import { useSettings } from '@/context/SettingsContext';
 import CompanyLogo from './CompanyLogo';
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
-  const [email, setEmail] = useState('');
   const { settings } = useSettings();
-
-  const handleSubscribe = (e: React.FormEvent) => {
-    e.preventDefault();
-    alert(`Gracias por suscribirte con: ${email}`);
-    setEmail('');
-  };
 
   return (
     <footer className="bg-gradient-to-b from-gray-900 to-gray-950 text-gray-300 mt-16">
-
-      {/* Newsletter Section — Brand Red */}
-      <div className="relative overflow-hidden">
-        {/* Background */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background: 'linear-gradient(135deg, #7f1d1d 0%, #991b1b 40%, #b91c1c 100%)',
-          }}
-        />
-        {/* Subtle dot pattern */}
-        <svg className="absolute inset-0 w-full h-full opacity-[0.06] pointer-events-none" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <pattern id="newsletterdots" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
-              <circle cx="10" cy="10" r="1.5" fill="white" />
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#newsletterdots)" />
-        </svg>
-        {/* Top shine */}
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-red-400/40 to-transparent" />
-
-        <div className="relative max-w-[1920px] mx-auto px-4 md:px-6 py-10">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-            {/* Left copy */}
-            <div className="text-center md:text-left max-w-sm">
-              <p className="text-red-200/70 text-xs font-bold tracking-widest uppercase mb-1">Newsletter</p>
-              <h3 className="text-white font-black text-2xl mb-2 leading-tight">
-                Ofertas exclusivas<br />directo a tu correo
-              </h3>
-              <p className="text-red-100/70 text-sm">
-                Sé el primero en enterarte de descuentos, nuevos productos y promociones especiales.
-              </p>
-            </div>
-
-            {/* Right form */}
-            <form onSubmit={handleSubscribe} className="w-full md:w-auto">
-              <div className="flex flex-col sm:flex-row gap-2">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="tu@correo.com"
-                  required
-                  className="px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-red-200/50 focus:outline-none focus:ring-2 focus:ring-white/40 focus:bg-white/15 w-full sm:w-72 text-sm transition-all"
-                />
-                <button
-                  type="submit"
-                  className="px-6 py-3 bg-white text-red-700 font-bold rounded-xl hover:bg-red-50 transition-all duration-200 whitespace-nowrap text-sm active:scale-95 shadow-lg"
-                >
-                  Suscribirme →
-                </button>
-              </div>
-              <p className="text-red-200/50 text-[10px] mt-2 text-center sm:text-left">
-                Sin spam. Cancela cuando quieras.
-              </p>
-            </form>
-          </div>
-        </div>
-      </div>
-
+      {/* Newsletter: fuera. No tenia backend (solo un alert()), asi que prometia
+          "ofertas exclusivas directo a tu correo" y no guardaba nada. Se quita
+          el bloque entero, no solo el formulario: dejar el texto seria dejar la
+          promesa sin forma de cumplirla. El dia que exista un endpoint real se
+          vuelve a montar aqui. */}
       {/* Main Footer Content */}
       <div className="max-w-[1920px] mx-auto px-4 md:px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">

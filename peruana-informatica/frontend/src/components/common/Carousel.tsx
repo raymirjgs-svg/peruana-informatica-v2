@@ -6,6 +6,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { CarouselService, CarouselSlide as ApiSlide } from '@/services/CarouselService';
 import { getBackendImageUrl } from '@/utils/images';
+import { Pause, Play } from 'lucide-react';
 
 interface CarouselSlide extends ApiSlide {}
 
@@ -258,21 +259,37 @@ export function Carousel() {
         </svg>
       </button>
 
-      {/* Slide indicators */}
-      <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-20 flex gap-2 items-center">
+      {/* Slide indicators + pausa.
+          Cada punto mide 24x24 de area tactil (minimo WCAG 2.5.8) con la barra
+          visible centrada dentro; antes el boton era de 8x8.
+          El boton de pausa es el control explcito que pide WCAG 2.2.2 para
+          contenido que se mueve solo. */}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1">
         {slides.map((_, index) => (
           <button
             key={index}
             onClick={() => { goToSlide(index); setIsAutoPlay(false); }}
-            className="transition-all duration-400 rounded-full"
-            style={{
-              width: index === currentSlide ? '28px' : '8px',
-              height: '8px',
-              backgroundColor: index === currentSlide ? accentColor : 'rgba(255,255,255,0.4)',
-            }}
+            className="flex h-6 w-6 items-center justify-center rounded-full"
             aria-label={`Ir a slide ${index + 1}`}
-          />
+            aria-current={index === currentSlide}
+          >
+            <span
+              className="block h-2 rounded-full transition-all duration-400"
+              style={{
+                width: index === currentSlide ? '28px' : '8px',
+                backgroundColor: index === currentSlide ? accentColor : 'rgba(255,255,255,0.4)',
+              }}
+            />
+          </button>
         ))}
+        <button
+          onClick={() => setIsAutoPlay((v) => !v)}
+          className="ml-1 flex h-6 w-6 items-center justify-center rounded-full text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+          aria-label={isAutoPlay ? 'Pausar carrusel' : 'Reanudar carrusel'}
+          aria-pressed={isAutoPlay}
+        >
+          {isAutoPlay ? <Pause className="h-3.5 w-3.5" aria-hidden="true" /> : <Play className="h-3.5 w-3.5" aria-hidden="true" />}
+        </button>
       </div>
 
       {/* Progress bar */}

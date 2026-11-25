@@ -201,6 +201,11 @@ export default function HomePage() {
   return (
     <div className="space-y-0">
 
+      {/* Unico h1 de la portada. Los titulares de los slides del carrusel y de
+          las secciones siguen siendo h2: el h1 real de la pagina es el nombre
+          del sitio, que antes no existia en el HTML servido. */}
+      <h1 className="sr-only">Peruana Informática — Tecnología y equipos en Perú</h1>
+
       {/* HERO CAROUSEL */}
       <Carousel />
 

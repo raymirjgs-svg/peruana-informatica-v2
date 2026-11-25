@@ -355,17 +355,19 @@ export class PeruanaInformaticaService {
 
             const round50 = (n: number) => n > 0 ? Math.ceil(n / 0.5) * 0.5 : 0;
 
-            const precioUnitario = round50(parseFloat(articulo.precio_unitario_soles) || 0);
-            const precioPreferencial = round50(parseFloat(articulo.precio_lista_preferencial_soles) || 0);
-            const precioPremium = round50(parseFloat(articulo.precio_lista_premium_soles) || 0);
-            const precioBase = round50(parseFloat(articulo.precio) || 0);
+            // El ERP del cliente SOLO tiene 2 precios reales:
+            // - precio_unitario_soles = Precio Normal (191.50)
+            // - precio_lista_preferencial_soles = Precio Distribución (183.00)
+            // Los campos precio_lista_premium_soles y precio suelen venir vacíos/0
+            const precioNormal = round50(parseFloat(articulo.precio_unitario_soles) || 0);
+            const precioDistribucion = round50(parseFloat(articulo.precio_lista_preferencial_soles) || 0);
 
             return {
                 stock: isNaN(stock) ? 0 : stock,
-                pre_cli: precioUnitario || precioBase,
-                pre_web: precioPreferencial || precioUnitario || precioBase,
-                pre_cot: precioPreferencial || precioUnitario || precioBase,
-                pre_dis: precioPremium || precioUnitario || precioBase,
+                pre_cli: precioNormal || 0,                    // Precio Normal (191.50)
+                pre_dis: precioDistribucion || 0,              // Precio Distribución (183.00)
+                pre_web: precioNormal || 0,                    // Precio Web = Precio Normal
+                pre_cot: precioNormal || 0,                    // Precio Cotización = Precio Normal
                 nombre: articulo.nombre || articulo.descripcion || null,
                 marca: articulo.marca || null,
                 categoria: articulo.categoria || articulo.familia || null

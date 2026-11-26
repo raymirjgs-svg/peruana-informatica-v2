@@ -114,7 +114,7 @@ export function PageForm({ initialData, onSubmit, isSubmitting, isEdit }: PageFo
                                     className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                                     placeholder="Ej: Sobre Nosotros"
                                 />
-                                {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title.message}</p>}
+                                {errors.title && <p className="text-red-600 text-xs mt-1">{errors.title.message}</p>}
                             </div>
 
                             <div>
@@ -131,7 +131,7 @@ export function PageForm({ initialData, onSubmit, isSubmitting, isEdit }: PageFo
                                         placeholder="sobre-nosotros"
                                     />
                                 </div>
-                                {errors.slug && <p className="text-red-500 text-xs mt-1">{errors.slug.message}</p>}
+                                {errors.slug && <p className="text-red-600 text-xs mt-1">{errors.slug.message}</p>}
                             </div>
 
                             <div>
@@ -145,7 +145,7 @@ export function PageForm({ initialData, onSubmit, isSubmitting, isEdit }: PageFo
                                     placeholder="<p>Escribe aquí el contenido de tu página...</p>"
                                 />
                                 <p className="text-xs dark:text-gray-400 mt-1">Puedes escribir texto plano o código HTML.</p>
-                                {errors.content && <p className="text-red-500 text-xs mt-1">{errors.content.message}</p>}
+                                {errors.content && <p className="text-red-600 text-xs mt-1">{errors.content.message}</p>}
                             </div>
                         </div>
                     </div>

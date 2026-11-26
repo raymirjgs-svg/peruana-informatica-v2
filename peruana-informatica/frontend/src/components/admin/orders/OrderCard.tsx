@@ -54,7 +54,7 @@ export function OrderCard({
                         {order.payment_method && (
                           <p><span className="font-medium text-gray-600 dark:text-gray-400">Método:</span> <span className="text-gray-900 dark:text-white uppercase font-medium">{order.payment_method}</span></p>
                         )}
-                        <p><span className="font-medium text-gray-600 dark:text-gray-400">Total:</span> <span className="text-emerald-600 dark:text-emerald-400 font-bold">S/ {parseFloat(order.total_amount).toFixed(2)}</span></p>
+                        <p><span className="font-medium text-gray-600 dark:text-gray-400">Total:</span> <span className="text-emerald-700 dark:text-emerald-400 font-bold">S/ {parseFloat(order.total_amount).toFixed(2)}</span></p>
                         <p><span className="font-medium text-gray-600 dark:text-gray-400">Comprobante:</span> <span className="text-gray-900 dark:text-white">{order.invoice_type === 'factura' ? 'Factura' : 'Boleta'}</span></p>
                         {order.invoice_type === 'factura' && (
                           <>

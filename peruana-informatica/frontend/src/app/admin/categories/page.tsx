@@ -317,7 +317,7 @@ export default function TaxonomyManagePage() {
                       </button>
                       <button
                         onClick={() => handleDeleteCategory(category.id)}
-                        className="px-3 py-1.5 text-xs font-semibold bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-950/50 rounded-lg transition-colors"
+                        className="px-3 py-1.5 text-xs font-semibold bg-red-50 dark:bg-red-950/30 text-red-700 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-950/50 rounded-lg transition-colors"
                       >
                         Eliminar
                       </button>
@@ -358,7 +358,7 @@ export default function TaxonomyManagePage() {
                                 </button>
                                 <button
                                   onClick={() => handleDeleteSubcategory(subcategory.id)}
-                                  className="px-3 py-1.5 text-xs font-semibold bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 hover:bg-red-100 rounded-lg transition-colors"
+                                  className="px-3 py-1.5 text-xs font-semibold bg-red-50 dark:bg-red-950/30 text-red-700 dark:text-red-400 hover:bg-red-100 rounded-lg transition-colors"
                                 >
                                   Eliminar
                                 </button>

@@ -232,7 +232,7 @@ export default function AnnouncementsPage() {
           </div>
           <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
             <p className="text-xs dark:text-gray-400 font-medium">Activos</p>
-            <p className="text-3xl font-bold text-emerald-600 mt-1">{activeCount}</p>
+            <p className="text-3xl font-bold text-emerald-700 mt-1">{activeCount}</p>
           </div>
           <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
             <p className="text-xs dark:text-gray-400 font-medium">Inactivos</p>

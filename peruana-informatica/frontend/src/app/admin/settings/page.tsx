@@ -658,7 +658,7 @@ export default function SettingsPage() {
                   </button>
                 </div>
                 {mpStatus && (
-                  <p className={`mt-3 text-xs ${mpStatus.type === 'success' ? 'text-emerald-600' : 'text-red-600'}`}>
+                  <p className={`mt-3 text-xs ${mpStatus.type === 'success' ? 'text-emerald-700' : 'text-red-600'}`}>
                     {mpStatus.text}
                   </p>
                 )}

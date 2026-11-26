@@ -373,7 +373,7 @@ export default function AdminCarouselPage() {
           </div>
           <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
             <p className="text-xs dark:text-gray-400 font-medium">Activos</p>
-            <p className="text-3xl font-bold text-emerald-600 mt-1">{activeCount}</p>
+            <p className="text-3xl font-bold text-emerald-700 mt-1">{activeCount}</p>
           </div>
           <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
             <p className="text-xs dark:text-gray-400 font-medium">Inactivos</p>
@@ -430,7 +430,7 @@ export default function AdminCarouselPage() {
                       onClick={() => onToggle(s)}
                       disabled={togglingId === s.id}
                       title={s.isActive ? 'Desactivar' : 'Activar'}
-                      className={`p-2 rounded-lg transition-colors disabled:opacity-50 ${s.isActive ? 'text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'}`}
+                      className={`p-2 rounded-lg transition-colors disabled:opacity-50 ${s.isActive ? 'text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-900/20' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'}`}
                     >
                       <Power className="h-4 w-4" />
                     </button>

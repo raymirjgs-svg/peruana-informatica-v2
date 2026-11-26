@@ -783,7 +783,7 @@ export default function AdminProductsPage() {
                   aria-label="Seleccionar todos los productos"
                   checked={selectedProducts.length === data.products.length && data.products.length > 0}
                   onChange={toggleSelectAll}
-                  className="w-5 h-5 text-blue-600 rounded dark:border-gray-700 cursor-pointer"
+                  className="w-6 h-6 text-blue-600 rounded dark:border-gray-700 cursor-pointer"
                 />
               </label>
               <span className="text-sm font-medium dark:text-gray-300">
@@ -808,8 +808,9 @@ export default function AdminProductsPage() {
             </p>
 
             <div>
-              <label className="block text-sm font-medium dark:text-gray-300 mb-2">Categoría</label>
+              <label htmlFor="bulk-category" className="block text-sm font-medium dark:text-gray-300 mb-2">Categoría</label>
               <select
+                id="bulk-category"
                 className="w-full border dark:border-gray-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 value={bulkCategory ?? ''}
                 onChange={(e) => setBulkCategory(e.target.value ? Number(e.target.value) : undefined)}
@@ -867,8 +868,9 @@ export default function AdminProductsPage() {
             )}
 
             <div>
-              <label className="block text-sm font-medium dark:text-gray-300 mb-2">Marca</label>
+              <label htmlFor="bulk-brand" className="block text-sm font-medium dark:text-gray-300 mb-2">Marca</label>
               <select
+                id="bulk-brand"
                 className="w-full border dark:border-gray-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 value={bulkBrand ?? ''}
                 onChange={(e) => setBulkBrand(e.target.value ? Number(e.target.value) : undefined)}
@@ -980,7 +982,7 @@ export default function AdminProductsPage() {
                             aria-label={`Seleccionar ${p.name}`}
                             checked={selectedProducts.includes(p.id)}
                             onChange={() => toggleProductSelection(p.id)}
-                            className="w-5 h-5 text-blue-600 rounded dark:border-gray-700 cursor-pointer"
+                            className="w-6 h-6 text-blue-600 rounded dark:border-gray-700 cursor-pointer"
                           />
                         </label>
                         {/* Miniatura */}
@@ -1042,7 +1044,7 @@ export default function AdminProductsPage() {
                             aria-label={`Seleccionar ${p.name}`}
                             checked={selectedProducts.includes(p.id)}
                             onChange={() => toggleProductSelection(p.id)}
-                            className="w-5 h-5 text-blue-600 rounded dark:border-gray-700 cursor-pointer"
+                            className="w-6 h-6 text-blue-600 rounded dark:border-gray-700 cursor-pointer"
                           />
                         </label>
                         <div className="aspect-square dark:bg-gray-800">

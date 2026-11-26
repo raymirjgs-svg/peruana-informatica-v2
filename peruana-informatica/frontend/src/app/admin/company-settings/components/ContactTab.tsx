@@ -18,7 +18,7 @@ export function ContactTab({ formData, onChange }: ContactTabProps) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label className="block text-sm font-semibold dark:text-gray-300 mb-2">
-            Teléfono <span className="text-red-500">*</span>
+            Teléfono <span className="text-red-600">*</span>
           </label>
           <div className="relative">
             <input
@@ -51,7 +51,7 @@ export function ContactTab({ formData, onChange }: ContactTabProps) {
 
         <div>
           <label className="block text-sm font-semibold dark:text-gray-300 mb-2">
-            Email <span className="text-red-500">*</span>
+            Email <span className="text-red-600">*</span>
           </label>
           <div className="relative">
             <input

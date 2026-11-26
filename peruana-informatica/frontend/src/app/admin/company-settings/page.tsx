@@ -258,7 +258,7 @@ export default function CompanySettingsPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="group">
                   <label className="block text-sm font-semibold dark:text-gray-300 mb-2">
-                    Nombre de la Empresa <span className="text-red-500">*</span>
+                    Nombre de la Empresa <span className="text-red-600">*</span>
                   </label>
                   <div className="relative">
                     <input
@@ -276,7 +276,7 @@ export default function CompanySettingsPage() {
 
                 <div className="group">
                   <label className="block text-sm font-semibold dark:text-gray-300 mb-2">
-                    RUC <span className="text-red-500">*</span>
+                    RUC <span className="text-red-600">*</span>
                   </label>
                   <input
                     type="text"
@@ -292,7 +292,7 @@ export default function CompanySettingsPage() {
 
                 <div className="md:col-span-2">
                   <label className="block text-sm font-semibold dark:text-gray-300 mb-2">
-                    Dirección Fiscal <span className="text-red-500">*</span>
+                    Dirección Fiscal <span className="text-red-600">*</span>
                   </label>
                   <div className="relative">
                     <textarea
@@ -427,7 +427,7 @@ export default function CompanySettingsPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-semibold dark:text-gray-300 mb-2">
-                    Teléfono <span className="text-red-500">*</span>
+                    Teléfono <span className="text-red-600">*</span>
                   </label>
                   <div className="relative">
                     <input
@@ -460,7 +460,7 @@ export default function CompanySettingsPage() {
 
                 <div>
                   <label className="block text-sm font-semibold dark:text-gray-300 mb-2">
-                    Email <span className="text-red-500">*</span>
+                    Email <span className="text-red-600">*</span>
                   </label>
                   <div className="relative">
                     <input

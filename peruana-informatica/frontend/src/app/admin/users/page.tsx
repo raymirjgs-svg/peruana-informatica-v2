@@ -154,7 +154,7 @@ export default function UsersPage() {
       value: users.filter((u) => u.role === 'admin' || u.role === 'super-admin').length,
       color: 'text-blue-600',
     },
-    { label: 'Activos', value: users.filter((u) => !u.is_blocked).length, color: 'text-emerald-600' },
+    { label: 'Activos', value: users.filter((u) => !u.is_blocked).length, color: 'text-emerald-700' },
     { label: 'Bloqueados', value: users.filter((u) => u.is_blocked).length, color: 'text-red-600' },
   ];
 

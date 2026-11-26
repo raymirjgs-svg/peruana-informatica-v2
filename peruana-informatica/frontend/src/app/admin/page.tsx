@@ -128,7 +128,7 @@ function ERPSyncWidget() {
             <p className="text-xs text-gray-600 dark:text-gray-400">Precios y stock</p>
           </div>
         </div>
-        <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${isActive ? 'bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400' : 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400'}`}>
+        <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${isActive ? 'bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400' : 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400'}`}>
           {isActive ? <RefreshCw className="h-3 w-3 animate-spin" /> : <CheckCircle2 className="h-3 w-3" />}
           {isActive ? 'Sincronizando…' : 'Listo'}
         </div>
@@ -322,7 +322,7 @@ export default function AdminDashboardPage() {
               <p className="font-semibold text-amber-900 dark:text-amber-200 text-sm">Atención requerida</p>
               <p className="text-amber-700 dark:text-amber-400 text-sm">{kpis.pendingOrders} pedidos pendientes de verificación</p>
             </div>
-            <Link href="/admin/orders" className="shrink-0 bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold py-2 px-4 rounded-xl transition-colors">
+            <Link href="/admin/orders" className="shrink-0 bg-amber-700 hover:bg-amber-800 text-white text-sm font-semibold py-2 px-4 rounded-xl transition-colors">
               Gestionar
             </Link>
           </MotionWrapper>
@@ -388,7 +388,7 @@ export default function AdminDashboardPage() {
                       <p className="text-sm font-semibold text-gray-900 dark:text-white truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                         {item.product?.name}
                       </p>
-                      <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">
+                      <span className="text-xs text-emerald-700 dark:text-emerald-400 font-medium">
                         {item.product?.stock} en stock
                       </span>
                     </div>

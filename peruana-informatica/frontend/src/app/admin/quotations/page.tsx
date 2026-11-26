@@ -201,7 +201,7 @@ export default function AdminQuotations() {
           </div>
           <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
             <p className="text-xs dark:text-gray-400 font-medium">Hoy</p>
-            <p className="text-3xl font-bold text-emerald-600 mt-1">{metrics.today}</p>
+            <p className="text-3xl font-bold text-emerald-700 mt-1">{metrics.today}</p>
           </div>
           <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
             <p className="text-xs dark:text-gray-400 font-medium">Esta Semana</p>
@@ -287,7 +287,7 @@ export default function AdminQuotations() {
                   <div className="flex items-center gap-4">
                     <div className="text-right">
                       <p className="text-sm text-gray-600 dark:text-gray-400">Total</p>
-                      <p className="text-xl font-bold text-emerald-600 dark:text-emerald-400">
+                      <p className="text-xl font-bold text-emerald-700 dark:text-emerald-400">
                         S/. {Number(quotation.total).toLocaleString('es-PE', { minimumFractionDigits: 2 })}
                       </p>
                     </div>
@@ -387,7 +387,7 @@ export default function AdminQuotations() {
                             <span className="text-gray-600 dark:text-gray-400 w-24">Válida hasta:</span>
                             <span className={`font-medium ${new Date(quotation.valid_until) < new Date()
                                 ? 'text-red-600 dark:text-red-400'
-                                : 'text-emerald-600 dark:text-emerald-400'
+                                : 'text-emerald-700 dark:text-emerald-400'
                               }`}>
                               {new Date(quotation.valid_until).toLocaleDateString('es-PE')}
                             </span>
@@ -424,7 +424,7 @@ export default function AdminQuotations() {
                           <tfoot className="bg-gray-100 dark:bg-gray-700">
                             <tr>
                               <td colSpan={3} className="px-4 py-3 text-sm font-bold text-gray-900 dark:text-white text-right">TOTAL:</td>
-                              <td className="px-4 py-3 text-sm font-bold text-emerald-600 dark:text-emerald-400 text-right">
+                              <td className="px-4 py-3 text-sm font-bold text-emerald-700 dark:text-emerald-400 text-right">
                                 S/. {Number(quotation.total).toFixed(2)}
                               </td>
                             </tr>

@@ -97,7 +97,7 @@ export default function CustomersPage() {
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                         {[
                             { label: 'Total', value: stats.total, color: 'text-gray-900 dark:text-white' },
-                            { label: 'Activos', value: stats.active, color: 'text-emerald-600' },
+                            { label: 'Activos', value: stats.active, color: 'text-emerald-700' },
                             { label: 'Bloqueados', value: stats.blocked, color: 'text-red-600' },
                             { label: 'Nuevos este mes', value: stats.newThisMonth, color: 'text-blue-600' },
                         ].map(s => (
@@ -183,7 +183,7 @@ export default function CustomersPage() {
                                                 </td>
                                                 <td className="px-5 py-3.5">
                                                     <button onClick={() => handleToggleBlock(customer.id)}
-                                                        className={`text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors ${customer.is_blocked ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-100' : 'bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 hover:bg-red-100'}`}>
+                                                        className={`text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors ${customer.is_blocked ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-100' : 'bg-red-50 dark:bg-red-950/30 text-red-700 dark:text-red-400 hover:bg-red-100'}`}>
                                                         {customer.is_blocked ? 'Desbloquear' : 'Bloquear'}
                                                     </button>
                                                 </td>

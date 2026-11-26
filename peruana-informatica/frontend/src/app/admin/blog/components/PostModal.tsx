@@ -38,7 +38,7 @@ export function PostModal({
                   {/* Título */}
                   <div>
                     <label className="block text-sm font-medium dark:text-gray-300 mb-2">
-                      Título <span className="text-red-500">*</span>
+                      Título <span className="text-red-600">*</span>
                     </label>
                     <input
                       type="text"
@@ -70,7 +70,7 @@ export function PostModal({
                   {/* Contenido */}
                   <div>
                     <label className="block text-sm font-medium dark:text-gray-300 mb-2">
-                      Contenido <span className="text-red-500">*</span>
+                      Contenido <span className="text-red-600">*</span>
                     </label>
                     <textarea
                       value={formData.content}

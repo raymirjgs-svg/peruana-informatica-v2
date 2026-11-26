@@ -80,7 +80,7 @@ export function SeoSettingsModal({
                       ))}
                     </select>
                     {formErrors.page_type && (
-                      <p className="text-red-500 text-xs mt-1">
+                      <p className="text-red-600 text-xs mt-1">
                         {formErrors.page_type}
                       </p>
                     )}
@@ -121,7 +121,7 @@ export function SeoSettingsModal({
                       className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${formErrors.meta_title ? "border-red-500" : "border-gray-300"}`}
                     />
                     {formErrors.meta_title && (
-                      <p className="text-red-500 text-xs mt-1">
+                      <p className="text-red-600 text-xs mt-1">
                         {formErrors.meta_title}
                       </p>
                     )}
@@ -141,7 +141,7 @@ export function SeoSettingsModal({
                       className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none ${formErrors.meta_description ? "border-red-500" : "border-gray-300"}`}
                     />
                     {formErrors.meta_description && (
-                      <p className="text-red-500 text-xs mt-1">
+                      <p className="text-red-600 text-xs mt-1">
                         {formErrors.meta_description}
                       </p>
                     )}

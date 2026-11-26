@@ -357,7 +357,7 @@ export function Sidebar() {
                 {theme === 'dark' ? 'Claro' : 'Oscuro'}
               </button>
               <button
-                className="flex items-center justify-center p-2 rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                className="flex items-center justify-center p-2 rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
                 title="Cerrar sesión"
               >
                 <LogOut className="h-3.5 w-3.5" />

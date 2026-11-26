@@ -131,7 +131,7 @@ export default function BrandsAdminPage() {
           </div>
           <div className="bg-white dark:bg-gray-900 rounded-2xl p-4 border border-gray-200 dark:border-gray-700 shadow-sm">
             <p className="text-xs dark:text-gray-400 font-medium">En carrusel</p>
-            <p className="text-3xl font-bold text-emerald-600 mt-1">{inCarousel}</p>
+            <p className="text-3xl font-bold text-emerald-700 mt-1">{inCarousel}</p>
           </div>
         </div>
 
@@ -224,6 +224,7 @@ export default function BrandsAdminPage() {
                       {/* Subir / cambiar logo */}
                       <input
                         type="file"
+                        aria-label={`Subir logo de ${brand.name}`}
                         accept=".svg,.png,.jpg,.jpeg,.webp"
                         className="hidden"
                         ref={(el) => { fileRefs.current[brand.id] = el; }}

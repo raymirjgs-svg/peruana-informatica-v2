@@ -376,7 +376,7 @@ export default function AdminOrdersPage() {
                               <button
                                 onClick={() => handleApproveOrder(order.id)}
                                 title="Aprobar pedido"
-                                className="p-2 rounded-lg dark:text-gray-400 hover:bg-emerald-50 hover:text-emerald-600 dark:hover:bg-emerald-950/40 transition-colors"
+                                className="p-2 rounded-lg dark:text-gray-400 hover:bg-emerald-50 hover:text-emerald-700 dark:hover:bg-emerald-950/40 transition-colors"
                               >
                                 <Check className="h-4 w-4" />
                               </button>
@@ -472,7 +472,7 @@ export default function AdminOrdersPage() {
                     Aprobar pedido
                   </button>
                   <button onClick={() => handleCancelOrder(selectedOrder.id)}
-                    className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-950/50 rounded-xl transition-colors">
+                    className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold bg-red-50 dark:bg-red-950/30 text-red-700 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-950/50 rounded-xl transition-colors">
                     <X className="w-3.5 h-3.5" />
                     Cancelar pedido
                   </button>
@@ -510,7 +510,7 @@ export default function AdminOrdersPage() {
                     Verificar pago
                   </button>
                   <button onClick={() => handleVerifyPayment(selectedOrder.id, false)}
-                    className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-950/50 rounded-xl transition-colors">
+                    className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold bg-red-50 dark:bg-red-950/30 text-red-700 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-950/50 rounded-xl transition-colors">
                     <X className="w-3.5 h-3.5" />
                     Rechazar pago
                   </button>
@@ -562,7 +562,7 @@ export default function AdminOrdersPage() {
                   {invoiceFile ? (
                     <div>
                       <p className="text-sm font-bold text-emerald-700 dark:text-emerald-400">{invoiceFile.name}</p>
-                      <p className="text-xs text-emerald-600 dark:text-emerald-500 mt-1">{(invoiceFile.size / 1024 / 1024).toFixed(2)} MB · Clic para cambiar</p>
+                      <p className="text-xs text-emerald-700 dark:text-emerald-500 mt-1">{(invoiceFile.size / 1024 / 1024).toFixed(2)} MB · Clic para cambiar</p>
                     </div>
                   ) : (
                     <div>

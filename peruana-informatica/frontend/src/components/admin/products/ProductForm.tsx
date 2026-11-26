@@ -559,7 +559,7 @@ export function ProductForm({ initialData, initialGalleryImages, initialSpecific
                   className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                   placeholder="Nombre visible en la tienda"
                 />
-                {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}
+                {errors.name && <p className="text-red-600 text-xs mt-1">{errors.name.message}</p>}
               </div>
 
               <div>
@@ -571,7 +571,7 @@ export function ProductForm({ initialData, initialGalleryImages, initialSpecific
                   onChange={(html) => setValue('description', html, { shouldValidate: true })}
                   placeholder="Descripción detallada del producto..."
                 />
-                {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description.message}</p>}
+                {errors.description && <p className="text-red-600 text-xs mt-1">{errors.description.message}</p>}
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -586,7 +586,7 @@ export function ProductForm({ initialData, initialGalleryImages, initialSpecific
                     readOnly={!!erpData}
                     className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all read-only:bg-gray-100 dark:read-only:bg-gray-700"
                   />
-                  {errors.price && <p className="text-red-500 text-xs mt-1">{errors.price.message}</p>}
+                  {errors.price && <p className="text-red-600 text-xs mt-1">{errors.price.message}</p>}
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -598,7 +598,7 @@ export function ProductForm({ initialData, initialGalleryImages, initialSpecific
                     readOnly={!!erpData}
                     className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all read-only:bg-gray-100 dark:read-only:bg-gray-700"
                   />
-                  {errors.stock && <p className="text-red-500 text-xs mt-1">{errors.stock.message}</p>}
+                  {errors.stock && <p className="text-red-600 text-xs mt-1">{errors.stock.message}</p>}
                 </div>
               </div>
             </div>
@@ -695,7 +695,7 @@ export function ProductForm({ initialData, initialGalleryImages, initialSpecific
                   maxLength={160}
                   className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                 />
-                {errors.seo_title && <p className="text-red-500 text-xs mt-1">{errors.seo_title.message}</p>}
+                {errors.seo_title && <p className="text-red-600 text-xs mt-1">{errors.seo_title.message}</p>}
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -707,7 +707,7 @@ export function ProductForm({ initialData, initialGalleryImages, initialSpecific
                   rows={3}
                   className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                 />
-                {errors.seo_description && <p className="text-red-500 text-xs mt-1">{errors.seo_description.message}</p>}
+                {errors.seo_description && <p className="text-red-600 text-xs mt-1">{errors.seo_description.message}</p>}
               </div>
             </div>
           </div>
@@ -818,7 +818,7 @@ export function ProductForm({ initialData, initialGalleryImages, initialSpecific
                     <button
                       type="button"
                       onClick={() => removeSpec(idx)}
-                      className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                      className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                     >
                       <X className="h-4 w-4" />
                     </button>
@@ -932,7 +932,7 @@ export function ProductForm({ initialData, initialGalleryImages, initialSpecific
                   <input
                     type="checkbox"
                     {...register('is_clearance')}
-                    className="w-5 h-5 rounded dark:border-gray-700 text-red-500 focus:ring-red-500"
+                    className="w-5 h-5 rounded dark:border-gray-700 text-red-600 focus:ring-red-500"
                   />
                   <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                     🔥 En Remate

@@ -112,7 +112,7 @@ export function Header() {
                   </button>
                   <button
                     onClick={handleLogout}
-                    className="w-full text-left px-4 py-2.5 mt-1 hover:bg-red-50 dark:hover:bg-red-900/20 text-red-500 dark:text-red-400 transition-colors flex items-center gap-2.5 text-sm font-medium"
+                    className="w-full text-left px-4 py-2.5 mt-1 hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400 transition-colors flex items-center gap-2.5 text-sm font-medium"
                   >
                     <LogOut className="h-4 w-4" />
                     Cerrar sesión

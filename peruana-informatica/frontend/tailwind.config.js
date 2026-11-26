@@ -2,9 +2,10 @@
 module.exports = {
   darkMode: 'class',
   content: [
-    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+    // Todo src/: las clases tambien se componen desde services, hooks, lib,
+    // utils y context (por ejemplo los gradientes del score SEO en SeoService).
+    // Si un archivo queda fuera, Tailwind purga sus clases y nunca se aplican.
+    './src/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
     extend: {

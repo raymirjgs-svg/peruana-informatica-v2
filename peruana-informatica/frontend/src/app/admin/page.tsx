@@ -143,7 +143,7 @@ function ERPSyncWidget() {
         </div>
         <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-3">
           <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Próximo sync</p>
-          <p className={`text-xs font-bold tabular-nums ${status?.nextSyncTime && Date.now() > status.nextSyncTime - 120000 ? 'text-amber-500' : 'text-gray-700 dark:text-gray-300'}`}>
+          <p className={`text-xs font-bold tabular-nums ${status?.nextSyncTime && Date.now() > status.nextSyncTime - 120000 ? 'text-amber-700 dark:text-amber-400' : 'text-gray-700 dark:text-gray-300'}`}>
             {status ? formatCountdown(status.nextSyncTime) : '—'}
           </p>
         </div>

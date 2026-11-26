@@ -559,7 +559,7 @@ export default function BlogAdminPage() {
                       href="https://aistudio.google.com/app/apikey"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm text-blue-600 hover:text-blue-700 font-medium whitespace-nowrap"
+                      className="inline-flex items-center py-1.5 text-sm text-blue-700 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium whitespace-nowrap"
                     >
                       Obtener nueva
                     </a>

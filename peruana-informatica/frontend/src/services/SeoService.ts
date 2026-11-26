@@ -366,9 +366,9 @@ class SeoService {
    * Obtener color de fondo del score SEO
    */
   static getScoreBackgroundColor(score: number): string {
-    if (score >= 80) return "from-green-600 to-emerald-700";
-    if (score >= 60) return "from-amber-600 to-orange-700";
-    return "from-red-600 to-pink-700";
+    if (score >= 80) return "from-green-700 to-emerald-800";
+    if (score >= 60) return "from-amber-700 to-orange-800";
+    return "from-red-700 to-pink-800";
   }
 
   /**

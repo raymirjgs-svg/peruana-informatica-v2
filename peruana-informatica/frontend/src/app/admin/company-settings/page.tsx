@@ -318,7 +318,7 @@ export default function CompanySettingsPage() {
                         name="show_distributor_price_in_detail"
                         checked={formData.show_distributor_price_in_detail}
                         onChange={handleChange}
-                        className="w-5 h-5 text-orange-600 rounded focus:ring-orange-500 dark:border-gray-700 cursor-pointer"
+                        className="w-6 h-6 text-orange-600 rounded focus:ring-orange-500 dark:border-gray-700 cursor-pointer"
                       />
                     </label>
                     <label htmlFor="show_distributor_price_in_detail" className="cursor-pointer">

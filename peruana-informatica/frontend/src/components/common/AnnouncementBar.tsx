@@ -51,7 +51,7 @@ export function AnnouncementBar() {
 
   return (
     <div
-      className="w-full overflow-hidden text-white text-[11px] font-semibold tracking-wide select-none"
+      className="w-full overflow-hidden text-white text-xs font-semibold tracking-wide select-none"
       style={{
         background: 'linear-gradient(90deg, #991b1b 0%, #dc2626 50%, #991b1b 100%)',
         height: '30px',

@@ -23,11 +23,16 @@ export function ProductGallery({
 
   return (
     <div className="lg:sticky lg:top-24 self-start">
-      <div className="bg-gray-50 rounded-xl h-[380px] lg:h-[520px] flex items-center justify-center mb-4 border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-xl h-[380px] lg:h-[520px] flex items-center justify-center mb-4 border border-gray-200 overflow-hidden">
         {images[selectedImage] ? (
           <img
             src={images[selectedImage]}
             alt={productName}
+            width={800}
+            height={600}
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
             className="w-full h-full object-contain p-4"
             onError={(e) => {
               const target = e.target as HTMLImageElement;
@@ -56,6 +61,10 @@ export function ProductGallery({
                 <img
                   src={img}
                   alt={`Imagen ${index + 1}`}
+                  width={800}
+                  height={600}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-contain p-1 rounded-lg"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;

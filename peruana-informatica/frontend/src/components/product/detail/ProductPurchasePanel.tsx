@@ -14,6 +14,7 @@ import {
   Truck,
   Zap,
 } from 'lucide-react';
+import { useToast } from '@/hooks/useToast';
 
 interface ProductPurchasePanelProps {
   product: Product;
@@ -39,6 +40,16 @@ export function ProductPurchasePanel({
   const listPrice = Number(product.price || 0);
   const distributorPrice = Number(product.priceDis || 0);
   const stockLabel = formatStockLabel(product.stock, product.stockDisplay);
+  const toast = useToast();
+
+  const handleShare = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      toast.success('Enlace copiado', 'Ya puedes compartir este producto por WhatsApp o redes sociales.');
+    } catch {
+      toast.error('No se pudo copiar el enlace', 'Copia la URL desde la barra del navegador.');
+    }
+  };
   const whatsapp = settings?.company_whatsapp || '988552455';
 
   return (
@@ -60,7 +71,7 @@ export function ProductPurchasePanel({
         </div>
       )}
 
-      <div className="rounded-xl border border-gray-200 bg-gray-50 p-5 mb-6">
+      <div className="rounded-xl border border-gray-200 bg-white p-5 mb-6">
         {listPrice > 0 ? (
           <span className="block text-3xl md:text-4xl font-bold text-brand-red-600">
             S/ {listPrice.toFixed(2)}
@@ -107,8 +118,9 @@ export function ProductPurchasePanel({
         )}
       </div>
 
-      <dl className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-        <div className="rounded-lg border border-gray-100 bg-gray-50 px-3 py-3">
+      {/* Ficha de datos: una sola superficie con separadores, no mini-tarjetas */}
+      <dl className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-px bg-gray-100 border border-gray-200 rounded-xl overflow-hidden mb-6">
+        <div className="bg-white px-3.5 py-3">
           <dt className="text-xs uppercase tracking-wide text-gray-500">Stock</dt>
           <dd
             className={`mt-1 text-sm font-semibold break-words ${
@@ -118,19 +130,19 @@ export function ProductPurchasePanel({
             {stockLabel} unidades
           </dd>
         </div>
-        <div className="rounded-lg border border-gray-100 bg-gray-50 px-3 py-3">
+        <div className="bg-white px-3.5 py-3">
           <dt className="text-xs uppercase tracking-wide text-gray-500">Categoría</dt>
           <dd className="mt-1 text-sm font-semibold text-gray-900 break-words">
             {product.category || '—'}
           </dd>
         </div>
-        <div className="rounded-lg border border-gray-100 bg-gray-50 px-3 py-3">
+        <div className="bg-white px-3.5 py-3">
           <dt className="text-xs uppercase tracking-wide text-gray-500">Código interno</dt>
           <dd className="mt-1 text-sm font-semibold text-gray-900 font-mono break-words">
             {product.codigo_interno || '—'}
           </dd>
         </div>
-        <div className="rounded-lg border border-gray-100 bg-gray-50 px-3 py-3">
+        <div className="bg-white px-3.5 py-3">
           <dt className="text-xs uppercase tracking-wide text-gray-500">Marca</dt>
           <dd className="mt-1 text-sm font-semibold text-gray-900 break-words">
             {product.brand || '—'}
@@ -203,10 +215,7 @@ export function ProductPurchasePanel({
           </button>
           <button
             type="button"
-            onClick={() => {
-              navigator.clipboard.writeText(window.location.href);
-              alert('Enlace copiado al portapapeles');
-            }}
+            onClick={handleShare}
             className="py-2.5 rounded-xl font-medium text-sm flex items-center justify-center gap-2 bg-gray-100 text-gray-700 hover:bg-gray-200 transition"
           >
             <Share2 className="w-4 h-4" />
@@ -216,10 +225,10 @@ export function ProductPurchasePanel({
       </div>
 
       <div className="rounded-xl border border-gray-200 bg-white p-4">
-        <h4 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
+        <h2 className="text-base font-semibold text-gray-900 mb-2 flex items-center gap-2">
           <Truck className="w-4 h-4 text-brand-red-600" />
           Información de envío
-        </h4>
+        </h2>
         <ul className="text-sm text-gray-600 space-y-1">
           <li>• Envíos a todo el Perú</li>
           <li>• Entrega inmediata en Arequipa y Lima</li>

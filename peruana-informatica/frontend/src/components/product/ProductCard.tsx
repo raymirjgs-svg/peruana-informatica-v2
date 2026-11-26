@@ -89,6 +89,10 @@ export const ProductCard = memo(function ProductCard({ product }: ProductCardPro
           <img
             src={imgSrc}
             alt={product.name}
+            width={800}
+            height={600}
+            loading="lazy"
+            decoding="async"
             className="w-full h-full object-contain p-3 group-hover:scale-105 transition-transform duration-500"
             onError={(e) => { e.currentTarget.src = '/no-image.svg'; }}
           />
@@ -97,22 +101,22 @@ export const ProductCard = memo(function ProductCard({ product }: ProductCardPro
         {/* Status badges — top left */}
         <div className="absolute top-2 left-2 flex flex-col gap-1 z-10">
           {!isProductAvailable(product) && (
-            <span className="px-2 py-0.5 text-[10px] font-bold tracking-wide uppercase bg-gray-700 text-white rounded">
+            <span className="px-2 py-0.5 text-[11px] font-bold tracking-wide uppercase bg-gray-700 text-white rounded">
               Agotado
             </span>
           )}
           {product.is_new && isProductAvailable(product) && (
-            <span className="px-2 py-0.5 text-[10px] font-bold tracking-wide uppercase bg-brand-red-600 text-white rounded">
+            <span className="px-2 py-0.5 text-[11px] font-bold tracking-wide uppercase bg-brand-red-600 text-white rounded">
               Nuevo
             </span>
           )}
           {product.is_featured && isProductAvailable(product) && (
-            <span className="px-2 py-0.5 text-[10px] font-bold tracking-wide uppercase bg-amber-500 text-white rounded">
+            <span className="px-2 py-0.5 text-[11px] font-bold tracking-wide uppercase bg-amber-700 text-white rounded">
               Top
             </span>
           )}
           {product.is_clearance && isProductAvailable(product) && (
-            <span className="px-2 py-0.5 text-[10px] font-bold tracking-wide uppercase bg-brand-red-600 text-white rounded">
+            <span className="px-2 py-0.5 text-[11px] font-bold tracking-wide uppercase bg-brand-red-600 text-white rounded">
               Oferta
             </span>
           )}
@@ -165,7 +169,7 @@ export const ProductCard = memo(function ProductCard({ product }: ProductCardPro
         </Link>
 
         {product.codigo_interno && (
-          <p className="text-[10px] text-gray-400 dark:text-gray-500 font-mono mb-2">
+          <p className="text-xs text-gray-600 dark:text-gray-400 font-mono mb-2">
             {product.codigo_interno}
           </p>
         )}
@@ -178,7 +182,7 @@ export const ProductCard = memo(function ProductCard({ product }: ProductCardPro
           {pWeb > 0 ? (
             <div className="flex flex-col gap-0.5">
               {hasDiscount && (
-                <span className="text-xs text-gray-400 line-through leading-none tabular-nums">
+                <span className="text-xs text-gray-500 line-through leading-none tabular-nums">
                   S/ {pDis.toFixed(2)}
                 </span>
               )}
@@ -187,7 +191,7 @@ export const ProductCard = memo(function ProductCard({ product }: ProductCardPro
               </span>
             </div>
           ) : (
-            <span className="text-sm font-semibold text-gray-400">Consultar precio</span>
+            <span className="text-sm font-semibold text-gray-600">Consultar precio</span>
           )}
 
           {isProductAvailable(product) && (
@@ -195,14 +199,14 @@ export const ProductCard = memo(function ProductCard({ product }: ProductCardPro
               {product.stock < 5 ? (
                 <>
                   <span className="w-1.5 h-1.5 rounded-full bg-amber-500 flex-none" />
-                  <span className="text-[11px] text-amber-600 dark:text-amber-400 font-medium">
+                  <span className="text-xs text-amber-700 dark:text-amber-400 font-medium">
                     Solo {formatStockLabel(product.stock, product.stockDisplay)} en stock
                   </span>
                 </>
               ) : (
                 <>
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 flex-none" />
-                  <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
+                  <span className="text-xs text-emerald-700 dark:text-emerald-400 font-medium">
                     En stock
                   </span>
                 </>

@@ -35,8 +35,11 @@ export function Navigation({ items = [] }: NavigationProps) {
         <div className="flex gap-2 text-sm flex-wrap">
           {breadcrumbs.map((item, index) => (
             <div key={item.href} className="flex items-center gap-2">
-              {index > 0 && <span className="text-gray-400">/</span>}
-              <Link href={item.href} className="text-brand-red-600 hover:text-brand-red-800 hover:underline font-medium">
+              {index > 0 && <span className="text-gray-500">/</span>}
+              <Link
+                href={item.href}
+                className="inline-block py-1 text-brand-red-700 hover:text-brand-red-900 hover:underline font-medium"
+              >
                 {item.name}
               </Link>
             </div>

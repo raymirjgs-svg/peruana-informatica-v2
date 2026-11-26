@@ -1,5 +1,6 @@
 'use client';
 
+import { useRef } from 'react';
 import type { Product } from '@/models/Product';
 import type { CompanySettings } from '@/services/SettingsService';
 import { ProductReviews } from '@/components/product/ProductReviews';
@@ -22,16 +23,34 @@ const TABS = [
 
 export function ProductTabs({ product, activeTab, onTabChange, settings }: ProductTabsProps) {
   const specs = Array.isArray(product.specifications) ? product.specifications : [];
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
+  // Patrón ARIA de pestañas: flechas ←/→,Inicio y Fin mueven el foco y activan.
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>, index: number) => {
+    const last = TABS.length - 1;
+    let next = index;
+    if (event.key === 'ArrowRight') next = index === last ? 0 : index + 1;
+    else if (event.key === 'ArrowLeft') next = index === 0 ? last : index - 1;
+    else if (event.key === 'Home') next = 0;
+    else if (event.key === 'End') next = last;
+    else return;
+
+    event.preventDefault();
+    const target = TABS[next];
+    if (!target) return;
+    onTabChange(target.id);
+    tabRefs.current[next]?.focus();
+  };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 mb-8">
+    <div className="bg-white rounded-xl border border-gray-200 mb-8">
       <div className="border-b border-gray-200 overflow-x-auto">
         <nav
           role="tablist"
           aria-label="Información del producto"
           className="flex gap-1 px-4 md:px-8 min-w-max"
         >
-          {TABS.map((tab) => {
+          {TABS.map((tab, index) => {
             const Icon = tab.icon;
             return (
               <button
@@ -42,7 +61,9 @@ export function ProductTabs({ product, activeTab, onTabChange, settings }: Produ
                 aria-selected={activeTab === tab.id}
                 aria-controls={`panel-${tab.id}`}
                 tabIndex={activeTab === tab.id ? 0 : -1}
+                ref={(el) => { tabRefs.current[index] = el; }}
                 onClick={() => onTabChange(tab.id)}
+                onKeyDown={(e) => handleKeyDown(e, index)}
                 className={`py-4 px-3 md:px-4 border-b-2 font-medium text-sm transition whitespace-nowrap flex items-center gap-2 ${
                   activeTab === tab.id
                     ? 'border-brand-red-600 text-brand-red-700'
@@ -57,17 +78,22 @@ export function ProductTabs({ product, activeTab, onTabChange, settings }: Produ
         </nav>
       </div>
 
-      <div
-        className="p-6 md:p-8"
-        role="tabpanel"
-        id={`panel-${activeTab}`}
-        aria-labelledby={`tab-${activeTab}`}
-      >
+      {/* Todos los paneles existen en el DOM (los inactivos, ocultos) para que
+          aria-controls apunte siempre a un id real. */}
+      {TABS.map((tab) => (
+        <div
+          key={tab.id}
+          className="p-6 md:p-8"
+          role="tabpanel"
+          id={`panel-${tab.id}`}
+          aria-labelledby={`tab-${tab.id}`}
+          hidden={activeTab !== tab.id}
+        >
         {activeTab === 'description' && (
           <div>
             <h2 className="text-xl font-bold text-gray-900 mb-4">Descripción del producto</h2>
             <div
-              className="prose max-w-none [&_table]:w-full [&_table]:border-collapse [&_table]:my-4 [&_th]:border [&_th]:border-gray-300 [&_th]:p-3 [&_th]:bg-gray-100 [&_th]:text-left [&_td]:border [&_td]:border-gray-300 [&_td]:p-3 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5"
+              className="prose max-w-[70ch] [&_table]:w-full [&_table]:border-collapse [&_table]:my-4 [&_th]:border [&_th]:border-gray-300 [&_th]:p-3 [&_th]:bg-gray-100 [&_th]:text-left [&_td]:border [&_td]:border-gray-300 [&_td]:p-3 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5"
               dangerouslySetInnerHTML={{
                 __html:
                   sanitizeHtml(product.description) ||
@@ -182,7 +208,8 @@ export function ProductTabs({ product, activeTab, onTabChange, settings }: Produ
             </div>
           </div>
         )}
-      </div>
+        </div>
+      ))}
     </div>
   );
 }

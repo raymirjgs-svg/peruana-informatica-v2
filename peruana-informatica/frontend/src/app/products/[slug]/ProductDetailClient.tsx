@@ -164,26 +164,24 @@ export default function ProductDetailClient({
       />
 
       <div className="container mx-auto px-4 py-8">
-        <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            <ProductGallery
-              images={productImages}
-              productName={product.name}
-              selectedImage={selectedImage}
-              onSelectImage={setSelectedImage}
-              stock={product.stock}
-            />
-            <ProductPurchasePanel
-              product={product}
-              settings={settings}
-              quantity={quantity}
-              isInWishlist={isInWishlist(product.id)}
-              onQuantityChange={setQuantity}
-              onBuyNow={handleBuyNow}
-              onAddToCart={handleAddToCart}
-              onToggleWishlist={handleToggleWishlist}
-            />
-          </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mb-8">
+          <ProductGallery
+            images={productImages}
+            productName={product.name}
+            selectedImage={selectedImage}
+            onSelectImage={setSelectedImage}
+            stock={product.stock}
+          />
+          <ProductPurchasePanel
+            product={product}
+            settings={settings}
+            quantity={quantity}
+            isInWishlist={isInWishlist(product.id)}
+            onQuantityChange={setQuantity}
+            onBuyNow={handleBuyNow}
+            onAddToCart={handleAddToCart}
+            onToggleWishlist={handleToggleWishlist}
+          />
         </div>
 
         <ProductTabs

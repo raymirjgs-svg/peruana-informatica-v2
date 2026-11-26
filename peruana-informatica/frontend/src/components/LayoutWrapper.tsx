@@ -18,8 +18,15 @@ export function LayoutWrapper({ children }: { children: React.ReactNode }) {
   // Para páginas públicas, incluir Header, Navbar, Footer y container
   return (
     <>
+      {/* Skip link: permite saltar la cabecera con el teclado */}
+      <a
+        href="#contenido"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:bg-white focus:text-brand-red-700 focus:px-4 focus:py-2 focus:rounded-lg focus:shadow-lg focus:outline focus:outline-2 focus:outline-brand-red-600"
+      >
+        Saltar al contenido principal
+      </a>
       <Header />
-      <main className="min-h-screen max-w-[1920px] mx-auto px-4 md:px-6 py-8">{children}</main>
+      <main id="contenido" className="min-h-screen max-w-[1920px] mx-auto px-4 md:px-6 py-8">{children}</main>
       <Footer />
       <PromoModal />
     </>

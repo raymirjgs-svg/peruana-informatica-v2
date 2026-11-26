@@ -269,7 +269,7 @@ export default function AdminOrdersPage() {
         <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
           <div className="flex flex-col lg:flex-row gap-3">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-600 dark:text-gray-400" />
               <input
                 type="text"
                 value={search}
@@ -295,7 +295,7 @@ export default function AdminOrdersPage() {
             </div>
           </div>
           <div className="mt-3 flex items-center justify-between text-sm">
-            <span className="text-gray-500 dark:text-gray-400">
+            <span className="text-gray-600 dark:text-gray-400">
               <span className="font-semibold text-gray-900 dark:text-white">{filtered.length}</span>
               {filtered.length !== orders.length && <> de {orders.length}</>} pedidos
             </span>
@@ -313,13 +313,13 @@ export default function AdminOrdersPage() {
           </div>
         ) : orders.length === 0 ? (
           <div className="text-center py-16 bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
-            <ShoppingCart className="h-10 w-10 mx-auto text-gray-300 dark:text-gray-600 mb-3" />
-            <p className="text-sm text-gray-400">No hay pedidos registrados</p>
+            <ShoppingCart className="h-10 w-10 mx-auto text-gray-300 dark:text-gray-400 mb-3" />
+            <p className="text-sm text-gray-600 dark:text-gray-400">No hay pedidos registrados</p>
           </div>
         ) : filtered.length === 0 ? (
           <div className="text-center py-16 bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
-            <Search className="h-10 w-10 mx-auto text-gray-300 dark:text-gray-600 mb-3" />
-            <p className="text-sm text-gray-500 dark:text-gray-400">Ningun pedido coincide con los filtros</p>
+            <Search className="h-10 w-10 mx-auto text-gray-300 dark:text-gray-400 mb-3" />
+            <p className="text-sm text-gray-600 dark:text-gray-400">Ningun pedido coincide con los filtros</p>
           </div>
         ) : (
           <>
@@ -344,14 +344,14 @@ export default function AdminOrdersPage() {
                         <td className="px-4 py-3">
                           <p className="font-semibold text-gray-900 dark:text-white text-sm">#{order.id}</p>
                           {order.tracking_code && (
-                            <p className="text-xs font-mono text-gray-400">{order.tracking_code}</p>
+                            <p className="text-xs font-mono text-gray-600 dark:text-gray-400">{order.tracking_code}</p>
                           )}
                         </td>
                         <td className="px-4 py-3">
                           <p className="font-medium text-gray-900 dark:text-white text-sm truncate max-w-[220px]">{order.customer_name}</p>
                           <p className="text-xs dark:text-gray-400 truncate max-w-[220px]">{order.customer_email}</p>
                         </td>
-                        <td className="px-4 py-3 text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                        <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">
                           {new Date(order.createdAt).toLocaleDateString('es-PE')}
                         </td>
                         <td className="px-4 py-3 text-sm font-semibold text-gray-900 dark:text-white text-right whitespace-nowrap">
@@ -425,7 +425,7 @@ export default function AdminOrdersPage() {
               {selectedOrder.tracking_code && (
                 <span className="text-xs font-mono font-semibold text-blue-600 dark:text-blue-400">{selectedOrder.tracking_code}</span>
               )}
-              <span className="ml-auto text-xs text-gray-400">{new Date(selectedOrder.createdAt).toLocaleString('es-PE')}</span>
+              <span className="ml-auto text-xs text-gray-600 dark:text-gray-400">{new Date(selectedOrder.createdAt).toLocaleString('es-PE')}</span>
             </div>
 
             <div className="grid md:grid-cols-2 gap-4">
@@ -433,15 +433,15 @@ export default function AdminOrdersPage() {
                 <p className="text-xs font-medium dark:text-gray-400 mb-2">Cliente</p>
                 <p className="text-sm font-semibold text-gray-900 dark:text-white">{selectedOrder.customer_name}</p>
                 <p className="text-sm text-blue-600 dark:text-blue-400 break-all">{selectedOrder.customer_email}</p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">{selectedOrder.customer_phone}</p>
-                {selectedOrder.customer_document && <p className="text-sm text-gray-500 dark:text-gray-400">DNI: {selectedOrder.customer_document}</p>}
+                <p className="text-sm text-gray-600 dark:text-gray-400">{selectedOrder.customer_phone}</p>
+                {selectedOrder.customer_document && <p className="text-sm text-gray-600 dark:text-gray-400">DNI: {selectedOrder.customer_document}</p>}
               </div>
               <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 space-y-1.5">
                 <p className="text-xs font-medium dark:text-gray-400 mb-2">Pago</p>
-                {selectedOrder.payment_method && <p className="text-sm text-gray-500 dark:text-gray-400">Metodo: <span className="font-medium text-gray-900 dark:text-white uppercase">{selectedOrder.payment_method}</span></p>}
-                <p className="text-sm text-gray-500 dark:text-gray-400">Total: <span className="font-bold text-gray-900 dark:text-white">S/ {parseFloat(selectedOrder.total_amount).toFixed(2)}</span></p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Tipo: {selectedOrder.invoice_type === 'factura' ? 'Factura' : 'Boleta'}</p>
-                {selectedOrder.invoice_type === 'factura' && <><p className="text-sm text-gray-500 dark:text-gray-400">RUC: <span className="font-mono">{selectedOrder.ruc}</span></p><p className="text-sm text-gray-500 dark:text-gray-400">{selectedOrder.business_name}</p></>}
+                {selectedOrder.payment_method && <p className="text-sm text-gray-600 dark:text-gray-400">Metodo: <span className="font-medium text-gray-900 dark:text-white uppercase">{selectedOrder.payment_method}</span></p>}
+                <p className="text-sm text-gray-600 dark:text-gray-400">Total: <span className="font-bold text-gray-900 dark:text-white">S/ {parseFloat(selectedOrder.total_amount).toFixed(2)}</span></p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Tipo: {selectedOrder.invoice_type === 'factura' ? 'Factura' : 'Boleta'}</p>
+                {selectedOrder.invoice_type === 'factura' && <><p className="text-sm text-gray-600 dark:text-gray-400">RUC: <span className="font-mono">{selectedOrder.ruc}</span></p><p className="text-sm text-gray-600 dark:text-gray-400">{selectedOrder.business_name}</p></>}
                 {selectedOrder.invoice_number && <p className="text-sm font-semibold text-blue-600 dark:text-blue-400">N° {selectedOrder.invoice_number}</p>}
               </div>
             </div>
@@ -453,7 +453,7 @@ export default function AdminOrdersPage() {
                   {selectedOrder.items.map((item) => (
                     <div key={item.id} className="flex justify-between items-center text-sm py-1.5 border-b border-gray-200 dark:border-gray-700 last:border-0">
                       <span className="text-gray-700 dark:text-gray-300">{item.product_name}</span>
-                      <span className="text-gray-500 dark:text-gray-400 shrink-0 ml-4">
+                      <span className="text-gray-600 dark:text-gray-400 shrink-0 ml-4">
                         {item.quantity} × S/ {parseFloat(item.price).toFixed(2)} = <span className="font-semibold text-gray-900 dark:text-white">S/ {(item.quantity * parseFloat(item.price)).toFixed(2)}</span>
                       </span>
                     </div>
@@ -552,7 +552,7 @@ export default function AdminOrdersPage() {
               <label className={lbl}>Número de comprobante *</label>
               <input type="text" value={invoiceNumber} onChange={(e) => setInvoiceNumber(e.target.value)}
                 className={inp} placeholder={pendingInvoiceOrder.invoice_type === 'factura' ? 'F001-00001' : 'B001-00001'} />
-              <p className="text-xs text-gray-400 mt-1">Número del comprobante de tu sistema de ventas</p>
+              <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">Número del comprobante de tu sistema de ventas</p>
             </div>
             <div>
               <label className={lbl}>Archivo PDF *</label>
@@ -567,7 +567,7 @@ export default function AdminOrdersPage() {
                   ) : (
                     <div>
                       <p className="text-sm font-semibold text-gray-600 dark:text-gray-300">Seleccionar PDF</p>
-                      <p className="text-xs text-gray-400 mt-1">Máx. 10 MB</p>
+                      <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">Máx. 10 MB</p>
                     </div>
                   )}
                 </label>

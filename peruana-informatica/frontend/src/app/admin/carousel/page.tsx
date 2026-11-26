@@ -63,7 +63,7 @@ function SlideModal({
         <div className="flex items-center justify-between p-5 border-b border-gray-100 dark:border-gray-800">
           <h2 className="text-lg font-bold text-gray-900 dark:text-white">{modalTitle}</h2>
           <button onClick={onClose} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">
-            <X className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+            <X className="h-4 w-4 text-gray-600 dark:text-gray-400" />
           </button>
         </div>
 
@@ -94,7 +94,7 @@ function SlideModal({
             <div>
               <label className={labelCls}>Color de fondo (gradiente Tailwind)</label>
               <input className={inputCls} value={form.backgroundColor} onChange={e => setForm({ ...form, backgroundColor: e.target.value })} placeholder="from-blue-500 to-blue-700" />
-              <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Solo aplica si no hay imagen</p>
+              <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">Solo aplica si no hay imagen</p>
             </div>
             <div>
               <label className={labelCls}>Orden</label>
@@ -107,10 +107,10 @@ function SlideModal({
             <label className={labelCls}>Imagen del banner</label>
             <div className="space-y-2">
               <label className={`flex items-center gap-3 cursor-pointer px-4 py-3 border-2 border-dashed rounded-xl transition-colors ${uploadingImage ? 'opacity-50 cursor-not-allowed' : 'border-gray-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500'}`}>
-                <Upload className="h-5 w-5 text-gray-400 dark:text-gray-500 shrink-0" />
+                <Upload className="h-5 w-5 text-gray-600 dark:text-gray-400 shrink-0" />
                 <div className="min-w-0">
                   <p className="text-sm font-medium text-gray-700 dark:text-gray-300">{uploadingImage ? 'Subiendo...' : 'Subir imagen'}</p>
-                  <p className="text-xs text-gray-400 dark:text-gray-500">JPG, PNG, WebP — máx. 5 MB — recomendado 1920×600 px</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">JPG, PNG, WebP — máx. 5 MB — recomendado 1920×600 px</p>
                 </div>
                 <input type="file" accept="image/*" className="hidden" onChange={onUpload} disabled={uploadingImage} />
               </label>
@@ -127,7 +127,7 @@ function SlideModal({
               )}
               <div className="flex items-center gap-2">
                 <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
-                <span className="text-xs text-gray-400">o pega una URL</span>
+                <span className="text-xs text-gray-600 dark:text-gray-400">o pega una URL</span>
                 <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
               </div>
               <input className={inputCls} placeholder="https://ejemplo.com/imagen.jpg" value={form.imageUrl} onChange={e => setForm({ ...form, imageUrl: e.target.value })} />
@@ -136,7 +136,7 @@ function SlideModal({
 
           {/* Personalización */}
           <div className="border border-gray-200 dark:border-gray-700 rounded-xl p-4 space-y-4">
-            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Personalización del contenido</p>
+            <p className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide">Personalización del contenido</p>
 
             {/* Visibilidad de elementos */}
             <div className="grid grid-cols-3 gap-3">
@@ -377,7 +377,7 @@ export default function AdminCarouselPage() {
           </div>
           <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
             <p className="text-xs dark:text-gray-400 font-medium">Inactivos</p>
-            <p className="text-3xl font-bold text-gray-400 mt-1">{slides.length - activeCount}</p>
+            <p className="text-3xl font-bold text-gray-600 dark:text-gray-400 mt-1">{slides.length - activeCount}</p>
           </div>
         </div>
 
@@ -392,7 +392,7 @@ export default function AdminCarouselPage() {
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" />
             </div>
           ) : slides.length === 0 ? (
-            <div className="p-10 text-center text-gray-400 dark:text-gray-500">
+            <div className="p-10 text-center text-gray-600 dark:text-gray-400">
               <Images className="h-12 w-12 mx-auto mb-3 opacity-30" />
               <p>No hay slides. Crea el primero.</p>
             </div>
@@ -412,14 +412,14 @@ export default function AdminCarouselPage() {
                   {/* Info */}
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">{s.title}</p>
-                    <p className="text-xs text-gray-400 truncate">{s.description}</p>
+                    <p className="text-xs text-gray-600 dark:text-gray-400 truncate">{s.description}</p>
                   </div>
 
                   {/* Orden */}
-                  <span className="text-xs text-gray-400 shrink-0">#{s.order}</span>
+                  <span className="text-xs text-gray-600 dark:text-gray-400 shrink-0">#{s.order}</span>
 
                   {/* Badge estado */}
-                  <span className={`shrink-0 flex items-center gap-1 text-xs px-2.5 py-1 rounded-full font-semibold ${s.isActive ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400'}`}>
+                  <span className={`shrink-0 flex items-center gap-1 text-xs px-2.5 py-1 rounded-full font-semibold ${s.isActive ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400' : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400'}`}>
                     {s.isActive ? <CheckCircle className="h-3 w-3" /> : <XCircle className="h-3 w-3" />}
                     {s.isActive ? 'Activo' : 'Inactivo'}
                   </span>
@@ -430,7 +430,7 @@ export default function AdminCarouselPage() {
                       onClick={() => onToggle(s)}
                       disabled={togglingId === s.id}
                       title={s.isActive ? 'Desactivar' : 'Activar'}
-                      className={`p-2 rounded-lg transition-colors disabled:opacity-50 ${s.isActive ? 'text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20' : 'text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'}`}
+                      className={`p-2 rounded-lg transition-colors disabled:opacity-50 ${s.isActive ? 'text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'}`}
                     >
                       <Power className="h-4 w-4" />
                     </button>

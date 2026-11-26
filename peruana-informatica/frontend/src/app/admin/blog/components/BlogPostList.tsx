@@ -1,3 +1,4 @@
+import { Bot, Star, Package } from 'lucide-react';
 import { Button } from '@/components/admin/Button';
 import { BlogPost } from '../types';
 import { formatDate, getStatusColor } from '../utils';
@@ -31,7 +32,7 @@ export function BlogPostList({
                 disabled={loadingDemo}
                 className="dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-300"
               >
-                {loadingDemo ? "Cargando..." : "📦 Cargar Posts Demo"}
+                {loadingDemo ? "Cargando..." : "Cargar posts demo"}
               </Button>
               <Button onClick={onNew}>+ Nuevo Post</Button>
             </div>
@@ -55,13 +56,13 @@ export function BlogPostList({
                         {post.status}
                       </span>
                       {post.ai_generated && (
-                        <span className="px-2 py-1 bg-indigo-100 text-indigo-700 text-xs font-medium rounded">
-                          🤖 IA
+                        <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded">
+                          IA
                         </span>
                       )}
                       {post.is_featured && (
                         <span className="px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-medium rounded">
-                          ⭐ Destacado
+                          Destacado
                         </span>
                       )}
                     </div>
@@ -128,7 +129,7 @@ export function BlogPostList({
                     disabled={loadingDemo}
                     className="dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-300"
                   >
-                    {loadingDemo ? "Cargando..." : "📦 Cargar Posts Demo"}
+                    {loadingDemo ? "Cargando..." : "Cargar posts demo"}
                   </Button>
                 </div>
               </div>

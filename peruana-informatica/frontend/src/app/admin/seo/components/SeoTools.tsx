@@ -1,3 +1,4 @@
+import { Bot } from 'lucide-react';
 export function SeoTools({ onRefresh }: { onRefresh: () => void }) {
   return (
         <div className="dark:bg-gray-900 border dark:border-gray-700 rounded-xl p-6">
@@ -21,7 +22,7 @@ export function SeoTools({ onRefresh }: { onRefresh: () => void }) {
               target="_blank"
               className="p-4 border-2 dark:border-gray-700 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all"
             >
-              <div className="text-2xl mb-2">🤖</div>
+              <Bot className="h-6 w-6 mb-2 text-gray-400 dark:text-gray-400" />
               <div className="font-semibold dark:text-gray-100">Robots.txt</div>
               <div className="text-xs dark:text-gray-400 mt-1">
                 Ver archivo robots

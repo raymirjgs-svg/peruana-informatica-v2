@@ -75,7 +75,7 @@ export default function SettingsPage() {
 
     // Appearance
     primary_color: '#2563eb', // blue-600 default
-    secondary_color: '#4f46e5', // indigo-600 default
+    secondary_color: '#4f46e5', // blue-600 default
 
     // Home Sections Visibility
     home_section_new: 'true',
@@ -185,9 +185,9 @@ export default function SettingsPage() {
         icon: 'text-green-600 dark:text-green-400'
       },
       purple: {
-        selected: 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/30 dark:border-indigo-400',
-        hover: 'hover:bg-indigo-50 dark:hover:bg-indigo-900/20',
-        icon: 'text-indigo-600 dark:text-indigo-400'
+        selected: 'border-blue-500 bg-blue-50 dark:bg-blue-900/30 dark:border-blue-400',
+        hover: 'hover:bg-blue-50 dark:hover:bg-blue-900/20',
+        icon: 'text-blue-600 dark:text-blue-400'
       },
       amber: {
         selected: 'border-amber-500 bg-amber-50 dark:bg-amber-900/30 dark:border-amber-400',
@@ -204,7 +204,7 @@ export default function SettingsPage() {
         <div className="flex items-center justify-center h-64">
           <div className="text-center">
             <Loader2 className="h-10 w-10 animate-spin text-blue-600 mx-auto" />
-            <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">Cargando configuración...</p>
+            <p className="mt-3 text-sm text-gray-600 dark:text-gray-400">Cargando configuración...</p>
           </div>
         </div>
       </AdminLayout>
@@ -226,12 +226,12 @@ export default function SettingsPage() {
       <div className="max-w-5xl mx-auto space-y-5">
         {/* Header */}
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-md shadow-blue-500/20 shrink-0">
+          <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-md shadow-blue-500/20 shrink-0">
             <Settings className="h-5 w-5 text-white" />
           </div>
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Configuración del Sistema</h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Personaliza el funcionamiento y apariencia de tu tienda</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-0.5">Personaliza el funcionamiento y apariencia de tu tienda</p>
           </div>
         </div>
 
@@ -274,7 +274,7 @@ export default function SettingsPage() {
             <div className="p-6">
               <div className="mb-6 pb-6 border-b border-gray-100 dark:border-gray-700">
                 <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-2">Configuración de Precios</h2>
-                <p className="text-gray-500 dark:text-gray-400">Define qué precio base utilizará el sistema para cálculos y visualización.</p>
+                <p className="text-gray-600 dark:text-gray-400">Define qué precio base utilizará el sistema para cálculos y visualización.</p>
               </div>
 
               <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-xl p-4 mb-6">
@@ -307,7 +307,7 @@ export default function SettingsPage() {
                         onChange={(e) => handleSettingChange('cotizador_price_type', e.target.value)}
                         className="sr-only"
                       />
-                      <div className={`p-3 rounded-lg ${isSelected ? (colorClasses?.icon ?? 'text-blue-600 dark:text-blue-400') : 'text-gray-400 dark:text-gray-500'} ${isSelected ? `bg-white dark:bg-gray-800` : 'bg-gray-100 dark:bg-gray-700'
+                      <div className={`p-3 rounded-lg ${isSelected ? (colorClasses?.icon ?? 'text-blue-600 dark:text-blue-400') : 'text-gray-600 dark:text-gray-400'} ${isSelected ? `bg-white dark:bg-gray-800` : 'bg-gray-100 dark:bg-gray-700'
                         }`}>
                         {option.icon}
                       </div>
@@ -326,7 +326,7 @@ export default function SettingsPage() {
                             </span>
                           )}
                         </div>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                           {option.description}
                         </p>
                       </div>
@@ -342,7 +342,7 @@ export default function SettingsPage() {
             <div className="p-6">
               <div className="mb-6 pb-6 border-b border-gray-100 dark:border-gray-700">
                 <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-2">Flujo de Compra</h2>
-                <p className="text-gray-500 dark:text-gray-400">Define cómo se procesan los pedidos en la tienda.</p>
+                <p className="text-gray-600 dark:text-gray-400">Define cómo se procesan los pedidos en la tienda.</p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -363,7 +363,7 @@ export default function SettingsPage() {
                     {settings.checkout_mode === 'direct' && <CheckCircle className="w-6 h-6 text-blue-600" />}
                   </div>
                   <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Compra Directa</h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
                     El cliente agrega productos al carrito, ingresa sus datos y <strong>paga inmediatamente</strong>. Ideal para B2C y venta minorista estándar.
                   </p>
                 </label>
@@ -385,7 +385,7 @@ export default function SettingsPage() {
                     {settings.checkout_mode === 'approval' && <CheckCircle className="w-6 h-6 text-amber-600" />}
                   </div>
                   <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Requiere Aprobación</h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
                     El cliente envía una <strong>solicitud de pedido</strong>. El administrador revisa y aprueba antes de permitir el pago. Ideal para B2B o productos bajo cotización.
                   </p>
                 </label>
@@ -398,7 +398,7 @@ export default function SettingsPage() {
             <div className="p-6">
               <div className="mb-6 pb-6 border-b border-gray-100 dark:border-gray-700">
                 <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-2">Apariencia</h2>
-                <p className="text-gray-500 dark:text-gray-400">Personaliza los colores y estilo visual de tu tienda.</p>
+                <p className="text-gray-600 dark:text-gray-400">Personaliza los colores y estilo visual de tu tienda.</p>
               </div>
 
               <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-xl p-6 mb-8 flex items-center justify-between">
@@ -428,7 +428,7 @@ export default function SettingsPage() {
                       className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg uppercase"
                     />
                   </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Usado en botones principales, enlaces y encabezados.</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">Usado en botones principales, enlaces y encabezados.</p>
                 </div>
 
                 <div>
@@ -447,7 +447,7 @@ export default function SettingsPage() {
                       className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg uppercase"
                     />
                   </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Usado en acentos, bordes y elementos secundarios.</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">Usado en acentos, bordes y elementos secundarios.</p>
                 </div>
               </div>
             </div>
@@ -458,7 +458,7 @@ export default function SettingsPage() {
             <div className="p-6">
               <div className="mb-6 pb-6 border-b border-gray-100 dark:border-gray-700">
                 <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-2">Apariencia</h2>
-                <p className="text-gray-500 dark:text-gray-400">Personaliza los colores y estilo visual de tu tienda.</p>
+                <p className="text-gray-600 dark:text-gray-400">Personaliza los colores y estilo visual de tu tienda.</p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -478,7 +478,7 @@ export default function SettingsPage() {
                       className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg uppercase"
                     />
                   </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Usado en botones principales, enlaces y encabezados.</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">Usado en botones principales, enlaces y encabezados.</p>
                 </div>
 
                 <div>
@@ -497,7 +497,7 @@ export default function SettingsPage() {
                       className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg uppercase"
                     />
                   </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Usado en acentos, bordes y elementos secundarios.</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">Usado en acentos, bordes y elementos secundarios.</p>
                 </div>
               </div>
             </div>
@@ -508,13 +508,13 @@ export default function SettingsPage() {
             <div className="p-6">
               <div className="mb-6 pb-6 border-b border-gray-100 dark:border-gray-700">
                 <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-2">Página de Inicio</h2>
-                <p className="text-gray-500 dark:text-gray-400">Controla qué secciones se muestran en la página principal.</p>
+                <p className="text-gray-600 dark:text-gray-400">Controla qué secciones se muestran en la página principal.</p>
               </div>
 
               <div className="space-y-4">
                 {[
-                  { key: 'home_section_new', label: 'Sección Nuevos Productos (✨)', desc: 'Muestra los últimos productos agregados.' },
-                  { key: 'home_section_featured', label: 'Sección Destacados (⭐)', desc: 'Muestra productos marcados como destacados.' },
+                  { key: 'home_section_new', label: 'Sección Nuevos Productos', desc: 'Muestra los últimos productos agregados.' },
+                  { key: 'home_section_featured', label: 'Sección Destacados', desc: 'Muestra productos marcados como destacados.' },
                   { key: 'home_section_clearance', label: 'Sección Ofertas (🔥)', desc: 'Muestra productos en liquidación.' },
                   { key: 'home_section_categories', label: 'Sección Categorías', desc: 'Muestra las categorías principales.' },
                   { key: 'home_section_brands', label: 'Sección Marcas', desc: 'Carrusel de marcas asociadas.' }
@@ -522,7 +522,7 @@ export default function SettingsPage() {
                   <div key={section.key} className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
                     <div>
                       <div className="font-semibold text-gray-800 dark:text-gray-200">{section.label}</div>
-                      <div className="text-sm text-gray-500 dark:text-gray-400">{section.desc}</div>
+                      <div className="text-sm text-gray-600 dark:text-gray-400">{section.desc}</div>
                     </div>
                     <button
                       onClick={() => handleSettingChange(section.key, settings[section.key as keyof typeof settings] === 'true' ? 'false' : 'true')}
@@ -545,7 +545,7 @@ export default function SettingsPage() {
             <div className="p-6">
               <div className="mb-6 pb-6 border-b border-gray-100 dark:border-gray-700">
                 <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-2">Barra de Anuncios</h2>
-                <p className="text-gray-500 dark:text-gray-400">Configura la barra superior para avisos importantes.</p>
+                <p className="text-gray-600 dark:text-gray-400">Configura la barra superior para avisos importantes.</p>
               </div>
 
               <div className="space-y-6">
@@ -554,7 +554,7 @@ export default function SettingsPage() {
                     <Megaphone className="h-5 w-5 text-gray-600 dark:text-gray-300" />
                     <div>
                       <div className="font-semibold text-gray-800 dark:text-gray-200">Activar Barra</div>
-                      <div className="text-sm text-gray-500 dark:text-gray-400">Mostrar barra en la parte superior del sitio</div>
+                      <div className="text-sm text-gray-600 dark:text-gray-400">Mostrar barra en la parte superior del sitio</div>
                     </div>
                   </div>
                   <button
@@ -621,7 +621,7 @@ export default function SettingsPage() {
             <div className="p-6">
               <div className="mb-6 pb-6 border-b border-gray-100 dark:border-gray-700">
                 <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-2">Métodos de Pago</h2>
-                <p className="text-gray-500 dark:text-gray-400">Configura los datos bancarios y métodos disponibles para los clientes.</p>
+                <p className="text-gray-600 dark:text-gray-400">Configura los datos bancarios y métodos disponibles para los clientes.</p>
               </div>
 
               {/* Metodo de pago */}
@@ -636,7 +636,7 @@ export default function SettingsPage() {
               {/* Mercado Pago */}
               <div className="mb-6 rounded-xl border border-gray-200 dark:border-gray-700 p-4">
                 <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Mercado Pago</h3>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
+                <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">
                   Pega aqui el <strong>Access Token</strong> de Mercado Pago (Developers {'>'} Credenciales {'>'} Credenciales de producción).
                   Se guarda cifrado en el servidor y nunca se muestra completo.
                 </p>
@@ -672,7 +672,7 @@ export default function SettingsPage() {
             <div className="p-6">
               <div className="mb-6 pb-6 border-b border-gray-100 dark:border-gray-700">
                 <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-2">Envío y Devoluciones</h2>
-                <p className="text-gray-500 dark:text-gray-400">Configura los textos que se muestran en la ficha de cada producto.</p>
+                <p className="text-gray-600 dark:text-gray-400">Configura los textos que se muestran en la ficha de cada producto.</p>
               </div>
 
               {/* Envío Estándar */}
@@ -734,7 +734,7 @@ export default function SettingsPage() {
               {/* Política de Devoluciones */}
               <div>
                 <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Política de Devoluciones</h3>
-                <p className="text-xs text-gray-400 dark:text-gray-500 mb-3">Una línea por ítem. Cada línea aparece como un punto en la ficha del producto.</p>
+                <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">Una línea por ítem. Cada línea aparece como un punto en la ficha del producto.</p>
                 <textarea
                   value={settings.return_policy_lines}
                   onChange={e => handleSettingChange('return_policy_lines', e.target.value)}
@@ -751,7 +751,7 @@ export default function SettingsPage() {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-bold hover:from-blue-700 hover:to-indigo-700 disabled:opacity-50 transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+              className="px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl font-bold hover:from-blue-700 hover:to-blue-800 disabled:opacity-50 transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
             >
               {saving ? (
                 <>

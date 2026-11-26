@@ -34,7 +34,7 @@ export function Pagination({
         <ChevronLeft className="h-4 w-4" />
         Anterior
       </button>
-      <span className="text-sm text-gray-500 dark:text-gray-400">
+      <span className="text-sm text-gray-600 dark:text-gray-400">
         Página <span className="font-semibold text-gray-900 dark:text-white">{page}</span> de {totalPages}
         <span className="hidden sm:inline"> · {total} {itemLabel}</span>
       </span>

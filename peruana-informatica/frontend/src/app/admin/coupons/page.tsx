@@ -116,7 +116,7 @@ export default function CouponsPage() {
             value={coupons.length.toString()}
             description="Registrados en sistema"
             icon={Percent}
-            color="indigo"
+            color="blue"
           />
         </div>
 
@@ -124,7 +124,7 @@ export default function CouponsPage() {
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-5">
             <h2 className="text-lg font-bold text-gray-900 dark:text-white">Lista de Cupones</h2>
             <div className="relative w-full md:w-64">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-600 dark:text-gray-400" />
               <input
                 type="text"
                 placeholder="Buscar cupón..."

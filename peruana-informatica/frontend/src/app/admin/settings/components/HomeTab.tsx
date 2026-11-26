@@ -10,13 +10,13 @@ export function HomeTab({ settings, onSettingChange }: HomeTabProps) {
     <div className="p-6">
       <div className="mb-6 pb-6 border-b border-gray-100 dark:border-gray-700">
         <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-2">Página de Inicio</h2>
-        <p className="text-gray-500 dark:text-gray-400">Controla qué secciones se muestran en la página principal.</p>
+        <p className="text-gray-600 dark:text-gray-400">Controla qué secciones se muestran en la página principal.</p>
       </div>
 
       <div className="space-y-4">
         {[
-          { key: 'home_section_new', label: 'Sección Nuevos Productos (✨)', desc: 'Muestra los últimos productos agregados.' },
-          { key: 'home_section_featured', label: 'Sección Destacados (⭐)', desc: 'Muestra productos marcados como destacados.' },
+          { key: 'home_section_new', label: 'Sección Nuevos Productos', desc: 'Muestra los últimos productos agregados.' },
+          { key: 'home_section_featured', label: 'Sección Destacados', desc: 'Muestra productos marcados como destacados.' },
           { key: 'home_section_clearance', label: 'Sección Ofertas (🔥)', desc: 'Muestra productos en liquidación.' },
           { key: 'home_section_categories', label: 'Sección Categorías', desc: 'Muestra las categorías principales.' },
           { key: 'home_section_brands', label: 'Sección Marcas', desc: 'Carrusel de marcas asociadas.' }
@@ -24,7 +24,7 @@ export function HomeTab({ settings, onSettingChange }: HomeTabProps) {
           <div key={section.key} className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
             <div>
               <div className="font-semibold text-gray-800 dark:text-gray-200">{section.label}</div>
-              <div className="text-sm text-gray-500 dark:text-gray-400">{section.desc}</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">{section.desc}</div>
             </div>
             <button
               onClick={() => onSettingChange(section.key, settings[section.key] === 'true' ? 'false' : 'true')}

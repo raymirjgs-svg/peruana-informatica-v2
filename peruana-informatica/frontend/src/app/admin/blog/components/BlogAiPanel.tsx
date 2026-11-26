@@ -1,3 +1,4 @@
+import { Bot, KeyRound } from 'lucide-react';
 import { Button } from '@/components/admin/Button';
 
 interface BlogAiPanelProps {
@@ -24,11 +25,11 @@ export function BlogAiPanel({
   return (
           <div className="space-y-4 mb-6">
             {/* Panel principal de IA */}
-            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl p-6 text-white">
+            <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl p-6 text-white">
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-xl font-bold mb-2">
-                    🤖 Herramientas de IA (ACTIVA ✅)
+                    <Bot className="h-5 w-5" /> Herramientas de IA (activa)
                   </h2>
                   <p className="text-white/90">
                     Genera contenido automáticamente con inteligencia artificial
@@ -40,7 +41,7 @@ export function BlogAiPanel({
                     disabled={generatingTitles}
                     className="bg-white/20 hover:bg-white/30 border-white/30"
                   >
-                    {generatingTitles ? "Generando..." : "✨ Generar Títulos"}
+                    {generatingTitles ? "Generando..." : "Generar títulos"}
                   </Button>
                   {suggestionCount > 0 && (
                     <Button
@@ -59,7 +60,7 @@ export function BlogAiPanel({
               <div className="flex items-center justify-between">
                 <div className="flex-1">
                   <h3 className="text-sm font-semibold dark:text-gray-300 mb-2">
-                    🔑 API Key de Google Gemini
+                    <KeyRound className="h-4 w-4" /> API Key de Google Gemini
                   </h3>
                   <div className="flex items-center gap-2">
                     <input
@@ -67,13 +68,13 @@ export function BlogAiPanel({
                       value={apiKey}
                       onChange={(e) => onApiKeyChange(e.target.value)}
                       placeholder="AIza... (Ingresa tu API Key aquí para cambiarla)"
-                      className="flex-1 px-3 py-2 text-sm border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                      className="flex-1 px-3 py-2 text-sm border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                     <Button
                       size="sm"
                       onClick={onSaveApiKey}
                       disabled={savingApiKey || !apiKey.trim()}
-                      className="bg-indigo-600 hover:bg-indigo-700 text-white"
+                      className="bg-blue-600 hover:bg-blue-700 text-white"
                     >
                       {savingApiKey ? "Guardando..." : "💾 Actualizar"}
                     </Button>
@@ -81,9 +82,9 @@ export function BlogAiPanel({
                       href="https://aistudio.google.com/app/apikey"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm text-indigo-600 hover:text-indigo-700 font-medium whitespace-nowrap"
+                      className="text-sm text-blue-600 hover:text-blue-700 font-medium whitespace-nowrap"
                     >
-                      🔗 Obtener nueva
+                      Obtener nueva
                     </a>
                   </div>
                   <p className="text-xs dark:text-gray-400 mt-1">
@@ -93,7 +94,7 @@ export function BlogAiPanel({
                       href="https://aistudio.google.com/app/apikey"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-indigo-600 hover:underline"
+                      className="text-blue-600 hover:underline"
                     >
                       Google AI Studio
                     </a>{" "}

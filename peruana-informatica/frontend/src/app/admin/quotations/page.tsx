@@ -172,7 +172,7 @@ export default function AdminQuotations() {
         <div className="flex items-center justify-center h-64">
           <div className="text-center">
             <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">Cargando cotizaciones...</p>
+            <p className="mt-3 text-sm text-gray-600 dark:text-gray-400">Cargando cotizaciones...</p>
           </div>
         </div>
       </AdminLayout>
@@ -184,12 +184,12 @@ export default function AdminQuotations() {
       <div className="space-y-5">
         {/* Header */}
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-md shadow-blue-500/20 shrink-0">
+          <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-md shadow-blue-500/20 shrink-0">
             <FileText className="h-5 w-5 text-white" />
           </div>
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Cotizaciones</h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Administra y da seguimiento a las cotizaciones generadas</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-0.5">Administra y da seguimiento a las cotizaciones generadas</p>
           </div>
         </div>
 
@@ -205,7 +205,7 @@ export default function AdminQuotations() {
           </div>
           <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
             <p className="text-xs dark:text-gray-400 font-medium">Esta Semana</p>
-            <p className="text-3xl font-bold text-indigo-600 mt-1">{metrics.thisWeek}</p>
+            <p className="text-3xl font-bold text-blue-600 mt-1">{metrics.thisWeek}</p>
           </div>
           <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
             <p className="text-xs dark:text-gray-400 font-medium">Valor Total</p>
@@ -219,26 +219,26 @@ export default function AdminQuotations() {
         <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-600 dark:text-gray-400" />
               <input
                 type="text"
                 placeholder="Buscar por código, cliente, email o empresa..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-gray-900 dark:text-white placeholder:text-gray-400"
+                className="w-full pl-10 pr-4 py-2.5 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-gray-900 dark:text-white placeholder:text-gray-600 dark:text-gray-400"
               />
             </div>
             <div className="flex p-1 bg-gray-100 dark:bg-gray-800 rounded-xl">
               {(['all', 'today', 'week', 'month'] as const).map((f) => (
                 <button key={f} onClick={() => setDateFilter(f)}
-                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${dateFilter === f ? 'bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-gray-500 dark:text-gray-400 dark:hover:text-gray-300'}`}>
+                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${dateFilter === f ? 'bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-300 shadow-sm' : 'text-gray-600 dark:text-gray-400 dark:hover:text-gray-300'}`}>
                   {f === 'all' ? 'Todas' : f === 'today' ? 'Hoy' : f === 'week' ? 'Semana' : 'Mes'}
                 </button>
               ))}
             </div>
           </div>
           <div className="mt-3 flex items-center justify-between text-sm">
-            <span className="text-gray-500 dark:text-gray-400">
+            <span className="text-gray-600 dark:text-gray-400">
               <span className="font-semibold text-gray-900 dark:text-white">{filteredQuotations.length}</span> de {quotations.length} cotizaciones
             </span>
             {(searchTerm || dateFilter !== 'all') && (
@@ -263,15 +263,15 @@ export default function AdminQuotations() {
               >
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div className="flex items-center gap-4">
-                    <div className="p-2 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg">
-                      <FileText className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
+                    <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                      <FileText className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                     </div>
                     <div>
                       <div className="flex items-center gap-3">
-                        <span className="font-bold text-lg text-indigo-600 dark:text-indigo-400">{quotation.code}</span>
+                        <span className="font-bold text-lg text-blue-600 dark:text-blue-400">{quotation.code}</span>
                         {getStatusBadge(quotation.status, quotation.valid_until)}
                       </div>
-                      <div className="flex items-center gap-4 mt-1 text-sm text-gray-500 dark:text-gray-400">
+                      <div className="flex items-center gap-4 mt-1 text-sm text-gray-600 dark:text-gray-400">
                         <span className="flex items-center gap-1">
                           <User className="h-4 w-4" />
                           {quotation.client_name}
@@ -286,7 +286,7 @@ export default function AdminQuotations() {
 
                   <div className="flex items-center gap-4">
                     <div className="text-right">
-                      <p className="text-sm text-gray-500 dark:text-gray-400">Total</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Total</p>
                       <p className="text-xl font-bold text-emerald-600 dark:text-emerald-400">
                         S/. {Number(quotation.total).toLocaleString('es-PE', { minimumFractionDigits: 2 })}
                       </p>
@@ -295,7 +295,7 @@ export default function AdminQuotations() {
                       <Link
                         href={`/admin/quotations/${quotation.id}`}
                         onClick={(e) => e.stopPropagation()}
-                        className="p-2 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-lg hover:bg-indigo-200 dark:hover:bg-indigo-900/50 transition"
+                        className="p-2 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg hover:bg-blue-200 dark:hover:bg-blue-900/50 transition"
                         title="Ver detalle"
                       >
                         <Eye className="h-5 w-5" />
@@ -310,7 +310,12 @@ export default function AdminQuotations() {
                       >
                         <Download className="h-5 w-5" />
                       </a>
-                      <button className="p-2 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition">
+                      <button
+                        type="button"
+                        aria-label={expandedId === quotation.id ? 'Contraer detalle de la cotización' : 'Ver detalle de la cotización'}
+                        aria-expanded={expandedId === quotation.id}
+                        className="p-2 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition"
+                      >
                         {expandedId === quotation.id ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
                       </button>
                     </div>
@@ -330,34 +335,34 @@ export default function AdminQuotations() {
                       </h4>
                       <div className="space-y-2 text-sm">
                         <p className="flex items-center gap-2">
-                          <span className="text-gray-500 dark:text-gray-400 w-24">Nombre:</span>
+                          <span className="text-gray-600 dark:text-gray-400 w-24">Nombre:</span>
                           <span className="text-gray-900 dark:text-white font-medium">{quotation.client_name}</span>
                         </p>
                         <p className="flex items-center gap-2">
-                          <span className="text-gray-500 dark:text-gray-400 w-24">Email:</span>
+                          <span className="text-gray-600 dark:text-gray-400 w-24">Email:</span>
                           <span className="text-blue-600 dark:text-blue-400">{quotation.client_email}</span>
                         </p>
                         {quotation.client_phone && (
                           <p className="flex items-center gap-2">
-                            <span className="text-gray-500 dark:text-gray-400 w-24">Teléfono:</span>
+                            <span className="text-gray-600 dark:text-gray-400 w-24">Teléfono:</span>
                             <span className="text-gray-900 dark:text-white">{quotation.client_phone}</span>
                           </p>
                         )}
                         {quotation.client_company && (
                           <p className="flex items-center gap-2">
-                            <span className="text-gray-500 dark:text-gray-400 w-24">Empresa:</span>
+                            <span className="text-gray-600 dark:text-gray-400 w-24">Empresa:</span>
                             <span className="text-gray-900 dark:text-white">{quotation.client_company}</span>
                           </p>
                         )}
                         {quotation.client_ruc && (
                           <p className="flex items-center gap-2">
-                            <span className="text-gray-500 dark:text-gray-400 w-24">RUC:</span>
+                            <span className="text-gray-600 dark:text-gray-400 w-24">RUC:</span>
                             <span className="text-gray-900 dark:text-white font-mono">{quotation.client_ruc}</span>
                           </p>
                         )}
                         {quotation.client_address && (
                           <p className="flex items-start gap-2">
-                            <span className="text-gray-500 dark:text-gray-400 w-24">Dirección:</span>
+                            <span className="text-gray-600 dark:text-gray-400 w-24">Dirección:</span>
                             <span className="text-gray-900 dark:text-white">{quotation.client_address}</span>
                           </p>
                         )}
@@ -367,19 +372,19 @@ export default function AdminQuotations() {
                     {/* Información de la Cotización */}
                     <div>
                       <h4 className="font-semibold text-gray-800 dark:text-white mb-3 flex items-center gap-2">
-                        <Clock className="h-5 w-5 text-indigo-600" />
+                        <Clock className="h-5 w-5 text-blue-600" />
                         Información de Cotización
                       </h4>
                       <div className="space-y-2 text-sm">
                         <p className="flex items-center gap-2">
-                          <span className="text-gray-500 dark:text-gray-400 w-24">Creada:</span>
+                          <span className="text-gray-600 dark:text-gray-400 w-24">Creada:</span>
                           <span className="text-gray-900 dark:text-white">
                             {new Date(quotation.createdAt).toLocaleString('es-PE')}
                           </span>
                         </p>
                         {quotation.valid_until && (
                           <p className="flex items-center gap-2">
-                            <span className="text-gray-500 dark:text-gray-400 w-24">Válida hasta:</span>
+                            <span className="text-gray-600 dark:text-gray-400 w-24">Válida hasta:</span>
                             <span className={`font-medium ${new Date(quotation.valid_until) < new Date()
                                 ? 'text-red-600 dark:text-red-400'
                                 : 'text-emerald-600 dark:text-emerald-400'
@@ -400,10 +405,10 @@ export default function AdminQuotations() {
                         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                           <thead className="bg-gray-100 dark:bg-gray-700">
                             <tr>
-                              <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Producto</th>
-                              <th className="px-4 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Cantidad</th>
-                              <th className="px-4 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Precio Unit.</th>
-                              <th className="px-4 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Subtotal</th>
+                              <th className="px-4 py-2 text-left text-xs font-medium text-gray-600 dark:text-gray-400 uppercase">Producto</th>
+                              <th className="px-4 py-2 text-right text-xs font-medium text-gray-600 dark:text-gray-400 uppercase">Cantidad</th>
+                              <th className="px-4 py-2 text-right text-xs font-medium text-gray-600 dark:text-gray-400 uppercase">Precio Unit.</th>
+                              <th className="px-4 py-2 text-right text-xs font-medium text-gray-600 dark:text-gray-400 uppercase">Subtotal</th>
                             </tr>
                           </thead>
                           <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
@@ -435,9 +440,9 @@ export default function AdminQuotations() {
 
           {filteredQuotations.length === 0 && (
             <div className="bg-white dark:bg-gray-900 rounded-2xl border border-dashed border-gray-300 dark:border-gray-700 p-12 text-center">
-              <FileText className="h-12 w-12 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
+              <FileText className="h-12 w-12 text-gray-300 dark:text-gray-400 mx-auto mb-3" />
               <h3 className="text-base font-semibold text-gray-700 dark:text-gray-300 mb-1">No hay cotizaciones</h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
                 {searchTerm || dateFilter !== 'all' ? 'No se encontraron cotizaciones con los filtros aplicados' : 'Aún no se han generado cotizaciones'}
               </p>
             </div>

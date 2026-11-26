@@ -10,7 +10,7 @@ export function AppearanceTab({ settings, onSettingChange }: AppearanceTabProps)
     <div className="p-6">
       <div className="mb-6 pb-6 border-b border-gray-100 dark:border-gray-700">
         <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-2">Apariencia</h2>
-        <p className="text-gray-500 dark:text-gray-400">Personaliza los colores y estilo visual de tu tienda.</p>
+        <p className="text-gray-600 dark:text-gray-400">Personaliza los colores y estilo visual de tu tienda.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -30,7 +30,7 @@ export function AppearanceTab({ settings, onSettingChange }: AppearanceTabProps)
               className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg uppercase"
             />
           </div>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Usado en botones principales, enlaces y encabezados.</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">Usado en botones principales, enlaces y encabezados.</p>
         </div>
 
         <div>
@@ -49,7 +49,7 @@ export function AppearanceTab({ settings, onSettingChange }: AppearanceTabProps)
               className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg uppercase"
             />
           </div>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Usado en acentos, bordes y elementos secundarios.</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">Usado en acentos, bordes y elementos secundarios.</p>
         </div>
       </div>
     </div>

@@ -3,6 +3,7 @@
 import React from "react";
 import { Modal } from '@/components/admin/Modal';
 import { Button } from '@/components/admin/Button';
+import { Star } from 'lucide-react';
 import { ProductImageManager } from '@/components/admin/products/ProductImageManager';
 
 import type { useProductsData } from '../hooks/useProductsData';
@@ -75,7 +76,7 @@ export function EditProductModal({ controller, forms }: { controller: Data; form
                   onChange={e => setEditForm({ ...editForm, is_featured: e.target.checked })}
                   className="w-5 h-5 text-blue-600 rounded"
                 />
-                <span className="font-medium dark:text-gray-300">⭐ Destacado</span>
+                <span className="inline-flex items-center gap-1 font-medium dark:text-gray-300"><Star className="h-3.5 w-3.5 text-amber-500" />Destacado</span>
               </label>
               <label className="flex items-center gap-2 cursor-pointer">
                 <input

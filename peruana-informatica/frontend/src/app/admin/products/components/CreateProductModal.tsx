@@ -1,4 +1,5 @@
 "use client";
+import { AlertTriangle } from 'lucide-react';
 
 import React from "react";
 import { Modal } from '@/components/admin/Modal';
@@ -58,7 +59,7 @@ export function CreateProductModal({ controller, forms }: { controller: Data; fo
 
                 {searchError && (
                   <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm flex items-center gap-2">
-                    <span>⚠️</span>
+                    <AlertTriangle className="h-4 w-4" />
                     {searchError}
                   </div>
                 )}
@@ -94,7 +95,7 @@ export function CreateProductModal({ controller, forms }: { controller: Data; fo
               {!form.codigo_interno && (
                 <div className="bg-amber-50 p-4 rounded-lg mb-4 border border-amber-200">
                   <p className="text-amber-800 text-sm">
-                    <strong>📝 Modo Manual:</strong> Ingresa todos los datos del producto. Puedes agregar un código interno opcional para referencia.
+                    <strong>Modo manual:</strong> Ingresa todos los datos del producto. Puedes agregar un código interno opcional para referencia.
                   </p>
                 </div>
               )}

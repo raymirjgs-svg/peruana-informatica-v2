@@ -12,7 +12,7 @@ export function AnnouncementTab({ settings, onSettingChange }: AnnouncementTabPr
     <div className="p-6">
       <div className="mb-6 pb-6 border-b border-gray-100 dark:border-gray-700">
         <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-2">Barra de Anuncios</h2>
-        <p className="text-gray-500 dark:text-gray-400">Configura la barra superior para avisos importantes.</p>
+        <p className="text-gray-600 dark:text-gray-400">Configura la barra superior para avisos importantes.</p>
       </div>
 
       <div className="space-y-6">
@@ -21,7 +21,7 @@ export function AnnouncementTab({ settings, onSettingChange }: AnnouncementTabPr
             <Megaphone className="h-5 w-5 text-gray-600 dark:text-gray-300" />
             <div>
               <div className="font-semibold text-gray-800 dark:text-gray-200">Activar Barra</div>
-              <div className="text-sm text-gray-500 dark:text-gray-400">Mostrar barra en la parte superior del sitio</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">Mostrar barra en la parte superior del sitio</div>
             </div>
           </div>
           <button

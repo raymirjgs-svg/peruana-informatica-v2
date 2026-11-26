@@ -43,13 +43,13 @@ export function Header() {
 
         {/* Breadcrumb */}
         <nav className="hidden md:flex items-center gap-1.5 text-sm min-w-0">
-          <Home className="h-3.5 w-3.5 text-gray-400 shrink-0" />
+          <Home className="h-3.5 w-3.5 text-gray-600 dark:text-gray-400 shrink-0" />
           {segments.map((seg, i) => (
             <span key={seg.slug} className="flex items-center gap-1.5 min-w-0">
-              <ChevronRight className="h-3.5 w-3.5 text-gray-300 dark:text-gray-600 shrink-0" />
+              <ChevronRight className="h-3.5 w-3.5 text-gray-500 dark:text-gray-400 shrink-0" />
               <span className={i === segments.length - 1
                 ? 'font-semibold text-gray-800 dark:text-white truncate capitalize'
-                : 'text-gray-400 dark:text-gray-500 capitalize truncate'
+                : 'text-gray-600 dark:text-gray-400 capitalize truncate'
               }>
                 {seg.label}
               </span>
@@ -67,7 +67,7 @@ export function Header() {
         <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={toggleTheme}
-            className="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all"
+            className="p-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all"
             title={theme === 'light' ? 'Modo oscuro' : 'Modo claro'}
             aria-label={theme === 'light' ? 'Activar modo oscuro' : 'Activar modo claro'}
             aria-pressed={theme === 'dark'}
@@ -82,14 +82,14 @@ export function Header() {
               onClick={() => setShowMenu(!showMenu)}
               className="flex items-center gap-2.5 pl-1 pr-3 py-1.5 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-all"
             >
-              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-sm shadow-md shadow-blue-500/25">
+              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white font-bold text-sm shadow-md shadow-blue-500/25">
                 {adminUser.charAt(0).toUpperCase()}
               </div>
               <div className="text-left hidden md:block">
                 <p className="text-xs font-semibold text-gray-800 dark:text-white leading-tight">{adminUser}</p>
-                <p className="text-[10px] text-gray-400 dark:text-gray-500">Administrador</p>
+                <p className="text-xs text-gray-600 dark:text-gray-400">Administrador</p>
               </div>
-              <ChevronRight className={`h-3.5 w-3.5 text-gray-400 transition-transform duration-200 hidden md:block ${showMenu ? 'rotate-90' : ''}`} />
+              <ChevronRight className={`h-3.5 w-3.5 text-gray-600 dark:text-gray-400 transition-transform duration-200 hidden md:block ${showMenu ? 'rotate-90' : ''}`} />
             </button>
 
             {showMenu && (
@@ -98,7 +98,7 @@ export function Header() {
                 <div className="absolute right-0 mt-2 w-52 bg-white dark:bg-gray-800 rounded-xl shadow-xl shadow-black/10 border border-gray-100 dark:border-gray-700 py-1.5 z-20 overflow-hidden">
                   <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
                     <p className="text-sm font-semibold text-gray-900 dark:text-white">{adminUser}</p>
-                    <p className="text-xs text-gray-400 mt-0.5">Sesión activa</p>
+                    <p className="text-xs text-gray-600 dark:text-gray-400 mt-0.5">Sesión activa</p>
                   </div>
                   <button
                     onClick={() => {

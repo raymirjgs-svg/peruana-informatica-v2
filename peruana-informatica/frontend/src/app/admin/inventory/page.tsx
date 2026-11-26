@@ -133,7 +133,7 @@ export default function InventoryPage() {
             <div className="flex items-center gap-3">
               <AlertTriangle className="h-5 w-5 text-yellow-600" />
               <p className="font-semibold text-yellow-800 dark:text-yellow-200">
-                ⚠️ {lowStockCount} productos con stock bajo requieren reabastecimiento
+                <AlertTriangle className="h-4 w-4 shrink-0" /> {lowStockCount} productos con stock bajo requieren reabastecimiento
               </p>
             </div>
           </MotionWrapper>
@@ -143,7 +143,7 @@ export default function InventoryPage() {
         <MotionWrapper className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
           <div className="flex flex-col md:flex-row gap-4 items-center">
             <div className="relative flex-1 w-full">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-600 dark:text-gray-400" />
               <input
                 type="text"
                 placeholder="Buscar por nombre o código..."
@@ -190,10 +190,10 @@ export default function InventoryPage() {
               <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
                 {filteredProducts.map(product => (
                   <tr key={product.cod_producto} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
-                    <td className="px-5 py-3.5 text-xs font-mono text-gray-400">{product.cod_producto}</td>
+                    <td className="px-5 py-3.5 text-xs font-mono text-gray-600 dark:text-gray-400">{product.cod_producto}</td>
                     <td className="px-5 py-3.5">
                       <p className="text-sm font-semibold text-gray-900 dark:text-white">{product.name}</p>
-                      <p className="text-xs text-gray-400 mt-0.5">{product.productBrand?.name} · {product.productCategory?.name}</p>
+                      <p className="text-xs text-gray-600 dark:text-gray-400 mt-0.5">{product.productBrand?.name} · {product.productCategory?.name}</p>
                     </td>
                     <td className="px-5 py-3.5 text-center">
                       <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${
@@ -217,7 +217,7 @@ export default function InventoryPage() {
             </table>
 
             {filteredProducts.length === 0 && (
-              <div className="text-center py-12 text-gray-400">
+              <div className="text-center py-12 text-gray-600 dark:text-gray-400">
                 <Package className="h-12 w-12 mx-auto mb-3" />
                 <p>No se encontraron productos</p>
               </div>

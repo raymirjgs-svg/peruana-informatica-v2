@@ -30,7 +30,7 @@ export function GeneralTab({ formData, onChange }: GeneralTabProps) {
               className="w-full pl-11 pr-4 py-3 border-2 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
               placeholder="Peruana Informática"
             />
-            <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+            <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-600 dark:text-gray-400" />
           </div>
         </div>
 
@@ -64,7 +64,7 @@ export function GeneralTab({ formData, onChange }: GeneralTabProps) {
               className="w-full pl-11 pr-4 py-3 border-2 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all resize-none"
               placeholder="Av. Principal 123, Lima - Perú"
             />
-            <MapPin className="absolute left-4 top-4 h-5 w-5 text-gray-400" />
+            <MapPin className="absolute left-4 top-4 h-5 w-5 text-gray-600 dark:text-gray-400" />
           </div>
         </div>
 

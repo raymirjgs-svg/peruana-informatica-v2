@@ -82,7 +82,7 @@ export default function PaymentSettingsPage() {
   if (loading) return (
     <AdminLayout>
       <div className="flex items-center justify-center h-64">
-        <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+        <Loader2 className="h-8 w-8 animate-spin text-gray-600 dark:text-gray-400" />
       </div>
     </AdminLayout>
   );
@@ -97,7 +97,7 @@ export default function PaymentSettingsPage() {
               <CreditCard className="h-7 w-7 text-blue-600" />
               Pasarelas de Pago
             </h1>
-            <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">
+            <p className="text-gray-600 dark:text-gray-400 mt-1 text-sm">
               Todo el cobro de la tienda se realiza con Mercado Pago.
             </p>
           </div>
@@ -131,11 +131,11 @@ export default function PaymentSettingsPage() {
           <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
             <div className="flex items-center gap-3 mb-5">
               <div className="w-10 h-10 bg-sky-100 dark:bg-sky-900/30 rounded-lg flex items-center justify-center">
-                <span className="text-sky-600 font-bold text-sm">MP</span>
+                <span className="text-sky-700 dark:text-sky-300 font-bold text-sm">MP</span>
               </div>
               <div>
                 <h2 className="font-semibold text-gray-900 dark:text-white">Mercado Pago</h2>
-                <p className="text-xs text-gray-500 dark:text-gray-400">Tarjetas, debito, credito y saldo en cuenta</p>
+                <p className="text-xs text-gray-600 dark:text-gray-400">Tarjetas, debito, credito y saldo en cuenta</p>
               </div>
               {mpStatus && (
                 <span className={`ml-auto flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full ${
@@ -152,7 +152,7 @@ export default function PaymentSettingsPage() {
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Access Token <span className="text-gray-400 font-normal">(APP_USR-... o PROD-...)</span>
+                  Access Token <span className="text-gray-600 dark:text-gray-400 font-normal">(APP_USR-... o PROD-...)</span>
                 </label>
                 <div className="relative">
                   <input
@@ -165,12 +165,13 @@ export default function PaymentSettingsPage() {
                   <button
                     type="button"
                     onClick={() => setShowToken(v => !v)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:hover:text-gray-400"
+                    aria-label={showToken ? 'Ocultar token' : 'Mostrar token'}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-gray-600 dark:text-gray-400 dark:hover:text-gray-600"
                   >
                     {showToken ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
                 </div>
-                <p className="text-xs text-gray-400 mt-1">
+                <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
                   Solo el servidor la usa. Nunca se muestra completa una vez guardada.
                 </p>
               </div>
@@ -179,7 +180,7 @@ export default function PaymentSettingsPage() {
                 <button
                   onClick={testMercadoPago}
                   disabled={testing}
-                  className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 font-medium disabled:opacity-50"
+                  className="flex items-center gap-2 py-2 text-sm text-blue-700 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium disabled:opacity-50"
                 >
                   {testing
                     ? <Loader2 className="h-4 w-4 animate-spin" />
@@ -190,7 +191,7 @@ export default function PaymentSettingsPage() {
                   href="https://www.mercadopago.com.pe/developers/panel/app"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-xs text-gray-400 dark:hover:text-gray-400 underline ml-auto"
+                  className="inline-flex items-center text-xs text-gray-600 dark:text-gray-400 dark:hover:text-gray-600 underline ml-auto py-2"
                 >
                   Ir al panel de Mercado Pago →
                 </a>

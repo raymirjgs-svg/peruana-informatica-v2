@@ -89,8 +89,8 @@ export default function RolesPage() {
                         >
                             <div className="flex items-start justify-between mb-4">
                                 <div className="flex items-center gap-3">
-                                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${role.slug === 'super-admin' ? 'bg-gradient-to-br from-blue-600 to-indigo-600' :
-                                            role.slug === 'admin' ? 'bg-gradient-to-br from-blue-500 to-indigo-600' :
+                                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${role.slug === 'super-admin' ? 'bg-gradient-to-br from-blue-600 to-blue-700' :
+                                            role.slug === 'admin' ? 'bg-gradient-to-br from-blue-500 to-blue-700' :
                                                 role.slug === 'editor' ? 'bg-gradient-to-br from-green-500 to-teal-600' :
                                                     role.slug === 'moderator' ? 'bg-gradient-to-br from-yellow-500 to-orange-600' :
                                                         'bg-gradient-to-br from-gray-400 to-gray-600'
@@ -106,12 +106,16 @@ export default function RolesPage() {
                                 {role.slug !== 'super-admin' && (
                                     <div className="flex gap-2">
                                         <button
+                                            type="button"
+                                            aria-label={`Editar rol ${role.name}`}
                                             onClick={() => { setEditingRole(role); setShowModal(true); }}
                                             className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
                                         >
                                             <Edit className="h-4 w-4" />
                                         </button>
                                         <button
+                                            type="button"
+                                            aria-label={`Eliminar rol ${role.name}`}
                                             onClick={() => handleDelete(role.id)}
                                             className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                                         >

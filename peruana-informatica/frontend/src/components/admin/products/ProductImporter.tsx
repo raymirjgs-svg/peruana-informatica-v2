@@ -1,4 +1,5 @@
 "use client";
+import { CheckCircle2, XCircle } from 'lucide-react';
 
 import React, { useState } from 'react';
 import { Button } from '../Button';
@@ -100,7 +101,7 @@ export function ProductImporter() {
     return (
         <div className="space-y-6">
             <div className="dark:bg-gray-900 border dark:border-gray-700 rounded-xl p-6">
-                <h2 className="text-xl font-bold dark:text-gray-100 mb-4">📤 Importación Masiva de Productos</h2>
+                <h2 className="text-xl font-bold dark:text-gray-100 mb-4">Importación masiva de productos</h2>
                 <p className="dark:text-gray-400 text-sm mb-6">
                     Importa productos desde el sistema ERP en formato JSON.
                 </p>
@@ -122,7 +123,7 @@ export function ProductImporter() {
                             : 'dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
                             }`}
                     >
-                        📝 Pegar JSON
+                        Pegar JSON
                     </button>
                 </div>
 
@@ -164,14 +165,14 @@ export function ProductImporter() {
                         size="lg"
                         className="w-full"
                     >
-                        {importing ? '⏳ Importando...' : '🚀 Importar Productos'}
+                        {importing ? 'Importando...' : 'Importar productos'}
                     </Button>
                 </div>
 
                 {result && (
                     <div className={`border rounded-xl p-6 mt-6 ${result.success ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
                         <div className="flex items-start gap-3">
-                            <span className="text-2xl">{result.success ? '✅' : '❌'}</span>
+                            <span className="text-2xl">{result.success ? <CheckCircle2 className="h-8 w-8 text-green-600" /> : <XCircle className="h-8 w-8 text-red-600" />}</span>
                             <div className="flex-1">
                                 <h3 className={`font-bold text-lg ${result.success ? 'text-green-800' : 'text-red-800'}`}>
                                     {result.message}

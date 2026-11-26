@@ -1,3 +1,4 @@
+import { CheckCircle2, Upload } from 'lucide-react';
 import { Order } from '@/app/admin/orders/types';
 
 interface InvoiceModalProps {
@@ -43,7 +44,7 @@ export function InvoiceModal({
                   type="text"
                   value={invoiceNumber}
                   onChange={(e) => setInvoiceNumber(e.target.value)}
-                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
                   placeholder={selectedOrder.invoice_type === 'factura' ? 'F001-00001' : 'B001-00001'}
                 />
                 <p className="text-xs dark:text-gray-400 mt-1">
@@ -56,7 +57,7 @@ export function InvoiceModal({
                 <label className="block text-sm font-medium dark:text-gray-300 mb-2">
                   Archivo PDF del Comprobante *
                 </label>
-                <div className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${invoiceFile ? 'border-green-400 bg-green-50' : 'dark:border-gray-700 hover:border-indigo-400 hover:bg-indigo-50'
+                <div className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${invoiceFile ? 'border-green-400 bg-green-50' : 'dark:border-gray-700 hover:border-blue-400 hover:bg-blue-50'
                   }`}>
                   <input
                     type="file"
@@ -66,7 +67,7 @@ export function InvoiceModal({
                     id="invoice-upload"
                   />
                   <label htmlFor="invoice-upload" className="cursor-pointer">
-                    <div className="text-5xl mb-3">{invoiceFile ? '✅' : '📤'}</div>
+                    <div className="mb-3">{invoiceFile ? <CheckCircle2 className="h-10 w-10 text-green-600" /> : <Upload className="h-10 w-10 text-gray-400 dark:text-gray-400" />}</div>
                     {invoiceFile ? (
                       <div>
                         <p className="text-green-700 font-bold text-lg mb-1">{invoiceFile.name}</p>
@@ -83,7 +84,7 @@ export function InvoiceModal({
                         <p className="text-sm dark:text-gray-400 mb-2">
                           Arrastra el archivo aquí o haz clic para seleccionar
                         </p>
-                        <p className="text-xs text-gray-400">Máximo 10MB • Solo archivos PDF</p>
+                        <p className="text-xs text-gray-600 dark:text-gray-400">Máximo 10MB • Solo archivos PDF</p>
                       </>
                     )}
                   </label>
@@ -119,7 +120,7 @@ export function InvoiceModal({
                 <button
                   onClick={() => handleUploadInvoice(selectedOrder.id)}
                   disabled={isGeneratingInvoice || !invoiceFile || !invoiceNumber}
-                  className="flex-1 px-4 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition disabled:bg-gray-400 font-medium flex items-center justify-center gap-2"
+                  className="flex-1 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:bg-gray-400 font-medium flex items-center justify-center gap-2"
                 >
                   {isGeneratingInvoice ? (
                     <>

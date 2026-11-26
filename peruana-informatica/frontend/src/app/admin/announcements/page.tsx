@@ -109,7 +109,7 @@ function AnnouncementModal({
               placeholder="Ej: Remates con hasta 70% de descuento"
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500"
             />
-            <p className="text-xs text-gray-400 mt-1">{text.length}/200 caracteres</p>
+            <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">{text.length}/200 caracteres</p>
           </div>
 
           {/* Orden */}
@@ -236,14 +236,14 @@ export default function AnnouncementsPage() {
           </div>
           <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
             <p className="text-xs dark:text-gray-400 font-medium">Inactivos</p>
-            <p className="text-3xl font-bold text-gray-400 mt-1">{items.length - activeCount}</p>
+            <p className="text-3xl font-bold text-gray-600 dark:text-gray-400 mt-1">{items.length - activeCount}</p>
           </div>
         </div>
 
         {/* Vista previa */}
         {activeCount > 0 && (
           <div>
-            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">Vista previa de la barra</p>
+            <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-2">Vista previa de la barra</p>
             <div
               className="relative bg-gradient-to-r from-red-800 to-red-600 text-white text-xs font-semibold rounded-lg"
               style={{ height: '30px', overflow: 'hidden' }}
@@ -271,9 +271,9 @@ export default function AnnouncementsPage() {
           </div>
 
           {loading ? (
-            <div className="p-8 text-center text-gray-400">Cargando...</div>
+            <div className="p-8 text-center text-gray-600 dark:text-gray-400">Cargando...</div>
           ) : items.length === 0 ? (
-            <div className="p-8 text-center text-gray-400">
+            <div className="p-8 text-center text-gray-600 dark:text-gray-400">
               <Megaphone className="h-12 w-12 mx-auto mb-3 opacity-30" />
               <p>No hay anuncios. Crea el primero.</p>
             </div>
@@ -290,7 +290,7 @@ export default function AnnouncementsPage() {
 
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{item.text}</p>
-                    <p className="text-xs text-gray-400">Orden: {item.order}</p>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">Orden: {item.order}</p>
                   </div>
 
                   <span className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium flex-shrink-0 ${item.is_active ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-gray-100 dark:text-gray-400 dark:bg-gray-700'}`}>
@@ -301,7 +301,7 @@ export default function AnnouncementsPage() {
                   <div className="flex items-center gap-1 flex-shrink-0">
                     <button
                       onClick={() => handleToggle(item)}
-                      className={`p-2 rounded-lg transition-colors ${item.is_active ? 'text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20' : 'text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'}`}
+                      className={`p-2 rounded-lg transition-colors ${item.is_active ? 'text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'}`}
                       title={item.is_active ? 'Desactivar' : 'Activar'}
                     >
                       <Power className="h-4 w-4" />

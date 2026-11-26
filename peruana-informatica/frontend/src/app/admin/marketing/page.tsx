@@ -128,7 +128,7 @@ export default function MarketingEmailPage() {
                                 placeholder="Escribe el contenido del correo aquí..."
                                 className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm resize-y"
                             />
-                            <p className="mt-1 text-xs text-gray-400">
+                            <p className="mt-1 text-xs text-gray-600 dark:text-gray-400">
                                 El mensaje se enviará con el saludo personalizado de cada cliente y el pie de firma de la empresa.
                             </p>
                         </div>
@@ -136,7 +136,7 @@ export default function MarketingEmailPage() {
                         {/* Preview del email */}
                         {(subject || message) && (
                             <div>
-                                <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">Vista previa</p>
+                                <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-2">Vista previa</p>
                                 <div className="border rounded-lg p-4 bg-gray-50 dark:bg-gray-900 text-sm">
                                     <p className="font-medium text-gray-700 dark:text-gray-300 mb-1">
                                         Asunto: <span className="text-gray-900 dark:text-white">{subject || '—'}</span>
@@ -145,7 +145,7 @@ export default function MarketingEmailPage() {
                                     <p className="text-gray-600 dark:text-gray-400 mb-2">Hola [Nombre del cliente],</p>
                                     <p className="text-gray-800 dark:text-gray-200 whitespace-pre-wrap">{message || '—'}</p>
                                     <hr className="my-3 dark:border-gray-700" />
-                                    <p className="text-xs text-gray-400">Peruana Informática — Tu tienda de tecnología de confianza</p>
+                                    <p className="text-xs text-gray-600 dark:text-gray-400">Peruana Informática — Tu tienda de tecnología de confianza</p>
                                 </div>
                             </div>
                         )}

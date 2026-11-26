@@ -1,3 +1,4 @@
+import { Sparkles } from 'lucide-react';
 import { Button } from '@/components/admin/Button';
 import {
   SeoService,
@@ -49,7 +50,8 @@ export function SeoSettingsModal({
                       </span>
                     ) : (
                       <span className="flex items-center gap-2">
-                        ✨ Sugerir con IA
+                        <Sparkles className="h-4 w-4" />
+                        Sugerir con IA
                       </span>
                     )}
                   </Button>

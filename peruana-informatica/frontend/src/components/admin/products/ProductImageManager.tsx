@@ -153,7 +153,7 @@ export function ProductImageManager({ productId, onImagesUpdate }: ProductImageM
                     }}
                   />
                 ) : (
-                  <div className="text-gray-400">Sin imagen</div>
+                  <div className="text-gray-600 dark:text-gray-400">Sin imagen</div>
                 )}
               </div>
               <div className="p-2 flex justify-between items-center">

@@ -3,6 +3,7 @@
 import React from "react";
 import { Modal } from '@/components/admin/Modal';
 import { Button } from '@/components/admin/Button';
+import { Package } from 'lucide-react';
 import { getProductImageUrl } from '../utils';
 
 import type { useProductsData } from '../hooks/useProductsData';
@@ -24,7 +25,7 @@ export function PreviewProductModal({ controller, forms }: { controller: Data; f
                 {getProductImageUrl(previewProduct) ? (
                   <img src={getProductImageUrl(previewProduct)!} alt="" className="w-full h-full object-contain" />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-gray-400 text-6xl">📦</div>
+                  <Package className="h-12 w-12 text-gray-400 dark:text-gray-400" />
                 )}
               </div>
               <div className="space-y-4">
@@ -33,7 +34,7 @@ export function PreviewProductModal({ controller, forms }: { controller: Data; f
                   <div><span className="dark:text-gray-400">Código:</span> <span className="font-medium">{previewProduct.codigo_interno || '-'}</span></div>
                   <div><span className="dark:text-gray-400">Precio:</span> <span className="font-bold text-blue-600">S/. {Number(previewProduct.price).toLocaleString()}</span></div>
                   <div><span className="dark:text-gray-400">Stock:</span> <span className={`font-medium ${previewProduct.stock > 0 ? 'text-green-600' : 'text-red-600'}`}>{previewProduct.stock}</span></div>
-                  <div><span className="dark:text-gray-400">Estado:</span> <span className={previewProduct.is_active ? 'text-green-600' : 'text-gray-500'}>{previewProduct.is_active ? 'Activo' : 'Inactivo'}</span></div>
+                  <div><span className="dark:text-gray-400">Estado:</span> <span className={previewProduct.is_active ? 'text-green-600' : 'text-gray-600'}>{previewProduct.is_active ? 'Activo' : 'Inactivo'}</span></div>
                   <div><span className="dark:text-gray-400">Categoría:</span> <span className="font-medium">{previewProduct.productCategory?.name || '-'}</span></div>
                   <div><span className="dark:text-gray-400">Marca:</span> <span className="font-medium">{previewProduct.productBrand?.name || '-'}</span></div>
                 </div>

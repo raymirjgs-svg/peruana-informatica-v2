@@ -141,7 +141,7 @@ function CategoryModal({
             <p className="text-xs dark:text-gray-400 mb-1">Vista previa</p>
             <div className="inline-flex flex-col items-center gap-1.5 px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700">
               <span className="text-xl">{icon}</span>
-              <span className="text-[11px] font-semibold text-gray-600 dark:text-gray-400 whitespace-nowrap">
+              <span className="text-xs font-semibold text-gray-600 dark:text-gray-400 whitespace-nowrap">
                 {label || 'Etiqueta'}
               </span>
             </div>
@@ -253,7 +253,7 @@ export default function QuickCategoriesPage() {
           </div>
           <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700 shadow-sm">
             <p className="text-xs dark:text-gray-400 font-medium">Inactivos</p>
-            <p className="text-3xl font-bold text-gray-400 mt-1">{items.length - activeItems.length}</p>
+            <p className="text-3xl font-bold text-gray-600 dark:text-gray-400 mt-1">{items.length - activeItems.length}</p>
           </div>
         </div>
 
@@ -268,7 +268,7 @@ export default function QuickCategoriesPage() {
                   className="flex flex-col items-center gap-1.5 px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 min-w-[70px]"
                 >
                   <span className="text-xl">{cat.icon}</span>
-                  <span className="text-[11px] font-semibold text-gray-600 dark:text-gray-400 text-center whitespace-nowrap">
+                  <span className="text-xs font-semibold text-gray-600 dark:text-gray-400 text-center whitespace-nowrap">
                     {cat.label}
                   </span>
                 </div>
@@ -284,9 +284,9 @@ export default function QuickCategoriesPage() {
           </div>
 
           {loading ? (
-            <div className="p-8 text-center text-gray-400">Cargando...</div>
+            <div className="p-8 text-center text-gray-600 dark:text-gray-400">Cargando...</div>
           ) : items.length === 0 ? (
-            <div className="p-8 text-center text-gray-400">
+            <div className="p-8 text-center text-gray-600 dark:text-gray-400">
               <LayoutGrid className="h-12 w-12 mx-auto mb-3 opacity-30" />
               <p>No hay accesos rápidos. Crea el primero.</p>
             </div>
@@ -301,10 +301,10 @@ export default function QuickCategoriesPage() {
 
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold text-gray-900 dark:text-white">{item.label}</p>
-                    <p className="text-xs text-gray-400 truncate">{item.href}</p>
+                    <p className="text-xs text-gray-600 dark:text-gray-400 truncate">{item.href}</p>
                   </div>
 
-                  <span className="text-xs text-gray-400 flex-shrink-0">Orden: {item.order}</span>
+                  <span className="text-xs text-gray-600 dark:text-gray-400 flex-shrink-0">Orden: {item.order}</span>
 
                   <span className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium flex-shrink-0 ${
                     item.is_active

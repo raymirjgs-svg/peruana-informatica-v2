@@ -120,15 +120,15 @@ function ERPSyncWidget() {
     <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-5">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2.5">
-          <div className={`h-9 w-9 rounded-xl flex items-center justify-center shadow-md ${isActive ? 'bg-gradient-to-br from-blue-500 to-indigo-600 shadow-blue-500/20' : 'bg-gradient-to-br from-emerald-500 to-teal-600 shadow-emerald-500/20'}`}>
+          <div className={`h-9 w-9 rounded-xl flex items-center justify-center shadow-md ${isActive ? 'bg-gradient-to-br from-blue-500 to-blue-700 shadow-blue-500/20' : 'bg-gradient-to-br from-emerald-500 to-teal-600 shadow-emerald-500/20'}`}>
             <Zap className="h-4 w-4 text-white" />
           </div>
           <div>
             <h3 className="text-sm font-bold text-gray-900 dark:text-white">Sync ERP</h3>
-            <p className="text-[11px] text-gray-400">Precios y stock</p>
+            <p className="text-xs text-gray-600 dark:text-gray-400">Precios y stock</p>
           </div>
         </div>
-        <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold ${isActive ? 'bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400' : 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400'}`}>
+        <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${isActive ? 'bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400' : 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400'}`}>
           {isActive ? <RefreshCw className="h-3 w-3 animate-spin" /> : <CheckCircle2 className="h-3 w-3" />}
           {isActive ? 'Sincronizando…' : 'Listo'}
         </div>
@@ -136,13 +136,13 @@ function ERPSyncWidget() {
 
       <div className="grid grid-cols-2 gap-3 mb-4">
         <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-3">
-          <p className="text-[10px] font-medium text-gray-400 mb-1">Último sync</p>
+          <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Último sync</p>
           <p className="text-xs font-semibold text-gray-700 dark:text-gray-300">
             {status ? formatRelative(status.lastSyncTime) : '—'}
           </p>
         </div>
         <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-3">
-          <p className="text-[10px] font-medium text-gray-400 mb-1">Próximo sync</p>
+          <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Próximo sync</p>
           <p className={`text-xs font-bold tabular-nums ${status?.nextSyncTime && Date.now() > status.nextSyncTime - 120000 ? 'text-amber-500' : 'text-gray-700 dark:text-gray-300'}`}>
             {status ? formatCountdown(status.nextSyncTime) : '—'}
           </p>
@@ -151,7 +151,7 @@ function ERPSyncWidget() {
 
       {/* Progress bar */}
       <div className="mb-4">
-        <div className="flex justify-between text-[10px] text-gray-400 mb-1">
+        <div className="flex justify-between text-xs text-gray-600 dark:text-gray-400 mb-1">
           <span>Progreso del ciclo</span>
           <span>{Math.round(progressPct)}%</span>
         </div>
@@ -240,7 +240,7 @@ export default function AdminDashboardPage() {
         <div className="flex justify-center items-center h-96">
           <div className="flex flex-col items-center gap-3">
             <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Cargando...</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Cargando...</p>
           </div>
         </div>
       </AdminLayout>
@@ -256,7 +256,7 @@ export default function AdminDashboardPage() {
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
               {greeting}, Admin 👋
             </h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-0.5">
               Resumen general de tu tienda
             </p>
           </div>
@@ -298,7 +298,7 @@ export default function AdminDashboardPage() {
             value={`S/ ${kpis?.avgOrderValue || '0'}`}
             description="Promedio sobre pedidos cobrados"
             icon={TrendingUp}
-            color="indigo"
+            color="blue"
           />
           <StatsCard
             title="Clientes Nuevos"
@@ -333,7 +333,7 @@ export default function AdminDashboardPage() {
           {/* Sales Chart */}
           <div className="lg:col-span-2 bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
             <div className="flex items-center gap-3 mb-6">
-              <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-md shadow-blue-500/20">
+              <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-md shadow-blue-500/20">
                 <TrendingUp className="h-4 w-4 text-white" />
               </div>
               <h2 className="text-base font-bold text-gray-900 dark:text-white">Rendimiento de Ventas</h2>
@@ -342,8 +342,8 @@ export default function AdminDashboardPage() {
               {salesData.length > 0 ? (
                 <SalesChart data={salesData} />
               ) : (
-                <div className="flex flex-col items-center justify-center h-full text-gray-400 bg-gray-50 dark:bg-gray-800/50 rounded-xl border-2 border-dashed border-gray-200 dark:border-gray-700">
-                  <Package className="h-10 w-10 mb-2 text-gray-300 dark:text-gray-600" />
+                <div className="flex flex-col items-center justify-center h-full text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800/50 rounded-xl border-2 border-dashed border-gray-200 dark:border-gray-700">
+                  <Package className="h-10 w-10 mb-2 text-gray-300 dark:text-gray-400" />
                   <p className="text-sm font-medium">No hay datos suficientes</p>
                 </div>
               )}
@@ -367,7 +367,7 @@ export default function AdminDashboardPage() {
                     className="group flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                   >
                     <div className="relative shrink-0">
-                      <div className={`absolute -top-1.5 -left-1.5 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold border-2 border-white dark:border-gray-900 shadow ${
+                      <div className={`absolute -top-1.5 -left-1.5 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold border-2 border-white dark:border-gray-900 shadow ${
                         index === 0 ? 'bg-yellow-400 text-white' :
                         index === 1 ? 'bg-gray-400 text-white' :
                         index === 2 ? 'bg-orange-400 text-white' :
@@ -395,12 +395,12 @@ export default function AdminDashboardPage() {
 
                     <div className="text-right shrink-0">
                       <p className="text-sm font-bold text-gray-900 dark:text-white">{item.total_sold}</p>
-                      <p className="text-[10px] text-gray-400">ventas</p>
+                      <p className="text-xs text-gray-600 dark:text-gray-400">ventas</p>
                     </div>
                   </div>
                 ))
               ) : (
-                <div className="text-center py-10 text-gray-400">
+                <div className="text-center py-10 text-gray-600 dark:text-gray-400">
                   <Package className="h-10 w-10 mx-auto mb-2 opacity-40" />
                   <p className="text-sm">Sin datos de venta</p>
                 </div>

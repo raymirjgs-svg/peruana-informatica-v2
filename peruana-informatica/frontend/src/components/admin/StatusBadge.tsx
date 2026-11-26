@@ -34,7 +34,7 @@ const fallback = { dot: 'bg-gray-400', bg: 'bg-gray-100 dark:bg-gray-800', text:
 export function StatusBadge({ status, label, size = 'sm' }: StatusBadgeProps) {
   const preset = presets[status] ?? fallback;
   const displayLabel = label ?? preset.label ?? status;
-  const padding = size === 'md' ? 'px-3 py-1.5 text-xs' : 'px-2 py-0.5 text-[11px]';
+  const padding = size === 'md' ? 'px-3 py-1.5 text-xs' : 'px-2 py-0.5 text-xs';
 
   return (
     <span className={`inline-flex items-center gap-1.5 font-medium rounded-full ${padding} ${preset.bg} ${preset.text}`}>

@@ -21,10 +21,11 @@ export function ContactFiltersBar({
     <div className="dark:bg-gray-900 border dark:border-gray-700 rounded-xl p-6 mb-6">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div>
-          <label className="block text-sm font-medium dark:text-gray-300 mb-2">
+          <label htmlFor="contact-filter-status" className="block text-sm font-medium dark:text-gray-300 mb-2">
             Estado
           </label>
           <select
+            id="contact-filter-status"
             value={filters.status}
             onChange={(e) => onFilterChange("status", e.target.value)}
             className="w-full px-3 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -36,10 +37,11 @@ export function ContactFiltersBar({
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium dark:text-gray-300 mb-2">
+          <label htmlFor="contact-filter-subject" className="block text-sm font-medium dark:text-gray-300 mb-2">
             Asunto
           </label>
           <select
+            id="contact-filter-subject"
             value={filters.asunto}
             onChange={(e) => onFilterChange("asunto", e.target.value)}
             className="w-full px-3 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"

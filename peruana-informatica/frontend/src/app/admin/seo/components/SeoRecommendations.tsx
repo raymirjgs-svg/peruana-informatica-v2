@@ -1,3 +1,4 @@
+import { AlertTriangle } from 'lucide-react';
 import { type SeoAnalysis } from '@/services/SeoService';
 
 export function SeoRecommendations({ analysis }: { analysis: SeoAnalysis }) {
@@ -11,7 +12,7 @@ export function SeoRecommendations({ analysis }: { analysis: SeoAnalysis }) {
   return (
             <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-6 mb-6">
               <h3 className="font-semibold text-yellow-800 mb-4">
-                ⚠️ Recomendaciones para llegar al 100%
+                <AlertTriangle className="h-4 w-4" /> Recomendaciones para llegar al 100%
               </h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -51,7 +52,7 @@ export function SeoRecommendations({ analysis }: { analysis: SeoAnalysis }) {
                               {p.issues.map((issue: string, i: number) => (
                                 <li
                                   key={i}
-                                  className="text-[11px] text-red-600 flex items-center"
+                                  className="text-xs text-red-600 flex items-center"
                                 >
                                   <span className="mr-1">⚠</span> {issue}
                                 </li>

@@ -2,6 +2,7 @@
 
 import React from "react";
 import { Button } from '@/components/admin/Button';
+import { Package } from 'lucide-react';
 import { getProductImageUrl } from '../utils';
 
 import type { useProductsData } from '../hooks/useProductsData';
@@ -37,7 +38,7 @@ export function ProductGridView({ controller, forms }: { controller: Data; forms
                           {imgUrl ? (
                             <img src={imgUrl} alt="" className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
                           ) : (
-                            <div className="w-full h-full flex items-center justify-center text-gray-400 text-4xl">📦</div>
+                            <Package className="h-8 w-8 text-gray-400 dark:text-gray-400" />
                           )}
                         </div>
                         <span className={`absolute top-2 right-2 px-2 py-1 rounded text-xs font-medium ${p.stock > 0 ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`}>

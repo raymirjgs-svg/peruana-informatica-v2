@@ -1,3 +1,4 @@
+import { Bot, Sparkles } from 'lucide-react';
 import { Button } from '@/components/admin/Button';
 import { TitleSuggestion } from '../types';
 import { formatDate } from '../utils';
@@ -22,7 +23,7 @@ export function TitleSuggestionsModal({
             <div className="dark:bg-gray-900 rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
               <div className="p-6 border-b dark:border-gray-700">
                 <h2 className="text-xl font-bold dark:text-gray-100">
-                  🤖 Sugerencias de Títulos de IA
+                  Sugerencias de títulos de IA
                 </h2>
                 <p className="dark:text-gray-400 mt-1">
                   Selecciona un título para generar el contenido completo
@@ -58,7 +59,7 @@ export function TitleSuggestionsModal({
                           >
                             {generatingContent
                               ? "Generando..."
-                              : "✨ Generar Post"}
+                              : "Generar post"}
                           </Button>
                           <Button
                             size="sm"

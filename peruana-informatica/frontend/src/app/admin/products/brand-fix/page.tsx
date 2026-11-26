@@ -95,7 +95,7 @@ export default function BrandFixPage() {
           </div>
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Corrección Automática de Marcas</h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Detecta productos cuya marca asignada no coincide con el nombre del producto</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Detecta productos cuya marca asignada no coincide con el nombre del producto</p>
           </div>
         </div>
 
@@ -104,7 +104,7 @@ export default function BrandFixPage() {
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
               <h2 className="font-semibold text-gray-800 dark:text-white mb-1">Analizar base de datos</h2>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
                 Busca en el nombre de cada producto las marcas registradas en el sistema. Si encuentra una marca diferente a la asignada, la sugiere como corrección.
               </p>
             </div>
@@ -147,7 +147,7 @@ export default function BrandFixPage() {
                       {items.length} inconsistencia(s) encontrada(s)
                     </span>
                     {selectedCount > 0 && (
-                      <span className="text-sm text-gray-500 dark:text-gray-400">{selectedCount} seleccionada(s)</span>
+                      <span className="text-sm text-gray-600 dark:text-gray-400">{selectedCount} seleccionada(s)</span>
                     )}
                   </div>
                 )}
@@ -180,11 +180,11 @@ export default function BrandFixPage() {
                           onChange={e => toggleAll(e.target.checked)}
                           className="rounded" />
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">ID</th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Producto</th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Marca actual</th>
-                      <th className="px-4 py-3 text-center text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase w-8"></th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Marca sugerida</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase">ID</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase">Producto</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase">Marca actual</th>
+                      <th className="px-4 py-3 text-center text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase w-8"></th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase">Marca sugerida</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
@@ -197,7 +197,7 @@ export default function BrandFixPage() {
                         <td className="px-4 py-3" onClick={e => e.stopPropagation()}>
                           <input type="checkbox" checked={item.selected} onChange={() => toggleItem(item.cod_producto)} className="rounded" />
                         </td>
-                        <td className="px-4 py-3 text-sm text-gray-500 dark:text-gray-400 font-mono">#{item.cod_producto}</td>
+                        <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400 font-mono">#{item.cod_producto}</td>
                         <td className="px-4 py-3">
                           <p className="text-sm font-medium text-gray-800 dark:text-gray-200 line-clamp-2">{item.name}</p>
                         </td>
@@ -228,7 +228,7 @@ export default function BrandFixPage() {
             {/* Apply button */}
             {items.length > 0 && (
               <div className="px-6 py-4 bg-gray-50 dark:bg-gray-900/50 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between gap-3">
-                <p className="text-sm text-gray-500 dark:text-gray-400">
+                <p className="text-sm text-gray-600 dark:text-gray-400">
                   Se aplicará la marca sugerida a los <strong>{selectedCount}</strong> producto(s) seleccionado(s).
                 </p>
                 <button

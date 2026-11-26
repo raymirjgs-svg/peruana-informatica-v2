@@ -1,3 +1,4 @@
+import { Pencil, Plus, Star } from 'lucide-react';
 import { Button } from '@/components/admin/Button';
 import { BlogPost, PostFormData } from '../types';
 
@@ -23,7 +24,7 @@ export function PostModal({
             <div className="dark:bg-gray-900 rounded-xl max-w-4xl w-full my-8">
               <div className="p-6 border-b dark:border-gray-700">
                 <h2 className="text-xl font-bold dark:text-gray-100">
-                  {selectedPost ? "📝 Editar Post" : "✨ Nuevo Post"}
+                  {selectedPost ? "Editar post" : "Nuevo post"}
                 </h2>
                 <p className="dark:text-gray-400 mt-1">
                   {selectedPost
@@ -292,7 +293,7 @@ export function PostModal({
                           htmlFor="is_featured"
                           className="text-sm font-medium dark:text-gray-300"
                         >
-                          ⭐ Marcar como destacado
+                          Marcar como destacado
                         </label>
                       </div>
                     </div>
@@ -319,7 +320,7 @@ export function PostModal({
                     ? "Guardando..."
                     : selectedPost
                       ? "💾 Actualizar Post"
-                      : "✨ Crear Post"}
+                      : "Crear post"}
                 </Button>
               </div>
             </div>

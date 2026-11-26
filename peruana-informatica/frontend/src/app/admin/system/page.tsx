@@ -74,12 +74,12 @@ export default function SystemStatusPage() {
             <div className="max-w-7xl mx-auto space-y-5">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div className="flex items-center gap-3">
-                        <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-md shadow-blue-500/20 shrink-0">
+                        <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-md shadow-blue-500/20 shrink-0">
                             <Activity className="h-5 w-5 text-white" />
                         </div>
                         <div>
                         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Estado del Sistema</h1>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+                        <p className="text-sm text-gray-600 dark:text-gray-400 mt-0.5">
                             Monitoreo en tiempo real de servicios y conexiones
                         </p>
                         </div>
@@ -119,7 +119,7 @@ export default function SystemStatusPage() {
                                         </div>
                                         <div>
                                             <h3 className="font-semibold text-lg text-gray-800 dark:text-white">Base de Datos</h3>
-                                            <p className="text-sm text-gray-500 dark:text-gray-400">MySQL / Sequelize</p>
+                                            <p className="text-sm text-gray-600 dark:text-gray-400">MySQL / Sequelize</p>
                                         </div>
                                     </div>
                                     <span className={`px-3 py-1 rounded-full text-xs font-semibold uppercase ${getStatusColor(health.database.status)}`}>
@@ -129,7 +129,7 @@ export default function SystemStatusPage() {
 
                                 <div className="space-y-3">
                                     <div className="flex justify-between text-sm py-2 border-b border-gray-100 dark:border-gray-700">
-                                        <span className="text-gray-500 dark:text-gray-400">Latencia</span>
+                                        <span className="text-gray-600 dark:text-gray-400">Latencia</span>
                                         <span className="font-mono text-gray-800 dark:text-white">{health.database.latency} ms</span>
                                     </div>
                                     {health.database.message && (
@@ -144,12 +144,12 @@ export default function SystemStatusPage() {
                             <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                                 <div className="flex justify-between items-start mb-4">
                                     <div className="flex items-center gap-3">
-                                        <div className="p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg">
-                                            <Activity className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
+                                        <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                                            <Activity className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                                         </div>
                                         <div>
                                             <h3 className="font-semibold text-lg text-gray-800 dark:text-white">Google Gemini (Blog)</h3>
-                                            <p className="text-sm text-gray-500 dark:text-gray-400">Generación de contenido IA</p>
+                                            <p className="text-sm text-gray-600 dark:text-gray-400">Generación de contenido IA</p>
                                         </div>
                                     </div>
                                     <span className={`px-3 py-1 rounded-full text-xs font-semibold uppercase ${getStatusColor(health.geminiApi.status)}`}>
@@ -159,7 +159,7 @@ export default function SystemStatusPage() {
 
                                 <div className="space-y-3">
                                     <div className="flex justify-between text-sm py-2 border-b border-gray-100 dark:border-gray-700">
-                                        <span className="text-gray-500 dark:text-gray-400">Estado API</span>
+                                        <span className="text-gray-600 dark:text-gray-400">Estado API</span>
                                         <span className="font-medium text-gray-800 dark:text-white">{health.geminiApi.status === 'ok' ? 'Funcional' : 'No configurado'}</span>
                                     </div>
                                     <div className="flex flex-col gap-2">
@@ -189,7 +189,7 @@ export default function SystemStatusPage() {
                                         </div>
                                         <div>
                                             <h3 className="font-semibold text-lg text-gray-800 dark:text-white">Google Login</h3>
-                                            <p className="text-sm text-gray-500 dark:text-gray-400">Autenticación OAuth 2.0</p>
+                                            <p className="text-sm text-gray-600 dark:text-gray-400">Autenticación OAuth 2.0</p>
                                         </div>
                                     </div>
                                     <span className={`px-3 py-1 rounded-full text-xs font-semibold uppercase ${getStatusColor(health.googleAuth.status)}`}>
@@ -199,7 +199,7 @@ export default function SystemStatusPage() {
 
                                 <div className="space-y-3">
                                     <div className="flex justify-between text-sm py-2 border-b border-gray-100 dark:border-gray-700">
-                                        <span className="text-gray-500 dark:text-gray-400">Configuración</span>
+                                        <span className="text-gray-600 dark:text-gray-400">Configuración</span>
                                         <span className="font-medium text-gray-800 dark:text-white">{health.googleAuth.message}</span>
                                     </div>
                                     <div className="flex flex-col gap-2">
@@ -219,12 +219,12 @@ export default function SystemStatusPage() {
                             <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                                 <div className="flex justify-between items-start mb-4">
                                     <div className="flex items-center gap-3">
-                                        <div className="p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg">
-                                            <Globe className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
+                                        <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                                            <Globe className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                                         </div>
                                         <div>
                                             <h3 className="font-semibold text-lg text-gray-800 dark:text-white">API ERP Externa</h3>
-                                            <p className="text-sm text-gray-500 dark:text-gray-400">peruanadeinformatica/api</p>
+                                            <p className="text-sm text-gray-600 dark:text-gray-400">peruanadeinformatica/api</p>
                                         </div>
                                     </div>
                                     <span className={`px-3 py-1 rounded-full text-xs font-semibold uppercase ${getStatusColor(health.externalApi.status)}`}>
@@ -234,7 +234,7 @@ export default function SystemStatusPage() {
 
                                 <div className="space-y-3">
                                     <div className="flex justify-between text-sm py-2 border-b border-gray-100 dark:border-gray-700">
-                                        <span className="text-gray-500 dark:text-gray-400">Latencia</span>
+                                        <span className="text-gray-600 dark:text-gray-400">Latencia</span>
                                         <span className="font-mono text-gray-800 dark:text-white">{health.externalApi.latency} ms</span>
                                     </div>
                                     {health.externalApi.message ? (
@@ -264,18 +264,18 @@ export default function SystemStatusPage() {
                                         <Clock className="h-6 w-6" />
                                     </div>
                                     <div>
-                                        <p className="text-sm text-gray-500 dark:text-gray-400">Tiempo de Actividad</p>
+                                        <p className="text-sm text-gray-600 dark:text-gray-400">Tiempo de Actividad</p>
                                         <p className="text-xl font-bold text-gray-800 dark:text-white">{formatUptime(health.system.uptime)}</p>
                                     </div>
                                 </div>
 
                                 {/* Memory */}
                                 <div className="flex items-center gap-4">
-                                    <div className="p-3 bg-indigo-100 dark:bg-indigo-900/20 rounded-full text-indigo-600 dark:text-indigo-400">
+                                    <div className="p-3 bg-blue-100 dark:bg-blue-900/20 rounded-full text-blue-600 dark:text-blue-400">
                                         <Cpu className="h-6 w-6" />
                                     </div>
                                     <div>
-                                        <p className="text-sm text-gray-500 dark:text-gray-400">Uso de Memoria (Heap)</p>
+                                        <p className="text-sm text-gray-600 dark:text-gray-400">Uso de Memoria (Heap)</p>
                                         <p className="text-xl font-bold text-gray-800 dark:text-white">
                                             {health.system.memory.used} MB / {health.system.memory.total} MB
                                         </p>
@@ -288,7 +288,7 @@ export default function SystemStatusPage() {
                                         <HardDrive className="h-6 w-6" />
                                     </div>
                                     <div>
-                                        <p className="text-sm text-gray-500 dark:text-gray-400">Memoria Libre (SO)</p>
+                                        <p className="text-sm text-gray-600 dark:text-gray-400">Memoria Libre (SO)</p>
                                         <p className="text-xl font-bold text-gray-800 dark:text-white">
                                             {health.system.system.freeMemory} MB / {health.system.system.totalMemory} MB
                                         </p>
@@ -296,7 +296,7 @@ export default function SystemStatusPage() {
                                 </div>
                             </div>
 
-                            <div className="mt-6 pt-4 border-t border-gray-100 dark:border-gray-700 text-right text-xs text-gray-400">
+                            <div className="mt-6 pt-4 border-t border-gray-100 dark:border-gray-700 text-right text-xs text-gray-600 dark:text-gray-400">
                                 Última actualización: {new Date(health.timestamp).toLocaleString()}
                             </div>
                         </div>

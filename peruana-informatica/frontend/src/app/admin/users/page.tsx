@@ -152,7 +152,7 @@ export default function UsersPage() {
     {
       label: 'Administradores',
       value: users.filter((u) => u.role === 'admin' || u.role === 'super-admin').length,
-      color: 'text-indigo-600',
+      color: 'text-blue-600',
     },
     { label: 'Activos', value: users.filter((u) => !u.is_blocked).length, color: 'text-emerald-600' },
     { label: 'Bloqueados', value: users.filter((u) => u.is_blocked).length, color: 'text-red-600' },
@@ -163,12 +163,12 @@ export default function UsersPage() {
       <div className="space-y-5">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/20 shrink-0">
+            <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center shadow-lg shadow-blue-500/20 shrink-0">
               <Users className="h-5 w-5 text-white" />
             </div>
             <div>
               <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Usuarios del Sistema</h1>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-0.5">
                 Accesos al panel de administración
               </p>
             </div>
@@ -226,14 +226,14 @@ export default function UsersPage() {
               <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
                 {loading && (
                   <tr>
-                    <td colSpan={6} className="px-5 py-8 text-center text-sm text-gray-400">
+                    <td colSpan={6} className="px-5 py-8 text-center text-sm text-gray-600 dark:text-gray-400">
                       Cargando...
                     </td>
                   </tr>
                 )}
                 {!loading && users.length === 0 && (
                   <tr>
-                    <td colSpan={6} className="px-5 py-8 text-center text-sm text-gray-400">
+                    <td colSpan={6} className="px-5 py-8 text-center text-sm text-gray-600 dark:text-gray-400">
                       No hay usuarios registrados
                     </td>
                   </tr>
@@ -246,7 +246,7 @@ export default function UsersPage() {
                     >
                       <td className="px-5 py-3.5">
                         <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
+                          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white text-xs font-bold shrink-0">
                             {(user.first_name || user.email).charAt(0).toUpperCase()}
                           </div>
                           <span className="text-sm font-semibold text-gray-900 dark:text-white">
@@ -254,13 +254,13 @@ export default function UsersPage() {
                           </span>
                         </div>
                       </td>
-                      <td className="px-5 py-3.5 text-sm text-gray-500 dark:text-gray-400">{user.email}</td>
+                      <td className="px-5 py-3.5 text-sm text-gray-600 dark:text-gray-400">{user.email}</td>
                       <td className="px-5 py-3.5">
-                        <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300">
+                        <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300">
                           {user.role}
                         </span>
                       </td>
-                      <td className="px-5 py-3.5 text-sm text-gray-400">
+                      <td className="px-5 py-3.5 text-sm text-gray-600 dark:text-gray-400">
                         {user.last_login ? new Date(user.last_login).toLocaleString('es-PE') : 'Nunca'}
                       </td>
                       <td className="px-5 py-3.5">

@@ -98,7 +98,7 @@ export default function PagesPage() {
               Listado de Páginas
             </h2>
             <div className="relative w-full md:w-72">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-600 dark:text-gray-400" />
               <input
                 type="text"
                 placeholder="Buscar por título..."
@@ -132,7 +132,7 @@ export default function PagesPage() {
                         {page.is_published ? 'Publicada' : 'Borrador'}
                       </span>
                     </div>
-                    <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+                    <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
                       <span>/{page.slug}</span>
                       <span className="text-gray-300">•</span>
                       <span>Actualizado: {new Date(page.updated_at).toLocaleDateString()}</span>

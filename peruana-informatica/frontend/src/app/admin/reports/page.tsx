@@ -62,8 +62,8 @@ export default function ReportsPage() {
       <AdminLayout>
         <div className="flex justify-center items-center h-64">
           <div className="flex flex-col items-center gap-3">
-            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600"></div>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Generando reportes...</p>
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Generando reportes...</p>
           </div>
         </div>
       </AdminLayout>
@@ -85,7 +85,7 @@ export default function ReportsPage() {
                     key={p}
                     onClick={() => setPeriod(p)}
                     className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all ${period === p
-                        ? 'bg-indigo-50 text-indigo-700 shadow-sm'
+                        ? 'bg-blue-50 text-blue-700 shadow-sm'
                         : 'dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800'
                       }`}
                   >
@@ -113,7 +113,7 @@ export default function ReportsPage() {
               description="Pagos verificados (Mercado Pago)"
               icon={DollarSign}
               trend={{ value: `${kpis?.monthRevenue ? '+' + kpis.monthRevenue : '+0'} este mes`, isPositive: true }}
-              color="indigo"
+              color="blue"
             />
           </MotionWrapper>
           <MotionWrapper delay={0.2}>
@@ -142,7 +142,7 @@ export default function ReportsPage() {
               description={`${kpis?.totalOrders || 0} de ${kpis?.receivedOrders || 0} pedidos tienen pago verificado`}
               icon={Activity}
               trend={{ value: `${kpis?.pendingOrders || 0} pendientes de pago`, isPositive: false }}
-              color="indigo"
+              color="blue"
             />
           </MotionWrapper>
         </div>
@@ -154,20 +154,20 @@ export default function ReportsPage() {
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                  <TrendingUp className="h-5 w-5 text-indigo-500" />
+                  <TrendingUp className="h-5 w-5 text-blue-500" />
                   Evolución de Ingresos
                 </h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Comportamiento de ventas en el periodo seleccionado</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Comportamiento de ventas en el periodo seleccionado</p>
               </div>
-              <div className="h-8 w-8 bg-indigo-50 rounded-lg flex items-center justify-center">
-                <Calendar className="h-4 w-4 text-indigo-600" />
+              <div className="h-8 w-8 bg-blue-50 rounded-lg flex items-center justify-center">
+                <Calendar className="h-4 w-4 text-blue-600" />
               </div>
             </div>
             <div className="h-80">
               {salesData.length > 0 ? (
                 <SalesChart data={salesData} />
               ) : (
-                <div className="h-full flex flex-col items-center justify-center text-gray-400">
+                <div className="h-full flex flex-col items-center justify-center text-gray-600 dark:text-gray-400">
                   <BarChart3 className="h-12 w-12 mb-2 opacity-20" />
                   <p>No hay datos suficientes para graficar</p>
                 </div>
@@ -183,7 +183,7 @@ export default function ReportsPage() {
               </div>
               <div>
                 <h2 className="text-lg font-bold text-gray-900 dark:text-white">Reportes Disponibles</h2>
-                <p className="text-xs text-gray-500 dark:text-gray-400">Descarga rápida</p>
+                <p className="text-xs text-gray-600 dark:text-gray-400">Descarga rápida</p>
               </div>
             </div>
 
@@ -203,9 +203,9 @@ export default function ReportsPage() {
                   </div>
                   <div className="text-left flex-1 min-w-0">
                     <p className="font-semibold dark:text-gray-300 dark:group-hover:text-white text-sm">{report.title}</p>
-                    <p className="text-xs text-gray-400">{report.desc}</p>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">{report.desc}</p>
                   </div>
-                  <Download className="h-4 w-4 text-gray-300 dark:group-hover:text-gray-400 opacity-0 group-hover:opacity-100 transition-all" />
+                  <Download className="h-4 w-4 text-gray-300 dark:group-hover:text-gray-600 dark:text-gray-400 opacity-0 group-hover:opacity-100 transition-all" />
                 </Link>
               ))}
             </div>

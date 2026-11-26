@@ -12,7 +12,7 @@ export function CheckoutTab({ settings, onSettingChange }: CheckoutTabProps) {
     <div className="p-6">
       <div className="mb-6 pb-6 border-b border-gray-100 dark:border-gray-700">
         <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-2">Flujo de Compra</h2>
-        <p className="text-gray-500 dark:text-gray-400">Define cómo se procesan los pedidos en la tienda.</p>
+        <p className="text-gray-600 dark:text-gray-400">Define cómo se procesan los pedidos en la tienda.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -33,7 +33,7 @@ export function CheckoutTab({ settings, onSettingChange }: CheckoutTabProps) {
             {settings.checkout_mode === 'direct' && <CheckCircle className="w-6 h-6 text-blue-600" />}
           </div>
           <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Compra Directa</h3>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-sm text-gray-600 dark:text-gray-400">
             El cliente agrega productos al carrito, ingresa sus datos y <strong>paga inmediatamente</strong>. Ideal para B2C y venta minorista estándar.
           </p>
         </label>
@@ -55,7 +55,7 @@ export function CheckoutTab({ settings, onSettingChange }: CheckoutTabProps) {
             {settings.checkout_mode === 'approval' && <CheckCircle className="w-6 h-6 text-amber-600" />}
           </div>
           <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Requiere Aprobación</h3>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-sm text-gray-600 dark:text-gray-400">
             El cliente envía una <strong>solicitud de pedido</strong>. El administrador revisa y aprueba antes de permitir el pago. Ideal para B2B o productos bajo cotización.
           </p>
         </label>

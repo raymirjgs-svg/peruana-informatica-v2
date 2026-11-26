@@ -45,7 +45,7 @@ export function CategoryList({
             return (
               <div key={category.id} className="dark:bg-gray-900 rounded-xl shadow-md border dark:border-gray-700 overflow-hidden">
                 {/* Categoría Header */}
-                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 border-b border-blue-200">
+                <div className="bg-gradient-to-r from-blue-50 to-blue-50 px-6 py-4 border-b border-blue-200">
                   <div className="flex items-center justify-between">
                     <button
                       onClick={() => toggleCategory(category.id)}

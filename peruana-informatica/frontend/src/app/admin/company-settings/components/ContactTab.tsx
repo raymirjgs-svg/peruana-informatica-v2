@@ -30,7 +30,7 @@ export function ContactTab({ formData, onChange }: ContactTabProps) {
               className="w-full pl-11 pr-4 py-3 border-2 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
               placeholder="(01) 123-4567"
             />
-            <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+            <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-600 dark:text-gray-400" />
           </div>
         </div>
 
@@ -45,7 +45,7 @@ export function ContactTab({ formData, onChange }: ContactTabProps) {
               className="w-full pl-11 pr-4 py-3 border-2 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
               placeholder="+51 999 888 777"
             />
-            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">W</div>
+            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600 dark:text-gray-400 font-bold">W</div>
           </div>
         </div>
 
@@ -63,7 +63,7 @@ export function ContactTab({ formData, onChange }: ContactTabProps) {
               className="w-full pl-11 pr-4 py-3 border-2 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
               placeholder="ventas@peruanainformatica.com"
             />
-            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-600 dark:text-gray-400" />
           </div>
         </div>
 
@@ -78,7 +78,7 @@ export function ContactTab({ formData, onChange }: ContactTabProps) {
               className="w-full pl-11 pr-4 py-3 border-2 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
               placeholder="https://www.peruanainformatica.com"
             />
-            <Globe className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+            <Globe className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-600 dark:text-gray-400" />
           </div>
         </div>
       </div>

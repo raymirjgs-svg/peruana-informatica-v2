@@ -241,7 +241,7 @@ export default function TaxonomyManagePage() {
         <div className="flex items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Categorías y Subcategorías</h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-0.5">
               {categories.length} categoría{categories.length !== 1 ? 's' : ''}
             </p>
           </div>
@@ -256,11 +256,11 @@ export default function TaxonomyManagePage() {
 
         {/* Búsqueda */}
         <div className="relative">
-          <svg className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+          <svg className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
           <input
             type="text"
             placeholder="Buscar categorías o subcategorías..."
-            className="w-full pl-10 pr-4 py-2.5 text-sm bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-gray-100 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+            className="w-full pl-10 pr-4 py-2.5 text-sm bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-gray-100 placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -273,7 +273,7 @@ export default function TaxonomyManagePage() {
           </div>
         ) : filteredCategories.length === 0 ? (
           <div className="text-center py-16 bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
-            <p className="text-gray-400 text-sm">No se encontraron categorías</p>
+            <p className="text-gray-600 dark:text-gray-400 text-sm">No se encontraron categorías</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -289,16 +289,16 @@ export default function TaxonomyManagePage() {
                       onClick={() => toggleCategory(category.id)}
                       className="flex items-center gap-3 flex-1 text-left group"
                     >
-                      <span className={`text-gray-400 transition-transform duration-200 ${isExpanded ? 'rotate-90' : ''}`}>
+                      <span className={`text-gray-600 dark:text-gray-400 transition-transform duration-200 ${isExpanded ? 'rotate-90' : ''}`}>
                         <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                       </span>
                       <div>
                         <h2 className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{category.name}</h2>
-                        <p className="text-xs text-gray-400 mt-0.5 flex items-center gap-2">
+                        <p className="text-xs text-gray-600 dark:text-gray-400 mt-0.5 flex items-center gap-2">
                           <code className="font-mono">{category.slug}</code>
                           <span>·</span>
                           <span>{subcategories.length} subcategoría{subcategories.length !== 1 ? 's' : ''}</span>
-                          {category.appears_in_menu && <span className="px-1.5 py-0.5 bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 rounded text-[10px] font-semibold">En menú</span>}
+                          {category.appears_in_menu && <span className="px-1.5 py-0.5 bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 rounded text-xs font-semibold">En menú</span>}
                         </p>
                       </div>
                     </button>
@@ -328,7 +328,7 @@ export default function TaxonomyManagePage() {
                   {isExpanded && (
                     <div className="border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/30 p-4">
                       {subcategories.length === 0 ? (
-                        <p className="text-center text-sm text-gray-400 py-3">
+                        <p className="text-center text-sm text-gray-600 dark:text-gray-400 py-3">
                           No hay subcategorías.{' '}
                           <button onClick={() => handleCreateSubcategory(category.id)} className="text-blue-600 dark:text-blue-400 hover:underline font-medium">
                             Crear una ahora
@@ -340,13 +340,13 @@ export default function TaxonomyManagePage() {
                             <div key={subcategory.id} className="flex items-center justify-between px-4 py-3 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:border-blue-100 dark:hover:border-blue-900 transition-colors">
                               <div className="flex-1 min-w-0">
                                 <p className="text-sm font-semibold text-gray-900 dark:text-white">{subcategory.name}</p>
-                                <p className="text-xs text-gray-400 mt-0.5 font-mono flex items-center gap-2">
+                                <p className="text-xs text-gray-600 dark:text-gray-400 mt-0.5 font-mono flex items-center gap-2">
                                   {subcategory.slug}
-                                  <span className="font-sans text-gray-300 dark:text-gray-600">·</span>
+                                  <span className="font-sans text-gray-300 dark:text-gray-400">·</span>
                                   Orden: {subcategory.order}
                                 </p>
                                 {subcategory.description && (
-                                  <p className="text-xs text-gray-400 mt-1 truncate">{subcategory.description}</p>
+                                  <p className="text-xs text-gray-600 dark:text-gray-400 mt-1 truncate">{subcategory.description}</p>
                                 )}
                               </div>
                               <div className="flex items-center gap-1.5 shrink-0 ml-4">
@@ -383,7 +383,7 @@ export default function TaxonomyManagePage() {
                 <h2 className="text-lg font-bold text-gray-900 dark:text-white">
                   {editingCategory ? "Editar Categoría" : "Nueva Categoría"}
                 </h2>
-                <button onClick={closeCategoryModal} className="p-1.5 rounded-lg text-gray-400 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                <button onClick={closeCategoryModal} className="p-1.5 rounded-lg text-gray-600 dark:text-gray-400 dark:hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                 </button>
               </div>
@@ -437,7 +437,7 @@ export default function TaxonomyManagePage() {
                 <h2 className="text-lg font-bold text-gray-900 dark:text-white">
                   {editingSubcategory ? "Editar Subcategoría" : "Nueva Subcategoría"}
                 </h2>
-                <button onClick={closeSubcategoryModal} className="p-1.5 rounded-lg text-gray-400 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                <button onClick={closeSubcategoryModal} className="p-1.5 rounded-lg text-gray-600 dark:text-gray-400 dark:hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                 </button>
               </div>
@@ -470,7 +470,7 @@ export default function TaxonomyManagePage() {
                   <label className={lbl}>Orden</label>
                   <input type="number" min="0" className={inp} value={subcategoryForm.order}
                     onChange={(e) => setSubcategoryForm({ ...subcategoryForm, order: parseInt(e.target.value) || 0 })} />
-                  <p className="text-xs text-gray-400 mt-1">Orden de aparición (menor = primero)</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">Orden de aparición (menor = primero)</p>
                 </div>
                 <div className="flex gap-3 pt-2">
                   <button type="button" onClick={closeSubcategoryModal}

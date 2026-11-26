@@ -480,19 +480,19 @@ export function ProductForm({ initialData, initialGalleryImages, initialSpecific
         <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
             <div>
-              <span className="text-gray-500 dark:text-gray-400 block">Código ERP</span>
+              <span className="text-gray-600 dark:text-gray-400 block">Código ERP</span>
               <span className="font-mono font-bold text-gray-800 dark:text-white">{erpData.codigo}</span>
             </div>
             <div>
-              <span className="text-gray-500 dark:text-gray-400 block">Nombre ERP</span>
+              <span className="text-gray-600 dark:text-gray-400 block">Nombre ERP</span>
               <span className="font-mono font-bold text-gray-800 dark:text-white">{erpData.nombre}</span>
             </div>
             <div>
-              <span className="text-gray-500 dark:text-gray-400 block">Precio (ERP)</span>
+              <span className="text-gray-600 dark:text-gray-400 block">Precio (ERP)</span>
               <span className="font-mono font-bold text-gray-800 dark:text-white">S/. {erpData.precio}</span>
             </div>
             <div>
-              <span className="text-gray-500 dark:text-gray-400 block">Stock (ERP)</span>
+              <span className="text-gray-600 dark:text-gray-400 block">Stock (ERP)</span>
               <span className="font-mono font-bold text-gray-800 dark:text-white">{erpData.stock}</span>
             </div>
           </div>
@@ -543,7 +543,7 @@ export function ProductForm({ initialData, initialGalleryImages, initialSpecific
                         disabled={searchingCode}
                         className="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 text-sm whitespace-nowrap"
                       >
-                        {searchingCode ? '⏳' : '🔄 Sync ERP'}
+                        {searchingCode ? 'Buscando...' : 'Sync ERP'}
                       </button>
                     )}
                   </div>
@@ -607,7 +607,7 @@ export function ProductForm({ initialData, initialGalleryImages, initialSpecific
           {/* Images */}
           <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-6 shadow-sm">
             <h3 className="text-lg font-semibold mb-1 text-gray-900 dark:text-white">Imágenes</h3>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">Arrastra para reordenar. La primera imagen es la principal.</p>
+            <p className="text-xs text-gray-600 dark:text-gray-400 mb-4">Arrastra para reordenar. La primera imagen es la principal.</p>
 
             {/* Drag-and-drop grid */}
             {allImages.length > 0 && (
@@ -632,7 +632,7 @@ export function ProductForm({ initialData, initialGalleryImages, initialSpecific
                       />
                     </div>
                     {idx === 0 && (
-                      <span className="absolute top-1 left-1 bg-blue-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">
+                      <span className="absolute top-1 left-1 bg-blue-500 text-white text-xs font-bold px-1.5 py-0.5 rounded">
                         Principal
                       </span>
                     )}
@@ -668,7 +668,7 @@ export function ProductForm({ initialData, initialGalleryImages, initialSpecific
                 Subir
               </label>
             </div>
-            <p className="text-xs text-gray-400">Pega una URL y presiona Enter, o sube archivos directamente.</p>
+            <p className="text-xs text-gray-600 dark:text-gray-400">Pega una URL y presiona Enter, o sube archivos directamente.</p>
           </div>
 
           {/* SEO */}
@@ -726,7 +726,7 @@ export function ProductForm({ initialData, initialGalleryImages, initialSpecific
                   placeholder="https://www.youtube.com/watch?v=... o https://cdn.ejemplo.com/video.mp4"
                   className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                 />
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
                   Soportado: <strong>YouTube</strong>, <strong>Vimeo</strong>, <strong>Bilibili</strong>, enlace directo <strong>.mp4</strong>
                 </p>
               </div>
@@ -741,7 +741,7 @@ export function ProductForm({ initialData, initialGalleryImages, initialSpecific
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Especificaciones Técnicas</h3>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Aparecen en la pestaña "Especificaciones" del producto.</p>
+                <p className="text-xs text-gray-600 dark:text-gray-400 mt-0.5">Aparecen en la pestaña "Especificaciones" del producto.</p>
               </div>
               <div className="flex gap-2">
                 <button
@@ -796,7 +796,7 @@ export function ProductForm({ initialData, initialGalleryImages, initialSpecific
             )}
 
             {specs.length === 0 ? (
-              <p className="text-sm text-gray-400 italic">Sin especificaciones. Haz clic en "Agregar" para añadir.</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400 italic">Sin especificaciones. Haz clic en "Agregar" para añadir.</p>
             ) : (
               <div className="space-y-2">
                 {specs.map((spec, idx) => (
@@ -913,7 +913,7 @@ export function ProductForm({ initialData, initialGalleryImages, initialSpecific
                     className="w-5 h-5 rounded dark:border-gray-700 text-yellow-500 focus:ring-yellow-500"
                   />
                   <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                    ⭐ Producto Destacado
+                    Producto destacado
                   </span>
                 </label>
 

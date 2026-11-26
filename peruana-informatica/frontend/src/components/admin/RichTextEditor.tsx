@@ -127,7 +127,7 @@ export function RichTextEditor({ value, onChange, placeholder }: RichTextEditorP
           `}</style>
           <EditorContent editor={editor} />
           {!editor.getText() && placeholder && (
-            <p className="absolute top-3 left-4 text-gray-400 pointer-events-none text-sm">{placeholder}</p>
+            <p className="absolute top-3 left-4 text-gray-600 dark:text-gray-400 pointer-events-none text-sm">{placeholder}</p>
           )}
         </div>
       )}

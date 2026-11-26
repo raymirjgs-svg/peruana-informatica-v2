@@ -7,7 +7,7 @@ import { Button } from '@/components/admin/Button';
 import Link from 'next/link';
 import { adminFetch, getAdminApiBase } from '@/lib/adminApi';
 import { getProductImageUrl as resolveProductImageUrl } from '@/utils/images';
-import { Eye, Pencil, Trash2, Copy } from 'lucide-react';
+import { Eye, Pencil, Trash2, Copy, Package } from 'lucide-react';
 
 type Brand = { id: number; name: string; slug: string } | null;
 type Category = { id: number; name: string; slug: string } | null;
@@ -706,7 +706,7 @@ export default function AdminProductsPage() {
               📥 Exportar CSV
             </Button>
             <Button variant="secondary" onClick={syncAllWithERP} disabled={syncingAll}>
-              {syncingAll ? '⏳ Sincronizando...' : '🔄 Sync ERP'}
+              {syncingAll ? 'Sincronizando...' : 'Sync ERP'}
             </Button>
             <Link href="/admin/products/new">
               <Button size="lg">
@@ -725,26 +725,26 @@ export default function AdminProductsPage() {
               <input className="w-full border rounded px-3 py-2" placeholder="Código interno" value={codeFilter} onChange={(e) => setCodeFilter(e.target.value)} />
             </div>
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium dark:text-gray-300 mb-1">Nombre</label>
-              <input className="w-full border rounded px-3 py-2" placeholder="Buscar por nombre..." value={search} onChange={(e) => setSearch(e.target.value)} />
+              <label htmlFor="filter-name" className="block text-sm font-medium dark:text-gray-300 mb-1">Nombre</label>
+              <input id="filter-name" className="w-full border rounded px-3 py-2" placeholder="Buscar por nombre..." value={search} onChange={(e) => setSearch(e.target.value)} />
             </div>
             <div>
-              <label className="block text-sm font-medium dark:text-gray-300 mb-1">Categoría</label>
-              <select className="w-full border rounded px-3 py-2" value={filterCategoryId ?? ''} onChange={(e) => setFilterCategoryId(e.target.value ? Number(e.target.value) : undefined)}>
+              <label htmlFor="filter-category" className="block text-sm font-medium dark:text-gray-300 mb-1">Categoría</label>
+              <select id="filter-category" className="w-full border rounded px-3 py-2" value={filterCategoryId ?? ''} onChange={(e) => setFilterCategoryId(e.target.value ? Number(e.target.value) : undefined)}>
                 <option value="">-- Todas --</option>
                 {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium dark:text-gray-300 mb-1">Marca</label>
-              <select className="w-full border rounded px-3 py-2" value={filterBrandId ?? ''} onChange={(e) => setFilterBrandId(e.target.value ? Number(e.target.value) : undefined)}>
+              <label htmlFor="filter-brand" className="block text-sm font-medium dark:text-gray-300 mb-1">Marca</label>
+              <select id="filter-brand" className="w-full border rounded px-3 py-2" value={filterBrandId ?? ''} onChange={(e) => setFilterBrandId(e.target.value ? Number(e.target.value) : undefined)}>
                 <option value="">-- Todas --</option>
                 {brands.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium dark:text-gray-300 mb-1">Stock</label>
-              <select className="w-full border rounded px-3 py-2" value={filterStock} onChange={(e) => setFilterStock(e.target.value)}>
+              <label htmlFor="filter-stock" className="block text-sm font-medium dark:text-gray-300 mb-1">Stock</label>
+              <select id="filter-stock" className="w-full border rounded px-3 py-2" value={filterStock} onChange={(e) => setFilterStock(e.target.value)}>
                 <option value="">-- Todos --</option>
                 <option value="available">✓ Disponible (&gt;0)</option>
                 <option value="low">⚠ Bajo (&lt;=10)</option>
@@ -777,12 +777,15 @@ export default function AdminProductsPage() {
         {data && data.products.length > 0 && (
           <div className="mb-4 flex items-center justify-between dark:bg-gray-800 border dark:border-gray-700 rounded-lg p-3">
             <div className="flex items-center gap-3">
-              <input
-                type="checkbox"
-                checked={selectedProducts.length === data.products.length && data.products.length > 0}
-                onChange={toggleSelectAll}
-                className="w-5 h-5 text-blue-600 rounded dark:border-gray-700 cursor-pointer"
-              />
+              <label className="flex items-center p-1 -m-1 cursor-pointer">
+                <input
+                  type="checkbox"
+                  aria-label="Seleccionar todos los productos"
+                  checked={selectedProducts.length === data.products.length && data.products.length > 0}
+                  onChange={toggleSelectAll}
+                  className="w-5 h-5 text-blue-600 rounded dark:border-gray-700 cursor-pointer"
+                />
+              </label>
               <span className="text-sm font-medium dark:text-gray-300">
                 {selectedProducts.length > 0
                   ? `${selectedProducts.length} producto(s) seleccionado(s)`
@@ -954,7 +957,7 @@ export default function AdminProductsPage() {
 
         {loading && <p className="text-center py-8 dark:text-gray-400">Cargando productos...</p>}
 
-        {error && <p className="text-red-600" role="alert">{error}</p>}
+        {error && <p className="text-red-700 dark:text-red-400" role="alert">{error}</p>}
 
         {data && (
           <>
@@ -971,18 +974,21 @@ export default function AdminProductsPage() {
                     <div key={`product-${p.slug}-${p.id}`} className="p-3 border-b dark:border-gray-800 dark:hover:bg-gray-800 transition-colors grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
                       {/* Checkbox */}
                       <div className="flex items-center gap-2">
-                        <input
-                          type="checkbox"
-                          checked={selectedProducts.includes(p.id)}
-                          onChange={() => toggleProductSelection(p.id)}
-                          className="w-4 h-4 text-blue-600 rounded dark:border-gray-700 cursor-pointer"
-                        />
+                        <label className="flex items-center p-1 -m-1 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            aria-label={`Seleccionar ${p.name}`}
+                            checked={selectedProducts.includes(p.id)}
+                            onChange={() => toggleProductSelection(p.id)}
+                            className="w-5 h-5 text-blue-600 rounded dark:border-gray-700 cursor-pointer"
+                          />
+                        </label>
                         {/* Miniatura */}
                         <div className="w-12 h-12 rounded-lg overflow-hidden dark:bg-gray-800 flex-shrink-0">
                           {imgUrl ? (
                             <img src={imgUrl} alt="" className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
                           ) : (
-                            <div className="w-full h-full flex items-center justify-center text-gray-400 text-xl">📦</div>
+                            <Package className="h-5 w-5 text-gray-400 dark:text-gray-400" />
                           )}
                         </div>
                       </div>
@@ -1007,8 +1013,8 @@ export default function AdminProductsPage() {
                         <Button size="sm" variant="secondary" onClick={() => setPreviewProduct(p)} title="Vista previa">
                           <Eye className="h-3.5 w-3.5" />
                         </Button>
-                        <Link href={`/admin/products/${p.id}/edit`} title="Editar">
-                          <Button size="sm" variant="secondary">
+                        <Link href={`/admin/products/${p.id}/edit`}>
+                          <Button size="sm" variant="secondary" aria-label="Editar producto" title="Editar">
                             <Pencil className="h-3.5 w-3.5" />
                           </Button>
                         </Link>
@@ -1030,17 +1036,20 @@ export default function AdminProductsPage() {
                   return (
                     <div key={`product-grid-${p.id}`} className="dark:bg-gray-900 border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                       <div className="relative">
-                        <input
-                          type="checkbox"
-                          checked={selectedProducts.includes(p.id)}
-                          onChange={() => toggleProductSelection(p.id)}
-                          className="absolute top-2 left-2 w-4 h-4 text-blue-600 rounded dark:border-gray-700 cursor-pointer z-10"
-                        />
+                        <label className="absolute top-1 left-1 p-1 z-10 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            aria-label={`Seleccionar ${p.name}`}
+                            checked={selectedProducts.includes(p.id)}
+                            onChange={() => toggleProductSelection(p.id)}
+                            className="w-5 h-5 text-blue-600 rounded dark:border-gray-700 cursor-pointer"
+                          />
+                        </label>
                         <div className="aspect-square dark:bg-gray-800">
                           {imgUrl ? (
                             <img src={imgUrl} alt="" className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
                           ) : (
-                            <div className="w-full h-full flex items-center justify-center text-gray-400 text-4xl">📦</div>
+                            <Package className="h-8 w-8 text-gray-400 dark:text-gray-400" />
                           )}
                         </div>
                         <span className={`absolute top-2 right-2 px-2 py-1 rounded text-xs font-medium ${p.stock > 0 ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`}>
@@ -1075,7 +1084,7 @@ export default function AdminProductsPage() {
                 {getProductImageUrl(previewProduct) ? (
                   <img src={getProductImageUrl(previewProduct)!} alt="" className="w-full h-full object-contain" />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-gray-400 text-6xl">📦</div>
+                  <Package className="h-12 w-12 text-gray-400 dark:text-gray-400" />
                 )}
               </div>
               <div className="space-y-4">
@@ -1084,7 +1093,7 @@ export default function AdminProductsPage() {
                   <div><span className="dark:text-gray-400">Código:</span> <span className="font-medium">{(previewProduct as any).codigo_interno || '-'}</span></div>
                   <div><span className="dark:text-gray-400">Precio:</span> <span className="font-bold text-blue-600">S/. {Number(previewProduct.price).toLocaleString()}</span></div>
                   <div><span className="dark:text-gray-400">Stock:</span> <span className={`font-medium ${previewProduct.stock > 0 ? 'text-green-600' : 'text-red-600'}`}>{previewProduct.stock}</span></div>
-                  <div><span className="dark:text-gray-400">Estado:</span> <span className={previewProduct.is_active ? 'text-green-600' : 'text-gray-500'}>{previewProduct.is_active ? 'Activo' : 'Inactivo'}</span></div>
+                  <div><span className="dark:text-gray-400">Estado:</span> <span className={previewProduct.is_active ? 'text-green-600' : 'text-gray-600'}>{previewProduct.is_active ? 'Activo' : 'Inactivo'}</span></div>
                   <div><span className="dark:text-gray-400">Categoría:</span> <span className="font-medium">{previewProduct.productCategory?.name || '-'}</span></div>
                   <div><span className="dark:text-gray-400">Marca:</span> <span className="font-medium">{previewProduct.productBrand?.name || '-'}</span></div>
                 </div>

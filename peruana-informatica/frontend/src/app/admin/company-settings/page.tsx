@@ -208,7 +208,7 @@ export default function CompanySettingsPage() {
         <div className="flex items-center justify-center h-64">
           <div className="text-center">
             <Loader2 className="h-10 w-10 animate-spin text-blue-600 mx-auto" />
-            <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">Cargando configuración...</p>
+            <p className="mt-3 text-sm text-gray-600 dark:text-gray-400">Cargando configuración...</p>
           </div>
         </div>
       </AdminLayout>
@@ -220,12 +220,12 @@ export default function CompanySettingsPage() {
       <div className="max-w-6xl mx-auto space-y-5">
         {/* Header */}
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-md shadow-blue-500/20 shrink-0">
+          <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-md shadow-blue-500/20 shrink-0">
             <Building2 className="h-5 w-5 text-white" />
           </div>
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Configuración de Empresa</h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Administra la información pública de tu negocio</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-0.5">Administra la información pública de tu negocio</p>
           </div>
         </div>
 
@@ -270,7 +270,7 @@ export default function CompanySettingsPage() {
                       className="w-full pl-11 pr-4 py-3 border-2 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                       placeholder="Peruana Informática"
                     />
-                    <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-600 dark:text-gray-400" />
                   </div>
                 </div>
 
@@ -304,21 +304,23 @@ export default function CompanySettingsPage() {
                       className="w-full pl-11 pr-4 py-3 border-2 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all resize-none"
                       placeholder="Av. Principal 123, Lima - Perú"
                     />
-                    <MapPin className="absolute left-4 top-4 h-5 w-5 text-gray-400" />
+                    <MapPin className="absolute left-4 top-4 h-5 w-5 text-gray-600 dark:text-gray-400" />
                   </div>
                 </div>
 
                 <div className="md:col-span-2 pt-4 border-t dark:border-gray-800">
                   <h3 className="text-lg font-bold dark:text-gray-100 mb-4">Configuración Adicional</h3>
                   <div className="flex items-center gap-4 p-4 border rounded-xl bg-orange-50 border-orange-200">
-                    <input
-                      type="checkbox"
-                      id="show_distributor_price_in_detail"
-                      name="show_distributor_price_in_detail"
-                      checked={formData.show_distributor_price_in_detail}
-                      onChange={handleChange}
-                      className="w-5 h-5 text-orange-600 rounded focus:ring-orange-500 dark:border-gray-700"
-                    />
+                    <label className="flex items-center p-1 -m-1 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        id="show_distributor_price_in_detail"
+                        name="show_distributor_price_in_detail"
+                        checked={formData.show_distributor_price_in_detail}
+                        onChange={handleChange}
+                        className="w-5 h-5 text-orange-600 rounded focus:ring-orange-500 dark:border-gray-700 cursor-pointer"
+                      />
+                    </label>
                     <label htmlFor="show_distributor_price_in_detail" className="cursor-pointer">
                       <div className="font-semibold dark:text-gray-100">Mostrar Precio Distribuidor</div>
                       <div className="text-sm dark:text-gray-400">
@@ -335,7 +337,7 @@ export default function CompanySettingsPage() {
           {activeTab === 'identity' && (
             <div className="p-6 animate-fadeIn">
               <h2 className="text-xl font-bold dark:text-gray-100 mb-6 flex items-center gap-2">
-                <ImageIcon className="h-5 w-5 text-indigo-600" />
+                <ImageIcon className="h-5 w-5 text-blue-600" />
                 Identidad Visual
               </h2>
 
@@ -370,7 +372,7 @@ export default function CompanySettingsPage() {
                           <ImageIcon className="h-8 w-8" />
                         </div>
                         <p className="dark:text-gray-400 font-medium">Arrastra o selecciona un logo</p>
-                        <p className="text-xs text-gray-400 mt-1">PNG transparente recomendado</p>
+                        <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">PNG transparente recomendado</p>
                       </div>
                     )}
                   </div>
@@ -380,7 +382,7 @@ export default function CompanySettingsPage() {
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
                     <label className="block text-sm font-semibold dark:text-gray-300">Icono de Pestaña (Favicon)</label>
-                    <span className="text-xs text-indigo-600 bg-indigo-50 px-2 py-1 rounded-full">Icono del navegador</span>
+                    <span className="text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded-full">Icono del navegador</span>
                   </div>
 
                   <div className="border-2 border-dashed dark:border-gray-700 rounded-xl p-8 text-center dark:hover:bg-gray-800 transition-colors group relative">
@@ -402,11 +404,11 @@ export default function CompanySettingsPage() {
                       </div>
                     ) : (
                       <div className="flex flex-col items-center justify-center py-6">
-                        <div className="bg-indigo-100 p-4 rounded-full mb-3 text-indigo-600">
+                        <div className="bg-blue-100 p-4 rounded-full mb-3 text-blue-600">
                           <ImageIcon className="h-8 w-8" />
                         </div>
                         <p className="dark:text-gray-400 font-medium">Selecciona un icono</p>
-                        <p className="text-xs text-gray-400 mt-1">.ico o .png 32x32px</p>
+                        <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">.ico o .png 32x32px</p>
                       </div>
                     )}
                   </div>
@@ -437,7 +439,7 @@ export default function CompanySettingsPage() {
                       className="w-full pl-11 pr-4 py-3 border-2 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
                       placeholder="(01) 123-4567"
                     />
-                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-600 dark:text-gray-400" />
                   </div>
                 </div>
 
@@ -452,7 +454,7 @@ export default function CompanySettingsPage() {
                       className="w-full pl-11 pr-4 py-3 border-2 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
                       placeholder="+51 999 888 777"
                     />
-                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">W</div>
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600 dark:text-gray-400 font-bold">W</div>
                   </div>
                 </div>
 
@@ -470,7 +472,7 @@ export default function CompanySettingsPage() {
                       className="w-full pl-11 pr-4 py-3 border-2 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
                       placeholder="ventas@peruanainformatica.com"
                     />
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-600 dark:text-gray-400" />
                   </div>
                 </div>
 
@@ -485,7 +487,7 @@ export default function CompanySettingsPage() {
                       className="w-full pl-11 pr-4 py-3 border-2 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
                       placeholder="https://www.peruanainformatica.com"
                     />
-                    <Globe className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <Globe className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-600 dark:text-gray-400" />
                   </div>
                 </div>
               </div>
@@ -496,7 +498,7 @@ export default function CompanySettingsPage() {
           {activeTab === 'location' && (
             <div className="p-6 animate-fadeIn">
               <h2 className="text-xl font-bold dark:text-gray-100 mb-6 flex items-center gap-2">
-                <Store className="h-5 w-5 text-indigo-600" />
+                <Store className="h-5 w-5 text-blue-600" />
                 Tienda Física y Horarios
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -508,10 +510,10 @@ export default function CompanySettingsPage() {
                       value={formData.store_address}
                       onChange={handleChange}
                       rows={2}
-                      className="w-full pl-11 pr-4 py-3 border-2 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all resize-none"
+                      className="w-full pl-11 pr-4 py-3 border-2 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all resize-none"
                       placeholder="Av. Principal 123, Lima - Perú"
                     />
-                    <MapPin className="absolute left-4 top-4 h-5 w-5 text-gray-400" />
+                    <MapPin className="absolute left-4 top-4 h-5 w-5 text-gray-600 dark:text-gray-400" />
                   </div>
                 </div>
 
@@ -523,10 +525,10 @@ export default function CompanySettingsPage() {
                       name="store_hours"
                       value={formData.store_hours}
                       onChange={handleChange}
-                      className="w-full pl-11 pr-4 py-3 border-2 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+                      className="w-full pl-11 pr-4 py-3 border-2 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                       placeholder="Lunes a Viernes: 9:00 AM - 6:00 PM"
                     />
-                    <Clock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <Clock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-600 dark:text-gray-400" />
                   </div>
                 </div>
               </div>
@@ -537,7 +539,7 @@ export default function CompanySettingsPage() {
           {activeTab === 'social' && (
             <div className="p-6 animate-fadeIn">
               <h2 className="text-xl font-bold dark:text-gray-100 mb-6 flex items-center gap-2">
-                <Share2 className="h-5 w-5 text-indigo-600" />
+                <Share2 className="h-5 w-5 text-blue-600" />
                 Redes Sociales
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -564,10 +566,10 @@ export default function CompanySettingsPage() {
                       name="instagram_url"
                       value={formData.instagram_url}
                       onChange={handleChange}
-                      className="w-full pl-11 pr-4 py-3 border-2 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+                      className="w-full pl-11 pr-4 py-3 border-2 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                       placeholder="https://instagram.com/usuario"
                     />
-                    <Instagram className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-indigo-600" />
+                    <Instagram className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-blue-600" />
                   </div>
                 </div>
 
@@ -617,7 +619,7 @@ export default function CompanySettingsPage() {
             <button
               type="submit"
               disabled={saving}
-              className="px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all font-semibold shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all font-semibold shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {saving ? (
                 <>

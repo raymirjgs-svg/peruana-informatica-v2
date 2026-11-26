@@ -1,4 +1,5 @@
 "use client";
+import { Sparkles, FileText, Image as ImageIcon, Zap, Bot, Star, Package, Pencil, Plus, Tags, Rocket, KeyRound, X, AlertTriangle } from 'lucide-react';
 
 import { useState, useEffect, useCallback } from "react";
 import { AdminLayout } from "@/components/admin/AdminLayout";
@@ -298,7 +299,7 @@ export default function BlogAdminPage() {
       setIsModalOpen(false);
       setApiKey("");
       alert(
-        "✅ API Key configurada exitosamente. Las funciones de IA están ahora disponibles.",
+        "API Key configurada exitosamente. Las funciones de IA están ahora disponibles.",
       );
     } catch (err: any) {
       setError(err.message || "Error guardando API Key");
@@ -378,8 +379,8 @@ export default function BlogAdminPage() {
       resetForm();
       alert(
         selectedPost
-          ? "✅ Post actualizado exitosamente"
-          : "✅ Post creado exitosamente",
+          ? "Post actualizado exitosamente"
+          : "Post creado exitosamente",
       );
     } catch (err: any) {
       setError(err.message || "Error guardando post");
@@ -454,10 +455,12 @@ export default function BlogAdminPage() {
           <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg flex items-center justify-between">
             <span>{error}</span>
             <button
+              type="button"
               onClick={() => setError("")}
-              className="text-red-700 hover:text-red-900 font-bold"
+              aria-label="Cerrar mensaje de error"
+              className="p-2 -m-2 text-red-700 hover:text-red-900 transition-colors"
             >
-              ✕
+              <X className="h-4 w-4" />
             </button>
           </div>
         )}
@@ -479,7 +482,7 @@ export default function BlogAdminPage() {
             </div>
             <div className="dark:bg-gray-900 border dark:border-gray-700 rounded-xl p-6">
               <div className="text-sm dark:text-gray-400">Generados por IA</div>
-              <div className="text-2xl font-bold text-indigo-600 mt-1">
+              <div className="text-2xl font-bold text-blue-600 mt-1">
                 {stats.totals.ai_generated}
               </div>
             </div>
@@ -496,11 +499,11 @@ export default function BlogAdminPage() {
         {stats?.ai_configured && (
           <div className="space-y-4 mb-6">
             {/* Panel principal de IA */}
-            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl p-6 text-white">
+            <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl p-6 text-white">
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-xl font-bold mb-2">
-                    🤖 Herramientas de IA (ACTIVA ✅)
+                    <Bot className="h-5 w-5" /> Herramientas de IA (activa)
                   </h2>
                   <p className="text-white/90">
                     Genera contenido automáticamente con inteligencia artificial
@@ -512,7 +515,7 @@ export default function BlogAdminPage() {
                     disabled={generatingTitles}
                     className="bg-white/20 hover:bg-white/30 border-white/30"
                   >
-                    {generatingTitles ? "Generando..." : "✨ Generar Títulos"}
+                    {generatingTitles ? "Generando..." : "Generar títulos"}
                   </Button>
                   {titleSuggestions.length > 0 && (
                     <Button
@@ -534,7 +537,7 @@ export default function BlogAdminPage() {
               <div className="flex items-center justify-between">
                 <div className="flex-1">
                   <h3 className="text-sm font-semibold dark:text-gray-300 mb-2">
-                    🔑 API Key de Google Gemini
+                    <KeyRound className="h-4 w-4" /> API Key de Google Gemini
                   </h3>
                   <div className="flex items-center gap-2">
                     <input
@@ -542,13 +545,13 @@ export default function BlogAdminPage() {
                       value={apiKey}
                       onChange={(e) => setApiKey(e.target.value)}
                       placeholder="AIza... (Ingresa tu API Key aquí para cambiarla)"
-                      className="flex-1 px-3 py-2 text-sm border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                      className="flex-1 px-3 py-2 text-sm border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                     <Button
                       size="sm"
                       onClick={saveApiKey}
                       disabled={savingApiKey || !apiKey.trim()}
-                      className="bg-indigo-600 hover:bg-indigo-700 text-white"
+                      className="bg-blue-600 hover:bg-blue-700 text-white"
                     >
                       {savingApiKey ? "Guardando..." : "💾 Actualizar"}
                     </Button>
@@ -556,9 +559,9 @@ export default function BlogAdminPage() {
                       href="https://aistudio.google.com/app/apikey"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm text-indigo-600 hover:text-indigo-700 font-medium whitespace-nowrap"
+                      className="text-sm text-blue-600 hover:text-blue-700 font-medium whitespace-nowrap"
                     >
-                      🔗 Obtener nueva
+                      Obtener nueva
                     </a>
                   </div>
                   <p className="text-xs dark:text-gray-400 mt-1">
@@ -568,7 +571,7 @@ export default function BlogAdminPage() {
                       href="https://aistudio.google.com/app/apikey"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-indigo-600 hover:underline"
+                      className="text-blue-600 hover:underline"
                     >
                       Google AI Studio
                     </a>{" "}
@@ -584,7 +587,7 @@ export default function BlogAdminPage() {
           <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-6 mb-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <span className="text-2xl">⚠️</span>
+                <AlertTriangle className="h-6 w-6 text-amber-600 dark:text-amber-400" />
                 <div>
                   <h3 className="font-semibold text-yellow-800">
                     IA no configurada (100% GRATIS)
@@ -600,9 +603,9 @@ export default function BlogAdminPage() {
                   setModalType("apikey");
                   setIsModalOpen(true);
                 }}
-                className="bg-yellow-600 hover:bg-yellow-700 text-white"
+                className="bg-amber-700 hover:bg-amber-800 text-white"
               >
-                🔑 Configurar API Key
+                <KeyRound className="h-4 w-4" /> Configurar API Key
               </Button>
             </div>
           </div>
@@ -635,13 +638,13 @@ export default function BlogAdminPage() {
                         {post.status}
                       </span>
                       {post.ai_generated && (
-                        <span className="px-2 py-1 bg-indigo-100 text-indigo-700 text-xs font-medium rounded">
-                          🤖 IA
+                        <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded">
+                          IA
                         </span>
                       )}
                       {post.is_featured && (
                         <span className="px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-medium rounded">
-                          ⭐ Destacado
+                          Destacado
                         </span>
                       )}
                     </div>
@@ -713,7 +716,7 @@ export default function BlogAdminPage() {
             <div className="dark:bg-gray-900 rounded-xl max-w-2xl w-full">
               <div className="p-6 border-b dark:border-gray-700">
                 <h2 className="text-xl font-bold dark:text-gray-100">
-                  🔑 Configurar Google Gemini API Key (GRATIS 🎉)
+                  <KeyRound className="h-4 w-4" /> Configurar Google Gemini API Key (gratis)
                 </h2>
                 <p className="dark:text-gray-400 mt-1">
                   Ingresa tu API Key gratuita de Google Gemini para habilitar
@@ -749,20 +752,18 @@ export default function BlogAdminPage() {
 
                 <div className="bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-lg p-4">
                   <h4 className="font-semibold text-green-900 mb-2">
-                    🎉 ¿Por qué Google Gemini es la mejor opción?
+                    ¿Por qué Google Gemini es la mejor opción?
                   </h4>
                   <ul className="text-sm text-green-800 space-y-2">
                     <li>
-                      ✅ <strong>100% GRATUITO</strong> - Sin tarjeta de crédito
+                      <strong>100% GRATUITO</strong> - Sin tarjeta de crédito
                     </li>
-                    <li>✨ Generar títulos atractivos automáticamente</li>
-                    <li>
-                      📝 Crear contenido completo para posts (2000+ palabras)
-                    </li>
-                    <li>🖼️ Imágenes destacadas gratis (Unsplash)</li>
-                    <li>🏷️ Sugerir tags y categorías relevantes</li>
-                    <li>🚀 Muy potente (similar a GPT-4)</li>
-                    <li>⚡ 60 solicitudes por minuto</li>
+                    <li className="flex items-start gap-2"><Sparkles className="h-4 w-4 shrink-0 mt-0.5 text-blue-500" />Generar títulos atractivos automáticamente</li>
+                    <li className="flex items-start gap-2"><FileText className="h-4 w-4 shrink-0 mt-0.5 text-blue-500" />Crear contenido completo para posts (2000+ palabras)</li>
+                    <li className="flex items-start gap-2"><ImageIcon className="h-4 w-4 shrink-0 mt-0.5 text-blue-500" />Imágenes destacadas gratis (Unsplash)</li>
+                    <li className="flex items-start gap-2"><Tags className="h-4 w-4 shrink-0 mt-0.5 text-blue-500" />Sugerir tags y categorías relevantes</li>
+                    <li className="flex items-start gap-2"><Rocket className="h-4 w-4 shrink-0 mt-0.5 text-blue-500" />Muy potente (similar a GPT-4)</li>
+                    <li className="flex items-start gap-2"><Zap className="h-4 w-4 shrink-0 mt-0.5 text-blue-500" />60 solicitudes por minuto</li>
                   </ul>
                 </div>
               </div>
@@ -794,7 +795,7 @@ export default function BlogAdminPage() {
             <div className="dark:bg-gray-900 rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
               <div className="p-6 border-b dark:border-gray-700">
                 <h2 className="text-xl font-bold dark:text-gray-100">
-                  🤖 Sugerencias de Títulos de IA
+                  Sugerencias de títulos de IA
                 </h2>
                 <p className="dark:text-gray-400 mt-1">
                   Selecciona un título para generar el contenido completo
@@ -832,7 +833,7 @@ export default function BlogAdminPage() {
                           >
                             {generatingContent
                               ? "Generando..."
-                              : "✨ Generar Post"}
+                              : "Generar post"}
                           </Button>
                           <Button
                             size="sm"
@@ -883,7 +884,7 @@ export default function BlogAdminPage() {
             <div className="dark:bg-gray-900 rounded-xl max-w-4xl w-full my-8">
               <div className="p-6 border-b dark:border-gray-700">
                 <h2 className="text-xl font-bold dark:text-gray-100">
-                  {selectedPost ? "📝 Editar Post" : "✨ Nuevo Post"}
+                  {selectedPost ? "Editar post" : "Nuevo post"}
                 </h2>
                 <p className="dark:text-gray-400 mt-1">
                   {selectedPost
@@ -1152,7 +1153,7 @@ export default function BlogAdminPage() {
                           htmlFor="is_featured"
                           className="text-sm font-medium dark:text-gray-300"
                         >
-                          ⭐ Marcar como destacado
+                          Marcar como destacado
                         </label>
                       </div>
                     </div>
@@ -1182,7 +1183,7 @@ export default function BlogAdminPage() {
                     ? "Guardando..."
                     : selectedPost
                       ? "💾 Actualizar Post"
-                      : "✨ Crear Post"}
+                      : "Crear post"}
                 </Button>
               </div>
             </div>

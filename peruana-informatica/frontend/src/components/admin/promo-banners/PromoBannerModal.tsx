@@ -168,7 +168,7 @@ export function PromoBannerModal({ banner, isOpen, onClose, onSave }: PromoBanne
                                         }}
                                     />
                                 ) : (
-                                    <div className="text-center text-gray-400">
+                                    <div className="text-center text-gray-600 dark:text-gray-400">
                                         <ImageIcon className="w-12 h-12 mx-auto mb-2 opacity-50" />
                                         <span className="text-sm">Vista previa de imagen</span>
                                     </div>

@@ -74,7 +74,7 @@ export default function ReviewsPage() {
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div>
                             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Reseñas</h1>
-                            <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Modera los comentarios y valoraciones de los clientes</p>
+                            <p className="text-sm text-gray-600 dark:text-gray-400 mt-0.5">Modera los comentarios y valoraciones de los clientes</p>
                         </div>
                         {/* Filter Tabs */}
                         <div className="flex p-1 bg-gray-100 dark:bg-gray-800 rounded-xl">
@@ -83,8 +83,8 @@ export default function ReviewsPage() {
                                     key={status}
                                     onClick={() => { setFilterStatus(status); setPage(1); }}
                                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${filterStatus === status
-                                        ? 'bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 shadow-sm'
-                                        : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
+                                        ? 'bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-300 shadow-sm'
+                                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
                                         }`}
                                 >
                                     {status === 'all' ? 'Todas' :
@@ -102,7 +102,7 @@ export default function ReviewsPage() {
                     <div className="grid gap-6">
                         {reviews.length === 0 ? (
                             <div className="text-center py-20 bg-white/50 dark:bg-gray-800/50 rounded-2xl border border-dashed border-gray-300 dark:border-gray-700">
-                                <MessageSquare className="h-12 w-12 mx-auto text-gray-400 mb-4" />
+                                <MessageSquare className="h-12 w-12 mx-auto text-gray-600 dark:text-gray-400 mb-4" />
                                 <h3 className="text-lg font-medium text-gray-900 dark:text-white">No se encontraron reseñas</h3>
                                 <p className="dark:text-gray-400">No hay reseñas con el filtro seleccionado.</p>
                             </div>
@@ -120,11 +120,11 @@ export default function ReviewsPage() {
                                                         ))}
                                                         <span className="text-sm font-bold text-gray-900 dark:text-white ml-2">{review.title}</span>
                                                     </div>
-                                                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                                                    <p className="text-sm text-gray-600 dark:text-gray-400">
                                                         Por <span className="font-medium text-gray-900 dark:text-white">{review.customer_name}</span> el {new Date(review.created_at).toLocaleDateString()}
                                                     </p>
                                                 </div>
-                                                <span className={`px-2.5 py-1 rounded-full text-[11px] font-semibold flex items-center gap-1.5 ${
+                                                <span className={`px-2.5 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5 ${
                                                     review.status === 'approved' ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400' :
                                                     review.status === 'rejected' ? 'bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-400' :
                                                     'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400'
@@ -175,7 +175,7 @@ export default function ReviewsPage() {
                                             )}
                                             <button
                                                 onClick={() => handleDelete(review.id)}
-                                                className="flex items-center gap-2 px-4 py-2 bg-transparent hover:bg-red-50 text-gray-400 hover:text-red-600 dark:hover:bg-red-900/10 transition-colors rounded-lg text-sm"
+                                                className="flex items-center gap-2 px-4 py-2 bg-transparent hover:bg-red-50 text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:bg-red-900/10 transition-colors rounded-lg text-sm"
                                             >
                                                 <Trash2 className="h-4 w-4" /> Eliminar
                                             </button>

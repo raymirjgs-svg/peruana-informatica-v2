@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { getAdminAuthHeaders } from '@/lib/adminAuth';
+import { toast } from 'sonner';
 import { BlogPost, TitleSuggestion, BlogStats, PostFormData } from './types';
 import apiClient from '@/utils/api';
 
@@ -196,7 +197,7 @@ export function useBlogAdmin() {
       });
 
       await loadBlogData();
-      alert("✅ Posts de demostración cargados exitosamente");
+      toast.success("Posts de demostración cargados exitosamente");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error cargando datos demo");
     } finally {
@@ -207,7 +208,7 @@ export function useBlogAdmin() {
   // Guardar API Key
   const saveApiKey = async () => {
     if (!apiKey.trim()) {
-      alert("Por favor ingresa una API Key válida");
+      toast.error("Ingresa una API Key válida para continuar");
       return;
     }
 
@@ -222,9 +223,7 @@ export function useBlogAdmin() {
       await loadBlogData();
       setIsModalOpen(false);
       setApiKey("");
-      alert(
-        "✅ API Key configurada exitosamente. Las funciones de IA están ahora disponibles.",
-      );
+      toast.success("API Key configurada", { description: "Las funciones de IA ya están disponibles." });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error guardando API Key");
     } finally {
@@ -274,7 +273,7 @@ export function useBlogAdmin() {
   // Guardar post (crear o actualizar)
   const savePost = async () => {
     if (!formData.title.trim() || !formData.content.trim()) {
-      alert("El título y contenido son obligatorios");
+      toast.error("El título y el contenido son obligatorios");
       return;
     }
 
@@ -296,11 +295,7 @@ export function useBlogAdmin() {
       await loadBlogData();
       setIsModalOpen(false);
       resetForm();
-      alert(
-        selectedPost
-          ? "✅ Post actualizado exitosamente"
-          : "✅ Post creado exitosamente",
-      );
+      toast.success(selectedPost ? "Post actualizado" : "Post creado");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error guardando post");
     } finally {

@@ -47,9 +47,9 @@ const getColorClasses = (color: string) => {
       icon: 'text-green-600 dark:text-green-400'
     },
     purple: {
-      selected: 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/30 dark:border-indigo-400',
-      hover: 'hover:bg-indigo-50 dark:hover:bg-indigo-900/20',
-      icon: 'text-indigo-600 dark:text-indigo-400'
+      selected: 'border-blue-500 bg-blue-50 dark:bg-blue-900/30 dark:border-blue-400',
+      hover: 'hover:bg-blue-50 dark:hover:bg-blue-900/20',
+      icon: 'text-blue-600 dark:text-blue-400'
     },
     amber: {
       selected: 'border-amber-500 bg-amber-50 dark:bg-amber-900/30 dark:border-amber-400',
@@ -70,7 +70,7 @@ export function PricingTab({ settings, onSettingChange }: PricingTabProps) {
     <div className="p-6">
       <div className="mb-6 pb-6 border-b border-gray-100 dark:border-gray-700">
         <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-2">Configuración de Precios</h2>
-        <p className="text-gray-500 dark:text-gray-400">Define qué precio base utilizará el sistema para cálculos y visualización.</p>
+        <p className="text-gray-600 dark:text-gray-400">Define qué precio base utilizará el sistema para cálculos y visualización.</p>
       </div>
 
       <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-xl p-4 mb-6">
@@ -101,7 +101,7 @@ export function PricingTab({ settings, onSettingChange }: PricingTabProps) {
                 onChange={(e) => onSettingChange('cotizador_price_type', e.target.value)}
                 className="sr-only"
               />
-              <div className={`p-3 rounded-lg ${isSelected ? colorClasses.icon : 'text-gray-400 dark:text-gray-500'} ${isSelected ? `bg-white dark:bg-gray-800` : 'bg-gray-100 dark:bg-gray-700'
+              <div className={`p-3 rounded-lg ${isSelected ? colorClasses.icon : 'text-gray-600 dark:text-gray-400'} ${isSelected ? `bg-white dark:bg-gray-800` : 'bg-gray-100 dark:bg-gray-700'
                 }`}>
                 {option.icon}
               </div>
@@ -120,7 +120,7 @@ export function PricingTab({ settings, onSettingChange }: PricingTabProps) {
                     </span>
                   )}
                 </div>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                   {option.description}
                 </p>
               </div>

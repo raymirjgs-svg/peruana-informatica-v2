@@ -98,7 +98,7 @@ export default function DiscountsPage() {
           <div className="flex items-center justify-between mb-5">
             <h2 className="text-lg font-bold text-gray-900 dark:text-white">Lista de Descuentos</h2>
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-600 dark:text-gray-400" />
               <input
                 type="text"
                 placeholder="Buscar descuento..."
@@ -151,7 +151,7 @@ export default function DiscountsPage() {
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mt-4 border-t border-gray-200 dark:border-gray-700 pt-3">
+                  <div className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-400 mt-4 border-t border-gray-200 dark:border-gray-700 pt-3">
                     <span className="flex items-center gap-1">
                       <Calendar className="h-3 w-3" />
                       {new Date(discount.valid_from).toLocaleDateString()} - {new Date(discount.valid_until).toLocaleDateString()}

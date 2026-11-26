@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { apiClient } from "@/utils/api";
 import { toast } from "sonner";
 import { AdminLayout } from "@/components/admin/AdminLayout";
+import { Check, Copy, Loader2, Trash2, Upload, Image as ImageIcon } from 'lucide-react';
 
 interface ImageItem {
   filename: string;
@@ -111,7 +112,7 @@ export default function MediaLibraryPage() {
         <div className="flex items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Biblioteca de Imágenes</h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-0.5">
               {images.length} imagen{images.length !== 1 ? "es" : ""} · Sube hasta 5 MB por archivo
             </p>
           </div>
@@ -121,12 +122,12 @@ export default function MediaLibraryPage() {
             className="shrink-0 flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white text-sm font-semibold rounded-xl transition-all active:scale-95 shadow-sm"
           >
             {uploading ? (
-              <><span className="animate-spin">⏳</span> Subiendo...</>
+              <><Loader2 className="h-4 w-4 animate-spin" /> Subiendo...</>
             ) : (
               <><span className="text-lg leading-none">+</span> Subir imágenes</>
             )}
           </button>
-          <input ref={inputRef} type="file" accept="image/*" multiple className="hidden" onChange={handleFileInput} />
+          <input ref={inputRef} type="file" accept="image/*" multiple aria-label="Seleccionar imagenes para subir" className="hidden" onChange={handleFileInput} />
         </div>
 
         {/* Drop Zone */}
@@ -141,23 +142,23 @@ export default function MediaLibraryPage() {
               : "border-gray-200 dark:border-gray-700 hover:border-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800/50"
           }`}
         >
-          <div className="text-4xl mb-2">🖼️</div>
+          <ImageIcon className="h-10 w-10 mb-2 text-gray-400 dark:text-gray-400" />
           <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
             Arrastra imágenes aquí o haz clic para seleccionar
           </p>
-          <p className="text-xs text-gray-400 mt-1">JPG, PNG, WebP, GIF · Máx. 5 MB</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">JPG, PNG, WebP, GIF · Máx. 5 MB</p>
         </div>
 
         {/* Search */}
         {images.length > 0 && (
           <div className="relative">
-            <svg className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
             <input
               type="text"
               placeholder="Buscar por nombre..."
-              className="w-full pl-10 pr-4 py-2.5 text-sm bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-gray-100 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full pl-10 pr-4 py-2.5 text-sm bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-gray-100 placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -172,7 +173,7 @@ export default function MediaLibraryPage() {
         ) : filtered.length === 0 ? (
           <div className="text-center py-16 bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
             <div className="text-5xl mb-3">📭</div>
-            <p className="text-gray-400 text-sm">
+            <p className="text-gray-600 dark:text-gray-400 text-sm">
               {search ? "No se encontraron imágenes" : "No hay imágenes subidas aún"}
             </p>
           </div>
@@ -188,36 +189,44 @@ export default function MediaLibraryPage() {
                   <img
                     src={img.url}
                     alt={img.filename}
+                    width={400}
+                    height={400}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover"
                     onError={(e) => { (e.target as HTMLImageElement).src = "/images/no-image.svg"; }}
                   />
                 </div>
 
-                {/* Actions overlay */}
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
+                {/* Actions overlay: visibles al pasar el mouse y al enfocar con el teclado */}
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 focus-within:bg-black/40 transition-all flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 focus-within:opacity-100">
                   <button
+                    type="button"
                     onClick={() => copyUrl(img.url)}
+                    aria-label={`Copiar URL de ${img.filename}`}
                     title="Copiar URL"
-                    className="p-2 dark:bg-gray-900 rounded-lg dark:text-gray-100 hover:bg-blue-500 hover:text-white transition-colors shadow"
+                    className="p-2 bg-gray-900/80 rounded-lg text-gray-100 hover:bg-blue-500 hover:text-white transition-colors shadow"
                   >
-                    {copied === img.url ? "✓" : "🔗"}
+                    {copied === img.url ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                   </button>
                   <button
+                    type="button"
                     onClick={() => deleteImage(img.filename)}
                     disabled={deleting === img.filename}
+                    aria-label={`Eliminar ${img.filename}`}
                     title="Eliminar"
-                    className="p-2 dark:bg-gray-900 rounded-lg dark:text-gray-100 hover:bg-red-500 hover:text-white transition-colors shadow disabled:opacity-50"
+                    className="p-2 bg-gray-900/80 rounded-lg text-gray-100 hover:bg-red-500 hover:text-white transition-colors shadow disabled:opacity-50"
                   >
-                    {deleting === img.filename ? "⏳" : "🗑️"}
+                    {deleting === img.filename ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
                   </button>
                 </div>
 
                 {/* Info */}
                 <div className="p-2">
-                  <p className="text-[11px] text-gray-500 dark:text-gray-400 truncate" title={img.filename}>
+                  <p className="text-xs text-gray-600 dark:text-gray-400 truncate" title={img.filename}>
                     {img.filename}
                   </p>
-                  <p className="text-[10px] text-gray-400">{formatSize(img.size)}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{formatSize(img.size)}</p>
                 </div>
               </div>
             ))}

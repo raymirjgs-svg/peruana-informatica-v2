@@ -12,7 +12,7 @@ export function SocialTab({ formData, onChange }: SocialTabProps) {
   return (
     <div className="p-6 animate-fadeIn">
       <h2 className="text-xl font-bold dark:text-gray-100 mb-6 flex items-center gap-2">
-        <Share2 className="h-5 w-5 text-indigo-600" />
+        <Share2 className="h-5 w-5 text-blue-600" />
         Redes Sociales
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -39,10 +39,10 @@ export function SocialTab({ formData, onChange }: SocialTabProps) {
               name="instagram_url"
               value={formData.instagram_url}
               onChange={onChange}
-              className="w-full pl-11 pr-4 py-3 border-2 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+              className="w-full pl-11 pr-4 py-3 border-2 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
               placeholder="https://instagram.com/usuario"
             />
-            <Instagram className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-indigo-600" />
+            <Instagram className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-blue-600" />
           </div>
         </div>
 

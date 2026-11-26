@@ -232,11 +232,11 @@ export function Sidebar() {
             className={cn(
               "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group text-sm font-medium",
               isItemActive
-                ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/20"
+                ? "bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/20"
                 : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-gray-900 dark:hover:text-gray-200"
             )}
           >
-            <span className={isItemActive ? "text-white/90" : "text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300"}>
+            <span className={isItemActive ? "text-white/90" : "text-gray-600 dark:text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300"}>
               {item.icon}
             </span>
             <span>{item.name}</span>
@@ -258,15 +258,19 @@ export function Sidebar() {
               className="h-8 w-auto object-contain max-w-[120px]"
             />
           ) : (
-            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold text-sm">
+            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center text-white font-bold text-sm">
               PI
             </div>
           )}
           <span className="font-bold text-gray-900 dark:text-white">Admin</span>
         </div>
         <button
+          type="button"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+          aria-label={isMobileMenuOpen ? 'Cerrar menú de navegación' : 'Abrir menú de navegación'}
+          aria-expanded={isMobileMenuOpen}
+          aria-controls="admin-menu-panel"
+          className="p-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
         >
           {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
         </button>
@@ -274,6 +278,7 @@ export function Sidebar() {
 
       {/* Floating Sidebar Container */}
       <aside
+        id="admin-menu-panel"
         className={cn(
           "fixed top-0 left-0 h-screen w-72 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-r border-gray-200/50 dark:border-gray-700/50 z-40 transition-transform duration-300 lg:translate-x-0 pt-0",
           isMobileMenuOpen ? "translate-x-0 mt-16 lg:mt-0" : "-translate-x-full"
@@ -295,7 +300,7 @@ export function Sidebar() {
                 </div>
               ) : (
                 <>
-                  <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/20 group-hover:scale-105 transition-transform">
+                  <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center shadow-lg shadow-blue-500/20 group-hover:scale-105 transition-transform">
                     <span className="text-white font-bold text-xl">PI</span>
                   </div>
                   <div>
@@ -330,14 +335,14 @@ export function Sidebar() {
           {/* User Profile Footer */}
           <div className="p-4 m-4 bg-gray-50/80 dark:bg-gray-800/50 rounded-2xl border border-gray-100 dark:border-gray-700/50 backdrop-blur-sm">
             <div className="flex items-center gap-3 mb-3">
-              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 p-0.5">
+              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 p-0.5">
                 <div className="h-full w-full rounded-full bg-white dark:bg-gray-800 flex items-center justify-center overflow-hidden">
                   <img src={`https://ui-avatars.com/api/?name=${encodeURIComponent(adminName)}&background=random`} alt={adminName} className="w-full h-full" />
                 </div>
               </div>
               <div className="overflow-hidden">
                 <p className="text-sm font-bold text-gray-900 dark:text-white truncate">{adminName}</p>
-                <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{adminEmail}</p>
+                <p className="text-xs text-gray-600 dark:text-gray-400 truncate">{adminEmail}</p>
               </div>
             </div>
 

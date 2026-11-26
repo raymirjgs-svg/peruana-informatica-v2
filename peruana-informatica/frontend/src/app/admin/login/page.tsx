@@ -1,4 +1,5 @@
 "use client";
+import { AlertTriangle } from 'lucide-react';
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -63,7 +64,7 @@ export default function AdminLoginPage() {
 
         {sessionExpired && (
           <div className="mb-4 flex items-start gap-2 bg-amber-50 border border-amber-300 text-amber-800 rounded-md px-3 py-2 text-sm" role="alert">
-            <span className="mt-0.5">⚠️</span>
+            <AlertTriangle className="h-4 w-4 mt-0.5" />
             <span>Tu sesión ha expirado. Por favor inicia sesión nuevamente.</span>
           </div>
         )}

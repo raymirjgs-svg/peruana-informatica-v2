@@ -52,12 +52,12 @@ export default function ChangePasswordPage() {
     <AdminLayout>
       <div className="max-w-lg space-y-5">
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-md shadow-blue-500/20 shrink-0">
+          <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-md shadow-blue-500/20 shrink-0">
             <KeyRound className="h-5 w-5 text-white" />
           </div>
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Cambiar contraseña</h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-0.5">
               Actualiza la contraseña de tu cuenta administradora
             </p>
           </div>

@@ -24,7 +24,7 @@ export function ProductsHeader({ controller, onNew }: { controller: Data; onNew:
               📥 Exportar CSV
             </Button>
             <Button variant="secondary" onClick={syncAllWithERP} disabled={syncingAll}>
-              {syncingAll ? '⏳ Sincronizando...' : '🔄 Sync ERP'}
+              {syncingAll ? 'Sincronizando...' : 'Sync ERP'}
             </Button>
             <Button onClick={onNew} size="lg">
               <span className="text-xl">+</span>

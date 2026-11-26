@@ -171,6 +171,7 @@ export default function ProductDetailClient({
               productName={product.name}
               selectedImage={selectedImage}
               onSelectImage={setSelectedImage}
+              stock={product.stock}
             />
             <ProductPurchasePanel
               product={product}
@@ -189,6 +190,7 @@ export default function ProductDetailClient({
           product={product}
           activeTab={activeTab}
           onTabChange={setActiveTab}
+          settings={settings}
         />
 
         <RelatedProducts products={relatedProducts} />

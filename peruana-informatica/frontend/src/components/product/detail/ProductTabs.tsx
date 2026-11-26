@@ -1,137 +1,104 @@
 'use client';
 
 import type { Product } from '@/models/Product';
+import type { CompanySettings } from '@/services/SettingsService';
 import { ProductReviews } from '@/components/product/ProductReviews';
 import { sanitizeHtml } from '@/lib/sanitize';
+import { FileText, List, RotateCcw, Star, Truck } from 'lucide-react';
 
 interface ProductTabsProps {
   product: Product;
   activeTab: string;
   onTabChange: (tab: string) => void;
+  settings: CompanySettings | null;
 }
 
 const TABS = [
-  { id: 'description', label: '📝 Descripción' },
-  { id: 'specifications', label: '⚙️ Especificaciones' },
-  { id: 'reviews', label: '⭐ Reseñas' },
-  { id: 'shipping', label: '🚚 Envío' },
+  { id: 'description', label: 'Descripción', icon: FileText },
+  { id: 'specifications', label: 'Especificaciones', icon: List },
+  { id: 'reviews', label: 'Reseñas', icon: Star },
+  { id: 'shipping', label: 'Envío', icon: Truck },
 ];
 
-function parseSpecifications(description: string): { label: string; value: string }[] {
-  const specs: { label: string; value: string }[] = [];
-  const cleanDescription = description.replace(/<[^>]*>/g, ' ');
-
-  const patterns = [
-    { label: 'Marca', regex: /Marca\s*[:\-]?\s*([^\s].*?)(?=\s*[A-Z]|$)/i },
-    { label: 'Modelo', regex: /Modelo\s*[:\-]?\s*([^\s].*?)(?=\s*[A-Z]|$)/i },
-    { label: 'Procesador', regex: /(Intel|AMD|Apple).*?(i[3579]|Ryzen|Core|M\d+|Celeron|Pentium)[^\s]*/i },
-    { label: 'RAM', regex: /(\d+)\s*(GB|GB DDR4|GB DDR5|GB RAM)/i },
-    { label: 'Almacenamiento', regex: /(\d+)\s*(GB|TB)\s*(SSD|HDD|NVMe)/i },
-    { label: 'Pantalla', regex: /(\d+\.?\d*)["”]/ },
-    { label: 'Gráficos', regex: /(NVIDIA|AMD|Intel).*?(GTX|RTX|HD|UHD|Iris|Arc|Radeon|GeForce)[^\s]*/i }
-  ];
-
-  patterns.forEach(pattern => {
-    const match = cleanDescription.match(pattern.regex);
-    if (match) {
-      specs.push({ label: pattern.label, value: match[0].trim() });
-    }
-  });
-
-  return specs;
-}
-
-export function ProductTabs({ product, activeTab, onTabChange }: ProductTabsProps) {
-  const specs = product.description ? parseSpecifications(product.description) : [];
+export function ProductTabs({ product, activeTab, onTabChange, settings }: ProductTabsProps) {
+  const specs = Array.isArray(product.specifications) ? product.specifications : [];
 
   return (
-    <div className="bg-white rounded-xl shadow-lg mb-8">
-      <div className="border-b border-gray-200">
-        <nav role="tablist" aria-label="Información del producto" className="flex space-x-8 px-8">
-          {TABS.map((tab) => (
-            <button
-              key={tab.id}
-              type="button"
-              role="tab"
-              id={`tab-${tab.id}`}
-              aria-selected={activeTab === tab.id}
-              aria-controls={`panel-${tab.id}`}
-              tabIndex={activeTab === tab.id ? 0 : -1}
-              onClick={() => onTabChange(tab.id)}
-              className={`py-4 px-2 border-b-2 font-medium text-sm transition ${activeTab === tab.id
-                ? 'border-brand-red-500 text-brand-red-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+    <div className="bg-white rounded-xl shadow-sm border border-gray-200 mb-8">
+      <div className="border-b border-gray-200 overflow-x-auto">
+        <nav
+          role="tablist"
+          aria-label="Información del producto"
+          className="flex gap-1 px-4 md:px-8 min-w-max"
+        >
+          {TABS.map((tab) => {
+            const Icon = tab.icon;
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                role="tab"
+                id={`tab-${tab.id}`}
+                aria-selected={activeTab === tab.id}
+                aria-controls={`panel-${tab.id}`}
+                tabIndex={activeTab === tab.id ? 0 : -1}
+                onClick={() => onTabChange(tab.id)}
+                className={`py-4 px-3 md:px-4 border-b-2 font-medium text-sm transition whitespace-nowrap flex items-center gap-2 ${
+                  activeTab === tab.id
+                    ? 'border-brand-red-600 text-brand-red-700'
+                    : 'border-transparent text-gray-500 hover:text-gray-800 hover:border-gray-300'
                 }`}
-            >
-              {tab.label}
-            </button>
-          ))}
+              >
+                <Icon className="w-4 h-4" />
+                {tab.label}
+              </button>
+            );
+          })}
         </nav>
       </div>
 
-      <div className="p-8" role="tabpanel" id={`panel-${activeTab}`} aria-labelledby={`tab-${activeTab}`}>
+      <div
+        className="p-6 md:p-8"
+        role="tabpanel"
+        id={`panel-${activeTab}`}
+        aria-labelledby={`tab-${activeTab}`}
+      >
         {activeTab === 'description' && (
           <div>
-            <h3 className="text-2xl font-bold mb-4">Descripción del Producto</h3>
+            <h2 className="text-xl font-bold text-gray-900 mb-4">Descripción del producto</h2>
             <div
               className="prose max-w-none [&_table]:w-full [&_table]:border-collapse [&_table]:my-4 [&_th]:border [&_th]:border-gray-300 [&_th]:p-3 [&_th]:bg-gray-100 [&_th]:text-left [&_td]:border [&_td]:border-gray-300 [&_td]:p-3 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5"
-              dangerouslySetInnerHTML={{ __html: sanitizeHtml(product.description) || 'No hay descripción disponible para este producto.' }}
+              dangerouslySetInnerHTML={{
+                __html:
+                  sanitizeHtml(product.description) ||
+                  'No hay descripción disponible para este producto.',
+              }}
             />
           </div>
         )}
 
         {activeTab === 'specifications' && (
           <div>
-            <h3 className="text-2xl font-bold mb-4">Especificaciones Técnicas</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-4">
-                {specs.length > 0 ? (
-                  specs.map((spec, index) => (
-                    <div key={index} className="border-b border-gray-200 pb-2">
-                      <dt className="font-semibold text-gray-800">{spec.label}</dt>
-                      <dd className="text-gray-600">{spec.value}</dd>
-                    </div>
-                  ))
-                ) : (
-                  <>
-                    <div className="border-b border-gray-200 pb-2">
-                      <dt className="font-semibold text-gray-800">Marca</dt>
-                      <dd className="text-gray-600">Marca Premium</dd>
-                    </div>
-                    <div className="border-b border-gray-200 pb-2">
-                      <dt className="font-semibold text-gray-800">Modelo</dt>
-                      <dd className="text-gray-600">MP-2024-PRO</dd>
-                    </div>
-                    <div className="border-b border-gray-200 pb-2">
-                      <dt className="font-semibold text-gray-800">Dimensiones</dt>
-                      <dd className="text-gray-600">30 x 20 x 15 cm</dd>
-                    </div>
-                    <div className="border-b border-gray-200 pb-2">
-                      <dt className="font-semibold text-gray-800">Peso</dt>
-                      <dd className="text-gray-600">2.5 kg</dd>
-                    </div>
-                  </>
-                )}
-              </div>
-              <div className="space-y-4">
-                <div className="border-b border-gray-200 pb-2">
-                  <dt className="font-semibold text-gray-800">Color</dt>
-                  <dd className="text-gray-600">Negro</dd>
-                </div>
-                <div className="border-b border-gray-200 pb-2">
-                  <dt className="font-semibold text-gray-800">Material</dt>
-                  <dd className="text-gray-600">Aluminio y plástico ABS</dd>
-                </div>
-                <div className="border-b border-gray-200 pb-2">
-                  <dt className="font-semibold text-gray-800">Garantía</dt>
-                  <dd className="text-gray-600">2 años</dd>
-                </div>
-                <div className="border-b border-gray-200 pb-2">
-                  <dt className="font-semibold text-gray-800">Certificaciones</dt>
-                  <dd className="text-gray-600">CE, FCC, RoHS</dd>
-                </div>
-              </div>
-            </div>
+            <h2 className="text-xl font-bold text-gray-900 mb-4">
+              Especificaciones técnicas
+            </h2>
+            {specs.length > 0 ? (
+              <dl className="grid grid-cols-1 md:grid-cols-2 gap-x-10">
+                {specs.map((spec, index) => (
+                  <div
+                    key={`${spec.key}-${index}`}
+                    className="flex items-baseline justify-between gap-4 border-b border-gray-100 py-2.5"
+                  >
+                    <dt className="text-sm text-gray-500">{spec.key}</dt>
+                    <dd className="text-sm font-medium text-gray-900 text-right">{spec.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            ) : (
+              <p className="text-sm text-gray-500">
+                Este producto no tiene especificaciones técnicas registradas.
+              </p>
+            )}
           </div>
         )}
 
@@ -143,61 +110,73 @@ export function ProductTabs({ product, activeTab, onTabChange }: ProductTabsProp
 
         {activeTab === 'shipping' && (
           <div>
-            <h3 className="text-2xl font-bold mb-4">Información de Envío y Devoluciones</h3>
+            <h2 className="text-xl font-bold text-gray-900 mb-4">
+              Información de envío y devoluciones
+            </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
-                <h4 className="text-lg font-semibold mb-3 text-green-600">🚚 Opciones de Envío</h4>
-                <div className="space-y-4">
-                  <div className="border border-green-200 rounded-lg p-4">
-                    <div className="font-semibold">Envío Estándar - Pago en destino</div>
-                    <div className="text-sm text-gray-600">2-5 días hábiles</div>
-                    <div className="text-sm text-gray-600">Lima y provincias</div>
+                <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                  <Truck className="w-4 h-4 text-brand-red-600" />
+                  Opciones de envío
+                </h3>
+                <div className="space-y-3">
+                  <div className="border border-gray-200 rounded-lg p-4">
+                    <div className="font-semibold text-gray-900">
+                      Entrega inmediata en Arequipa y Lima
+                    </div>
+                    <div className="text-sm text-gray-600">Tiendas en ambas ciudades</div>
                   </div>
-                  <div className="border border-brand-red-200 rounded-lg p-4">
-                    <div className="font-semibold">Envío Express - S/. 15</div>
-                    <div className="text-sm text-gray-600">24-48 horas</div>
-                    <div className="text-sm text-gray-600">Solo Lima Metropolitana</div>
-                  </div>
-                  <div className="border border-purple-200 rounded-lg p-4">
-                    <div className="font-semibold">Recojo en Tienda</div>
-                    <div className="text-sm text-gray-600">Disponible en 2 horas</div>
-                    <div className="text-sm text-gray-600">Av. Tecnología 123, Lima</div>
+                  <div className="border border-gray-200 rounded-lg p-4">
+                    <div className="font-semibold text-gray-900">Envíos a todo el Perú</div>
+                    <div className="text-sm text-gray-600">2-5 días hábiles en provincias</div>
                   </div>
                 </div>
               </div>
 
               <div>
-                <h4 className="text-lg font-semibold mb-3 text-brand-red-600">🔄 Política de Devoluciones</h4>
-                <div className="space-y-3">
-                  <div className="flex items-start gap-3">
-                    <div className="text-green-500 mt-1">✅</div>
-                    <div>
-                      <div className="font-medium">30 días para devoluciones</div>
-                      <div className="text-sm text-gray-600">Sin preguntas, reembolso completo</div>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="text-green-500 mt-1">✅</div>
-                    <div>
-                      <div className="font-medium">Producto en condiciones originales</div>
-                      <div className="text-sm text-gray-600">Con embalaje y accesorios</div>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="text-green-500 mt-1">✅</div>
-                    <div>
-                      <div className="font-medium">Envío de devolución gratuito</div>
-                      <div className="text-sm text-gray-600">Recogemos en tu domicilio</div>
-                    </div>
-                  </div>
-                </div>
+                <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                  <RotateCcw className="w-4 h-4 text-brand-red-600" />
+                  Política de devoluciones
+                </h3>
+                <ul className="space-y-2 text-sm text-gray-700">
+                  <li>• 30 días para devoluciones, reembolso completo</li>
+                  <li>• Producto en condiciones originales, con embalaje y accesorios</li>
+                  <li>• Envío de devolución gratuito</li>
+                </ul>
 
-                <div className="mt-6 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-                  <h5 className="font-semibold text-yellow-800 mb-2">📞 ¿Necesitas ayuda?</h5>
-                  <p className="text-sm text-yellow-700">
-                    Contáctanos al +51 1 234-5678 o envía un email a soporte@peruanainformatica.com
-                  </p>
+                <div className="mt-6 rounded-lg border border-gray-200 p-4 text-sm">
+                  <p className="font-semibold text-gray-900 mb-1">¿Necesitas ayuda?</p>
+                  {settings?.company_phone && (
+                    <p className="text-gray-600">
+                      Teléfono:{' '}
+                      <a
+                        href={`tel:${settings.company_phone.replace(/\s/g, '')}`}
+                        className="text-brand-red-600 hover:underline"
+                      >
+                        {settings.company_phone}
+                      </a>
+                    </p>
+                  )}
+                  {settings?.company_email && (
+                    <p className="text-gray-600">
+                      Email:{' '}
+                      <a
+                        href={`mailto:${settings.company_email}`}
+                        className="text-brand-red-600 hover:underline"
+                      >
+                        {settings.company_email}
+                      </a>
+                    </p>
+                  )}
+                  {settings?.company_address && (
+                    <p className="mt-2 text-gray-600 whitespace-pre-line">
+                      {settings.company_address}
+                    </p>
+                  )}
+                  {settings?.store_hours && (
+                    <p className="mt-2 text-gray-600">Horario: {settings.store_hours}</p>
+                  )}
                 </div>
               </div>
             </div>

@@ -179,11 +179,11 @@ export const ProductCard = memo(function ProductCard({ product }: ProductCardPro
             <div className="flex flex-col gap-0.5">
               {hasDiscount && (
                 <span className="text-xs text-gray-400 line-through leading-none tabular-nums">
-                  S/. {pDis.toFixed(2)}
+                  S/ {pDis.toFixed(2)}
                 </span>
               )}
               <span className="text-xl font-black text-gray-900 dark:text-gray-100 leading-none tracking-tight tabular-nums">
-                S/. {pWeb.toFixed(2)}
+                S/ {pWeb.toFixed(2)}
               </span>
             </div>
           ) : (

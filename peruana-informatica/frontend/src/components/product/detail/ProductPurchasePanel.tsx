@@ -4,6 +4,16 @@ import type { Product } from '@/models/Product';
 import type { CompanySettings } from '@/services/SettingsService';
 import { buildWhatsappLink, priceInquiryMessage } from '@/utils/whatsapp';
 import { formatStockLabel } from '@/lib/product';
+import { StarRating } from '@/components/product/StarRating';
+import {
+  CreditCard,
+  Heart,
+  MessageCircle,
+  Share2,
+  ShoppingCart,
+  Truck,
+  Zap,
+} from 'lucide-react';
 
 interface ProductPurchasePanelProps {
   product: Product;
@@ -27,161 +37,192 @@ export function ProductPurchasePanel({
   onToggleWishlist,
 }: ProductPurchasePanelProps) {
   const listPrice = Number(product.price || 0);
+  const distributorPrice = Number(product.priceDis || 0);
+  const stockLabel = formatStockLabel(product.stock, product.stockDisplay);
+  const whatsapp = settings?.company_whatsapp || '988552455';
 
   return (
     <div>
-      <h1 className="text-4xl font-bold text-gray-800 mb-4">{product.name}</h1>
+      <h1 className="text-2xl md:text-3xl font-semibold text-gray-900 leading-snug tracking-tight break-words mb-3">
+        {product.name}
+      </h1>
 
-      <div className="flex items-center gap-2 mb-4">
-        <div className="flex text-yellow-400">
-          {'★★★★★'.split('').map((star, i) => (
-            <span key={i} className={i < 4 ? 'text-yellow-400' : 'text-gray-300'}>{star}</span>
-          ))}
+      {/* Valoracion real: si el producto no tiene resenas no se inventa nada */}
+      {product.rating && product.rating.count > 0 && (
+        <div className="flex items-center gap-2 mb-4">
+          <StarRating rating={Number(product.rating.average) || 0} size="sm" />
+          <span className="text-sm font-medium text-gray-700">
+            {Number(product.rating.average || 0).toFixed(1)}
+          </span>
+          <span className="text-sm text-brand-red-600 hover:underline cursor-pointer">
+            Ver {product.rating.count} reseñas
+          </span>
         </div>
-        <span className="text-gray-600">(4.2)</span>
-        <span className="text-brand-red-600 hover:underline cursor-pointer">Ver 156 reseñas</span>
-      </div>
+      )}
 
-      <div className="bg-gradient-to-r from-yellow-50 to-orange-50 p-6 rounded-xl mb-6 border border-yellow-200">
-        <div className="flex flex-col gap-1">
-          {listPrice > 0 ? (
-            <div className="flex items-baseline gap-4">
-              <span className="text-4xl font-bold text-brand-red-600">S/. {listPrice.toFixed(2)}</span>
-            </div>
-          ) : (
-            <a
-              href={buildWhatsappLink(
-                priceInquiryMessage(product.name, quantity),
-                settings?.company_whatsapp
-              )}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-3xl font-bold text-brand-red-600 hover:text-brand-red-700"
-            >
-              Consultar Precio por WhatsApp
-            </a>
-          )}
-        </div>
-        <p className="text-sm text-gray-600 mt-2">💳 Precio especial con cualquier medio de pago</p>
+      <div className="rounded-xl border border-gray-200 bg-gray-50 p-5 mb-6">
+        {listPrice > 0 ? (
+          <span className="block text-3xl md:text-4xl font-bold text-brand-red-600">
+            S/ {listPrice.toFixed(2)}
+          </span>
+        ) : (
+          <a
+            href={buildWhatsappLink(
+              priceInquiryMessage(product.name, quantity),
+              settings?.company_whatsapp
+            )}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 text-2xl md:text-3xl font-bold text-brand-red-600 hover:text-brand-red-700"
+          >
+            <MessageCircle className="w-7 h-7 shrink-0" />
+            Consultar precio por WhatsApp
+          </a>
+        )}
+        <p className="mt-2 flex items-center gap-2 text-sm text-gray-600">
+          <CreditCard className="w-4 h-4 shrink-0 text-gray-400" />
+          Precio especial con cualquier medio de pago
+        </p>
 
-        {settings?.show_distributor_price_in_detail && (product.priceDis || 0) > 0 && (
-          <div className="mt-4 pt-4 border-t border-yellow-200">
-            <div className="flex items-baseline gap-2">
+        {settings?.show_distributor_price_in_detail && distributorPrice > 0 && (
+          <div className="mt-4 pt-4 border-t border-gray-200">
+            <div className="flex flex-wrap items-baseline gap-x-2">
               <span className="text-sm font-medium text-gray-500">Precio Distribuidor:</span>
-              <span className="text-lg font-bold text-gray-700">S/. {Math.ceil(product.priceDis || 0).toFixed(2)}</span>
+              <span className="text-lg font-bold text-gray-900">
+                S/ {distributorPrice.toFixed(2)}
+              </span>
             </div>
-            <p className="text-xs text-gray-500 mt-1">
-              Consultar precios y distribuciones con su vendedor o por el ws{' '}
+            <p className="mt-1 text-xs text-gray-500">
+              Consulta precios y distribuciones con tu vendedor o por el{' '}
               <a
-                href={`https://wa.me/51${(settings.company_whatsapp || '988552455').replace(/\D/g, '')}`}
+                href={buildWhatsappLink(priceInquiryMessage(product.name), whatsapp)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-green-600 hover:underline font-bold"
+                className="font-semibold text-brand-red-600 hover:underline"
               >
-                {settings.company_whatsapp || '988552455'}
+                WhatsApp {whatsapp}
               </a>
             </p>
           </div>
         )}
       </div>
 
-      <div className="mb-6">
-        <h3 className="font-semibold text-gray-800 mb-2">Descripción:</h3>
-        <p className="text-gray-600 leading-relaxed">
-          {product.shortDescription ||
-            product.description
-              .replace(/<[^>]*>/g, ' ')
-              .replace(/\s+/g, ' ')
-              .trim()
-              .substring(0, 150) + '...'}
-        </p>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4 mb-6">
-        <div className="bg-gray-50 p-4 rounded-lg">
-          <p className="text-sm text-gray-600 mb-1">Stock disponible</p>
-          <p className="text-xl font-bold text-green-600">
-            {formatStockLabel(product.stock, product.stockDisplay)} unidades
-          </p>
+      <dl className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+        <div className="rounded-lg border border-gray-100 bg-gray-50 px-3 py-3">
+          <dt className="text-xs uppercase tracking-wide text-gray-500">Stock</dt>
+          <dd
+            className={`mt-1 text-sm font-semibold break-words ${
+              product.stock > 0 ? 'text-green-700' : 'text-red-700'
+            }`}
+          >
+            {stockLabel} unidades
+          </dd>
         </div>
-        <div className="bg-gray-50 p-4 rounded-lg">
-          <p className="text-sm text-gray-600 mb-1">Categoría</p>
-          <p className="text-xl font-bold text-gray-800">{product.category}</p>
+        <div className="rounded-lg border border-gray-100 bg-gray-50 px-3 py-3">
+          <dt className="text-xs uppercase tracking-wide text-gray-500">Categoría</dt>
+          <dd className="mt-1 text-sm font-semibold text-gray-900 break-words">
+            {product.category || '—'}
+          </dd>
         </div>
-        <div className="bg-gray-50 p-4 rounded-lg">
-          <p className="text-sm text-gray-600 mb-1">Código interno</p>
-          <p className="text-xl font-bold text-gray-800 font-mono">{product.codigo_interno || '—'}</p>
+        <div className="rounded-lg border border-gray-100 bg-gray-50 px-3 py-3">
+          <dt className="text-xs uppercase tracking-wide text-gray-500">Código interno</dt>
+          <dd className="mt-1 text-sm font-semibold text-gray-900 font-mono break-words">
+            {product.codigo_interno || '—'}
+          </dd>
         </div>
-        <div className="bg-gray-50 p-4 rounded-lg">
-          <p className="text-sm text-gray-600 mb-1">Marca</p>
-          <p className="text-xl font-bold text-gray-800">{product.brand || '—'}</p>
+        <div className="rounded-lg border border-gray-100 bg-gray-50 px-3 py-3">
+          <dt className="text-xs uppercase tracking-wide text-gray-500">Marca</dt>
+          <dd className="mt-1 text-sm font-semibold text-gray-900 break-words">
+            {product.brand || '—'}
+          </dd>
         </div>
-      </div>
+      </dl>
 
       <div className="mb-6">
-        <label className="block text-sm font-medium text-gray-700 mb-2">Cantidad:</label>
+        <label className="block text-sm font-medium text-gray-700 mb-2" htmlFor="cantidad">
+          Cantidad
+        </label>
         <div className="flex items-center gap-3">
           <button
+            type="button"
+            aria-label="Disminuir cantidad"
             onClick={() => onQuantityChange(Math.max(1, quantity - 1))}
-            className="w-10 h-10 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition"
+            disabled={quantity <= 1}
+            className="w-11 h-11 rounded-lg border border-gray-300 flex items-center justify-center text-lg hover:bg-gray-50 transition disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            -
+            −
           </button>
-          <span className="w-16 h-10 border border-gray-300 rounded-lg flex items-center justify-center font-semibold">
+          <span
+            id="cantidad"
+            className="w-16 h-11 border border-gray-300 rounded-lg flex items-center justify-center font-semibold"
+          >
             {quantity}
           </span>
           <button
+            type="button"
+            aria-label="Aumentar cantidad"
             onClick={() => onQuantityChange(Math.min(product.stock, quantity + 1))}
-            className="w-10 h-10 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition"
+            disabled={quantity >= product.stock}
+            className="w-11 h-11 rounded-lg border border-gray-300 flex items-center justify-center text-lg hover:bg-gray-50 transition disabled:opacity-40 disabled:cursor-not-allowed"
           >
             +
           </button>
-          <span className="text-sm text-gray-600 ml-2">
-            ({formatStockLabel(product.stock, product.stockDisplay)} disponibles)
-          </span>
+          <span className="text-sm text-gray-600">({stockLabel} disponibles)</span>
         </div>
       </div>
 
       <div className="space-y-3 mb-6">
         <button
+          type="button"
           onClick={onBuyNow}
-          className="w-full bg-orange-500 text-white py-4 rounded-xl font-bold text-lg hover:bg-orange-600 transition transform hover:scale-105 shadow-lg"
+          className="w-full bg-brand-red-600 text-white py-3.5 rounded-xl font-semibold text-base flex items-center justify-center gap-2 hover:bg-brand-red-700 transition shadow-brand-red"
         >
-          🚀 Comprar Ahora
+          <Zap className="w-5 h-5" />
+          Comprar ahora
         </button>
         <button
+          type="button"
           onClick={onAddToCart}
-          className="w-full bg-brand-red-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-brand-red-700 transition transform hover:scale-105 shadow-brand-red"
+          className="w-full bg-white border-2 border-brand-red-600 text-brand-red-700 py-3.5 rounded-xl font-semibold text-base flex items-center justify-center gap-2 hover:bg-brand-red-50 transition"
         >
-          🛒 Agregar al Carrito
+          <ShoppingCart className="w-5 h-5" />
+          Agregar al carrito
         </button>
         <div className="grid grid-cols-2 gap-3">
           <button
+            type="button"
             onClick={onToggleWishlist}
-            className={`py-3 rounded-xl font-medium transition transform hover:scale-105 ${isInWishlist
-              ? 'bg-red-500 text-white shadow-lg'
-              : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-              }`}
+            className="py-2.5 rounded-xl font-medium text-sm flex items-center justify-center gap-2 bg-gray-100 text-gray-700 hover:bg-gray-200 transition"
           >
-            {isInWishlist ? '❤️ En Favoritos' : '🤍 Agregar a Favoritos'}
+            <Heart
+              className={`w-4 h-4 ${
+                isInWishlist ? 'fill-brand-red-600 text-brand-red-600' : ''
+              }`}
+            />
+            {isInWishlist ? 'En favoritos' : 'Agregar a favoritos'}
           </button>
           <button
+            type="button"
             onClick={() => {
               navigator.clipboard.writeText(window.location.href);
               alert('Enlace copiado al portapapeles');
             }}
-            className="bg-gray-100 text-gray-800 py-3 rounded-xl font-medium hover:bg-gray-200 transition"
+            className="py-2.5 rounded-xl font-medium text-sm flex items-center justify-center gap-2 bg-gray-100 text-gray-700 hover:bg-gray-200 transition"
           >
-            📤 Compartir
+            <Share2 className="w-4 h-4" />
+            Compartir
           </button>
         </div>
       </div>
 
-      <div className="bg-brand-red-50 p-4 rounded-xl border border-brand-red-200">
-        <h4 className="font-semibold text-brand-red-800 mb-2">🚚 Información de Envío</h4>
-        <ul className="text-sm text-brand-red-700 space-y-1">
+      <div className="rounded-xl border border-gray-200 bg-white p-4">
+        <h4 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
+          <Truck className="w-4 h-4 text-brand-red-600" />
+          Información de envío
+        </h4>
+        <ul className="text-sm text-gray-600 space-y-1">
+          <li>• Envíos a todo el Perú</li>
           <li>• Entrega inmediata en Arequipa y Lima</li>
-          <li>• Entrega en Lima y provincias</li>
           <li>• Provincias: 2-5 días hábiles</li>
         </ul>
       </div>

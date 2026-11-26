@@ -17,12 +17,12 @@ const nextConfig: NextConfig = {
 
   /* 
    * Configuración de imágenes optimizada
-   * Habilitar optimización solo en producción
+   * Sharp convierte a AVIF/WebP y genera srcset responsive.
    */
   images: {
-    // En producción: optimización habilitada con Sharp
-    // En desarrollo: deshabilitado para velocidad
-    unoptimized: true,
+    // Optimización activa: reduce el peso de la imagen principal (LCP)
+    // y de las miniaturas. El servidor entrega AVIF/WebP.
+    unoptimized: false,
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     formats: ['image/avif', 'image/webp'],

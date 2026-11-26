@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { CheckCircle2, ShieldCheck, Truck, XCircle } from 'lucide-react';
 
 interface ProductGalleryProps {
@@ -23,17 +24,15 @@ export function ProductGallery({
 
   return (
     <div className="lg:sticky lg:top-24 self-start">
-      <div className="bg-white rounded-xl h-[380px] lg:h-[520px] flex items-center justify-center mb-4 border border-gray-200 overflow-hidden">
+      <div className="relative bg-white rounded-xl h-[380px] lg:h-[520px] flex items-center justify-center mb-4 border border-gray-200 overflow-hidden">
         {images[selectedImage] ? (
-          <img
+          <Image
             src={images[selectedImage]}
             alt={productName}
-            width={800}
-            height={600}
-            loading="eager"
-            fetchPriority="high"
-            decoding="async"
-            className="w-full h-full object-contain p-4"
+            fill
+            priority
+            sizes="(max-width: 1023px) 100vw, 520px"
+            className="object-contain p-4"
             onError={(e) => {
               const target = e.target as HTMLImageElement;
               target.src = FALLBACK_IMAGE;
@@ -51,21 +50,19 @@ export function ProductGallery({
               aria-label={`Ver imagen ${index + 1} de ${images.length} de ${productName}`}
               aria-pressed={selectedImage === index}
               onClick={() => onSelectImage(index)}
-              className={`w-16 h-16 rounded-lg border-2 flex items-center justify-center transition ${
+              className={`relative w-16 h-16 rounded-lg border-2 flex items-center justify-center transition ${
                 selectedImage === index
                   ? 'border-brand-red-500 bg-brand-red-50'
                   : 'border-gray-200 bg-white hover:border-gray-300'
               }`}
             >
               {img ? (
-                <img
+                <Image
                   src={img}
                   alt={`Imagen ${index + 1}`}
-                  width={800}
-                  height={600}
-                  loading="lazy"
-                  decoding="async"
-                  className="w-full h-full object-contain p-1 rounded-lg"
+                  fill
+                  sizes="64px"
+                  className="object-contain p-1 rounded-lg"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
                     target.src = FALLBACK_IMAGE;

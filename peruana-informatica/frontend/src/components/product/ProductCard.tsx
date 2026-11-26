@@ -56,7 +56,9 @@ export const ProductCard = memo(function ProductCard({ product }: ProductCardPro
   };
 
   const imgSrc = getImageSrc();
-  const isLocal = imgSrc.startsWith('/');
+  // next/image solo admite rutas servidas por el optimizador; las URLs de
+  // data/blob y los casos exoticos siguen con <img> plano.
+  const canOptimize = /^(https?:\/\/|\/)/.test(imgSrc) && !imgSrc.startsWith('data:') && !imgSrc.startsWith('blob:');
 
   const pWeb = Number(product.price || 0);
   const pDis = Number(product.priceDis || 0);
@@ -76,13 +78,14 @@ export const ProductCard = memo(function ProductCard({ product }: ProductCardPro
 
       {/* Image area */}
       <div className="relative bg-gray-50 dark:bg-gray-800 h-48 overflow-hidden flex-none">
-        {isLocal ? (
+        {canOptimize ? (
           <Image
             src={imgSrc}
             alt={product.name}
             fill
             sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
             className="object-contain p-3 group-hover:scale-105 transition-transform duration-500"
+            onError={(e) => { e.currentTarget.src = '/no-image.svg'; }}
           />
         ) : (
           // eslint-disable-next-line @next/next/no-img-element

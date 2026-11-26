@@ -94,7 +94,7 @@ export function BlogAiPanel({
                       href="https://aistudio.google.com/app/apikey"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-600 hover:underline"
+                      className="text-blue-700 dark:text-blue-400 hover:underline"
                     >
                       Google AI Studio
                     </a>{" "}

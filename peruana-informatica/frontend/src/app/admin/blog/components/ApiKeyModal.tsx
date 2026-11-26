@@ -42,7 +42,7 @@ export function ApiKeyModal({ apiKey, onApiKeyChange, savingApiKey, onSave, onCl
                       href="https://aistudio.google.com/app/apikey"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-600 hover:underline font-semibold"
+                      className="text-blue-700 dark:text-blue-400 hover:underline font-semibold"
                     >
                       Google AI Studio (100% GRATIS)
                     </a>

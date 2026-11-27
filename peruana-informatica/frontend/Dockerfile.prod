@@ -33,6 +33,10 @@ ENV NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL}
 ARG NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
 ENV NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION=${NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION}
 
+# Limita el heap de Node durante el build: el VPS tiene 4 GB de RAM y sin swap
+# el build de Next.js agotaba la memoria (el OOM killer reiniciaba el servidor).
+ENV NODE_OPTIONS=--max-old-space-size=1536
+
 RUN npm run build
 
 # 4. Runner

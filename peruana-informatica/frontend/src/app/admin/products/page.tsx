@@ -691,7 +691,7 @@ export default function AdminProductsPage() {
     <AdminLayout>
       <div className="space-y-5">
         {toast && (
-          <div className={`fixed top-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg text-white ${toast.type === 'success' ? 'bg-emerald-600' : 'bg-red-600'} flex items-center gap-2`}>
+          <div className={`fixed top-4 right-4 z-[70] px-4 py-3 rounded-lg shadow-lg text-white ${toast.type === 'success' ? 'bg-emerald-600' : 'bg-red-600'} flex items-center gap-2`}>
             <span>{toast.type === 'success' ? '✓' : '⚠'}</span>
             <span>{toast.message}</span>
           </div>

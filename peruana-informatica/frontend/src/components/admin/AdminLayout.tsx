@@ -12,7 +12,20 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
 
       <Sidebar />
 
-      <main className="flex-1 ml-0 lg:ml-72 transition-all duration-300 relative z-10 flex flex-col min-h-screen">
+      {/*
+        El <main> NO lleva z-index: position relative + z-index crea un contexto
+        de apilado propio y los overlays fixed que viven dentro (modales,
+        toasts) quedaban por debajo del sidebar (z-40), que es hermano del main.
+        Escala de capas del admin:
+          contenido     z-0 .. z-20   dentro de la pagina
+          header sticky z-30
+          sidebar       z-40
+          header movil  z-50
+          desplegable   z-[55]
+          modal         z-[60]   (Portal -> document.body)
+          toast         z-[70]
+      */}
+      <main className="flex-1 ml-0 lg:ml-72 transition-all duration-300 relative flex flex-col min-h-screen">
         <Header />
         <div className="flex-1 p-6">
           {children}

@@ -6,7 +6,6 @@ import { buildWhatsappLink, priceInquiryMessage } from '@/utils/whatsapp';
 import { formatStockLabel } from '@/lib/product';
 import { StarRating } from '@/components/product/StarRating';
 import {
-  CreditCard,
   Heart,
   MessageCircle,
   Share2,
@@ -90,11 +89,6 @@ export function ProductPurchasePanel({
             Consultar precio por WhatsApp
           </a>
         )}
-        <p className="mt-2 flex items-center gap-2 text-sm text-gray-600">
-          <CreditCard className="w-4 h-4 shrink-0 text-gray-400" />
-          Precio especial con cualquier medio de pago
-        </p>
-
         {settings?.show_distributor_price_in_detail && distributorPrice > 0 && (
           <div className="mt-4 pt-4 border-t border-gray-200">
             <div className="flex flex-wrap items-baseline gap-x-2">
